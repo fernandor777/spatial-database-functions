@@ -1,6 +1,12 @@
-DROP FUNCTION IF EXISTS spdba.ST_GeometryType(geography);
+SET schema 'public';
+SET search_path TO public;
+SHOW search_path;
 
-CREATE FUNCTION spdba.ST_GeometryType(p_geography geography) 
+-- ****************************************************************
+
+DROP FUNCTION IF EXISTS ST_GeometryType(geography);
+
+CREATE FUNCTION ST_GeometryType(p_geography geography) 
 RETURNS varchar(20) 
 AS
 $BODY$
@@ -11,17 +17,15 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
-ALTER FUNCTION spdba.ST_GeometryType(IN geography) OWNER TO postgres;
+ALTER FUNCTION ST_GeometryType(IN geography) OWNER TO postgres;
 
-COMMENT ON FUNCTION spdba.ST_GeometryType(IN geography) IS 'Geography Aware Function';
-
-select spdba.ST_GeometryType('POINT(147.1 -32.1)'::geography);
+COMMENT ON FUNCTION ST_GeometryType(IN geography) IS 'Geography Aware Function';
 
 -- ****************************************************************
 
-DROP FUNCTION IF EXISTS spdba.ST_NumGeometries(geography);
+DROP FUNCTION IF EXISTS ST_NumGeometries(geography);
 
-CREATE FUNCTION spdba.ST_NumGeometries(p_geography geography) 
+CREATE FUNCTION ST_NumGeometries(p_geography geography) 
 RETURNS integer 
 AS
 $BODY$
@@ -32,17 +36,15 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
-ALTER FUNCTION spdba.ST_NumGeometries(IN geography) OWNER TO postgres;
+ALTER FUNCTION ST_NumGeometries(IN geography) OWNER TO postgres;
 
-COMMENT ON FUNCTION spdba.ST_NumGeometries(IN geography) IS 'Geography Aware Function';
-
-select spdba.ST_NumGeometries('POINT(147.1 -32.1)'::geography);
+COMMENT ON FUNCTION ST_NumGeometries(IN geography) IS 'Geography Aware Function';
 
 -- ****************************************************************
 
-DROP FUNCTION IF EXISTS spdba.ST_GeometryN(geography,integer);
+DROP FUNCTION IF EXISTS ST_GeometryN(geography,integer);
 
-CREATE FUNCTION spdba.ST_GeometryN(
+CREATE FUNCTION ST_GeometryN(
   p_geography geography,
   p_index integer
 ) 
@@ -58,17 +60,15 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
-ALTER FUNCTION spdba.ST_GeometryN(IN geography,IN integer) OWNER TO postgres;
+ALTER FUNCTION ST_GeometryN(IN geography,IN integer) OWNER TO postgres;
 
-COMMENT ON FUNCTION spdba.ST_GeometryN(IN geography, IN integer) IS 'Geography Aware Function';
+COMMENT ON FUNCTION ST_GeometryN(IN geography, IN integer) IS 'Geography Aware Function';
 
-select ST_AsText(spdba.ST_GeometryN('MULTIPOINT((147.1 -32.1),(-6 45.4))'::geography,2));
+-- *************************************************************
 
--- ****************************************************************
+DROP FUNCTION IF EXISTS ST_ExteriorRing(geography);
 
-DROP FUNCTION IF EXISTS spdba.ST_ExteriorRing(geography);
-
-CREATE FUNCTION spdba.ST_ExteriorRing(
+CREATE FUNCTION ST_ExteriorRing(
   p_geography geography
 ) 
 RETURNS geography
@@ -83,18 +83,16 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
-ALTER FUNCTION spdba.ST_ExteriorRing(IN geography) OWNER TO postgres;
+ALTER FUNCTION ST_ExteriorRing(IN geography) OWNER TO postgres;
 
-COMMENT ON FUNCTION spdba.ST_ExteriorRing(IN geography) IS 'Geography Aware Function';
+COMMENT ON FUNCTION ST_ExteriorRing(IN geography) IS 'Geography Aware Function';
 
-select ST_AsText(spdba.ST_ExteriorRing('MULTIPOINT((147.1 -32.1),(-6 45.4))'::geography));
-select ST_AsEWKT(spdba.ST_ExteriorRing('POLYGON((0 0,1 0,1 1,0 1,0 0))'::geography));
 
 -- ****************************************************************
 
-DROP FUNCTION IF EXISTS spdba.ST_NumInteriorRings(geography);
+DROP FUNCTION IF EXISTS ST_NumInteriorRings(geography);
 
-CREATE FUNCTION spdba.ST_NumInteriorRings(p_geography geography) 
+CREATE FUNCTION ST_NumInteriorRings(p_geography geography) 
 RETURNS integer 
 AS
 $BODY$
@@ -105,18 +103,16 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
-ALTER FUNCTION spdba.ST_NumInteriorRings(IN geography) OWNER TO postgres;
+ALTER FUNCTION ST_NumInteriorRings(IN geography) OWNER TO postgres;
 
-COMMENT ON FUNCTION spdba.ST_NumInteriorRings(IN geography) IS 'Geography Aware Function';
+COMMENT ON FUNCTION ST_NumInteriorRings(IN geography) IS 'Geography Aware Function';
 
-select spdba.ST_NumInteriorRings('POLYGON((0 0,1 0,1 1,0 1,0 0))'::geography);
-select spdba.ST_NumInteriorRings('POLYGON((0 0,1 0,1 1,0 1,0 0),(2 2,3 2,3 3,2 3,2 2))'::geography);
 
 -- ****************************************************************
 
-DROP FUNCTION IF EXISTS spdba.ST_InteriorRingN(geography,integer);
+DROP FUNCTION IF EXISTS ST_InteriorRingN(geography,integer);
 
-CREATE FUNCTION spdba.ST_InteriorRingN(
+CREATE FUNCTION ST_InteriorRingN(
   p_geography geography,
   p_index integer
 ) 
@@ -132,19 +128,15 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
-ALTER FUNCTION spdba.ST_InteriorRingN(IN geography,IN integer) OWNER TO postgres;
+ALTER FUNCTION ST_InteriorRingN(IN geography,IN integer) OWNER TO postgres;
 
-COMMENT ON FUNCTION spdba.ST_InteriorRingN(IN geography, IN integer) IS 'Geography Aware Function';
-
-select ST_AsText(spdba.ST_InteriorRingN('MULTIPOINT((147.1 -32.1),(-6 45.4))'::geography,2));
-select ST_AsText(spdba.ST_InteriorRingN('POLYGON((0 0,1 0,1 1,0 1,0 0))'::geography,1));
-select ST_AsText(spdba.ST_InteriorRingN('POLYGON((0 0,1 0,1 1,0 1,0 0),(2 2,3 2,3 3,2 3,2 2))'::geography,1));
+COMMENT ON FUNCTION ST_InteriorRingN(IN geography, IN integer) IS 'Geography Aware Function';
 
 -- ****************************************************************
 
-DROP FUNCTION IF EXISTS spdba.ST_PointN(geography,integer);
+DROP FUNCTION IF EXISTS ST_PointN(geography,integer);
 
-CREATE FUNCTION spdba.ST_PointN(
+CREATE FUNCTION ST_PointN(
   p_geography geography,
   p_index     integer
 ) 
@@ -161,19 +153,15 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
-ALTER FUNCTION spdba.ST_PointN(IN geography,IN integer) OWNER TO postgres;
+ALTER FUNCTION ST_PointN(IN geography,IN integer) OWNER TO postgres;
 
-COMMENT ON FUNCTION spdba.ST_PointN(IN geography,IN integer) IS 'Geography Aware Function';
-
-select ST_AsText(spdba.ST_PointN('MULTIPOINT((147.1 -32.1),(-6 45.4))'::geography,1));
-select ST_AsText(spdba.ST_PointN('LINESTRING(147.1 -32.1,147.3 -32.2)'::geography,1));
-select ST_AsEWKT(spdba.ST_PointN(spdba.ST_ExteriorRing('POLYGON((0 0,1 0,1 1,0 1,0 0))'::geography),1));
+COMMENT ON FUNCTION ST_PointN(IN geography,IN integer) IS 'Geography Aware Function';
 
 -- ****************************************************************
 
-DROP FUNCTION IF EXISTS spdba.ST_NumPoints(geography);
+DROP FUNCTION IF EXISTS ST_NumPoints(geography);
 
-CREATE FUNCTION spdba.ST_NumPoints(
+CREATE FUNCTION ST_NumPoints(
   p_geography geography
 ) 
 RETURNS integer
@@ -186,19 +174,15 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
-ALTER FUNCTION spdba.ST_NumPoints(IN geography) OWNER TO postgres;
+ALTER FUNCTION ST_NumPoints(IN geography) OWNER TO postgres;
 
-COMMENT ON FUNCTION spdba.ST_NumPoints(IN geography) IS 'Geography Aware Function';
-
-select spdba.ST_NumPoints('MULTIPOINT((147.1 -32.1),(-6 45.4))'::geography);
-select spdba.ST_NumPoints('LINESTRING(147.1 -32.1,147.3 -32.2)'::geography);
-select spdba.ST_NumPoints(spdba.ST_ExteriorRing('POLYGON((0 0,1 0,1 1,0 1,0 0))'::geography));
+COMMENT ON FUNCTION ST_NumPoints(IN geography) IS 'Geography Aware Function';
 
 -- ********************************************************************
 
-DROP FUNCTION IF EXISTS spdba.ST_NPoints(geography);
+DROP FUNCTION IF EXISTS ST_NPoints(geography);
 
-CREATE FUNCTION spdba.ST_NPoints(
+CREATE FUNCTION ST_NPoints(
   p_geography geography
 ) 
 RETURNS integer
@@ -211,19 +195,15 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
-ALTER FUNCTION spdba.ST_NPoints(IN geography) OWNER TO postgres;
+ALTER FUNCTION ST_NPoints(IN geography) OWNER TO postgres;
 
-COMMENT ON FUNCTION spdba.ST_NPoints(IN geography) IS 'Geography Aware Function';
-
-select spdba.ST_NPoints('MULTIPOINT((147.1 -32.1),(-6 45.4))'::geography);
-select spdba.ST_NPoints('LINESTRING(147.1 -32.1,147.3 -32.2)'::geography);
-select spdba.ST_NPoints(spdba.ST_ExteriorRing('POLYGON((0 0,1 0,1 1,0 1,0 0))'::geography));
+COMMENT ON FUNCTION ST_NPoints(IN geography) IS 'Geography Aware Function';
 
 -- ****************************************************************
 
-DROP FUNCTION IF EXISTS spdba.ST_Points(geography);
+DROP FUNCTION IF EXISTS ST_Points(geography);
 
-CREATE FUNCTION spdba.ST_Points(
+CREATE FUNCTION ST_Points(
   p_geography geography
 ) 
 RETURNS geography
@@ -236,19 +216,15 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
-ALTER FUNCTION spdba.ST_Points(IN geography) OWNER TO postgres;
+ALTER FUNCTION ST_Points(IN geography) OWNER TO postgres;
 
-COMMENT ON FUNCTION spdba.ST_Points(IN geography) IS 'Geography Aware Function';
-
-select ST_AsText(spdba.ST_Points('MULTIPOINT((147.1 -32.1),(-6 45.4))'::geography));
-select ST_AsText(spdba.ST_Points('LINESTRING(147.1 -32.1,147.3 -32.2)'::geography));
-select ST_AsText(spdba.ST_Points('POLYGON((0 0,1 0,1 1,0 1,0 0))'::geography));
+COMMENT ON FUNCTION ST_Points(IN geography) IS 'Geography Aware Function';
 
 -- ****************************************************************
 
-DROP FUNCTION IF EXISTS spdba.ST_X(geography);
+DROP FUNCTION IF EXISTS ST_X(geography);
 
-CREATE FUNCTION spdba.ST_X(
+CREATE FUNCTION ST_X(
   p_point geography
 ) 
 RETURNS float
@@ -261,18 +237,16 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
-ALTER FUNCTION spdba.ST_X(IN geography) OWNER TO postgres;
+ALTER FUNCTION ST_X(IN geography) OWNER TO postgres;
 
-COMMENT ON FUNCTION spdba.ST_X(IN geography) IS 'Geography Aware Function';
+COMMENT ON FUNCTION ST_X(IN geography) IS 'Geography Aware Function';
 
-select spdba.ST_X('MULTIPOINT((147.1 -32.1),(-6 45.4))'::geography);
-select spdba.ST_X('POINT(147.1 -32.1)'::geography);
 
 -- ****************************************************************
 
-DROP FUNCTION IF EXISTS spdba.ST_Y(geography);
+DROP FUNCTION IF EXISTS ST_Y(geography);
 
-CREATE FUNCTION spdba.ST_Y(
+CREATE FUNCTION ST_Y(
   p_point geography
 ) 
 RETURNS float
@@ -285,19 +259,17 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
-ALTER FUNCTION spdba.ST_Y(IN geography)
+ALTER FUNCTION ST_Y(IN geography)
   OWNER TO postgres;
 
-COMMENT ON FUNCTION spdba.ST_Y(IN geography) IS 'Geography Aware Function';
+COMMENT ON FUNCTION ST_Y(IN geography) IS 'Geography Aware Function';
 
-select spdba.ST_Y('MULTIPOINT((147.1 -32.1),(-6 45.4))'::geography);
-select spdba.ST_Y('POINT(147.1 -32.1)'::geography);
 
 -- *****************************************************************
 
-DROP FUNCTION IF EXISTS spdba.ST_Z(geography);
+DROP FUNCTION IF EXISTS ST_Z(geography);
 
-CREATE FUNCTION spdba.ST_Z(
+CREATE FUNCTION ST_Z(
   p_point geography
 ) 
 RETURNS float
@@ -310,17 +282,15 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
-ALTER FUNCTION spdba.ST_Z(IN geography) OWNER TO postgres;
+ALTER FUNCTION ST_Z(IN geography) OWNER TO postgres;
 
-COMMENT ON FUNCTION spdba.ST_Z(IN geography) IS 'Geography Aware Function';
-
-select spdba.ST_Z('POINT Z(147.1 -32.1 1.34)'::geography);
+COMMENT ON FUNCTION ST_Z(IN geography) IS 'Geography Aware Function';
 
 -- *****************************************************************
 
-DROP FUNCTION IF EXISTS spdba.ST_M(geography);
+DROP FUNCTION IF EXISTS ST_M(geography);
 
-CREATE FUNCTION spdba.ST_M(
+CREATE FUNCTION ST_M(
   p_point geography
 ) 
 RETURNS float
@@ -333,18 +303,16 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
-ALTER FUNCTION spdba.ST_M(IN geography) OWNER TO postgres;
+ALTER FUNCTION ST_M(IN geography) OWNER TO postgres;
 
-COMMENT ON FUNCTION spdba.ST_M(IN geography) IS 'Geography Aware Function';
-
-select spdba.ST_M('POINT ZM(147.1 -32.1 1.23 23.45)'::geography);
+COMMENT ON FUNCTION ST_M(IN geography) IS 'Geography Aware Function';
 
 -- *****************************************************************
 
-DROP FUNCTION IF EXISTS spdba.ST_AddMeasure(geography,geography);
+DROP FUNCTION IF EXISTS ST_AddMeasure(geography,float8,float8);
 
-CREATE FUNCTION spdba.ST_AddMeasure(
-  p_geography      in geography, 
+CREATE FUNCTION ST_AddMeasure(
+  p_geography     in geography, 
   p_measure_start in float8,
   p_measure_end   in float8 
 ) 
@@ -365,16 +333,15 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
-ALTER FUNCTION spdba.ST_AddMeasure(IN geography, IN float8, IN float8) OWNER TO postgres;
+ALTER FUNCTION ST_AddMeasure(IN geography, IN float8, IN float8) OWNER TO postgres;
 
-COMMENT ON FUNCTION spdba.ST_AddMeasure(IN geography, IN float8, IN float8 ) IS 'Geography Aware Function';
+COMMENT ON FUNCTION ST_AddMeasure(IN geography, IN float8, IN float8 ) IS 'Geography Aware Function';
 
-select ST_Astext(spdba.ST_AddMeasure('LINESTRING(147.1 -32.1, 147.15 -32.1, 147.2 -32.1)'::geography,0,12098.0));
 -- *****************************************************************
 
-DROP FUNCTION IF EXISTS spdba.ST_CoordDim(geography,geography);
+DROP FUNCTION IF EXISTS ST_CoordDim(geography,geography);
 
-CREATE FUNCTION spdba.ST_CoordDim(
+CREATE FUNCTION ST_CoordDim(
   p_geography geography
 ) 
 RETURNS integer
@@ -387,19 +354,15 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
-ALTER FUNCTION spdba.ST_CoordDIm(IN geography) OWNER TO postgres;
+ALTER FUNCTION ST_CoordDIm(IN geography) OWNER TO postgres;
 
-COMMENT ON FUNCTION spdba.ST_CoordDIm(IN geography) IS 'Geography Aware Function';
-
-select spdba.ST_CoordDim('POINT ZM(147.1 -32.1 1.23 23.45)'::geography);
-select spdba.ST_CoordDim('LINESTRING(147.1 -32.1, 147.2 -32.1)'::geography);
-select spdba.ST_CoordDim('POLYGON Z((147.1 -32.1 1, 147.2 -32.1 2, 147.2 -32.0 3,147.1 -32.0 2,147.1 -32.1 1))'::geography);
+COMMENT ON FUNCTION ST_CoordDIm(IN geography) IS 'Geography Aware Function';
 
 -- *****************************************************************
 
-DROP FUNCTION IF EXISTS spdba.ST_Dimension(geography);
+DROP FUNCTION IF EXISTS ST_Dimension(geography);
 
-CREATE FUNCTION spdba.ST_Dimension(
+CREATE FUNCTION ST_Dimension(
   p_geography geography
 ) 
 RETURNS integer
@@ -412,19 +375,15 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
-ALTER FUNCTION spdba.ST_Dimension(IN geography) OWNER TO postgres;
+ALTER FUNCTION ST_Dimension(IN geography) OWNER TO postgres;
 
-COMMENT ON FUNCTION spdba.ST_Dimension(IN geography) IS 'Geography Aware Function';
-
-select spdba.ST_Dimension('POINT ZM(147.1 -32.1 1.23 23.45)'::geography);
-select spdba.ST_Dimension('LINESTRING M(147.1 -32.1 0, 147.2 -32.1 1238.3)'::geography);
-select spdba.ST_Dimension('POLYGON((147.1 -32.1, 147.2 -32.1, 147.2 -32.0,147.1 -32.0,147.1 -32.1))'::geography);
+COMMENT ON FUNCTION ST_Dimension(IN geography) IS 'Geography Aware Function';
 
 -- *****************************************************************
 
-DROP FUNCTION IF EXISTS spdba.ST_IsClosed(geography);
+DROP FUNCTION IF EXISTS ST_IsClosed(geography);
 
-CREATE FUNCTION spdba.ST_IsClosed(
+CREATE FUNCTION ST_IsClosed(
   p_geography geography
 ) 
 RETURNS boolean
@@ -437,18 +396,15 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
-ALTER FUNCTION spdba.ST_IsClosed(IN geography) OWNER TO postgres;
+ALTER FUNCTION ST_IsClosed(IN geography) OWNER TO postgres;
 
-COMMENT ON FUNCTION spdba.ST_IsClosed(IN geography) IS 'Geography Aware Function';
-
-select spdba.ST_IsClosed('LINESTRING(147.1 -32.1, 147.2 -32.1)'::geography);
-select spdba.ST_IsClosed('LINESTRING(147.1 -32.1, 147.2 -32.1, 147.2 -31.0,147.1 -32.1)'::geography);
+COMMENT ON FUNCTION ST_IsClosed(IN geography) IS 'Geography Aware Function';
 
 -- *****************************************************************
 
-DROP FUNCTION IF EXISTS spdba.ST_IsEmpty(geography);
+DROP FUNCTION IF EXISTS ST_IsEmpty(geography);
 
-CREATE FUNCTION spdba.ST_IsEmpty(
+CREATE FUNCTION ST_IsEmpty(
   p_geography geography
 ) 
 RETURNS boolean
@@ -461,18 +417,15 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
-ALTER FUNCTION spdba.ST_IsEmpty(IN geography) OWNER TO postgres;
+ALTER FUNCTION ST_IsEmpty(IN geography) OWNER TO postgres;
 
-COMMENT ON FUNCTION spdba.ST_IsEmpty(IN geography) IS 'Geography Aware Function';
-
-select spdba.ST_IsEmpty('LINESTRING(147.1 -32.1, 147.2 -32.1)'::geography);
-select spdba.ST_IsEmpty('LINESTRING EMPTY'::geography);
+COMMENT ON FUNCTION ST_IsEmpty(IN geography) IS 'Geography Aware Function';
 
 -- *****************************************************************
 
-DROP FUNCTION IF EXISTS spdba.ST_IsValid(geography);
+DROP FUNCTION IF EXISTS ST_IsValid(geography);
 
-CREATE FUNCTION spdba.ST_IsValid(
+CREATE FUNCTION ST_IsValid(
   p_geography geography
 ) 
 RETURNS boolean
@@ -485,18 +438,15 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
-ALTER FUNCTION spdba.ST_IsValid(IN geography) OWNER TO postgres;
+ALTER FUNCTION ST_IsValid(IN geography) OWNER TO postgres;
 
-COMMENT ON FUNCTION spdba.ST_IsValid(IN geography) IS 'Geography Aware Function';
-
-select spdba.ST_IsValid('LINESTRING(147.1 -32.1, 147.2 -32.1)'::geography);
-select spdba.ST_IsClosed('LINESTRING(147.1 -32.1, 147.2 -32.1, 147.2 -31.0,147.15 -32.5)'::geography);
+COMMENT ON FUNCTION ST_IsValid(IN geography) IS 'Geography Aware Function';
 
 -- *****************************************************************
 
-DROP FUNCTION IF EXISTS spdba.ST_IsValid(geography,integer);
+DROP FUNCTION IF EXISTS ST_IsValid(geography,integer);
 
-CREATE FUNCTION spdba.ST_IsValid(
+CREATE FUNCTION ST_IsValid(
   p_geography geography,
   p_flags     integer
 ) 
@@ -510,20 +460,15 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
-ALTER FUNCTION spdba.ST_IsValid(IN geography,IN integer) OWNER TO postgres;
+ALTER FUNCTION ST_IsValid(IN geography,IN integer) OWNER TO postgres;
 
-COMMENT ON FUNCTION spdba.ST_IsValid(IN geography,IN integer) IS 'Geography Aware Function';
-
-select spdba.ST_IsValid('LINESTRING(147.1 -32.1, 147.2 -32.1)'::geography,0);
-select spdba.ST_IsValid('LINESTRING(147.1 -32.1, 147.2 -32.1, 147.2 -31.0,147.15 -32.5)'::geography,0);
-select spdba.ST_IsValid('POLYGON((0 0,10 0,10 10,9 9,8 10,10 10,5 11,0 10,0 0))'::geography,0);
-select spdba.ST_IsValid('POLYGON((0 0,10 0,10 10,9 9,8 10,10 10,5 11,0 10,0 0))'::geography,1);
+COMMENT ON FUNCTION ST_IsValid(IN geography,IN integer) IS 'Geography Aware Function';
 
 -- *****************************************************************
 
-DROP FUNCTION IF EXISTS spdba.ST_IsValidDetail(geography);
+DROP FUNCTION IF EXISTS ST_IsValidDetail(geography);
 
-CREATE FUNCTION spdba.ST_IsValidDetail(
+CREATE FUNCTION ST_IsValidDetail(
   p_geography geography
 ) 
 RETURNS text
@@ -536,19 +481,15 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
-ALTER FUNCTION spdba.ST_IsValidDetail(IN geography) OWNER TO postgres;
+ALTER FUNCTION ST_IsValidDetail(IN geography) OWNER TO postgres;
 
-COMMENT ON FUNCTION spdba.ST_IsValidDetail(IN geography) IS 'Geography Aware Function';
-
-select spdba.ST_IsValidDetail('LINESTRING(147.1 -32.1, 147.2 -32.1)'::geography);
-select spdba.ST_IsValidDetail('LINESTRING(147.1 -32.1, 147.2 -32.1, 147.2 -31.0,147.15 -32.5)'::geography);
-select spdba.ST_IsValidDetail('POLYGON((0 0,10 0,10 10,9 9,8 10,10 10,5 11,0 10,0 0))'::geography);
+COMMENT ON FUNCTION ST_IsValidDetail(IN geography) IS 'Geography Aware Function';
 
 -- *****************************************************************
 
-DROP FUNCTION IF EXISTS spdba.ST_IsValidDetail(geography,integer);
+DROP FUNCTION IF EXISTS ST_IsValidDetail(geography,integer);
 
-CREATE FUNCTION spdba.ST_IsValidDetail(
+CREATE FUNCTION ST_IsValidDetail(
   p_geography geography,
   p_flags     integer
 ) 
@@ -562,20 +503,15 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
-ALTER FUNCTION spdba.ST_IsValidDetail(IN geography,IN integer) OWNER TO postgres;
+ALTER FUNCTION ST_IsValidDetail(IN geography,IN integer) OWNER TO postgres;
 
-COMMENT ON FUNCTION spdba.ST_IsValidDetail(IN geography,IN integer) IS 'Geography Aware Function';
-
-select spdba.ST_IsValidDetail('LINESTRING(147.1 -32.1, 147.2 -32.1)'::geography,0);
-select spdba.ST_IsValidDetail('LINESTRING(147.1 -32.1, 147.2 -32.1, 147.2 -31.0,147.15 -32.5)'::geography,0);
-select spdba.ST_IsValidDetail('POLYGON((0 0,10 0,10 10,9 9,8 10,10 10,5 11,0 10,0 0))'::geography,0);
-select spdba.ST_IsValidDetail('POLYGON((0 0,10 0,10 10,9 9,8 10,10 10,5 11,0 10,0 0))'::geography,1);
+COMMENT ON FUNCTION ST_IsValidDetail(IN geography,IN integer) IS 'Geography Aware Function';
 
 -- *****************************************************************
 
-DROP FUNCTION IF EXISTS spdba.ST_IsValidReason(geography);
+DROP FUNCTION IF EXISTS ST_IsValidReason(geography);
 
-CREATE FUNCTION spdba.ST_IsValidReason(
+CREATE FUNCTION ST_IsValidReason(
   p_geography geography
 ) 
 RETURNS text
@@ -588,19 +524,15 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
-ALTER FUNCTION spdba.ST_IsValidReason(IN geography) OWNER TO postgres;
+ALTER FUNCTION ST_IsValidReason(IN geography) OWNER TO postgres;
 
-COMMENT ON FUNCTION spdba.ST_IsValidReason(IN geography) IS 'Geography Aware Function';
-
-select spdba.ST_IsValidReason('LINESTRING(147.1 -32.1, 147.2 -32.1)'::geography);
-select spdba.ST_IsValidReason('LINESTRING(147.1 -32.1, 147.2 -32.1, 147.2 -31.0,147.15 -32.5)'::geography);
-select spdba.ST_IsValidReason('POLYGON((0 0,10 0,10 10,9 9,8 10,10 10,5 11,0 10,0 0))'::geography);
+COMMENT ON FUNCTION ST_IsValidReason(IN geography) IS 'Geography Aware Function';
 
 -- *****************************************************************
 
-DROP FUNCTION IF EXISTS spdba.ST_IsValidReason(geography,integer);
+DROP FUNCTION IF EXISTS ST_IsValidReason(geography,integer);
 
-CREATE FUNCTION spdba.ST_IsValidReason(
+CREATE FUNCTION ST_IsValidReason(
   p_geography geography,
   p_flags     integer
 ) 
@@ -614,20 +546,15 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
-ALTER FUNCTION spdba.ST_IsValidReason(IN geography,IN integer) OWNER TO postgres;
+ALTER FUNCTION ST_IsValidReason(IN geography,IN integer) OWNER TO postgres;
 
-COMMENT ON FUNCTION spdba.ST_IsValidReason(IN geography,IN integer) IS 'Geography Aware Function';
-
-select spdba.ST_IsValidReason('LINESTRING(147.1 -32.1, 147.2 -32.1)'::geography,0);
-select spdba.ST_IsValidReason('LINESTRING(147.1 -32.1, 147.2 -32.1, 147.2 -31.0,147.15 -32.5)'::geography,0);
-select spdba.ST_IsValidReason('POLYGON((0 0,10 0,10 10,9 9,8 10,10 10,5 11,0 10,0 0))'::geography,0);
-select spdba.ST_IsValidReason('POLYGON((0 0,10 0,10 10,9 9,8 10,10 10,5 11,0 10,0 0))'::geography,1);
+COMMENT ON FUNCTION ST_IsValidReason(IN geography,IN integer) IS 'Geography Aware Function';
 
 -- *****************************************************************
 
-DROP FUNCTION IF EXISTS spdba.ST_AddPoint(geography,geography,integer);
+DROP FUNCTION IF EXISTS ST_AddPoint(geography,geography,integer);
 									 
-CREATE FUNCTION spdba.ST_AddPoint(
+CREATE FUNCTION ST_AddPoint(
   p_geography geography,
   p_point     geography,
   p_position  integer
@@ -642,17 +569,15 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
-ALTER FUNCTION spdba.ST_AddPoint(IN geography,IN geography,IN integer) OWNER TO postgres;
+ALTER FUNCTION ST_AddPoint(IN geography,IN geography,IN integer) OWNER TO postgres;
 
-COMMENT ON FUNCTION spdba.ST_AddPoint(IN geography,IN geography,IN integer) IS 'Geography Aware Function';
-
-select ST_AsText(spdba.ST_AddPoint('LINESTRING(147.1 -32.1, 147.2 -32.1)'::geography,'POINT(147.3 -32.1)'::geography,-1));
+COMMENT ON FUNCTION ST_AddPoint(IN geography,IN geography,IN integer) IS 'Geography Aware Function';
 
 -- *****************************************************************
 
-DROP FUNCTION IF EXISTS spdba.ST_StartPoint(geography);
+DROP FUNCTION IF EXISTS ST_StartPoint(geography);
 									 
-CREATE FUNCTION spdba.ST_StartPoint(
+CREATE FUNCTION ST_StartPoint(
   p_geography geography
 ) 
 RETURNS geography
@@ -665,17 +590,15 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
-ALTER FUNCTION spdba.ST_StartPoint(IN geography) OWNER TO postgres;
+ALTER FUNCTION ST_StartPoint(IN geography) OWNER TO postgres;
 
-COMMENT ON FUNCTION spdba.ST_StartPoint(IN geography) IS 'Geography Aware Function';
-
-select ST_AsText(spdba.ST_StartPoint('LINESTRING(147.1 -32.1, 147.2 -32.1)'::geography));
+COMMENT ON FUNCTION ST_StartPoint(IN geography) IS 'Geography Aware Function';
 
 -- *****************************************************************
 
-DROP FUNCTION IF EXISTS spdba.ST_EndPoint(geography);
+DROP FUNCTION IF EXISTS ST_EndPoint(geography);
 									 
-CREATE FUNCTION spdba.ST_EndPoint(
+CREATE FUNCTION ST_EndPoint(
   p_geography geography
 ) 
 RETURNS geography
@@ -688,17 +611,15 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
-ALTER FUNCTION spdba.ST_EndPoint(IN geography) OWNER TO postgres;
+ALTER FUNCTION ST_EndPoint(IN geography) OWNER TO postgres;
 
-COMMENT ON FUNCTION spdba.ST_EndPoint(IN geography) IS 'Geography Aware Function';
-
-select ST_AsText(spdba.ST_EndPoint('LINESTRING(147.1 -32.1, 147.2 -32.1)'::geography));
+COMMENT ON FUNCTION ST_EndPoint(IN geography) IS 'Geography Aware Function';
 
 -- *****************************************************************
 
-DROP FUNCTION IF EXISTS spdba.ST_AddPoint(geography,geography);
+DROP FUNCTION IF EXISTS ST_AddPoint(geography,geography);
 									 
-CREATE FUNCTION spdba.ST_AddPoint(
+CREATE FUNCTION ST_AddPoint(
   p_geography geography,
   p_point     geography
 ) 
@@ -712,17 +633,15 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
-ALTER FUNCTION spdba.ST_AddPoint(IN geography,IN geography) OWNER TO postgres;
+ALTER FUNCTION ST_AddPoint(IN geography,IN geography) OWNER TO postgres;
 
-COMMENT ON FUNCTION spdba.ST_AddPoint(IN geography,IN geography) IS 'Geography Aware Function';
-
-select ST_AsText(spdba.ST_AddPoint('LINESTRING(147.1 -32.1, 147.2 -32.1)'::geography,'POINT(147.0 -32.1)'::geography));
+COMMENT ON FUNCTION ST_AddPoint(IN geography,IN geography) IS 'Geography Aware Function';
 
 -- *****************************************************************
 
-DROP FUNCTION IF EXISTS spdba.ST_RemovePoint(geography,integer);
+DROP FUNCTION IF EXISTS ST_RemovePoint(geography,integer);
 									 
-CREATE FUNCTION spdba.ST_RemovePoint(
+CREATE FUNCTION ST_RemovePoint(
   p_geography geography,
   p_offset    integer
 ) 
@@ -736,17 +655,15 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
-ALTER FUNCTION spdba.ST_RemovePoint(IN geography,IN integer) OWNER TO postgres;
+ALTER FUNCTION ST_RemovePoint(IN geography,IN integer) OWNER TO postgres;
 
-COMMENT ON FUNCTION spdba.ST_RemovePoint(IN geography,IN integer) IS 'Geography Aware Function';
-
-select ST_AsText(spdba.ST_RemovePoint('LINESTRING(147.1 -32.1, 147.2 -32.1,147.3 -32.1)'::geography,2));
+COMMENT ON FUNCTION ST_RemovePoint(IN geography,IN integer) IS 'Geography Aware Function';
 
 -- *****************************************************************
 
-DROP FUNCTION IF EXISTS spdba.ST_SetPoint(geography,integer,geography);
+DROP FUNCTION IF EXISTS ST_SetPoint(geography,integer,geography);
 									 
-CREATE FUNCTION spdba.ST_SetPoint(
+CREATE FUNCTION ST_SetPoint(
   p_geography         geography,
   p_zerobasedposition integer,
   p_point             geography
@@ -761,19 +678,15 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
-ALTER FUNCTION spdba.ST_SetPoint(IN geography,IN integer,IN geography) OWNER TO postgres;
+ALTER FUNCTION ST_SetPoint(IN geography,IN integer,IN geography) OWNER TO postgres;
 
-COMMENT ON FUNCTION spdba.ST_SetPoint(IN geography,IN integer,IN geography) IS 'Geography Aware Function';
-
-select ST_AsText(spdba.ST_SetPoint('LINESTRING(147.1 -32.1, 147.2 -32.1,147.3 -32.1)'::geography,
-								   1,
-								   'POINT(147.15 -32.1)'::geography));
+COMMENT ON FUNCTION ST_SetPoint(IN geography,IN integer,IN geography) IS 'Geography Aware Function';
 
 -- ****************************************************************************
 
-DROP FUNCTION IF EXISTS spdba.ST_FlipCoordinates(geography);
+DROP FUNCTION IF EXISTS ST_FlipCoordinates(geography);
 
-CREATE FUNCTION spdba.ST_FlipCoordinates(
+CREATE FUNCTION ST_FlipCoordinates(
   p_geography geography
 ) 
 RETURNS geography
@@ -788,9 +701,7 @@ $BODY$
   LANGUAGE plpgsql IMMUTABLE
   COST 100;
 
-ALTER FUNCTION spdba.ST_FlipCoordinates(IN geography,IN integer) OWNER TO postgres;
+ALTER FUNCTION ST_FlipCoordinates(IN geography) OWNER TO postgres;
 
-COMMENT ON FUNCTION spdba.ST_FlipCoordinates(IN geography,IN integer) IS 'Geography Aware Function';
+COMMENT ON FUNCTION ST_FlipCoordinates(IN geography) IS 'Geography Aware Function';
 
-select ST_AsText(spdba.ST_FlipCoordinates('MULTIPOINT((-31.2 147.1),(45.4 -6))'::geography));
-select ST_AsText(spdba.ST_FlipCoordinates('LINESTRING(-32.1 147.1,-32.2 147.3)'::geography));
