@@ -1,0 +1,28 @@
+* STFindSegmentByMeasureRange -> Support CicularStrings.
+
+* STDensify
+
+Issues to Look at
+
+* STAddPoint (CircularString)
+* STBearing in STPointBisector
+
+* STAddPoint vs STAppend
+
+[STFindPointByLength] --
+[STFindPointByMeasure] -- 
+--Msg 6569, Level 16, State 1, Server BIGGER-SPDBA\GISDB, Line 4
+'geometry::Point' failed because parameter 1 is not allowed to be null.
+
+* Support for Reversed Measure in LRS Functions.
+
+* STParallel (not buffer)
+* Use STParallel for offet in ByMeasureRange/ByLengthRange.
+
+* Start/End linestring tests for STOneSidedBuffer
+
+STComputeLengthToMidPoint - Supports Measuring arc length from 1st to 3rd or 2nd to 3rd point
+
+* All calculations of deflection angles using STSubtendedAngle
+
+* STDeletePart - Delete high level part of multilinestring or multipolygon cf STExtract
