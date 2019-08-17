@@ -1,0 +1,12 @@
+DEFINE PackageLocation='&1'
+DEFINE CODEOWNER='&2'
+SET SERVEROUTPUT ON SIZE 1000000
+SET SHOWMODE OFF
+SET TRIMOUT ON
+SET VERIFY OFF
+Prompt __ Installing JAVAGEOM package ...
+DROP PACKAGE BODY JAVAGEOM;
+DROP PACKAGE JAVAGEOM;
+@&PackageLocation\JAVAGEOM_package &&CODEOWNER.
+grant execute on javageom to public;
+quit;

@@ -1,0 +1,237 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="94888382-0247-CEEE-8C13-C0F16B2815FA" schemaObject="EDF17889-AB7C-8564-DECF-3D201E98A096" name="MANAGED_COLUMNS">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>CODESYS</sourceObjSchema>
+<sourceObjName>MANAGED_COLUMNS</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:20 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="ID" id="13E0AC3B-AB68-7948-6F7C-66229DD7FE4C">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>MANAGED_COLUMNS</sourceObjSchema>
+<sourceObjName>ID</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:20 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementColumn>true</autoIncrementColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<autoIncrementSequenceName>MANAGED_COLUMNS_ID_SEQ</autoIncrementSequenceName>
+<autoIncrementTriggerName>MANAGED_COLUMNS_ID_PK</autoIncrementTriggerName>
+</Column>
+<Column name="OWNER" id="D1F2ED51-9F32-F768-7F42-0290273F44DE">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>MANAGED_COLUMNS</sourceObjSchema>
+<sourceObjName>OWNER</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:20 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>32 CHAR</dataTypeSize>
+<ownDataTypeParameters>32 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="TABLE_NAME" id="F9D8833F-EDDA-96AB-BB47-2CC577CF7223">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>MANAGED_COLUMNS</sourceObjSchema>
+<sourceObjName>TABLE_NAME</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:20 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>32 CHAR</dataTypeSize>
+<ownDataTypeParameters>32 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="COLUMN_NAME" id="3E4BEE1A-93F8-7035-A7AE-97D3B772BE07">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>MANAGED_COLUMNS</sourceObjSchema>
+<sourceObjName>COLUMN_NAME</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:20 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>32 CHAR</dataTypeSize>
+<ownDataTypeParameters>32 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="UNIQUE_FEATURE_ID_NAME" id="9B326129-F0C8-7E07-0902-E61B045C3C20">
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-29 01:30:28 UTC</createdTime>
+<commentInRDBMS>Name of unique integer column in table. Null if does not exist.</commentInRDBMS>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>32 CHAR</dataTypeSize>
+<ownDataTypeParameters>32 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="GEOGRAPHIC_DECIMAL_DIGITS" id="0B996B51-FF54-B84B-B0E4-1FF2E4103936">
+<createdBy>Simon</createdBy>
+<createdTime>2015-11-06 22:54:25 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<constraintName>GEOG_DEC_DIGITS_CK</constraintName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<checkConstraint>
+<implementationDef dbType="Oracle Database 11g" definition="GEOGRAPHIC_DECIMAL_DIGITS BETWEEN 1 AND 10"/>
+</checkConstraint>
+<defaultValue>7</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="MAKE_START_END_EQUAL_13348" id="C3B7351C-E710-4473-022C-B193FAEB6DBB">
+<createdBy>Simon</createdBy>
+<createdTime>2015-11-06 22:55:47 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<constraintName>MAKE_SRT_END_EQ_13348_CK</constraintName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<usesDefaultValue>true</usesDefaultValue>
+<checkConstraint>
+<implementationDef dbType="Oracle Database 11g" definition="MAKE_START_END_EQUAL_13348 IN (0,1)"/>
+</checkConstraint>
+<defaultValue>1</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="SET_GEOM_NULL_WHEN_ERROR" id="C2EBE1F3-2644-AA41-C666-88F57C2B38BB">
+<createdBy>Simon</createdBy>
+<createdTime>2015-11-06 22:59:27 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<constraintName>SET_GEOM_NULL_ERROR_CK</constraintName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<usesDefaultValue>true</usesDefaultValue>
+<checkConstraint>
+<implementationDef dbType="Oracle Database 11g" definition="SET_GEOM_NULL_WHEN_ERROR IN (0,1)"/>
+</checkConstraint>
+<defaultValue>1</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="MIN_VERTICES" id="3B96C9BF-804D-E09A-3BD6-F44673130571">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>MANAGED_COLUMNS</sourceObjSchema>
+<sourceObjName>MIN_VERTICES</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:20 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="AVG_VERTICES" id="2FA20BCA-C6BB-B825-63C6-CD8AB05714D6">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>MANAGED_COLUMNS</sourceObjSchema>
+<sourceObjName>AVG_VERTICES</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:20 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="MAX_VERTICES" id="9F45D93A-5956-5D15-3D65-463C64354ADD">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>MANAGED_COLUMNS</sourceObjSchema>
+<sourceObjName>MAX_VERTICES</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:20 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="VERTEX_DATE" id="1C62BB69-A2EF-98D3-1608-505074155D69">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>MANAGED_COLUMNS</sourceObjSchema>
+<sourceObjName>VERTEX_DATE</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:20 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<dataTypeSize>7</dataTypeSize>
+<ownDataTypeParameters>7,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="AA22E266-C90A-E44C-8B70-0AD44BA80E42" name="MANAGED_COLUMNS_PK">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>CODESYS</sourceObjSchema>
+<sourceObjName>MANAGED_COLUMNS_PK</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:20 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="13E0AC3B-AB68-7948-6F7C-66229DD7FE4C"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="30B729F3-9A18-C487-FB4B-21B50A505CDA" name="MANAGED_COLUMNS_MUNQ">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>CODESYS</sourceObjSchema>
+<sourceObjName>MANAGED_COLUMNS_MUNQ</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:20 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<indexState>Unique Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="D1F2ED51-9F32-F768-7F42-0290273F44DE"/>
+<colUsage columnID="F9D8833F-EDDA-96AB-BB47-2CC577CF7223"/>
+<colUsage columnID="3E4BEE1A-93F8-7035-A7AE-97D3B772BE07"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="FEF545A7-D187-A449-CB50-78A1B14678F8" schemaObject="EDF17889-AB7C-8564-DECF-3D201E98A096" name="MANAGED_COLUMNS_MUNQ">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>CODESYS</sourceObjSchema>
+<sourceObjName>MANAGED_COLUMNS_MUNQ</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:20 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<indexState>Unique Plain Index</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="D1F2ED51-9F32-F768-7F42-0290273F44DE"/>
+<colUsage columnID="F9D8833F-EDDA-96AB-BB47-2CC577CF7223"/>
+<colUsage columnID="3E4BEE1A-93F8-7035-A7AE-97D3B772BE07"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

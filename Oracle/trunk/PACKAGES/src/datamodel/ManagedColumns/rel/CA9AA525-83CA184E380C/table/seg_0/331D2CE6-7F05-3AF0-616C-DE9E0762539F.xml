@@ -1,0 +1,190 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="331D2CE6-7F05-3AF0-616C-DE9E0762539F" schemaObject="EDF17889-AB7C-8564-DECF-3D201E98A096" name="FEATURE_ERROR_SUMMARIES">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>CODESYS</sourceObjSchema>
+<sourceObjName>FEATURE_ERROR_SUMMARIES</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:20 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="ID" id="1794FB67-FEF6-6375-9108-16C84868FFF6">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>FEATURE_ERROR_SUMMARIES</sourceObjSchema>
+<sourceObjName>ID</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:20 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementColumn>true</autoIncrementColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<autoIncrementSequenceName>FEATURE_ERROR_SUM_ID_SEQ</autoIncrementSequenceName>
+<autoIncrementTriggerName>FEATURE_ERROR_SUM_ID_PK</autoIncrementTriggerName>
+</Column>
+<Column name="MANAGED_COLUMN_ID" id="F848B076-7C5A-D8E4-2551-9B4A3ACDCB2F">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>FEATURE_ERROR_SUMMARIES</sourceObjSchema>
+<sourceObjName>MANAGED_COLUMN_ID</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:20 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="8EEF999E-98D2-4C7E-62EF-157C8C2FF20E" referredColumn="13E0AC3B-AB68-7948-6F7C-66229DD7FE4C"/>
+</associations>
+</Column>
+<Column name="PREDICATE" id="85E3355F-C753-A4F7-A4C1-5C08A1FC4626">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>FEATURE_ERROR_SUMMARIES</sourceObjSchema>
+<sourceObjName>PREDICATE</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:20 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>4000 BYTE</dataTypeSize>
+<ownDataTypeParameters>4000 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="PROCESS_START" id="228BDFB7-7FF2-1A7F-BBB1-41100EE39675">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>FEATURE_ERROR_SUMMARIES</sourceObjSchema>
+<sourceObjName>PROCESS_START</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:20 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<dataTypeSize>7</dataTypeSize>
+<ownDataTypeParameters>7,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="PROCESS_END" id="79494E09-F0E7-DD15-0498-27FE2DA19D8D">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>FEATURE_ERROR_SUMMARIES</sourceObjSchema>
+<sourceObjName>PROCESS_END</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:20 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<dataTypeSize>7</dataTypeSize>
+<ownDataTypeParameters>7,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="PROCESS_COUNT" id="C5B12EFD-79EE-D80B-420A-D10CA306BD84">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>FEATURE_ERROR_SUMMARIES</sourceObjSchema>
+<sourceObjName>PROCESS_COUNT</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:20 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>*</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,*,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="ERROR_TOTAL" id="0DC1D8DD-111A-6104-5E25-5E3444A1ACB0">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>FEATURE_ERROR_SUMMARIES</sourceObjSchema>
+<sourceObjName>ERROR_TOTAL</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:20 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>*</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,*,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="ERROR_FIXED" id="AC238CE0-C753-B3B5-A5E8-134B1C44827E">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>FEATURE_ERROR_SUMMARIES</sourceObjSchema>
+<sourceObjName>ERROR_FIXED</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:20 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>*</dataTypePrecision>
+<ownDataTypeParameters>,*,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="VALID_COUNT_BEFORE" id="F2539658-7DDA-7123-1653-CE91A361EE59">
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-28 05:57:08 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<formulaDesc>(PROCESS_COUNT - ERROR_TOTAL)</formulaDesc>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<computed>true</computed>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="VALID_COUNT_AFTER" id="11101D31-18FD-8975-199B-B807EF9F5FFC">
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-28 05:58:47 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<formulaDesc>((PROCESS_COUNT-ERROR_TOTAL)+ERROR_FIXED)</formulaDesc>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<computed>true</computed>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="9C8EBD8D-869D-35B3-6CFF-3529625CE98F" name="FEATURE_ERROR_SUMMARIES_PK">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>CODESYS</sourceObjSchema>
+<sourceObjName>FEATURE_ERROR_SUMAMRIES_PK</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:20 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="1794FB67-FEF6-6375-9108-16C84868FFF6"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="51622A23-8399-0677-4864-D6A4FFA98BD4" name="FEATURE_ERROR_SUMMARIES_FK">
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:21 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="F848B076-7C5A-D8E4-2551-9B4A3ACDCB2F"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

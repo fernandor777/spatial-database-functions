@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
+<link rel="stylesheet" href="./robodoc.css" type="text/css" />
+<title>./export/t_mbr.sql</title>
+<!-- Source: ./export/t_mbr.sql -->
+<!-- Generated with ROBODoc Version 4.99.36 (Mar 13 2008) -->
+</head>
+<body>
+<div id="logo">
+<a name="robo_top_of_doc">SPDBA Object Types and Methods Documentation</a>
+</div> <!-- logo -->
+<div id="navigation">
+<a class="menuitem" href="./toc_index.html#top">Table of Contents</a>
+<a class="menuitem" href="./robo_sourcefiles.html#top">Sourcefiles</a>
+<a class="menuitem" href="./masterindex.html#top">Index</a>
+<a class="menuitem" href="./robo_functions.html#top">Functions</a>
+<a class="menuitem" href="./robo_modules.html#top">Modules</a>
+<a class="menuitem" href="./robo_methods.html#top">Methods</a>
+<a class="menuitem" href="./robo_types.html#top">Types</a>
+<a class="menuitem" href="./robo_variables.html#top">Variables</a>
+</div> <!-- navigation -->
+<div id="content">
+<h3>TABLE OF CONTENTS</h3>
+<ul>
+<li>1. <a href="#robo11">OBJECT TYPE/T_MBR</a></li>
+<ul>
+<li>1.1. <a href="#robo197">T_MBR/ATTRIBUTES(T_MBR)</a></li>
+<li>1.2. <a href="#robo198">T_MBR/CONSTRUCTORS(T_MBR)</a></li>
+<li>1.3. <a href="#robo199">T_MBR/Inspectors(T_MBR)</a></li>
+<li>1.4. <a href="#robo200">T_MBR/Modifiers(T_MBR)</a></li>
+<li>1.5. <a href="#robo201">T_MBR/Sorting(T_MBR)</a></li>
+<li>1.6. <a href="#robo202">T_MBR/Testers(T_MBR)</a></li>
+</ul>
+</ul>
+<hr />
+<a name="OBJECT20TYPE2fT5fMBR"></a>
+<a name="robo11"></a><h2>OBJECT TYPE/T_MBR [ Types ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_types.html#robo_top_of_doc">Types</a> ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>T_MBR</strong> - Object Type representing a Minimum Bounding Rectangle (MBR) or a geometry Envelope
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    An object type that represents an MBR/Envelope of a geometry.
+    Includes methods to manipulate eg Expand/Contract, convert to SDO_DIM_ARRAY.
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    Only supports Planar / 2D ordinates.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - Jan 2005 - Original coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+
+<hr />
+<a name="T5fMBR2fATTRIBUTES28T5fMBR29"></a>
+<a name="robo197"></a><h2>T_MBR/ATTRIBUTES(T_MBR) [ Variables ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo11">T_MBR</a> ] [ <a href="./robo_variables.html#robo_top_of_doc">Variables</a> ]</p>
+<p class="item_name">ATTRIBUTES</p>
+<pre>    MinX -- X Ordinate of lower left (LL) corner of MBR.
+    MinY -- Y Ordinate of lower left (LL) corner of MBR.
+    MaxX -- X Ordinate of upper right (UR) corner of MBR.
+    MaxY -- Y Ordinate of upper right (UR) corner of MBR.
+</pre>
+<p class="item_name">SOURCE</p>
+<pre class="source">   MinX  Number<span class="sign">,</span>
+   MinY  Number<span class="sign">,</span>
+   MaxX  Number<span class="sign">,</span>
+   MaxY  Number<span class="sign">,</span>
+</pre>
+
+<hr />
+<a name="T5fMBR2fCONSTRUCTORS28T5fMBR29"></a>
+<a name="robo198"></a><h2>T_MBR/CONSTRUCTORS(T_MBR) [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo11">T_MBR</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">NAME</p>
+<pre>    A collection of &amp;&amp;INSTALL_SCHEMA..<a href="#robo11">T_MBR</a> Constructors.
+</pre>
+<p class="item_name">SOURCE</p>
+<pre class="source">   Constructor Function <a href="#robo11">T_MBR</a><span class="sign">(</span>SELF IN OUT NOCOPY <a href="#robo11">T_MBR</a><span class="sign">)</span>
+                   Return SELF as Result<span class="sign">,</span>
+
+   Constructor Function <a href="#robo11">T_MBR</a><span class="sign">(</span>SELF IN OUT NOCOPY <a href="#robo11">T_MBR</a><span class="sign">,</span>
+                              p_mbr in spdba<span class="sign">.</span><a href="#robo11">T_MBR</a><span class="sign">)</span>
+                   Return SELF as Result<span class="sign">,</span>
+
+   Constructor Function <a href="#robo11">T_MBR</a><span class="sign">(</span> SELF        IN OUT NOCOPY <a href="#robo11">T_MBR</a><span class="sign">,</span>
+                               p_geometry  IN MDSYS<span class="sign">.</span>SDO_GEOMETRY<span class="sign">,</span>
+                               p_tolerance IN NUMBER DEFAULT 0<span class="sign">.</span>005<span class="sign">)</span>
+                   Return SELF as Result<span class="sign">,</span>
+
+   Constructor Function <a href="#robo11">T_MBR</a><span class="sign">(</span> SELF       IN OUT NOCOPY <a href="#robo11">T_MBR</a><span class="sign">,</span>
+                               p_geometry IN MDSYS<span class="sign">.</span>SDO_GEOMETRY<span class="sign">,</span>
+                               p_dimarray IN MDSYS<span class="sign">.</span>SDO_DIM_ARRAY <span class="sign">)</span>
+                   Return SELF as Result<span class="sign">,</span>
+
+   Constructor Function <a href="#robo11">T_MBR</a><span class="sign">(</span> SELF      IN OUT NOCOPY <a href="#robo11">T_MBR</a><span class="sign">,</span>
+                               p_Vertex  In spdba<span class="sign">.</span>T_Vertex<span class="sign">,</span>
+                               p_dExtent In Number<span class="sign">)</span>
+                   Return SELF as Result<span class="sign">,</span>
+
+   Constructor Function <a href="#robo11">T_MBR</a><span class="sign">(</span> SELF      IN OUT NOCOPY <a href="#robo11">T_MBR</a><span class="sign">,</span>
+                               p_dX      In NUMBER<span class="sign">,</span>
+                               p_dY      In Number<span class="sign">,</span>
+                               p_dExtent In Number<span class="sign">)</span>
+                   Return SELF as Result<span class="sign">,</span>
+</pre>
+
+<hr />
+<a name="T5fMBR2fInspectors28T5fMBR29"></a>
+<a name="robo199"></a><h2>T_MBR/Inspectors(T_MBR) [ Variables ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo11">T_MBR</a> ] [ <a href="./robo_variables.html#robo_top_of_doc">Variables</a> ]</p>
+<p class="item_name">SOURCE</p>
+<pre class="source">  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>property  <span class="sign">:</span> X
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>version   <span class="sign">:</span> 1<span class="sign">.</span>0
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>precis    <span class="sign">:</span> Returns the centre X ordinate of the MBR<span class="sign">.</span>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>return    <span class="sign">:</span> <span class="sign">(</span>maxx <span class="sign">-</span> minx<span class="sign">)</span> <span class="sign">/</span> 2
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>returntype<span class="sign">:</span> Number
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history   <span class="sign">:</span> SGG August 2006 <span class="sign">-</span> Original Coding
+  Member Function X
+           Return Number Deterministic<span class="sign">,</span>
+
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>property  <span class="sign">:</span> Y
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>version   <span class="sign">:</span> 1<span class="sign">.</span>0
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>precis    <span class="sign">:</span> Returns the centre Y ordinate of the MBR<span class="sign">.</span>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>return    <span class="sign">:</span> <span class="sign">(</span>maxy <span class="sign">-</span> miny<span class="sign">)</span> <span class="sign">/</span> 2
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>returntype<span class="sign">:</span> Number
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history   <span class="sign">:</span> SGG August 2006 <span class="sign">-</span> Original Coding
+  Member Function Y
+           Return Number Deterministic<span class="sign">,</span>
+
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>property  <span class="sign">:</span> Width
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>version   <span class="sign">:</span> 1<span class="sign">.</span>0
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>precis    <span class="sign">:</span> Returns the width of the MBR<span class="sign">.</span>
+  <span class="sign">-</span><span class="sign">-</span>              Width is defined as the difference between the maximum and minimum x values<span class="sign">.</span>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>return    <span class="sign">:</span> width <span class="sign">(</span>ie maxx <span class="sign">-</span> minx<span class="sign">)</span> or Empty if MBR has not been set<span class="sign">.</span>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>returntype<span class="sign">:</span> Number
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history   <span class="sign">:</span> SGG November 2004 <span class="sign">-</span> Original Coding
+  Member Function Width
+           Return Number Deterministic<span class="sign">,</span>
+
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>property  <span class="sign">:</span> Height
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>version   <span class="sign">:</span> 1<span class="sign">.</span>0
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>precis    <span class="sign">:</span> Returns the height of the current MBR<span class="sign">.</span>
+  <span class="sign">-</span><span class="sign">-</span>              Height is defined as the difference between the maximum and minimum y values<span class="sign">.</span>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>return    <span class="sign">:</span> height <span class="sign">(</span>ie maxy <span class="sign">-</span> miny<span class="sign">)</span> or Empty if MBR has not been set<span class="sign">.</span>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>returntype<span class="sign">:</span> Number
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history   <span class="sign">:</span> SGG November 2004 <span class="sign">-</span> Original Coding
+  Member Function Height
+           Return Number Deterministic<span class="sign">,</span>
+
+  Member Function Area
+           Return Number Deterministic<span class="sign">,</span>
+
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>property  <span class="sign">:</span> Centre
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>version   <span class="sign">:</span> 1<span class="sign">.</span>0
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>precis    <span class="sign">:</span> Returns the centre via a T_Vertex<span class="sign">.</span>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>return    <span class="sign">:</span> xy
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>returntype<span class="sign">:</span> T_Vertex
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history   <span class="sign">:</span> SGG August 2006 <span class="sign">-</span> Original Coding
+  Member Function Centre
+           Return spdba<span class="sign">.</span>T_Vertex Deterministic<span class="sign">,</span>
+
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>property  <span class="sign">:</span> Center
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>version   <span class="sign">:</span> 1<span class="sign">.</span>0
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>precis    <span class="sign">:</span> Returns the center via a T_Vertex<span class="sign">.</span>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>return    <span class="sign">:</span> xy
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>returntype<span class="sign">:</span> T_Vertex
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history   <span class="sign">:</span> SGG August 2006 <span class="sign">-</span> Original Coding
+  Member Function Center
+           Return spdba<span class="sign">.</span>T_Vertex Deterministic<span class="sign">,</span>
+
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>function  <span class="sign">:</span> AsDimArray
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>version   <span class="sign">:</span> 1<span class="sign">.</span>0
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>precis    <span class="sign">:</span> Method that returns MBR as a MdSys<span class="sign">.</span>Sdo_Dim_Array
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>return    <span class="sign">:</span> SELF
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>returntype<span class="sign">:</span> MdSys<span class="sign">.</span>Sdo_Dim_Array
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history   <span class="sign">:</span> SGG September 2005 <span class="sign">-</span> Original Coding
+  Member Function AsDimArray
+           Return MDSYS<span class="sign">.</span>SDO_DIM_ARRAY Deterministic<span class="sign">,</span>
+
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>function  <span class="sign">:</span> AsString
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>version   <span class="sign">:</span> 1<span class="sign">.</span>0
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>precis    <span class="sign">:</span> Method that returns MBR as a <span class="sign">&lt;</span>MBR<span class="sign">&gt;</span> XML
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>return    <span class="sign">:</span> <span class="sign">&lt;</span>MBR<span class="sign">.</span><span class="sign">.</span><span class="sign">.</span><span class="sign">&gt;</span> XML
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>returntype<span class="sign">:</span> VarChar2
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history   <span class="sign">:</span> SGG April 2002 <span class="sign">-</span> Original Coding
+  Member Function AsString
+           Return VarChar2 Deterministic<span class="sign">,</span>
+
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>function  <span class="sign">:</span> AsCSV
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>version   <span class="sign">:</span> 1<span class="sign">.</span>0
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>precis    <span class="sign">:</span> Provides a comma delimited string representation<span class="sign">.</span>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>return    <span class="sign">:</span> Comma delimited MBR string
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>returntype<span class="sign">:</span> VarChar2
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history   <span class="sign">:</span> SJH Feb 2003 <span class="sign">-</span> Original Coding
+  Member Function AsCSV
+           Return VarChar2 Deterministic<span class="sign">,</span>
+
+  Member Function AsWKT
+           Return VARCHAR2 Deterministic<span class="sign">,</span>
+
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>function  <span class="sign">:</span> AsSVG
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>version   <span class="sign">:</span> 1<span class="sign">.</span>0
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>precis    <span class="sign">:</span> Returns MBR object as SVG <span class="sign">&lt;</span>rect <span class="sign">&gt;</span> xml
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>return    <span class="sign">:</span> SVG <span class="sign">&lt;</span>rect<span class="sign">&gt;</span> XML
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>returntype<span class="sign">:</span> VarChar2
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history   <span class="sign">:</span> SGG April 2002 <span class="sign">-</span> Original Coding
+  Member Function AsSVG
+           Return VarChar2 Deterministic<span class="sign">,</span>
+
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>function  <span class="sign">:</span> getCentreAsSVG
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>version   <span class="sign">:</span> 1<span class="sign">.</span>0
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>precis    <span class="sign">:</span> Returns centre coordinate of MBR object as SVG <span class="sign">&lt;</span>point<span class="sign">&gt;</span> xml
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>return    <span class="sign">:</span> SVG <span class="sign">&lt;</span>point<span class="sign">&gt;</span> XML
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>returntype<span class="sign">:</span> VarChar2
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history   <span class="sign">:</span> SGG April 2002 <span class="sign">-</span> Original Coding
+  Member Function getCentreAsSVG
+           Return VarChar2 Deterministic<span class="sign">,</span>
+</pre>
+
+<hr />
+<a name="T5fMBR2fModifiers28T5fMBR29"></a>
+<a name="robo200"></a><h2>T_MBR/Modifiers(T_MBR) [ Variables ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo11">T_MBR</a> ] [ <a href="./robo_variables.html#robo_top_of_doc">Variables</a> ]</p>
+<p class="item_name">SOURCE</p>
+<pre class="source">  Member Procedure SetEmpty<span class="sign">(</span>SELF IN OUT NOCOPY <a href="#robo11">T_MBR</a><span class="sign">)</span><span class="sign">,</span>
+
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>procedure  <span class="sign">:</span> SetToPart
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>precis     <span class="sign">:</span> initialiser that sets SELF to MBR of the smallest<span class="sign">/</span>largest part in a multi<span class="sign">-</span>part shape<span class="sign">.</span>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>version    <span class="sign">:</span> 1<span class="sign">.</span>0
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>description<span class="sign">:</span> Occasionally the MBR of the smallest<span class="sign">/</span>largest part of a multi<span class="sign">-</span>part shape is
+  <span class="sign">-</span><span class="sign">-</span>               needed <span class="sign">-</span> see sdo_centroid<span class="sign">.</span>  SELF<span class="sign">.</span>function iterates over all the parts of
+  <span class="sign">-</span><span class="sign">-</span>               a multi<span class="sign">-</span>part <span class="sign">(</span>SDO_GTYPE <span class="sign">=</span><span class="sign">=</span> 2007<span class="sign">)</span> shape<span class="sign">,</span> computes their individual MBRs
+  <span class="sign">-</span><span class="sign">-</span>               and returns the smallest<span class="sign">/</span>largest<span class="sign">.</span>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>usage      <span class="sign">:</span> FUNCTION SetToPart <span class="sign">(</span> p_geometry IN MDSYS<span class="sign">.</span>SDO_GEOMETRY <span class="sign">)</span><span class="sign">;</span>
+  <span class="sign">-</span><span class="sign">-</span>               eg SetToPart<span class="sign">(</span>shape<span class="sign">,</span>diminfo<span class="sign">)</span><span class="sign">;</span>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>param      <span class="sign">:</span> p_geometry  <span class="sign">:</span> MDSYS<span class="sign">.</span>SDO_GEOMETRY <span class="sign">:</span> A shape<span class="sign">.</span>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>param      <span class="sign">:</span> p_which     <span class="sign">:</span> integer        <span class="sign">:</span> Flag indicating smallest <span class="sign">(</span>0<span class="sign">)</span> part required or largest <span class="sign">(</span>1<span class="sign">)</span>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history    <span class="sign">:</span> Simon Greener <span class="sign">-</span> Feb 2012 <span class="sign">-</span> Original coding<span class="sign">.</span>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>copyright  <span class="sign">:</span> GPL <span class="sign">-</span> Free for public use
+  Member Function SetToPart<span class="sign">(</span>p_geometry in mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span> 
+                            p_which    in integer <span class="comment">/* 0 smallest, 1 largest */</span> <span class="sign">)</span>
+           Return spdba<span class="sign">.</span><a href="#robo11">T_MBR</a> Deterministic<span class="sign">,</span>
+
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>procedure  <span class="sign">:</span> SetSmallestPart
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>precis     <span class="sign">:</span> initialiser that sets SELF to MBR of the smallest part in a multi<span class="sign">-</span>part shape<span class="sign">.</span>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>version    <span class="sign">:</span> 1<span class="sign">.</span>0
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>description<span class="sign">:</span> Occasionally the MBR of the smallest part of a multi<span class="sign">-</span>part shape is
+  <span class="sign">-</span><span class="sign">-</span>               needed <span class="sign">-</span> see sdo_centroid<span class="sign">.</span>  SELF<span class="sign">.</span>function iterates over all the parts of
+  <span class="sign">-</span><span class="sign">-</span>               a multi<span class="sign">-</span>part <span class="sign">(</span>SDO_GTYPE <span class="sign">=</span><span class="sign">=</span> 2007<span class="sign">)</span> shape<span class="sign">,</span> computes their individual MBRs
+  <span class="sign">-</span><span class="sign">-</span>               and returns the smallest<span class="sign">.</span>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>usage      <span class="sign">:</span> FUNCTION SetSmallestPart <span class="sign">(</span> p_geometry IN MDSYS<span class="sign">.</span>SDO_GEOMETRY <span class="sign">)</span><span class="sign">;</span>
+  <span class="sign">-</span><span class="sign">-</span>               eg SetSmallestPart<span class="sign">(</span>shape<span class="sign">,</span>diminfo<span class="sign">)</span><span class="sign">;</span>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>param      <span class="sign">:</span> p_geometry  <span class="sign">:</span> A shape<span class="sign">.</span>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>paramtype  <span class="sign">:</span> p_geomery   <span class="sign">:</span> MDSYS<span class="sign">.</span>SDO_GEOMETRY
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history    <span class="sign">:</span> Simon Greener <span class="sign">-</span> Feb 2012 <span class="sign">-</span> Original coding<span class="sign">.</span>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>copyright  <span class="sign">:</span> GPL <span class="sign">-</span> Free for public use
+  Member Function SetSmallestPart<span class="sign">(</span>p_geometry IN MDSYS<span class="sign">.</span>SDO_GEOMETRY <span class="sign">)</span>
+           Return spdba<span class="sign">.</span><a href="#robo11">T_MBR</a> Deterministic<span class="sign">,</span>
+
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>procedure  <span class="sign">:</span> SetLargestPart
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>precis     <span class="sign">:</span> initialiser that sets SELF to MBR of the largest part in a multi<span class="sign">-</span>part shape<span class="sign">.</span>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>version    <span class="sign">:</span> 1<span class="sign">.</span>0
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>description<span class="sign">:</span> Occasionally the MBR of the largest part of a multi<span class="sign">-</span>part shape is
+  <span class="sign">-</span><span class="sign">-</span>               needed <span class="sign">-</span> see sdo_centroid<span class="sign">.</span>  SELF<span class="sign">.</span>function iterates over all the parts of
+  <span class="sign">-</span><span class="sign">-</span>               a multi<span class="sign">-</span>part <span class="sign">(</span>SDO_GTYPE <span class="sign">=</span><span class="sign">=</span> 2007<span class="sign">)</span> shape<span class="sign">,</span> computes their individual MBRs
+  <span class="sign">-</span><span class="sign">-</span>               and returns the largest<span class="sign">.</span>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>usage      <span class="sign">:</span> FUNCTION SetLargestPart <span class="sign">(</span> p_geometry IN MDSYS<span class="sign">.</span>SDO_GEOMETRY <span class="sign">)</span><span class="sign">;</span>
+  <span class="sign">-</span><span class="sign">-</span>               eg SetLargestPart<span class="sign">(</span>shape<span class="sign">,</span>diminfo<span class="sign">)</span><span class="sign">;</span>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>param      <span class="sign">:</span> p_geometry  <span class="sign">:</span> A shape<span class="sign">.</span>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>paramtype  <span class="sign">:</span> p_geomery   <span class="sign">:</span> MDSYS<span class="sign">.</span>SDO_GEOMETRY
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history    <span class="sign">:</span> Simon Greener <span class="sign">-</span> Apr 2003 <span class="sign">-</span> Original coding<span class="sign">.</span>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>copyright  <span class="sign">:</span> GPL <span class="sign">-</span> Free for public use
+  Member Function SetLargestPart<span class="sign">(</span>p_geometry IN MDSYS<span class="sign">.</span>SDO_GEOMETRY <span class="sign">)</span>
+           Return spdba<span class="sign">.</span><a href="#robo11">T_MBR</a> Deterministic<span class="sign">,</span>
+
+  Member Function Intersection<span class="sign">(</span>p_other In spdba<span class="sign">.</span><a href="#robo11">T_MBR</a> <span class="sign">)</span>
+           Return spdba<span class="sign">.</span><a href="#robo11">T_MBR</a> Deterministic<span class="sign">,</span>
+
+  Member Function Expand<span class="sign">(</span>p_Vertex IN spdba<span class="sign">.</span>T_Vertex<span class="sign">)</span>
+           Return spdba<span class="sign">.</span><a href="#robo11">T_MBR</a> Deterministic<span class="sign">,</span>
+
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>function  <span class="sign">:</span> Expand
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>version   <span class="sign">:</span> 1<span class="sign">.</span>0
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>precis    <span class="sign">:</span> Enlarges the boundary of the Current MBR so that it contains <span class="sign">(</span>x<span class="sign">,</span>y<span class="sign">)</span><span class="sign">.</span>
+  <span class="sign">-</span><span class="sign">-</span>              Does nothing if <span class="sign">(</span>x<span class="sign">,</span>y<span class="sign">)</span> is already on or within the boundaries<span class="sign">.</span>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>param     <span class="sign">:</span> dX <span class="sign">-</span> the value to lower the minimum x to or to raise the maximum x to
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>paramType <span class="sign">:</span> double
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>param     <span class="sign">:</span> dY <span class="sign">-</span>  the value to lower the minimum y to or to raise the maximum y to
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>paramType <span class="sign">:</span> double
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history   <span class="sign">:</span> SGG November 2004 <span class="sign">-</span> Original Coding
+  Member Function Expand<span class="sign">(</span>p_dX IN NUMBER<span class="sign">,</span>
+                         p_dY IN NUMBER<span class="sign">)</span>
+           Return spdba<span class="sign">.</span><a href="#robo11">T_MBR</a> Deterministic<span class="sign">,</span>
+
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>procedure <span class="sign">:</span> Expand
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>version   <span class="sign">:</span> 1<span class="sign">.</span>0
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>precis    <span class="sign">:</span> Enlarges the boundary of the Current MBR so that it contains another MBR<span class="sign">.</span>
+  <span class="sign">-</span><span class="sign">-</span>              Does nothing if other is wholly on or within the boundaries<span class="sign">.</span>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>param     <span class="sign">:</span> p_other <span class="sign">-</span> MBR to merge with
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>paramType <span class="sign">:</span> <a href="#robo11">T_MBR</a>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history   <span class="sign">:</span> SGG November 2004 <span class="sign">-</span> Original Coding
+  Member Function Expand<span class="sign">(</span>p_other IN spdba<span class="sign">.</span><a href="#robo11">T_MBR</a><span class="sign">)</span>
+           Return spdba<span class="sign">.</span><a href="#robo11">T_MBR</a> Deterministic<span class="sign">,</span>
+
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>function  <span class="sign">:</span> <a href="./t_vector3d_sql.html#robo273">Normalize</a><span class="sign">(</span>ratio<span class="sign">)</span>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>version   <span class="sign">:</span> 1<span class="sign">.</span>0
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>precis    <span class="sign">:</span> Method that adjusts width<span class="sign">/</span>height etc based on passed ratio eg imageWidth<span class="sign">/</span>imageHeight<span class="sign">.</span>
+  <span class="sign">-</span><span class="sign">-</span>              If <span class="sign">&gt;</span> 0 then the MBR<span class="squote">'s width is changed to height * ratio.
+  --              If &lt; 0 then the MBR'</span>s height is changed to width <span class="sign">*</span> ratio<span class="sign">.</span>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history   <span class="sign">:</span> SGG August 2006 <span class="sign">-</span> Original Coding
+  Member Function <a href="./t_vector3d_sql.html#robo273">Normalize</a><span class="sign">(</span>p_dRatio In Number<span class="sign">)</span>
+           Return spdba<span class="sign">.</span><a href="#robo11">T_MBR</a> Deterministic<span class="sign">,</span>
+</pre>
+
+<hr />
+<a name="T5fMBR2fSorting28T5fMBR29"></a>
+<a name="robo201"></a><h2>T_MBR/Sorting(T_MBR) [ Variables ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo11">T_MBR</a> ] [ <a href="./robo_variables.html#robo_top_of_doc">Variables</a> ]</p>
+<p class="item_name">SOURCE</p>
+<pre class="source">  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>function  <span class="sign">:</span> <a href="./t_vector3d_sql.html#robo268">Equals</a>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>version   <span class="sign">:</span> 1<span class="sign">.</span>0
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>precis    <span class="sign">:</span> Tests to see if an MBR is equal to another<span class="sign">.</span>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>return    <span class="sign">:</span> True if p_other is equal to Current else false
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>returntype<span class="sign">:</span> Boolean
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history   <span class="sign">:</span> SGG November 2004 <span class="sign">-</span> Original Coding
+  Member Function <a href="./t_vector3d_sql.html#robo268">Equals</a><span class="sign">(</span>   p_other In spdba<span class="sign">.</span><a href="#robo11">T_MBR</a> <span class="sign">)</span>
+           Return Boolean Deterministic<span class="sign">,</span>
+
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>function  <span class="sign">:</span> Evaluate
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>version   <span class="sign">:</span> 1<span class="sign">.</span>0
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>precis    <span class="sign">:</span> Returns value that can be used to company two MBRs in an expression of type MBR <span class="sign">&lt;</span> OTHER MBR
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>return    <span class="sign">:</span> Computed number<span class="sign">.</span>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>returntype<span class="sign">:</span> Number
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history   <span class="sign">:</span> SGG August 2006 <span class="sign">-</span> Original Coding
+  Order 
+  Member Function Evaluate<span class="sign">(</span>p_other In spdba<span class="sign">.</span><a href="#robo11">T_MBR</a><span class="sign">)</span>
+           Return Integer
+</pre>
+
+<hr />
+<a name="T5fMBR2fTesters28T5fMBR29"></a>
+<a name="robo202"></a><h2>T_MBR/Testers(T_MBR) [ Variables ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo11">T_MBR</a> ] [ <a href="./robo_variables.html#robo_top_of_doc">Variables</a> ]</p>
+<p class="item_name">SOURCE</p>
+<pre class="source">   Member Function isEmpty
+            Return Boolean Deterministic<span class="sign">,</span>
+
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>function  <span class="sign">:</span> contains
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>version   <span class="sign">:</span> 1<span class="sign">.</span>0
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>precis    <span class="sign">:</span> Returns true if all points on the boundary of p_other
+  <span class="sign">-</span><span class="sign">-</span>              lie in the interior or on the boundary of current MBR<span class="sign">.</span>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>return    <span class="sign">:</span> True or False
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>returntype<span class="sign">:</span> Boolean
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history   <span class="sign">:</span> SGG November 2004 <span class="sign">-</span> Original Coding
+  Member Function Contains<span class="sign">(</span> p_other In spdba<span class="sign">.</span><a href="#robo11">T_MBR</a> <span class="sign">)</span>
+           Return Boolean Deterministic<span class="sign">,</span>
+
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>function  <span class="sign">:</span> Contains
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>version   <span class="sign">:</span> 1<span class="sign">.</span>0
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>precis    <span class="sign">:</span> Method that tests if a point is within the current MBR
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>return    <span class="sign">:</span> True or False
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>returntype<span class="sign">:</span> Boolean
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history   <span class="sign">:</span> SGG November 2004 <span class="sign">-</span> Original Coding
+  Member Function Contains<span class="sign">(</span> p_dX In Number<span class="sign">,</span>
+                            p_dY In Number <span class="sign">)</span>
+           Return Boolean Deterministic<span class="sign">,</span>
+
+  Member Function Contains<span class="sign">(</span> p_vertex In mdsys<span class="sign">.</span>vertex_type <span class="sign">)</span>
+           Return Boolean Deterministic<span class="sign">,</span>
+
+  Member Function Contains<span class="sign">(</span> p_vertex In spdba<span class="sign">.</span>T_Vertex <span class="sign">)</span> 
+           Return Boolean Deterministic<span class="sign">,</span>
+
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>function  <span class="sign">:</span> Compare
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>version   <span class="sign">:</span> 1<span class="sign">.</span>0
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>precis    <span class="sign">:</span> compares 2 MBRs and returns percentage area of overlap<span class="sign">.</span>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>return    <span class="sign">:</span> 0 <span class="sign">(</span>don<span class="squote">'t overlap) - 100 (equal)
+  -- @returntype: Number
+  -- @history   : SGG May 2005 - Original Coding
+  --
+  Member Function Compare( p_other In spdba.<a href="#robo11">T_MBR</a> )
+           Return Integer Deterministic,
+
+  -- @function  : Overlap
+  -- @version   : 1.0
+  -- @precis    : Returns true if any points on the boundary of another MBR
+  --              coincide with any points on the boundary of SELF.MBR.
+  -- @return    : True or False
+  -- @returntype: Boolean
+  -- @history   : SGG November 2004 - Original Coding
+  Member Function Overlap( p_other in spdba.<a href="#robo11">T_MBR</a> )
+           Return Boolean Deterministic,
+
+  -- @function : Intersects
+  -- @version  : 1.0
+  -- @precis   : Test the point q to see whether it intersects the Envelope defined by p1-p2
+  -- @param    : p1 one extremal point of the envelope
+  -- @param    : p2 another extremal point of the envelope
+  -- @param    : q the point to test for intersection
+  -- @return   : true if q intersects the envelope p1-p2
+  Static Function Intersects(p1 in spdba.T_Vertex, p2 in spdba.T_Vertex, q in spdba.T_Vertex)
+           Return boolean Deterministic,
+           
+
+  /**
+   * Tests whether the envelope defined by p1-p2
+   * and the envelope defined by q1-q2
+   * intersect.
+   * 
+   * @param p1 one extremal point of the envelope P
+   * @param p2 another extremal point of the envelope P
+   * @param q1 one extremal point of the envelope Q
+   * @param q2 another extremal point of the envelope Q
+   * @return &lt;code&gt;true&lt;/code&gt; if Q intersects P
+   */
+  Static Function Intersects (
+                      p1 in spdba.t_vertex, p2 in spdba.T_Vertex, 
+                      q1 in spdba.t_vertex, q2 in spdba.t_vertex)
+           return boolean deterministic,
+</pre>
+
+</div> <!-- content -->
+<div id="footer">
+<p>Generated from ./export/t_mbr.sql with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.36 on Sat Aug 17 2019 13:43:51
+</p>
+</div> <!-- footer -->
+</body>
+</html>

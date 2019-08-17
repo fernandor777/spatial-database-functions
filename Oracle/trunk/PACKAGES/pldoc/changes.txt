@@ -1,0 +1,161 @@
+********************************************************************************
+
+             PLDoc utility for documenting PL/SQL code
+             =========================================
+
+Copyright (C) 2002  Albert Tumanov (altumano at users.sourceforge.net)
+
+$Id: changes.txt,v 1.22 2006/01/22 11:55:05 altumano Exp $
+
+Project directory: http://pldoc.sourceforge.net
+
+********************************************************************************
+
+
+
+	CHANGES IN RELEASE 0.8.3:
+
+* New: added support for generating documentation from the Oracle dictionary (Oracle 9i or above).
+* New: improved format of the HTML output:
+       - changed index.xsl to create the 3-frame view (as in normal javadoc)
+       - added output for schema overview in upper left frame
+       - changed output for list view in lower left frame
+       - added overviews/summaries
+* Fixed: corrected the suggested CVSROOT in readme.txt
+* Fixed: Error using a doctitle other than "Sample Application" (#999222)
+* Fixed: Error when parameter is DEFAULT (2) (#1028068)
+* Changed: use single quotes in pldoc_example.bat (to work on Windows XP)
+
+        CHANGES IN RELEASE 0.8.2:
+
+* New: initial support for parsing tables and views (only simpler cases yet)
+* New: in application.xml, use <TAG type="@deprecated"> instead of <DEPRECATED>
+  and <TAG type="@throws"> instead of <THROWS>
+  (code submitted by Steve Holt)
+* Fixed: Keyword PIPELINED unknown (#939294)
+* Fixed: invocation of pldoc.bat fails when pldoc is installed into directory with spaces in the path (#876225)
+* Fixed: Runtime/command line parameter to skip unparsable files (#832509)
+* Fixed: corrected name extracting for multiple-word datatypes (like LONG RAW and REF CURSOR)
+* Fixed: unable to use timestamp with time zone data type (#971941)
+
+
+        CHANGES IN RELEASE 0.8.1:
+
+* New: Ant task (#769012)
+* Changed: all source files moved to src directory
+* Changed: build-related files moved to build directory
+* Changed: pldoc.jar now contains also *.xsl, *.css and *.dtd files
+* Fixed: lower case pragma causes error (#827062)
+* Fixed: dumps on reserved word DETERMINISTIC (#711093)
+* Fixed: NULL modifier in the COLUMN definition (#831256)
+
+
+        CHANGES IN RELEASE 0.8:
+
+* Changed: Xalan jars upgraded from version 2.2.D14 to 2.5.1
+* New: option -inputencoding to specify character encodings of input files
+* New: show types defined in package spec (#638551)
+* New: Better anchors (#650466)
+* New: Align func/proc parameters by the first (#650501)
+* New: Add a command line options to control case convertion (#771453)
+* Fixed: documentation typo (#731017)
+* Fixed: PLDoc does not work on JDK below 1.3 (#751296)
+* Fixed: VARRAY bug (#765345)
+* Fixed: parameter mode (OUT, IN OUT) not shown (#804634)
+* Fixed: show DEFAULT value for parameters (#809871)
+
+
+        CHANGES IN RELEASE 0.7:
+
+* Implemented: Package comments more conveniently (#644050)
+* Implemented: make documentation part of the distribution (#692488)
+* Implemented: Beginner Drag-and-drop (#696678)
+* Implemented: Support SQL*Plus substitution variables (#723291)
+* Fixed: -doctitle option and sentence argument (#663581)
+* Fixed: Parser fails if: "end; -- end package" (#700040)
+
+
+        CHANGES IN RELEASE 0.6.8:
+
+* Fixed: Procedure w/o params appears as variable (#643043)
+* Fixed: Wrong api gen for overloaded procedures (#652703)
+* Fixed: Field Details not generated (#653029)
+* Fixed: CRLF removed from overview document (#653408)
+* Fixed: The first sentence extraction incorrect (#654037)
+* Implemented: The classes should be in packages (#643037)
+* Implemented: Change license to LGPL (#647744)
+* Implemented: Do not sort field/method details section (#654036)
+* Enhanced: classes packed into pldoc.jar
+* Enhanced: show PLDoc version number
+
+
+        CHANGES IN RELEASE 0.6.7:
+
+* Fixed: Allow multiple @throws like @param (#637931)
+* Fixed: error parsing REF object_type
+* Implemented: Support 9iR2 assoc array index types (#592444)
+* Implemented: Treat constants in package spec as field (#556039)
+* Enhanced: run pldoc from any directory (thanks to Kim Jersin)
+* Enhanced: show fully qualified names of datatypes
+
+
+        CHANGES IN RELEASE 0.6.6:
+
+* Fixed: @deprecated of function makes pack. deprecated (#594662)
+* Fixed: @param MUST be followed by ONE space (#594668)
+* Fixed: Space missing in output when joining lines (#595625)
+* Enhanced: now using Ant for building
+
+
+        CHANGES IN RELEASE 0.6.5:
+
+* Added: @throws tag support in function/procedure comments
+* Added: @deprecated tag support in package/function/procedure comments
+* Fixed: parsing prefixed function calls
+
+
+        CHANGES IN RELEASE 0.6.1:
+
+* Fixed: bug causing IndexOutOfBoundsException when parsing comments
+* Fixed: allow HTML in @return description
+* Changed: in samples, @headcom tag moved to the end of comment
+
+
+        CHANGES IN RELEASE 0.6:
+
+* Changed: in formal comments, tags section must be after the main text, not before
+* Added: declaration Java stored procedures can be parsed
+* Removed: Use and Package links
+* Enhanced: parameter names are shown in lowercase
+* Fixed: @param description may span on the next line
+* Fixed: strings may contain whatever symbols except closing quote
+
+        CHANGES IN RELEASE 0.5:
+
+* Added: cursors can now be parsed in package specs
+* Added: some simple Java stored procedure callspecs can be parsed
+* Fixed: lowercase procedures did not show up
+* Fixed: error when overview file not specified
+* Fixed: quoted identifier support
+* Fixed: parsing mixed-type expressions
+* Fixed: parsing REF CURSOR declarations
+* Fixed: allow < and > in informal comments
+* Fixed: package name can be reserved word
+
+
+        CHANGES IN RELEASE 0.4:
+
+* Fixed: added date expressions
+* Fixed: variable names in expressions can have dot inside
+* Added: -overview option, allows to specify file with summary text
+* Added: UNIX shell scripts make.sh and pldoc.sh
+
+        CHANGES IN RELEASE 0.3:
+
+* Record types supported
+* All expressions (boolean, numeric, character, date) supported
+* Allows to specify the output directory
+* Custom stylesheet file can be used (using the -stylesheetfile option)
+* Copies stylesheet.css the output directory
+
+********************************************************************************

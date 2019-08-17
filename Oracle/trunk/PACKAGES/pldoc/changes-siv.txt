@@ -1,0 +1,38 @@
+
+
+version 0.8.3.1
+===================
+- initially merged the SIV version and the new sourceforge 0.8.3 version
+
+- Removed: dependency from SIV SQLPlus Parser
+
+- New: Lexical parser errors are handled like exceptionsand will not interrupt the program any longer.
+- New: More verbose output added at the end of parsing all packages.
+- New: Added some new generator summary tags like creation date.
+- New: Added the dummy package _GLOBAL for all global functions.
+- New: Added documentation for triggers.
+- New: Refactored tag handling - linked tags like param, return and throws are are language dependend
+       and those are handled like before.
+       Custom tags like author or deprecated and any other tag the user wishes to have will go under
+       the custom tag node TAG. 
+- New: XSLT: Added a generator summary page.
+- New: XSLT: Now the deprecated and index list work
+- New: XSLT: Added triggers to the unit page
+- NEW: XSLT: Refactored the navigation bar
+
+
+version 0.8.1.s1
+===================
+- successfully processes all kVASy p411 forms pld's
+- fix: expression: expression() [<NOT>] <BETWEEN> expression() <AND> expression()
+- fix: expression: [<NOT>] <IN> ...
+- fix: expression: [<NOT>] <IN> ... <OR> ...
+- fix: statement <EXIT> [<WHEN> expression() | <IDENTIFIER>]
+- fix: statement <END> <LOOP> [<IDENTIFIER>] ";"
+- fix: expression: <LIKE>
+- workaround: (statement())+ ==> (statement())*
+- fix: pragma: name=<INTERFACE> "(" <IDENTIFIER> "," <IDENTIFIER> "," numericLiteral() ")"
+- fix: token: < <SELECT> | <INSERT> | <UPDATE> | <DELETE> | <COMMIT> | <ROLLBACK>> : IN_SQL_STATEMENT_ENDED_SEMICOLON
+- fix: qualifiedName(), qualifiedID(), unqualifiedID()
+- and much more ...
+

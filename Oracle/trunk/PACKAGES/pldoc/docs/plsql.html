@@ -1,0 +1,437 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<TITLE>BNF for PLSQL.jj</TITLE>
+</HEAD>
+<BODY>
+<H1 ALIGN=CENTER>BNF for PLSQL.jj</H1>
+<H2 ALIGN=CENTER>NON-TERMINALS</H2>
+<TABLE>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod1">input</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod2">attachLibrary</A> )* ( ( <A HREF="#prod3">packageSpec</A> | <A HREF="#prod4">packageBody</A> | <A HREF="#prod5">sqlPlusCommand</A> ) ( "/" )* )* &lt;EOF&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod5">sqlPlusCommand</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( ( &lt;IDENTIFIER&gt; ( "." &lt;IDENTIFIER&gt; )? | &lt;EXECUTE&gt; | &lt;SET&gt; | &lt;ON&gt; | &lt;TO&gt; | &lt;PUBLIC&gt; | "(" | ")" | &lt;STRING_LITERAL&gt; ) )+ ( ";" )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod2">attachLibrary</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>".attach" &lt;IDENTIFIER&gt; &lt;IDENTIFIER&gt; &lt;END&gt; &lt;IDENTIFIER&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod6">global</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod7">globalBlock</A> | <A HREF="#prod8">programUnit</A> | <A HREF="#prod9">triggerUnit</A> )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod7">globalBlock</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;DECLARE&gt; <A HREF="#prod10">declarativeSection</A> )? &lt;BEGIN&gt; ( <A HREF="#prod11">statement</A> )* ( <A HREF="#prod12">exceptionHandler</A> )? &lt;END&gt; ";"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod3">packageSpec</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;CREATE&gt; ( &lt;OR&gt; &lt;REPLACE&gt; )? )? &lt;PACKAGE&gt; ( <A HREF="#prod13">ID</A> "." )? <A HREF="#prod13">ID</A> ( &lt;AUTHID&gt; ( &lt;CURRENT_USER&gt; | &lt;DEFINER&gt; ) )? ( &lt;IS&gt; | &lt;AS&gt; ) <A HREF="#prod10">declarativeSection</A> &lt;END&gt; ( <A HREF="#prod13">ID</A> )? ";"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod4">packageBody</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;CREATE&gt; ( &lt;OR&gt; &lt;REPLACE&gt; )? )? &lt;PACKAGE&gt; &lt;BODY&gt; ( <A HREF="#prod13">ID</A> "." )? <A HREF="#prod13">ID</A> ( &lt;IS&gt; | &lt;AS&gt; ) <A HREF="#prod10">declarativeSection</A> ( &lt;BEGIN&gt; ( <A HREF="#prod11">statement</A> )* ( <A HREF="#prod12">exceptionHandler</A> )? )? &lt;END&gt; ( <A HREF="#prod13">ID</A> )? ";"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod10">declarativeSection</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod14">pragma</A> | <A HREF="#prod15">exceptionDeclaration</A> | <A HREF="#prod16">subtype_definition</A> | <A HREF="#prod17">variableOrConstantDeclaration</A> | <A HREF="#prod18">cursorSpec</A> | <A HREF="#prod19">cursorBody</A> | <A HREF="#prod20">collectionDeclaration</A> | <A HREF="#prod8">programUnit</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod8">programUnit</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( ( &lt;CREATE&gt; ( &lt;OR&gt; &lt;REPLACE&gt; )? )? ( &lt;FUNCTION&gt; | &lt;PROCEDURE&gt; ) ( <A HREF="#prod13">ID</A> "." )? <A HREF="#prod13">ID</A> ( "(" <A HREF="#prod21">parameterDeclaration</A> ( "," <A HREF="#prod21">parameterDeclaration</A> )* ")" )* ( &lt;RETURN&gt; <A HREF="#prod22">datatype</A> )? ( &lt;DETERMINISTIC&gt; )? ( &lt;PARALLEL_ENABLE&gt; )? ( &lt;PIPELINED&gt; )? ( ( &lt;IS&gt; | &lt;AS&gt; ) ( <A HREF="#prod23">callSpecTail</A> | ( <A HREF="#prod10">declarativeSection</A> &lt;BEGIN&gt; ( <A HREF="#prod11">statement</A> )* ( <A HREF="#prod12">exceptionHandler</A> )? &lt;END&gt; ( <A HREF="#prod13">ID</A> )? ) ) )? ";" )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod21">parameterDeclaration</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod13">ID</A> ( ( ( ( &lt;OUT&gt; | ( &lt;IN&gt; &lt;OUT&gt; ) ) ( &lt;NOCOPY&gt; )? ) | &lt;IN&gt; ) )? <A HREF="#prod22">datatype</A> ( ( ":=" | &lt;_DEFAULT&gt; ) <A HREF="#prod24">Expression</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod9">triggerUnit</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;CREATE&gt; ( &lt;OR&gt; &lt;REPLACE&gt; )? )? ( &lt;TRIGGER&gt; ) ( <A HREF="#prod13">ID</A> "." )? <A HREF="#prod13">ID</A> ( &lt;BEFORE&gt; | &lt;AFTER&gt; | &lt;INSTEADOF&gt; ) ( &lt;DELETE&gt; | &lt;INSERT&gt; | &lt;UPDATE&gt; ) ( &lt;OR&gt; ( &lt;DELETE&gt; | &lt;INSERT&gt; | &lt;UPDATE&gt; ) ( &lt;OF&gt; &lt;IDENTIFIER&gt; ( "," &lt;IDENTIFIER&gt; )* )? )* ( &lt;OF&gt; &lt;IDENTIFIER&gt; ( "," &lt;IDENTIFIER&gt; )* )? &lt;ON&gt; <A HREF="#prod13">ID</A> ( &lt;REFERENCING&gt; ( ( &lt;OLD&gt; | &lt;NEW&gt; | &lt;PARENT&gt; ) &lt;AS&gt; <A HREF="#prod13">ID</A> )+ )? ( &lt;FOREACHROW&gt; )? ( &lt;WHEN&gt; ( <A HREF="#prod25">PrimaryExpression</A> )+ )? ( &lt;DECLARE&gt; <A HREF="#prod10">declarativeSection</A> )? &lt;BEGIN&gt; ( <A HREF="#prod11">statement</A> )* ( <A HREF="#prod12">exceptionHandler</A> )? &lt;END&gt; ( <A HREF="#prod13">ID</A> )? ";"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod22">datatype</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod26">scalar_datatype_name</A> | ( ( ( &lt;REF&gt; )? <A HREF="#prod27">qualifiedName</A> ( "%" ( &lt;TYPE&gt; | &lt;ROWTYPE&gt; ) )? ) ) )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod26">scalar_datatype_name</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;BINARY_INTEGER&gt; | &lt;DEC&gt; | &lt;DECIMAL&gt; | ( &lt;DOUBLE&gt; &lt;PRECISION&gt; ) | &lt;FLOAT&gt; | &lt;INT&gt; | &lt;INTEGER&gt; | &lt;NATURAL&gt; | &lt;NATURALN&gt; | &lt;NUMBER&gt; | &lt;NUMERIC&gt; | &lt;PLS_INTEGER&gt; | &lt;POSITIVE&gt; | &lt;POSITIVEN&gt; | &lt;REAL&gt; | &lt;SIGNTYPE&gt; | &lt;SMALLINT&gt; | &lt;CHAR&gt; | &lt;CHARACTER&gt; | &lt;LONG&gt; | ( &lt;LONG&gt; &lt;RAW&gt; ) | &lt;NCHAR&gt; | &lt;NVARCHAR2&gt; | &lt;RAW&gt; | &lt;ROWID&gt; | &lt;STRING&gt; | &lt;UROWID&gt; | &lt;VARCHAR&gt; | &lt;VARCHAR2&gt; | &lt;BOOLEAN&gt; | &lt;TABLE&gt; | &lt;VARRAY&gt; | ( &lt;VARYING&gt; &lt;ARRAY&gt; ) | &lt;BFILE&gt; | &lt;BLOB&gt; | &lt;CLOB&gt; | &lt;NCLOB&gt; | ( &lt;REF&gt; &lt;CURSOR&gt; ) | &lt;DATE&gt; | ( &lt;INTERVAL&gt; &lt;DAY&gt; &lt;TO&gt; &lt;SECOND&gt; ) | ( &lt;INTERVAL&gt; &lt;YEAR&gt; &lt;TO&gt; &lt;MONTH&gt; ) | ( &lt;TIMESTAMP&gt; &lt;WITH&gt; &lt;LOCAL&gt; &lt;TIME&gt; &lt;ZONE&gt; ) | ( &lt;TIMESTAMP&gt; &lt;WITH&gt; &lt;TIME&gt; &lt;ZONE&gt; ) | &lt;TIMESTAMP&gt; ) ( "(" <A HREF="#prod28">numericLiteral</A> ( "," <A HREF="#prod28">numericLiteral</A> )? ")" )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod12">exceptionHandler</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;EXCEPTION&gt; ( &lt;WHEN&gt; <A HREF="#prod27">qualifiedName</A> ( &lt;OR&gt; <A HREF="#prod27">qualifiedName</A> )* &lt;THEN&gt; ( <A HREF="#prod11">statement</A> )+ )* ( &lt;WHEN&gt; &lt;OTHERS&gt; &lt;THEN&gt; ( <A HREF="#prod11">statement</A> )+ )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod29">skip2NextTerminator</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod30">sqlStatement</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;SELECT&gt; | &lt;UPDATE&gt; | &lt;INSERT&gt; | &lt;DELETE&gt; | &lt;COMMIT&gt; | &lt;ROLLBACK&gt; | &lt;SAVEPOINT&gt; | &lt;EXECUTE&gt; | &lt;SET&gt; &lt;TRANSACTION&gt; | &lt;LOCK&gt; &lt;TABLE&gt; | &lt;MERGE&gt; ) <A HREF="#prod29">skip2NextTerminator</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod11">statement</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod30">sqlStatement</A> ( ";" )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;IF&gt; <A HREF="#prod24">Expression</A> &lt;THEN&gt; ( <A HREF="#prod11">statement</A> )+ ( &lt;ELSIF&gt; <A HREF="#prod24">Expression</A> &lt;THEN&gt; ( <A HREF="#prod11">statement</A> )+ )* ( &lt;ELSE&gt; ( <A HREF="#prod11">statement</A> )+ )* &lt;END&gt; &lt;IF&gt; ";"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;FOR&gt; <A HREF="#prod13">ID</A> &lt;IN&gt; ( &lt;REVERSE&gt; )? <A HREF="#prod24">Expression</A> ( ".." <A HREF="#prod24">Expression</A> )? &lt;LOOP&gt; ( <A HREF="#prod11">statement</A> )+ &lt;END&gt; &lt;LOOP&gt; ( &lt;IDENTIFIER&gt; )? ";"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;FORALL&gt; <A HREF="#prod13">ID</A> &lt;IN&gt; <A HREF="#prod24">Expression</A> ( ".." <A HREF="#prod24">Expression</A> )? <A HREF="#prod30">sqlStatement</A> ";"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;LOOP&gt; ( <A HREF="#prod11">statement</A> )+ &lt;END&gt; &lt;LOOP&gt; ( &lt;IDENTIFIER&gt; )? ";"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;WHILE&gt; <A HREF="#prod24">Expression</A> &lt;LOOP&gt; ( <A HREF="#prod11">statement</A> )+ &lt;END&gt; &lt;LOOP&gt; ( &lt;IDENTIFIER&gt; )? ";"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;GOTO&gt; <A HREF="#prod27">qualifiedName</A> ";"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;RETURN&gt; ( <A HREF="#prod24">Expression</A> )? ";"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;EXIT&gt; ( &lt;WHEN&gt; <A HREF="#prod24">Expression</A> | &lt;IDENTIFIER&gt; ( &lt;WHEN&gt; <A HREF="#prod24">Expression</A> )? )? ";"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;RAISE&gt; ( <A HREF="#prod27">qualifiedName</A> )? ";"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;CLOSE&gt; <A HREF="#prod27">qualifiedName</A> ";"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;OPEN&gt; ( <A HREF="#prod24">Expression</A> )? ( &lt;FOR&gt; <A HREF="#prod24">Expression</A> ( &lt;USING&gt; <A HREF="#prod24">Expression</A> ( "," <A HREF="#prod24">Expression</A> )* )? )? ";"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;FETCH&gt; <A HREF="#prod27">qualifiedName</A> ( &lt;BULK&gt; &lt;COLLECT&gt; )? &lt;INTO&gt; <A HREF="#prod24">Expression</A> ( "," <A HREF="#prod24">Expression</A> )* ( &lt;LIMIT&gt; <A HREF="#prod24">Expression</A> )? ";"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"&lt;&lt;" &lt;IDENTIFIER&gt; "&gt;&gt;" <A HREF="#prod11">statement</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;DECLARE&gt; <A HREF="#prod10">declarativeSection</A> )? &lt;BEGIN&gt; ( <A HREF="#prod11">statement</A> )* ( <A HREF="#prod12">exceptionHandler</A> )? &lt;END&gt; ( &lt;IDENTIFIER&gt; )? ";"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod24">Expression</A> ";"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;EXECUTE&gt; &lt;IMMEDIATE&gt; &lt;STRING_LITERAL&gt; ";"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod16">subtype_definition</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( ( &lt;SUBTYPE&gt; &lt;IDENTIFIER&gt; &lt;IS&gt; <A HREF="#prod22">datatype</A> ( "(" &lt;IDENTIFIER&gt; ")" )? ( &lt;NOT&gt; &lt;NULL&gt; )? ) | ( &lt;TYPE&gt; &lt;IDENTIFIER&gt; &lt;IS&gt; ( ( &lt;RECORD&gt; "(" <A HREF="#prod31">fieldDeclaration</A> ( "," <A HREF="#prod31">fieldDeclaration</A> )* ")" ) | ( ( &lt;TABLE&gt; | &lt;VARRAY&gt; | &lt;VARYING&gt; &lt;ARRAY&gt; ) ( "(" <A HREF="#prod28">numericLiteral</A> ")" )? &lt;OF&gt; <A HREF="#prod22">datatype</A> ( &lt;NOT&gt; &lt;NULL&gt; )? ( &lt;INDEX&gt; &lt;BY&gt; <A HREF="#prod22">datatype</A> )? ) | &lt;REF&gt; &lt;CURSOR&gt; ( &lt;RETURN&gt; <A HREF="#prod22">datatype</A> )? ) ) ) ";"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod31">fieldDeclaration</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod13">ID</A> <A HREF="#prod22">datatype</A> ( ( &lt;NOT&gt; &lt;NULL&gt; )? ( ":=" | &lt;_DEFAULT&gt; ) <A HREF="#prod24">Expression</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod32">collection_type_definition</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;IDENTIFIER&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod20">collectionDeclaration</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;IDENTIFIER&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod33">objectDeclaration</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;IDENTIFIER&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod23">callSpecTail</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;LANGUAGE&gt; ( &lt;IDENTIFIER&gt; | &lt;JAVA&gt; ) &lt;IDENTIFIER&gt; &lt;STRING_LITERAL&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod34">cursorUnit</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;CURSOR&gt; <A HREF="#prod13">ID</A> ( "(" <A HREF="#prod21">parameterDeclaration</A> ( "," <A HREF="#prod21">parameterDeclaration</A> )* ")" )* ( &lt;RETURN&gt; <A HREF="#prod22">datatype</A> )? ) ( &lt;IS&gt; ( "(" )* <A HREF="#prod30">sqlStatement</A> )? ";"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod18">cursorSpec</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod34">cursorUnit</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod19">cursorBody</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod34">cursorUnit</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod24">Expression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod35">Assignment</A> | <A HREF="#prod36">ConditionalOrExpression</A> )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod35">Assignment</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod25">PrimaryExpression</A> ":=" <A HREF="#prod24">Expression</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod36">ConditionalOrExpression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod37">ConditionalAndExpression</A> ( &lt;OR&gt; <A HREF="#prod37">ConditionalAndExpression</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod37">ConditionalAndExpression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod38">EqualityExpression</A> ( &lt;AND&gt; <A HREF="#prod38">EqualityExpression</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod38">EqualityExpression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod39">RelationalExpression</A> ( ( "=" | "!=" | "&lt;&gt;" | &lt;IS&gt; ) <A HREF="#prod39">RelationalExpression</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod39">RelationalExpression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod40">AdditiveExpression</A> ( ( "&lt;" | "&gt;" | "&lt;=" | "&gt;=" | ( &lt;NOT&gt; )? ( &lt;IN&gt; | &lt;BETWEEN&gt; | &lt;LIKE&gt; | &lt;FROM&gt; ) ) <A HREF="#prod40">AdditiveExpression</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod40">AdditiveExpression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod41">MultiplicativeExpression</A> ( ( "+" | "-" | "||" ) <A HREF="#prod41">MultiplicativeExpression</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod41">MultiplicativeExpression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod42">UnaryExpression</A> ( ( "*" | "/" | &lt;MOD&gt; ) <A HREF="#prod42">UnaryExpression</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod42">UnaryExpression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( "+" | "-" ) <A HREF="#prod42">UnaryExpression</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod43">UnaryExpressionNotPlusMinus</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod43">UnaryExpressionNotPlusMinus</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;NOT&gt; <A HREF="#prod42">UnaryExpression</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod25">PrimaryExpression</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod25">PrimaryExpression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod44">PrimaryPrefix</A> ( <A HREF="#prod45">PrimarySuffix</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod44">PrimaryPrefix</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod46">Literal</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod47">Name</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;SELECT&gt; <A HREF="#prod29">skip2NextTerminator</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"(" <A HREF="#prod29">skip2NextTerminator</A> ")"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"(" <A HREF="#prod24">Expression</A> ( "," <A HREF="#prod24">Expression</A> )* ")"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod45">PrimarySuffix</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"." <A HREF="#prod48">qualifiedID</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod49">Arguments</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod46">Literal</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod28">numericLiteral</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;CHARACTER_LITERAL&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;STRING_LITERAL&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod50">BooleanLiteral</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod51">NullLiteral</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod50">BooleanLiteral</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;TRUE&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;FALSE&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod51">NullLiteral</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;NULL&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod28">numericLiteral</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;UNSIGNED_NUMERIC_LITERAL&gt; )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod47">Name</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod52">unqualifiedID</A> ( ( "." | "%" ) <A HREF="#prod48">qualifiedID</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod27">qualifiedName</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod52">unqualifiedID</A> ) ( ( "." <A HREF="#prod48">qualifiedID</A> ) )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod49">Arguments</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>"(" ( <A HREF="#prod53">ArgumentList</A> )? ")"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod53">ArgumentList</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod54">Argument</A> ( "," <A HREF="#prod54">Argument</A> )*</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod54">Argument</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod52">unqualifiedID</A> "=&gt;" )? <A HREF="#prod24">Expression</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod17">variableOrConstantDeclaration</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod13">ID</A> ( &lt;CONSTANT&gt; )? <A HREF="#prod22">datatype</A> ( ( &lt;NOT&gt; )? &lt;NULL&gt; )? ( ( ":=" | &lt;_DEFAULT&gt; ) <A HREF="#prod24">Expression</A> )? ";"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod55">datatypeDeclaration</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;IDENTIFIER&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod14">pragma</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;PRAGMA&gt; ( &lt;SERIALLY_REUSABLE&gt; | &lt;AUTONOMOUS_TRANSACTION&gt; | &lt;RESTRICT_REFERENCES&gt; "(" ( <A HREF="#prod13">ID</A> ) ( "," ( <A HREF="#prod13">ID</A> | &lt;STRING_LITERAL&gt; ) )+ ")" | &lt;EXCEPTION_INIT&gt; "(" &lt;IDENTIFIER&gt; "," ( "+" | "-" )? <A HREF="#prod28">numericLiteral</A> ")" | &lt;INTERFACE&gt; "(" &lt;IDENTIFIER&gt; "," &lt;IDENTIFIER&gt; "," <A HREF="#prod28">numericLiteral</A> ")" ) ";"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod15">exceptionDeclaration</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;IDENTIFIER&gt; &lt;EXCEPTION&gt; ";"</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod13">ID</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;IDENTIFIER&gt; | &lt;REPLACE&gt; | &lt;DEFINER&gt; | &lt;CURRENT_USER&gt; | &lt;SERIALLY_REUSABLE&gt; | &lt;RESTRICT_REFERENCES&gt; | &lt;EXCEPTION_INIT&gt; | &lt;AUTONOMOUS_TRANSACTION&gt; | &lt;LANGUAGE&gt; | &lt;ALL&gt; | &lt;ALTER&gt; | &lt;AND&gt; | &lt;ANY&gt; | &lt;ARRAY&gt; | &lt;AS&gt; | &lt;ASC&gt; | &lt;AT&gt; | &lt;AUTHID&gt; | &lt;AVG&gt; | &lt;BETWEEN&gt; | &lt;BINARY_INTEGER&gt; | &lt;BODY&gt; | &lt;BOOLEAN&gt; | &lt;BULK&gt; | &lt;BY&gt; | &lt;CASE&gt; | &lt;CHAR&gt; | &lt;CHAR_BASE&gt; | &lt;CHECK&gt; | &lt;CLOSE&gt; | &lt;CLUSTER&gt; | &lt;COALESCE&gt; | &lt;COLLECT&gt; | &lt;COMMENT&gt; | &lt;COMMIT&gt; | &lt;COMPRESS&gt; | &lt;CONNECT&gt; | &lt;CONSTANT&gt; | &lt;CREATE&gt; | &lt;CURRENT&gt; | &lt;CURRVAL&gt; | &lt;CURSOR&gt; | &lt;DATE&gt; | &lt;DAY&gt; | &lt;DECLARE&gt; | &lt;DECIMAL&gt; | &lt;_DEFAULT&gt; | &lt;DELETE&gt; | &lt;DESC&gt; | &lt;DISTINCT&gt; | &lt;DO&gt; | &lt;DROP&gt; | &lt;ELSE&gt; | &lt;ELSIF&gt; | &lt;EXCEPTION&gt; | &lt;EXCLUSIVE&gt; | &lt;EXECUTE&gt; | &lt;EXISTS&gt; | &lt;EXIT&gt; | &lt;EXTENDS&gt; | &lt;EXTRACT&gt; | &lt;FALSE&gt; | &lt;FETCH&gt; | &lt;FLOAT&gt; | &lt;FOR&gt; | &lt;FORALL&gt; | &lt;FROM&gt; | &lt;GOTO&gt; | &lt;GROUP&gt; | &lt;HAVING&gt; | &lt;HEAP&gt; | &lt;HOUR&gt; | &lt;IF&gt; | &lt;IMMEDIATE&gt; | &lt;IN&gt; | &lt;INDEX&gt; | &lt;INDICATOR&gt; | &lt;INSERT&gt; | &lt;INTEGER&gt; | &lt;INTERFACE&gt; | &lt;INTERSECT&gt; | &lt;INTERVAL&gt; | &lt;INTO&gt; | &lt;IS&gt; | &lt;ISOLATION&gt; | &lt;JAVA&gt; | &lt;LEVEL&gt; | &lt;LIKE&gt; | &lt;LIMITED&gt; | &lt;LOCK&gt; | &lt;LONG&gt; | &lt;LOOP&gt; | &lt;MAX&gt; | &lt;MIN&gt; | &lt;MINUS&gt; | &lt;MINUTE&gt; | &lt;MLSLABEL&gt; | &lt;MOD&gt; | &lt;MODE&gt; | &lt;MONTH&gt; | &lt;NATURAL&gt; | &lt;NATURALN&gt; | &lt;NEW&gt; | &lt;NEXTVAL&gt; | &lt;NOCOPY&gt; | &lt;NOT&gt; | &lt;NOWAIT&gt; | &lt;NULL&gt; | &lt;NULLIF&gt; | &lt;NUMBER&gt; | &lt;NUMBER_BASE&gt; | &lt;OCIROWID&gt; | &lt;OF&gt; | &lt;ON&gt; | &lt;OPAQUE&gt; | &lt;OPEN&gt; | &lt;OPERATOR&gt; | &lt;OPTION&gt; | &lt;OR&gt; | &lt;ORDER&gt; | &lt;ORGANIZATION&gt; | &lt;OTHERS&gt; | &lt;OUT&gt; | &lt;PACKAGE&gt; | &lt;PARTITION&gt; | &lt;PCTFREE&gt; | &lt;PLS_INTEGER&gt; | &lt;POSITIVE&gt; | &lt;POSITIVEN&gt; | &lt;PRIOR&gt; | &lt;PRIVATE&gt; | &lt;PUBLIC&gt; | &lt;RAISE&gt; | &lt;RANGE&gt; | &lt;RAW&gt; | &lt;REAL&gt; | &lt;RECORD&gt; | &lt;REF&gt; | &lt;RELEASE&gt; | &lt;RETURN&gt; | &lt;REVERSE&gt; | &lt;ROLLBACK&gt; | &lt;ROW&gt; | &lt;ROWID&gt; | &lt;ROWNUM&gt; | &lt;ROWTYPE&gt; | &lt;SAVEPOINT&gt; | &lt;SECOND&gt; | &lt;SELECT&gt; | &lt;SEPARATE&gt; | &lt;SET&gt; | &lt;SHARE&gt; | &lt;SMALLINT&gt; | &lt;SPACE&gt; | &lt;SQL&gt; | &lt;SQLCODE&gt; | &lt;SQLERRM&gt; | &lt;START&gt; | &lt;STDDEV&gt; | &lt;SUBTYPE&gt; | &lt;SUCCESSFUL&gt; | &lt;SUM&gt; | &lt;SYNONYM&gt; | &lt;SYSDATE&gt; | &lt;TABLE&gt; | &lt;THEN&gt; | &lt;TIME&gt; | &lt;TIMESTAMP&gt; | &lt;TIMEZONE_REGION&gt; | &lt;TIMEZONE_ABBR&gt; | &lt;TIMEZONE_MINUTE&gt; | &lt;TIMEZONE_HOUR&gt; | &lt;TO&gt; | &lt;TRIGGER&gt; | &lt;TRUE&gt; | &lt;TYPE&gt; | &lt;UI&gt; | &lt;UPDATE&gt; | &lt;VARCHAR&gt; | &lt;VARCHAR2&gt; | &lt;DOUBLE&gt; | &lt;DEC&gt; | &lt;PRECISION&gt; | &lt;INT&gt; | &lt;NUMERIC&gt; | &lt;SIGNTYPE&gt; | &lt;NCHAR&gt; | &lt;NVARCHAR2&gt; | &lt;STRING&gt; | &lt;UROWID&gt; | &lt;VARRAY&gt; | &lt;VARYING&gt; | &lt;BFILE&gt; | &lt;BLOB&gt; | &lt;CLOB&gt; | &lt;NCLOB&gt; | &lt;YEAR&gt; | &lt;LOCAL&gt; | &lt;WITH&gt; | &lt;WHILE&gt; | &lt;ZONE&gt; | &lt;CHARACTER&gt; | &lt;OLD&gt; | &lt;PARENT&gt; )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod52">unqualifiedID</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;IDENTIFIER&gt; | &lt;BODY&gt; | &lt;INTERVAL&gt; | &lt;MOD&gt; | &lt;OPERATOR&gt; | &lt;PRIVATE&gt; | &lt;RAW&gt; | &lt;REPLACE&gt; | &lt;STRING&gt; | &lt;SQL&gt; | &lt;SQLCODE&gt; | &lt;SQLERRM&gt; | &lt;SYSDATE&gt; | &lt;TYPE&gt; | &lt;OLD&gt; | &lt;NEW&gt; | &lt;LOOP&gt; | &lt;INT&gt; )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod48">qualifiedID</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;IDENTIFIER&gt; | &lt;REPLACE&gt; | &lt;DEFINER&gt; | &lt;CURRENT_USER&gt; | &lt;SERIALLY_REUSABLE&gt; | &lt;RESTRICT_REFERENCES&gt; | &lt;EXCEPTION_INIT&gt; | &lt;AUTONOMOUS_TRANSACTION&gt; | &lt;LANGUAGE&gt; | &lt;ARRAY&gt; | &lt;AUTHID&gt; | &lt;AVG&gt; | &lt;BINARY_INTEGER&gt; | &lt;BODY&gt; | &lt;BOOLEAN&gt; | &lt;BULK&gt; | &lt;CHAR&gt; | &lt;CHAR_BASE&gt; | &lt;CLOSE&gt; | &lt;COALESCE&gt; | &lt;COLLECT&gt; | &lt;COMMENT&gt; | &lt;COMMIT&gt; | &lt;CONSTANT&gt; | &lt;CURRVAL&gt; | &lt;CURSOR&gt; | &lt;DATE&gt; | &lt;DAY&gt; | &lt;DECIMAL&gt; | &lt;DELETE&gt; | &lt;DO&gt; | &lt;ELSIF&gt; | &lt;EXECUTE&gt; | &lt;EXISTS&gt; | &lt;EXIT&gt; | &lt;EXTENDS&gt; | &lt;EXTRACT&gt; | &lt;FALSE&gt; | &lt;FLOAT&gt; | &lt;FORALL&gt; | &lt;FUNCTION&gt; | &lt;HEAP&gt; | &lt;HOUR&gt; | &lt;IMMEDIATE&gt; | &lt;INDICATOR&gt; | &lt;INTEGER&gt; | &lt;INTERFACE&gt; | &lt;INTERVAL&gt; | &lt;ISOLATION&gt; | &lt;JAVA&gt; | &lt;LEVEL&gt; | &lt;LIMITED&gt; | &lt;LONG&gt; | &lt;LOOP&gt; | &lt;MAX&gt; | &lt;MIN&gt; | &lt;MINUTE&gt; | &lt;MLSLABEL&gt; | &lt;MOD&gt; | &lt;MONTH&gt; | &lt;NATURAL&gt; | &lt;NATURALN&gt; | &lt;NEW&gt; | &lt;NEXTVAL&gt; | &lt;NOCOPY&gt; | &lt;NULLIF&gt; | &lt;NUMBER&gt; | &lt;NUMBER_BASE&gt; | &lt;OCIROWID&gt; | &lt;OPAQUE&gt; | &lt;OPEN&gt; | &lt;OPERATOR&gt; | &lt;ORGANIZATION&gt; | &lt;OTHERS&gt; | &lt;OUT&gt; | &lt;PACKAGE&gt; | &lt;PARTITION&gt; | &lt;PLS_INTEGER&gt; | &lt;POSITIVE&gt; | &lt;POSITIVEN&gt; | &lt;PRAGMA&gt; | &lt;PRIOR&gt; | &lt;PRIVATE&gt; | &lt;RAISE&gt; | &lt;RANGE&gt; | &lt;RAW&gt; | &lt;REAL&gt; | &lt;RECORD&gt; | &lt;REF&gt; | &lt;RELEASE&gt; | &lt;RETURN&gt; | &lt;REVERSE&gt; | &lt;ROLLBACK&gt; | &lt;ROW&gt; | &lt;ROWID&gt; | &lt;ROWNUM&gt; | &lt;ROWTYPE&gt; | &lt;SAVEPOINT&gt; | &lt;SECOND&gt; | &lt;SEPARATE&gt; | &lt;SMALLINT&gt; | &lt;SPACE&gt; | &lt;SQLCODE&gt; | &lt;SQLERRM&gt; | &lt;STDDEV&gt; | &lt;SUBTYPE&gt; | &lt;SUCCESSFUL&gt; | &lt;SUM&gt; | &lt;SYNONYM&gt; | &lt;SYSDATE&gt; | &lt;TIME&gt; | &lt;TIMESTAMP&gt; | &lt;TIMEZONE_REGION&gt; | &lt;TIMEZONE_ABBR&gt; | &lt;TIMEZONE_MINUTE&gt; | &lt;TIMEZONE_HOUR&gt; | &lt;TRIGGER&gt; | &lt;TRUE&gt; | &lt;TYPE&gt; | &lt;UI&gt; | &lt;VARCHAR&gt; | &lt;VARCHAR2&gt; | &lt;DOUBLE&gt; | &lt;DEC&gt; | &lt;PRECISION&gt; | &lt;INT&gt; | &lt;NUMERIC&gt; | &lt;SIGNTYPE&gt; | &lt;NCHAR&gt; | &lt;NVARCHAR2&gt; | &lt;STRING&gt; | &lt;UROWID&gt; | &lt;VARRAY&gt; | &lt;VARYING&gt; | &lt;BFILE&gt; | &lt;BLOB&gt; | &lt;CLOB&gt; | &lt;NCLOB&gt; | &lt;YEAR&gt; | &lt;LOCAL&gt; | &lt;WHILE&gt; | &lt;ZONE&gt; | &lt;CHARACTER&gt; | &lt;LIMIT&gt; )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod56">typeKeyword</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;BOOLEAN&gt; | &lt;DATE&gt; | &lt;NUMBER&gt; | &lt;FLOAT&gt; | &lt;REAL&gt; | &lt;INTEGER&gt; | &lt;INT&gt; | &lt;SMALLINT&gt; | &lt;DECIMAL&gt; | &lt;NUMERIC&gt; | &lt;DEC&gt; | &lt;BINARY_INTEGER&gt; | &lt;NATURAL&gt; | &lt;NATURALN&gt; | &lt;POSITIVE&gt; | &lt;POSITIVEN&gt; | &lt;SIGNTYPE&gt; | &lt;VARCHAR2&gt; | &lt;VARCHAR&gt; | &lt;STRING&gt; | &lt;LONG&gt; | &lt;RAW&gt; | &lt;ROWID&gt; | &lt;CHAR&gt; | &lt;CHARACTER&gt; | &lt;MLSLABEL&gt; | &lt;BLOB&gt; | &lt;CLOB&gt; | &lt;BFILE&gt; | &lt;NCHAR&gt; | &lt;NVARCHAR2&gt; | &lt;NCLOB&gt; | &lt;PLS_INTEGER&gt; | &lt;TIME&gt; | &lt;TIMESTAMP&gt; | &lt;UROWID&gt; | &lt;ARRAY&gt; | &lt;AUTHID&gt; | &lt;CHAR_BASE&gt; | &lt;CURRVAL&gt; | &lt;HOUR&gt; | &lt;INTERVAL&gt; | &lt;MONTH&gt; | &lt;NUMBER_BASE&gt; | &lt;OCIROWID&gt; | &lt;RECORD&gt; | &lt;REF&gt; | &lt;ROW&gt; | &lt;ROWNUM&gt; | &lt;ROWTYPE&gt; | &lt;SECOND&gt; | &lt;SET&gt; | &lt;TABLE&gt; | &lt;TIMEZONE_REGION&gt; | &lt;TIMEZONE_ABBR&gt; | &lt;TIMEZONE_MINUTE&gt; | &lt;TIMEZONE_HOUR&gt; | &lt;DOUBLE&gt; | &lt;PRECISION&gt; | &lt;VARRAY&gt; | &lt;YEAR&gt; | &lt;LOCAL&gt; | &lt;WITH&gt; | &lt;ZONE&gt; )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod57">equalsOldIDNewID</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod13">ID</A></TD>
+</TR>
+</TABLE>
+</BODY>
+</HTML>

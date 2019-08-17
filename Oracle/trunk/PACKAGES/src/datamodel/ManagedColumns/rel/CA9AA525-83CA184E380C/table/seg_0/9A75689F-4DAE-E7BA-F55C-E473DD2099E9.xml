@@ -1,0 +1,86 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="9A75689F-4DAE-E7BA-F55C-E473DD2099E9" schemaObject="EDF17889-AB7C-8564-DECF-3D201E98A096" name="SDO_GEOM_ERROR">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>CODESYS</sourceObjSchema>
+<sourceObjName>SDO_GEOM_ERROR</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:20 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="CODE" id="6781B891-1A7D-4727-5650-0C288DEAADEA">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>SDO_GEOM_ERROR</sourceObjSchema>
+<sourceObjName>CODE</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:20 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>10 BYTE</dataTypeSize>
+<ownDataTypeParameters>10 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="TEXT" id="62D14FD1-AD9B-27E2-23BF-DAB68561409C">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>SDO_GEOM_ERROR</sourceObjSchema>
+<sourceObjName>TEXT</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:20 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>255 BYTE</dataTypeSize>
+<ownDataTypeParameters>255 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="CAUSE" id="9BB2E637-19AE-9D7A-5A9F-4E21AC6CE705">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>SDO_GEOM_ERROR</sourceObjSchema>
+<sourceObjName>CAUSE</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:20 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>1000 BYTE</dataTypeSize>
+<ownDataTypeParameters>1000 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="ACTION" id="4B619FB4-300C-DA9F-2E02-49FB9E78781F">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>SDO_GEOM_ERROR</sourceObjSchema>
+<sourceObjName>ACTION</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:20 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>2000 BYTE</dataTypeSize>
+<ownDataTypeParameters>2000 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="B343184E-E7E6-3776-6E5C-077DFFF861A0" name="SDO_GEOM_ERROR_PK">
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-28 01:35:32 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="6781B891-1A7D-4727-5650-0C288DEAADEA"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

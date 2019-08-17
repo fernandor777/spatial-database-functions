@@ -1,0 +1,14 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<SequenceOraclev10g class="oracle.dbtools.crest.model.design.storage.oracle.v10g.SequenceOraclev10g" name="COLUMN_ANALYSIS_SUMMARIES_ID" directorySegmentName="seg_0" id="A6734A1E-EE56-6CAA-916F-CB763339E02A">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>CODESYS</sourceObjSchema>
+<sourceObjName>COLUMN_ANALYSIS_SUMMARIES_ID</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:19 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<incrementBy>1</incrementBy>
+<maxValue>9999999999999999999999999999</maxValue>
+<minValue>1</minValue>
+<noCache>YES</noCache>
+<user>CD237EE0-EC38-4CFB-299A-D68C1EE5DB10</user>
+</SequenceOraclev10g>

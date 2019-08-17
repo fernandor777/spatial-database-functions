@@ -1,0 +1,9 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<UserOraclev10g class="oracle.dbtools.crest.model.design.storage.oracle.v10g.UserOraclev10g" name="CODESYS" directorySegmentName="seg_0" id="CD237EE0-EC38-4CFB-299A-D68C1EE5DB10">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjName>CODESYS</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:19 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<schemaObject>EDF17889-AB7C-8564-DECF-3D201E98A096</schemaObject>
+</UserOraclev10g>

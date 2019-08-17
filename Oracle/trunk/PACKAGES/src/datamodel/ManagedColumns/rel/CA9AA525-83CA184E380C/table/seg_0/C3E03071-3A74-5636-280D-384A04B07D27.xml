@@ -1,0 +1,84 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="C3E03071-3A74-5636-280D-384A04B07D27" schemaObject="EDF17889-AB7C-8564-DECF-3D201E98A096" name="COLUMN_ANALYSIS_SUMMARIES">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>CODESYS</sourceObjSchema>
+<sourceObjName>COLUMN_ANALYSIS_SUMMARIES</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:20 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="ID" id="C794FE15-EFC6-9F4B-7B08-AFBA48E44DB7">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>COLUMN_ANALYSIS_SUMMARIES</sourceObjSchema>
+<sourceObjName>ID</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:20 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementColumn>true</autoIncrementColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<autoIncrementSequenceName>COLUMN_ANALYSIS_SUM_ID_SEQ</autoIncrementSequenceName>
+<autoIncrementTriggerName>COLUMN_ANALYSIS_SUM_ID_PK</autoIncrementTriggerName>
+</Column>
+<Column name="ANALYSIS_PROCESS_START" id="E84A69EA-8625-93F3-F2AE-487F3A71C2BE">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>COLUMN_ANALYSIS_SUMMARIES</sourceObjSchema>
+<sourceObjName>ANALYSIS_PROCESS_START</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:20 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="ANALYSIS_PROCESS_END" id="E0C9F6C6-3686-847E-9F5D-35358DC0047A">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>COLUMN_ANALYSIS_SUMMARIES</sourceObjSchema>
+<sourceObjName>ANALYSIS_PROCESS_END</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:20 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="TEXT" id="A6101A92-8A89-5107-C3E7-7C612641029D">
+<createdBy>Simon</createdBy>
+<createdTime>2015-11-10 00:55:02 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>4000</dataTypeSize>
+<ownDataTypeParameters>4000,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="31F5B126-5B1F-90D8-C005-50CAC2A44A35" name="COLUMN_ANALYSIS_SUMMARIES_PK">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>CODESYS</sourceObjSchema>
+<sourceObjName>COLUMN_ANALYSIS_SUMMARIES_PK</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:20 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="C794FE15-EFC6-9F4B-7B08-AFBA48E44DB7"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

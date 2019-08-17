@@ -1,0 +1,18 @@
+Installation of the AFFINE package is simple.
+
+The AFFINE_Package.sql script has a single parameter at the start.
+
+DEFINE defaultSchema = '&1'
+
+If you install the AFFINE package using sqlplus command line you will need to
+supply the schema name as follows:
+
+sqlplus <user>/<password>@<TNSNAME> @AFFINE_Package.sql <DefauktSchema>
+
+For example:
+
+sqlplus codesys/codemgr@GISDB @AFFINE_Package.sql CODESYS
+
+If you use SQL Developer, drag and drop AFFINE_Package.sql into a new window,
+and then press <F5> and supply the schema name when the dialog box appears
+requesting a value for <DefaultSchema>.

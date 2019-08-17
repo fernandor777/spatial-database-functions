@@ -1,0 +1,128 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="E212214E-F8B1-CC76-D2D2-2C9DBD712BC4" schemaObject="EDF17889-AB7C-8564-DECF-3D201E98A096" name="COLUMN_ANALYSIS_DETAIL">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>CODESYS</sourceObjSchema>
+<sourceObjName>COLUMN_ANALYSES</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:19 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<ordsAlias>column_analyses</ordsAlias>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="ID" id="629D25B3-829F-2D29-EAD2-43A120EEED88">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>COLUMN_ANALYSES</sourceObjSchema>
+<sourceObjName>ID</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:20 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementColumn>true</autoIncrementColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<autoIncrementSequenceName>COLUMN_ANALYSIS_DETAIL_ID_SEQ</autoIncrementSequenceName>
+<autoIncrementTriggerName>COLUMN_ANALYSIS_DETAIL_ID_PK</autoIncrementTriggerName>
+</Column>
+<Column name="MANAGED_COLUMN_ID" id="52D9E096-BF29-CF0C-DE96-1B789FC79E68">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>COLUMN_ANALYSES</sourceObjSchema>
+<sourceObjName>MANAGED_COLUMN_ID</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:20 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<dataTypePrecision>*</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,*,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="0C22F769-A860-23FE-063F-1D922F4FFA43" referredColumn="13E0AC3B-AB68-7948-6F7C-66229DD7FE4C"/>
+</associations>
+</Column>
+<Column name="ANALYSIS_DATE" id="4708AD5E-211D-B00C-CE2C-E85CE90E5625">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>COLUMN_ANALYSES</sourceObjSchema>
+<sourceObjName>ANALYSIS_DATE</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:20 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT015</logicalDatatype>
+<dataTypePrecision>6</dataTypePrecision>
+<ownDataTypeParameters>,6,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="TEXT" id="A6A4ED42-B7C9-2110-853B-ED8464F899DB">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>COLUMN_ANALYSES</sourceObjSchema>
+<sourceObjName>RESULT</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:20 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>4000 BYTE</dataTypeSize>
+<ownDataTypeParameters>4000 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="COLUMN_ANALYSIS_SUMMARIES_ID" id="5E1EE84F-26CA-A521-590C-A8F1F07F7673">
+<createdBy>Simon</createdBy>
+<createdTime>2015-11-10 00:52:57 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="AA2E71D5-D366-CC3C-A465-FAB7F33B4399" referredColumn="C794FE15-EFC6-9F4B-7B08-AFBA48E44DB7"/>
+</associations>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="3A52DE60-655E-8A9E-2D65-957D2AAF6124" name="COLUMN_ANALYSIS_DETAIL_PK">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>CODESYS</sourceObjSchema>
+<sourceObjName>COLUMN_ANALYSES_PK</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:20 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="629D25B3-829F-2D29-EAD2-43A120EEED88"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="F5236F13-AD0A-AFBD-9EDC-0109EEA94067" name="COLUMN_ANALYSIS_FK">
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:21 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="52D9E096-BF29-CF0C-DE96-1B789FC79E68"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="092319D0-5EFA-4AF7-57B8-F9DE718DCBAB" name="COLUMN_ANALYSIS_SUMMARIES_FK">
+<createdBy>Simon</createdBy>
+<createdTime>2015-11-10 00:52:57 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="5E1EE84F-26CA-A521-590C-A8F1F07F7673"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

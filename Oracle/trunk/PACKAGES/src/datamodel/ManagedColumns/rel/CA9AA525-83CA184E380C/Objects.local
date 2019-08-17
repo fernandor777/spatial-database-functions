@@ -1,0 +1,18 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<oracle.dbtools.crest.model.design.relational.RelationalDesign>
+   <object objectType="SchemaObject" objectID="EDF17889-AB7C-8564-DECF-3D201E98A096" name="CODESYS" seqName="seg_0"/>
+   <object objectType="Table" objectID="E212214E-F8B1-CC76-D2D2-2C9DBD712BC4" name="COLUMN_ANALYSIS_DETAIL" seqName="seg_0"/>
+   <object objectType="Table" objectID="C3E03071-3A74-5636-280D-384A04B07D27" name="COLUMN_ANALYSIS_SUMMARIES" seqName="seg_0"/>
+   <object objectType="Table" objectID="66F7B0A9-BC59-E2EE-2437-A84BA3BB0CD4" name="FEATURE_ERRORS" seqName="seg_0"/>
+   <object objectType="Table" objectID="1854E784-0B13-8B0F-665D-91D613B796C3" name="FEATURE_ERROR_STATUS" seqName="seg_0"/>
+   <object objectType="Table" objectID="331D2CE6-7F05-3AF0-616C-DE9E0762539F" name="FEATURE_ERROR_SUMMARIES" seqName="seg_0"/>
+   <object objectType="Table" objectID="94888382-0247-CEEE-8C13-C0F16B2815FA" name="MANAGED_COLUMNS" seqName="seg_0"/>
+   <object objectType="Table" objectID="9A75689F-4DAE-E7BA-F55C-E473DD2099E9" name="SDO_GEOM_ERROR" seqName="seg_0"/>
+   <object objectType="FKIndexAssociation" objectID="0C22F769-A860-23FE-063F-1D922F4FFA43" name="COLUMN_ANALYSIS_FK" seqName="seg_0" containerID="E212214E-F8B1-CC76-D2D2-2C9DBD712BC4" refContainerID="94888382-0247-CEEE-8C13-C0F16B2815FA"/>
+   <object objectType="FKIndexAssociation" objectID="AA2E71D5-D366-CC3C-A465-FAB7F33B4399" name="COLUMN_ANALYSIS_SUMMARIES_FK" seqName="seg_0" containerID="E212214E-F8B1-CC76-D2D2-2C9DBD712BC4" refContainerID="C3E03071-3A74-5636-280D-384A04B07D27"/>
+   <object objectType="FKIndexAssociation" objectID="8351FADA-653C-C42E-A983-6C8B9AC9B5A1" name="FEATURE_ERRORS_CODE_AFTER_FK" seqName="seg_0" containerID="66F7B0A9-BC59-E2EE-2437-A84BA3BB0CD4" refContainerID="9A75689F-4DAE-E7BA-F55C-E473DD2099E9"/>
+   <object objectType="FKIndexAssociation" objectID="05F831C7-40AB-D3EC-F763-DAD236BC332C" name="FEATURE_ERRORS_CODE_BEFORE_FK" seqName="seg_0" containerID="66F7B0A9-BC59-E2EE-2437-A84BA3BB0CD4" refContainerID="9A75689F-4DAE-E7BA-F55C-E473DD2099E9"/>
+   <object objectType="FKIndexAssociation" objectID="DAC558D2-1506-16DD-EE5A-AE84974618BC" name="FEATURE_ERRORS_FK" seqName="seg_0" containerID="66F7B0A9-BC59-E2EE-2437-A84BA3BB0CD4" refContainerID="94888382-0247-CEEE-8C13-C0F16B2815FA"/>
+   <object objectType="FKIndexAssociation" objectID="34688766-F340-D586-EA86-86D0F99743E2" name="FEATURE_ERRORS_STATUS_FK" seqName="seg_0" containerID="66F7B0A9-BC59-E2EE-2437-A84BA3BB0CD4" refContainerID="1854E784-0B13-8B0F-665D-91D613B796C3"/>
+   <object objectType="FKIndexAssociation" objectID="8EEF999E-98D2-4C7E-62EF-157C8C2FF20E" name="FEATURE_ERROR_SUMMARIES_FK" seqName="seg_0" containerID="331D2CE6-7F05-3AF0-616C-DE9E0762539F" refContainerID="94888382-0247-CEEE-8C13-C0F16B2815FA"/>
+</oracle.dbtools.crest.model.design.relational.RelationalDesign>

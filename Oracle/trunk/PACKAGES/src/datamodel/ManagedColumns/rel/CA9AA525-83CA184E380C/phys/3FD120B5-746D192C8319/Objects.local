@@ -1,0 +1,27 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<oracle.dbtools.crest.model.design.storage.oracle.v12c.StorageDesignOraclev12c>
+   <object objectType="TSpace" objectID="529C170B-E733-D330-E8A3-A4A2CC65C1AD" name="USERS" seqName="seg_0"/>
+   <object objectType="User" objectID="CD237EE0-EC38-4CFB-299A-D68C1EE5DB10" name="CODESYS" seqName="seg_0"/>
+   <object objectType="User" objectID="MDSYS" name="MDSYS" seqName="seg_0"/>
+   <object objectType="User" objectID="PUBLIC" name="PUBLIC" seqName="seg_0"/>
+   <object objectType="SType" objectID="1122B6CF-50BE-99C7-5A96-79CED7BFFA16" name="T_ERROR" seqName="seg_0"/>
+   <object objectType="SType" objectID="47E390DE-0671-C4B1-8428-0F45CBEE18F8" name="SDO_GEOMETRY" seqName="seg_0"/>
+   <object objectType="SType" objectID="F72C39E0-D1CA-8821-2AD7-A1E95A37D3D1" name="XMLTYPE" seqName="seg_0"/>
+   <object objectType="Package" objectID="02F07A81-F8FB-FA75-4F5B-9A73646E54C7" name="SDO_ERROR" seqName="seg_0"/>
+   <object objectType="Package" objectID="E0E6AA71-A2D7-6B23-4C5F-C0BCD7A9E30F" name="TOOLS" seqName="seg_0"/>
+   <object objectType="Table" objectID="331D2CE6-7F05-3AF0-616C-DE9E0762539F" name="FEATURE_ERROR_SUMMARIES" seqName="seg_0"/>
+   <object objectType="Table" objectID="66F7B0A9-BC59-E2EE-2437-A84BA3BB0CD4" name="FEATURE_ERRORS" seqName="seg_0"/>
+   <object objectType="Table" objectID="94888382-0247-CEEE-8C13-C0F16B2815FA" name="MANAGED_COLUMNS" seqName="seg_0"/>
+   <object objectType="Table" objectID="9A75689F-4DAE-E7BA-F55C-E473DD2099E9" name="SDO_GEOM_ERROR" seqName="seg_0"/>
+   <object objectType="Table" objectID="C3E03071-3A74-5636-280D-384A04B07D27" name="COLUMN_ANALYSIS_SUMMARIES" seqName="seg_0"/>
+   <object objectType="Table" objectID="E212214E-F8B1-CC76-D2D2-2C9DBD712BC4" name="COLUMN_ANALYSES" seqName="seg_0"/>
+   <object objectType="Segment" objectID="015A980C-4ED1-F964-49D2-EDF131DBA674" name="Storage1" seqName="seg_0"/>
+   <object objectType="Segment" objectID="448F9515-3768-DBDE-5DAF-1B79A4D487D3" name="Storage13" seqName="seg_0"/>
+   <object objectType="Segment" objectID="7245109B-603D-9598-E8BE-2909E8D6A9B6" name="Storage6" seqName="seg_0"/>
+   <object objectType="Segment" objectID="E2D9A7B9-EAF7-758C-B8EE-E1E00614D322" name="Storage7" seqName="seg_0"/>
+   <object objectType="Sequence" objectID="76FCC3AD-95B3-33BB-DF93-67FA71AD23C0" name="COLUMN_ANALYSES_ID" seqName="seg_0"/>
+   <object objectType="Sequence" objectID="A6734A1E-EE56-6CAA-916F-CB763339E02A" name="COLUMN_ANALYSIS_SUMMARIES_ID" seqName="seg_0"/>
+   <object objectType="Sequence" objectID="1D28BCEC-CB8C-105A-979E-120B3722E39A" name="FEATURE_ERRORS_ID" seqName="seg_0"/>
+   <object objectType="Sequence" objectID="A53E736A-9F18-5A92-0F02-701FA241AEC8" name="FEATURE_ERRORS_SUMMARIES_ID" seqName="seg_0"/>
+   <object objectType="Sequence" objectID="27BE2C36-1312-F0E2-1529-A5A81B85DD34" name="MANAGED_COLUMNS_ID" seqName="seg_0"/>
+</oracle.dbtools.crest.model.design.storage.oracle.v12c.StorageDesignOraclev12c>

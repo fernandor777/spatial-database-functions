@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
+<link rel="stylesheet" href="./robodoc.css" type="text/css" />
+<title>./src/Package_ST_LRS.sql</title>
+<!-- Source: ./src/Package_ST_LRS.sql -->
+<!-- Generated with ROBODoc Version 4.99.36 (Mar 13 2008) -->
+</head>
+<body>
+<div id="logo">
+<a name="robo_top_of_doc">SPDBA Object Types and Methods Documentation</a>
+</div> <!-- logo -->
+<div id="navigation">
+<a class="menuitem" href="./toc_index.html#top">Table of Contents</a>
+<a class="menuitem" href="./robo_sourcefiles.html#top">Sourcefiles</a>
+<a class="menuitem" href="./masterindex.html#top">Index</a>
+<a class="menuitem" href="./robo_functions.html#top">Functions</a>
+<a class="menuitem" href="./robo_modules.html#top">Modules</a>
+<a class="menuitem" href="./robo_methods.html#top">Methods</a>
+<a class="menuitem" href="./robo_strutures.html#top">Structures</a>
+<a class="menuitem" href="./robo_types.html#top">Types</a>
+<a class="menuitem" href="./robo_variables.html#top">Variables</a>
+</div> <!-- navigation -->
+<div id="content">
+<h3>TABLE OF CONTENTS</h3>
+<ul>
+<li>1. <a href="#robo2">PACKAGE/ST_LRS</a></li>
+</ul>
+<hr />
+<a name="PACKAGE2fST5fLRS"></a>
+<a name="robo2"></a><h2>PACKAGE/ST_LRS [ Modules ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_modules.html#robo_top_of_doc">Modules</a> ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>ST_LRS</strong> - A package that publishes an SDO_LRS view of the <a href="./T_Geometry_sql.html#robo24">T_GEOMETRY</a> object's <strong>ST_LRS</strong>* functions.
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    A package that publishes an SDO_LRS view of the <a href="./T_Geometry_sql.html#robo24">T_GEOMETRY</a> object's <strong>ST_LRS</strong>* functions.
+    This is an example of what could be done to help Locator users use my LRS code and be in a position
+    to migrate with minimal effort to Oracle Spatial's Enterprise SDO_LRS code.
+    If this package is extended, please supply the changed package to me via simon@spatialdbadvisor.com
+</pre>
+<p class="item_name">TODO</p>
+<pre>    CONNECTED_GEOM_SEGMENTS
+    GET_NEXT_SHAPE_PT
+    GET_NEXT_SHAPE_PT_MEASURE
+    GET_PREV_SHAPE_PT
+    GET_PREV_SHAPE_PT_MEASURE
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - Jan 2017 - Original coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<p class="item_name">SOURCE</p>
+<pre class="source">   FUNCTION FIND_LRS_DIM_POS<span class="sign">(</span>lrs_geometry IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
+                             tolerance    in number default 0<span class="sign">.</span>005<span class="sign">)</span>
+     RETURN INTEGER DETERMINISTIC<span class="sign">;</span>
+
+   FUNCTION FIND_LRS_DIM_POS<span class="sign">(</span>table_name  IN VARCHAR2<span class="sign">,</span>
+                             column_name IN VARCHAR2<span class="sign">)</span>
+     RETURN INTEGER DETERMINISTIC<span class="sign">;</span>
+
+   FUNCTION GEOM_SEGMENT_END_MEASURE<span class="sign">(</span>lrs_segment IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">)</span>
+     RETURN NUMBER DETERMINISTIC<span class="sign">;</span>
+
+   FUNCTION GEOM_SEGMENT_START_MEASURE<span class="sign">(</span>lrs_segment IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">)</span>
+     RETURN NUMBER DETERMINISTIC<span class="sign">;</span>
+
+  <span class="comment">/**
+   * Description
+   *  Returns the measure range of a geometric segment, that is, the difference between the start measure and end measure.
+   **/</span>
+   FUNCTION MEASURE_RANGE<span class="sign">(</span>lrs_segment IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
+                          dim_array   IN mdsys<span class="sign">.</span>sdo_dim_ARRAY DEFAULT NULL<span class="sign">)</span>
+     RETURN NUMBER DETERMINISTIC<span class="sign">;</span>
+
+   FUNCTION GEOM_SEGMENT_START_PT<span class="sign">(</span>geom_segment IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">)</span>
+     RETURN mdsys<span class="sign">.</span>sdo_geometry Deterministic<span class="sign">;</span>
+
+   FUNCTION GEOM_SEGMENT_END_PT<span class="sign">(</span>geom_segment IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">)</span>
+     RETURN mdsys<span class="sign">.</span>sdo_geometry Deterministic<span class="sign">;</span>
+
+   Function IS_SHAPE_PT_MEASURE<span class="sign">(</span>geom_segment in mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
+                                measure      in number<span class="sign">)</span>
+     RETURN VARCHAR2 Deterministic<span class="sign">;</span>
+
+   Function SET_PT_MEASURE<span class="sign">(</span>lrs_segment in mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
+                           point       IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
+                           measure     IN NUMBER<span class="sign">,</span>
+                           tolerance   in number default 0<span class="sign">.</span>005<span class="sign">)</span>
+     RETURN mdsys<span class="sign">.</span>sdo_geometry Deterministic<span class="sign">;</span>
+
+   FUNCTION GET_MEASURE<span class="sign">(</span>point IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">)</span>
+    RETURN NUMBER DETERMINISTIC<span class="sign">;</span>
+
+   FUNCTION IS_MEASURE_INCREASING <span class="sign">(</span>lrs_segment IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">)</span>
+    RETURN VARCHAR2 DETERMINISTIC<span class="sign">;</span>
+
+   FUNCTION IS_MEASURE_DECREASING <span class="sign">(</span>lrs_segment IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">)</span>
+    RETURN VARCHAR2 DETERMINISTIC<span class="sign">;</span>
+
+   <span class="comment">/**
+    * The start and end measures of geom_segment must be defined (cannot be null),
+    * and any measures assigned must be in an ascending or descending order along the segment direction.
+   **/</span>
+   FUNCTION IS_GEOM_SEGMENT_DEFINED<span class="sign">(</span>geom_segment IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
+                                    dim_array    IN mdsys<span class="sign">.</span>sdo_dim_ARRAY DEFAULT NULL<span class="sign">)</span>
+     RETURN VARCHAR2 DETERMINISTIC<span class="sign">;</span>
+
+   FUNCTION MEASURE_TO_PERCENTAGE<span class="sign">(</span>lrs_segment IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
+                                  measure     IN NUMBER<span class="sign">)</span>
+    RETURN NUMBER DETERMINISTIC<span class="sign">;</span>
+
+   FUNCTION PERCENTAGE_TO_MEASURE<span class="sign">(</span>lrs_segment IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
+                                  percentage  IN NUMBER<span class="sign">)</span>
+    RETURN NUMBER DETERMINISTIC<span class="sign">;</span>
+
+   Function GEOM_SEGMENT_LENGTH<span class="sign">(</span>geom_segment in mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
+                                unit         in varchar2 default null<span class="sign">)</span>
+     RETURN NUMBER Deterministic<span class="sign">;</span>
+
+   FUNCTION SPLIT_GEOM_SEGMENT<span class="sign">(</span>geom_segment  IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
+                               split_measure IN NUMBER<span class="sign">,</span>
+                               tolerance     IN NUMBER DEFAULT 0<span class="sign">.</span>005<span class="sign">)</span>
+     RETURN mdsys<span class="sign">.</span>sdo_geometry_array pipelined<span class="sign">;</span>
+
+   PROCEDURE SPLIT_GEOM_SEGMENT<span class="sign">(</span>geom_segment   IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
+                                split_measure  IN NUMBER<span class="sign">,</span>
+                                segment_1      IN OUT NOCOPY mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
+                                segment_2      IN OUT NOCOPY mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
+                                tolerance      IN NUMBER DEFAULT 0<span class="sign">.</span>005<span class="sign">)</span><span class="sign">;</span>
+
+   FUNCTION CONCATENATE_GEOM_SEGMENTS<span class="sign">(</span>geom_segment_1 IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
+                                      geom_segment_2 IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
+                                      tolerance      IN NUMBER DEFAULT 0<span class="sign">.</span>005<span class="sign">,</span>
+                                      unit           IN varchar2 default null<span class="sign">)</span>
+     RETURN mdsys<span class="sign">.</span>sdo_geometry DETERMINISTIC<span class="sign">;</span>
+
+   FUNCTION CLIP_GEOM_SEGMENT<span class="sign">(</span>GEOM_SEGMENT  IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
+                              START_MEASURE IN NUMBER<span class="sign">,</span>
+                              END_MEASURE   IN NUMBER<span class="sign">,</span>
+                              TOLERANCE     IN NUMBER   DEFAULT 0<span class="sign">.</span>005<span class="sign">,</span>
+                              UNIT          IN VARCHAR2 DEFAULT NULL<span class="sign">)</span>
+     RETURN mdsys<span class="sign">.</span>sdo_geometry DETERMINISTIC<span class="sign">;</span>
+
+   FUNCTION LOCATE_PT<span class="sign">(</span>GEOM_SEGMENT IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
+                      MEASURE      IN NUMBER<span class="sign">,</span>
+                      OFFSET       IN NUMBER<span class="sign">,</span>
+                      TOLERANCE    IN NUMBER   DEFAULT 0<span class="sign">.</span>005<span class="sign">,</span>
+                      UNIT         IN VARCHAR2 DEFAULT NULL<span class="sign">)</span>
+     RETURN mdsys<span class="sign">.</span>sdo_geometry DETERMINISTIC<span class="sign">;</span>
+
+   FUNCTION FIND_OFFSET <span class="sign">(</span>GEOM_SEGMENT IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
+                         POINT        IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
+                         TOLERANCE    IN NUMBER   DEFAULT 0<span class="sign">.</span>005<span class="sign">,</span>
+                         UNIT         IN VARCHAR2 DEFAULT NULL<span class="sign">)</span>
+    RETURN NUMBER DETERMINISTIC<span class="sign">;</span>
+
+   FUNCTION FIND_MEASURE<span class="sign">(</span>lrs_segment IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
+                         POINT       IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
+                         TOLERANCE   IN NUMBER   DEFAULT 0<span class="sign">.</span>005<span class="sign">,</span>
+                         UNIT        IN VARCHAR2 DEFAULT NULL<span class="sign">)</span>
+    RETURN NUMBER DETERMINISTIC<span class="sign">;</span>
+
+   FUNCTION PROJECT_PT <span class="sign">(</span>GEOM_SEGMENT IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
+                        POINT        IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
+                        TOLERANCE    IN NUMBER DEFAULT 0<span class="sign">.</span>005<span class="sign">,</span>
+                        UNIT         IN VARCHAR2 DEFAULT NULL<span class="sign">)</span>
+    RETURN mdsys<span class="sign">.</span>sdo_geometry DETERMINISTIC<span class="sign">;</span>
+
+   FUNCTION LRS_INTERSECTION<span class="sign">(</span>GEOM_1    IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
+                             GEOM_2    IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
+                             TOLERANCE IN NUMBER DEFAULT 0<span class="sign">.</span>005<span class="sign">)</span>
+    RETURN mdsys<span class="sign">.</span>sdo_geometry DETERMINISTIC<span class="sign">;</span>
+
+   FUNCTION REVERSE_MEASURE <span class="sign">(</span>lrs_segment IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">)</span>
+     RETURN mdsys<span class="sign">.</span>sdo_geometry DETERMINISTIC<span class="sign">;</span>
+
+   FUNCTION REVERSE_GEOMETRY <span class="sign">(</span>geom_segment IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">)</span>
+     RETURN mdsys<span class="sign">.</span>sdo_geometry DETERMINISTIC<span class="sign">;</span>
+
+   <span class="comment">/* Populates the measures of all shape points based on the start and end measures of a geometric segment, overriding any previously assigned measures between the start point and end point.*/</span>
+   Function REDEFINE_GEOM_SEGMENT<span class="sign">(</span>geom_segment  IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
+                                  start_measure IN NUMBER<span class="sign">,</span>
+                                  end_measure   IN NUMBER<span class="sign">)</span>
+     RETURN mdsys<span class="sign">.</span>sdo_geometry DETERMINISTIC<span class="sign">;</span>
+
+   Procedure REDEFINE_GEOM_SEGMENT<span class="sign">(</span>geom_segment  IN OUT NOCOPY mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
+                                   start_measure IN NUMBER<span class="sign">,</span>
+                                   end_measure   IN NUMBER<span class="sign">)</span><span class="sign">;</span>
+
+   PROCEDURE RESET_MEASURE<span class="sign">(</span>lrs_segment in OUT NOCOPY mdsys<span class="sign">.</span>sdo_geometry<span class="sign">)</span><span class="sign">;</span>
+
+   FUNCTION RESET_MEASURE<span class="sign">(</span>lrs_segment IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">)</span>
+     RETURN mdsys<span class="sign">.</span>sdo_geometry DETERMINISTIC<span class="sign">;</span>
+
+   FUNCTION TRANSLATE_MEASURE<span class="sign">(</span>geom_segment IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
+                              translate_m  IN NUMBER<span class="sign">)</span>
+     RETURN mdsys<span class="sign">.</span>sdo_geometry DETERMINISTIC<span class="sign">;</span>
+
+   FUNCTION CONVERT_TO_STD_GEOM<span class="sign">(</span>lrs_segment IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">)</span>
+     RETURN mdsys<span class="sign">.</span>sdo_geometry DETERMINISTIC<span class="sign">;</span>
+
+   FUNCTION CONVERT_TO_LRS_GEOM<span class="sign">(</span>standard_geom IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
+                                start_measure IN NUMBER DEFAULT NULL<span class="sign">,</span>
+                                end_measure   IN NUMBER DEFAULT NULL<span class="sign">)</span>
+     RETURN mdsys<span class="sign">.</span>sdo_geometry DETERMINISTIC<span class="sign">;</span>
+
+   FUNCTION SCALE_GEOM_SEGMENT<span class="sign">(</span>lrs_segment   IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
+                               start_measure IN NUMBER<span class="sign">,</span>
+                               end_measure   IN NUMBER<span class="sign">,</span>
+                               shift_measure IN NUMBER<span class="sign">,</span>
+                               tolerance     IN NUMBER DEFAULT 0<span class="sign">.</span>005 <span class="sign">)</span>
+     RETURN mdsys<span class="sign">.</span>sdo_geometry DETERMINISTIC<span class="sign">;</span>
+
+   FUNCTION DYNAMIC_SEGMENT<span class="sign">(</span>GEOM_SEGMENT  IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
+                            START_MEASURE IN NUMBER<span class="sign">,</span>
+                            END_MEASURE   IN NUMBER<span class="sign">,</span>
+                            TOLERANCE     IN NUMBER   DEFAULT 0<span class="sign">.</span>005<span class="sign">,</span>
+                            UNIT          IN VARCHAR2 DEFAULT NULL<span class="sign">)</span>
+     RETURN mdsys<span class="sign">.</span>sdo_geometry DETERMINISTIC<span class="sign">;</span>
+
+   Function OFFSET_GEOM_SEGMENT<span class="sign">(</span>geom_segment  IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
+                                start_measure IN NUMBER<span class="sign">,</span>
+                                end_measure   IN NUMBER<span class="sign">,</span>
+                                offset        IN NUMBER DEFAULT 0<span class="sign">,</span>
+                                tolerance     IN NUMBER DEFAULT 0<span class="sign">.</span>005<span class="sign">,</span>
+                                unit          IN VARCHAR2 default null<span class="sign">)</span>
+     RETURN mdsys<span class="sign">.</span>sdo_geometry Deterministic<span class="sign">;</span>
+
+   Function VALID_GEOM_SEGMENT<span class="sign">(</span>geom_segment IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
+                               dim_array    IN mdsys<span class="sign">.</span>sdo_dim_ARRAY default null<span class="sign">)</span>
+     RETURN VARCHAR2 Deterministic<span class="sign">;</span>
+
+   Function VALID_LRS_PT<span class="sign">(</span>point     IN mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
+                         dim_array IN mdsys<span class="sign">.</span>sdo_dim_ARRAY DEFAULT NULL<span class="sign">)</span>
+     RETURN VARCHAR2 Deterministic<span class="sign">;</span>
+
+   Function VALID_MEASURE<span class="sign">(</span>geom_segment in mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
+                          measure      in number<span class="sign">)</span>
+     RETURN VARCHAR2 Deterministic<span class="sign">;</span>
+
+   Function VALIDATE_LRS_GEOMETRY<span class="sign">(</span>geom_segment in mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
+                                  dim_array    in mdsys<span class="sign">.</span>sdo_dim_ARRAY default null<span class="sign">)</span>
+     RETURN VARCHAR2 Deterministic<span class="sign">;</span>
+
+   Function ROUND_COORDINATES<span class="sign">(</span>geom_segment   in mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
+                              p_dec_places_x in integer default null<span class="sign">,</span>
+                              p_dec_places_y in integer default null<span class="sign">,</span>
+                              p_dec_places_z in integer default null<span class="sign">,</span>
+                              p_dec_places_m in integer default null<span class="sign">)</span>
+     RETURN mdsys<span class="sign">.</span>sdo_geometry Deterministic<span class="sign">;</span>
+</pre>
+
+</div> <!-- content -->
+<div id="footer">
+<p>Generated from ./src/Package_ST_LRS.sql with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.36 on Sat Aug 17 2019 13:43:23
+</p>
+</div> <!-- footer -->
+</body>
+</html>

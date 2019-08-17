@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
+<link rel="stylesheet" href="./robodoc.css" type="text/css" />
+<title>./src/T_Grid.sql</title>
+<!-- Source: ./src/T_Grid.sql -->
+<!-- Generated with ROBODoc Version 4.99.36 (Mar 13 2008) -->
+</head>
+<body>
+<div id="logo">
+<a name="robo_top_of_doc">SPDBA Object Types and Methods Documentation</a>
+</div> <!-- logo -->
+<div id="navigation">
+<a class="menuitem" href="./toc_index.html#top">Table of Contents</a>
+<a class="menuitem" href="./robo_sourcefiles.html#top">Sourcefiles</a>
+<a class="menuitem" href="./masterindex.html#top">Index</a>
+<a class="menuitem" href="./robo_functions.html#top">Functions</a>
+<a class="menuitem" href="./robo_modules.html#top">Modules</a>
+<a class="menuitem" href="./robo_methods.html#top">Methods</a>
+<a class="menuitem" href="./robo_strutures.html#top">Structures</a>
+<a class="menuitem" href="./robo_types.html#top">Types</a>
+<a class="menuitem" href="./robo_variables.html#top">Variables</a>
+</div> <!-- navigation -->
+<div id="content">
+<h3>TABLE OF CONTENTS</h3>
+<ul>
+<li>1. <a href="#robo17">OBJECT TYPE ARRAY/T_GRIDS</a></li>
+<li>2. <a href="#robo26">OBJECT TYPE/T_GRID</a></li>
+<ul>
+<li>2.1. <a href="#robo217">T_GRID/ATTRIBUTES(T_GRID)</a></li>
+</ul>
+</ul>
+<hr />
+<a name="OBJECT20TYPE20ARRAY2fT5fGRIDS"></a>
+<a name="robo17"></a><h2>OBJECT TYPE ARRAY/T_GRIDS [ Structures ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_strutures.html#robo_top_of_doc">Structures</a> ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>T_GRIDS</strong> -- An array (collection/table) of T_GRIDs.
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    An array of <a href="#robo26">T_GRID</a> objects that represents an array of optimized rectangles 
+    representing a grid, matrix or "raster".
+    Used mainly by PIPELINED <a href="./T_Geometry_sql.html#robo24">T_GEOMETRY</a> methods.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - Jan 2005 - Original coding.
+    Simon Greener - Jan 2013 - Port from GEOM Package
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<p class="item_name">SOURCE</p>
+<pre class="source">CREATE OR REPLACE TYPE <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span>T_Grids 
+           IS TABLE OF <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span>T_Grid<span class="sign">;</span>
+</pre>
+
+<hr />
+<a name="OBJECT20TYPE2fT5fGRID"></a>
+<a name="robo26"></a><h2>OBJECT TYPE/T_GRID [ Types ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_types.html#robo_top_of_doc">Types</a> ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>T_GRID</strong> -- Object type representing a single cell in a matrix of non-overlapping (no gaps) cells.
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    An object type that represents a single cell within an array of 
+    optimized rectanges representing a grid or matrix of "raster" style objects.
+    Used mainly with <a href="#robo17">T_GRIDS</a> in PIPELINED <a href="./T_Geometry_sql.html#robo24">T_GEOMETRY</a> methods.
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    No methods are declared on this type.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - Jan 2005 - Original coding.
+    Simon Greener - Jan 2013 - Port from GEOM Package.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+
+<hr />
+<a name="T5fGRID2fATTRIBUTES28T5fGRID29"></a>
+<a name="robo217"></a><h2>T_GRID/ATTRIBUTES(T_GRID) [ Variables ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo26">T_GRID</a> ] [ <a href="./robo_variables.html#robo_top_of_doc">Variables</a> ]</p>
+<p class="item_name">ATTRIBUTES</p>
+<pre>    gCol -- Column Reference 
+    gRow -- Row Reference
+    geom -- SDO_GEOMETRY coded as Optimized Rectangle.
+</pre>
+<p class="item_name">SOURCE</p>
+<pre class="source">  gcol  number<span class="sign">,</span>
+  grow  number<span class="sign">,</span>
+  geom  mdsys<span class="sign">.</span>sdo_geometry
+</pre>
+
+</div> <!-- content -->
+<div id="footer">
+<p>Generated from ./src/T_Grid.sql with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.36 on Sat Aug 17 2019 13:43:23
+</p>
+</div> <!-- footer -->
+</body>
+</html>

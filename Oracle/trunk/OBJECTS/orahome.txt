@@ -1,0 +1,3 @@
+F:\oracle\product\12.1.0\dbhome_1
+booktest/b00kt35t@localhost:1522/GISDB12
+

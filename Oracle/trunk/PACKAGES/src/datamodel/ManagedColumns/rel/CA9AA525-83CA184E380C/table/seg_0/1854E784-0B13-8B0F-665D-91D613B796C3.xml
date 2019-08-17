@@ -1,0 +1,54 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="1854E784-0B13-8B0F-665D-91D613B796C3" schemaObject="EDF17889-AB7C-8564-DECF-3D201E98A096" name="FEATURE_ERROR_STATUS">
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-28 01:31:09 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<ordsAlias>table_7</ordsAlias>
+<abbreviation>FES</abbreviation>
+<afterCreate>insert into feature_error_status (error_status,error_name)&lt;br/&gt;values (&apos;E&apos;,&apos;Error even after attempted fix&apos;);&lt;br/&gt;insert into feature_error_status (error_status,error_name)&lt;br/&gt;values (&apos;N&apos;,&apos;Original sdo_geometry column value was NULL&apos;);&lt;br/&gt;insert into feature_error_status (error_status,error_name)&lt;br/&gt;values (&apos;F&apos;,&apos;Error Fixed&apos;);&lt;br/&gt;insert into feature_error_status (error_status,error_name)&lt;br/&gt;values (&apos;P&apos;,&apos;Feature Errors record is Pending ie awaiting processing after writing by trigger&apos;);&lt;br/&gt;COMMIT;&lt;br/&gt;</afterCreate>
+<shouldGeneratescript>true</shouldGeneratescript>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="ERROR_STATUS" id="B9EEB79A-A13D-08ED-B76C-4F217DE29C0C">
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-28 01:33:46 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<constraintName>Feature_Error_Status_CK</constraintName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT025</logicalDatatype>
+<dataTypeSize>1 CHAR</dataTypeSize>
+<checkConstraint>
+<implementationDef dbType="Oracle Database 11g" definition="error_status in (&apos;P&apos;,&apos;F&apos;,&apos;E&apos;,&apos;N&apos;)"/>
+</checkConstraint>
+<ownDataTypeParameters>1 CHAR,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="ERROR_NAME" id="F1D875DA-E9B0-DC8E-6CE6-FD15E2F6ECAE">
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-28 01:39:37 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>100</dataTypeSize>
+<ownDataTypeParameters>100,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="47B1DD22-98A2-2418-38BE-38F9D992EC58" name="FEATURE_ERROR_STATUS_PK">
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-28 01:33:46 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="B9EEB79A-A13D-08ED-B76C-4F217DE29C0C"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

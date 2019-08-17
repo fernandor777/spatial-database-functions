@@ -1,0 +1,495 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
+<link rel="stylesheet" href="./robodoc.css" type="text/css" />
+<title>./src/Package_TOOLS.sql</title>
+<!-- Source: ./src/Package_TOOLS.sql -->
+<!-- Generated with ROBODoc Version 4.99.36 (Mar 13 2008) -->
+</head>
+<body>
+<div id="logo">
+<a name="robo_top_of_doc">SPDBA Object Types and Methods Documentation</a>
+</div> <!-- logo -->
+<div id="navigation">
+<a class="menuitem" href="./toc_index.html#top">Table of Contents</a>
+<a class="menuitem" href="./robo_sourcefiles.html#top">Sourcefiles</a>
+<a class="menuitem" href="./masterindex.html#top">Index</a>
+<a class="menuitem" href="./robo_functions.html#top">Functions</a>
+<a class="menuitem" href="./robo_modules.html#top">Modules</a>
+<a class="menuitem" href="./robo_methods.html#top">Methods</a>
+<a class="menuitem" href="./robo_strutures.html#top">Structures</a>
+<a class="menuitem" href="./robo_types.html#top">Types</a>
+<a class="menuitem" href="./robo_variables.html#top">Variables</a>
+</div> <!-- navigation -->
+<div id="content">
+<h3>TABLE OF CONTENTS</h3>
+<ul>
+<li>1. <a href="#robo3">PACKAGE/TOOLS</a></li>
+<ul>
+<li>1.1. <a href="#robo315">TOOLS/Generate_Series</a></li>
+<li>1.2. <a href="#robo316">TOOLS/ST_DB_Version</a></li>
+<li>1.3. <a href="#robo317">TOOLS/ST_GetSridType</a></li>
+<li>1.4. <a href="#robo318">TOOLS/ST_isLocator</a></li>
+<li>1.5. <a href="#robo319">TOOLS/TokenAggregator</a></li>
+<li>1.6. <a href="#robo320">TOOLS/Tokenizer</a></li>
+</ul>
+<li>2. <a href="#robo18">OBJECT TYPE ARRAY/T_INTVALUES</a></li>
+<li>3. <a href="#robo20">OBJECT TYPE ARRAY/T_TOKENS</a></li>
+<li>4. <a href="#robo27">OBJECT TYPE/T_INTVALUE</a></li>
+<ul>
+<li>4.1. <a href="#robo218">T_INTVALUE/ATTRIBUTES(T_INTVALUE)</a></li>
+</ul>
+<li>5. <a href="#robo30">OBJECT TYPE/T_TOKEN</a></li>
+<ul>
+<li>5.1. <a href="#robo263">T_TOKEN/ATTRIBUTES(T_TOKEN)</a></li>
+</ul>
+</ul>
+<hr />
+<a name="PACKAGE2fTOOLS"></a>
+<a name="robo3"></a><h2>PACKAGE/TOOLS [ Modules ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_modules.html#robo_top_of_doc">Modules</a> ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>TOOLS</strong> - A collection of common functions used by other packages and object types.
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    A package that publishes a collection of common functions used by other packages and object types.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - Jan 2017 - Original coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+
+<hr />
+<a name="OBJECT20TYPE20ARRAY2fT5fINTVALUES"></a>
+<a name="robo18"></a><h2>OBJECT TYPE ARRAY/T_INTVALUES [ Structures ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_strutures.html#robo_top_of_doc">Structures</a> ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>T_INTVALUES</strong> -- Object type representing a collection (array) of <a href="#robo27">T_INTVALUE</a> objects.
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    An array of <a href="#robo27">T_INTVALUE</a> objects that represent an ordered set of tokens and separators extracted from a string by the <a href="#robo320">Tokenizer</a> function.
+    Used by PIPELINED <a href="#robo320">Tokenizer</a> function.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - Jan 2005 - Original coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2012-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<p class="item_name">SOURCE</p>
+<pre class="source">CREATE OR REPLACE TYPE <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><strong>T_INTVALUES</strong>
+           IS TABLE OF <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><a href="#robo27">T_INTVALUE</a><span class="sign">;</span>
+</pre>
+
+<hr />
+<a name="OBJECT20TYPE20ARRAY2fT5fTOKENS"></a>
+<a name="robo20"></a><h2>OBJECT TYPE ARRAY/T_TOKENS [ Structures ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_strutures.html#robo_top_of_doc">Structures</a> ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>T_TOKENS</strong> -- Object type representing a collection (array) of <a href="#robo30">T_TOKEN</a> objects.
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    An array of <a href="#robo30">T_TOKEN</a> objects that represent an ordered set of tokens and separators extracted from a string by the <a href="#robo320">Tokenizer</a> function.
+    Used by PIPELINED <a href="#robo320">Tokenizer</a> function.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - Jan 2005 - Original coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2012-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<p class="item_name">SOURCE</p>
+<pre class="source">CREATE OR REPLACE TYPE <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><strong>T_TOKENS</strong>
+           IS TABLE OF <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><a href="#robo30">T_TOKEN</a><span class="sign">;</span>
+</pre>
+
+<hr />
+<a name="OBJECT20TYPE2fT5fINTVALUE"></a>
+<a name="robo27"></a><h2>OBJECT TYPE/T_INTVALUE [ Types ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_types.html#robo_top_of_doc">Types</a> ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>T_INTVALUE</strong> -- Object type representing a single integer in a series of integers.
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    An object type that gives a name (IntValue) to a single integer within a series of integers generated by <a href="#robo3">TOOLS</a>.<a href="#robo315">Generate_Series</a>.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - Jan 2005 - Original coding.
+    Simon Greener - Jan 2013 - Port from GEOM Package.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2012-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+
+<hr />
+<a name="OBJECT20TYPE2fT5fTOKEN"></a>
+<a name="robo30"></a><h2>OBJECT TYPE/T_TOKEN [ Types ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_types.html#robo_top_of_doc">Types</a> ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>T_TOKEN</strong> -- Object type representing a single cell in a matrix of non-overlapping (no gaps) cells.
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    An object type that represents a single cell within an array of
+    optimized rectanges representing a grid or matrix of "raster" style objects.
+    Used mainly with T_TOKENs in PIPELINED <a href="./T_Geometry_sql.html#robo24">T_GEOMETRY</a> methods.
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    No methods are declared on this type.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - Jan 2005 - Original coding.
+    Simon Greener - Jan 2013 - Port from GEOM Package.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2012-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+
+<hr />
+<a name="T5fINTVALUE2fATTRIBUTES28T5fINTVALUE29"></a>
+<a name="robo218"></a><h2>T_INTVALUE/ATTRIBUTES(T_INTVALUE) [ Variables ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo27">T_INTVALUE</a> ] [ <a href="./robo_variables.html#robo_top_of_doc">Variables</a> ]</p>
+<p class="item_name">ATTRIBUTES</p>
+<pre>    IntValue -- Integer value returned by generate_series
+</pre>
+<p class="item_name">SOURCE</p>
+<pre class="source">  IntValue Integer
+</pre>
+
+<hr />
+<a name="T5fTOKEN2fATTRIBUTES28T5fTOKEN29"></a>
+<a name="robo263"></a><h2>T_TOKEN/ATTRIBUTES(T_TOKEN) [ Variables ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo30">T_TOKEN</a> ] [ <a href="./robo_variables.html#robo_top_of_doc">Variables</a> ]</p>
+<p class="item_name">ATTRIBUTES</p>
+<pre>    id        -- unique identifier associated with token: starts from 1 for first token extracted through to max for last.
+    token     -- The actual token.
+    separator -- The trailing separator that was immediately after the token in the string.
+</pre>
+<p class="item_name">SOURCE</p>
+<pre class="source">  id        integer<span class="sign">,</span>
+  token     varchar2<span class="sign">(</span>30000<span class="sign">)</span><span class="sign">,</span>
+  separator varchar2<span class="sign">(</span>30000<span class="sign">)</span>
+</pre>
+
+<hr />
+<a name="TOOLS2fGenerate5fSeries"></a>
+<a name="robo315"></a><h2>TOOLS/Generate_Series [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo3">TOOLS</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>Generate_Series</strong> -- Function that generates a series of numbers mimicking PostGIS's function with the same name
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function generate_series(p_start pls_integer,
+                             p_end   pls_integer,
+                             p_step  pls_integer
+             )
+      Return &amp;&amp;INSTALL_SCHEMA..T_IntValues Pipelined;
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    with data as (
+      select sdo_geometry('LINESTRING(0 0,10 0,10 5,10 10,5 10,5 5)',null) as line
+        from dual
+    )
+    select t.IntValue as point_id,
+           v.x,
+           v.y
+      from data a,
+           table(tools.generate_series(1,sdo_util.GetNumVertices(a.line),1)) t,
+           table(sdo_util.getvertices(a.line)) v
+     where v.id =t.intValue;
+
+      POINT_ID          X          Y
+    ---------- ---------- ----------
+             1          0          0
+             2         10          0
+             3         10          5
+             4         10         10
+             5          5         10
+             6          5          5
+
+     6 rows selected
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>   p_start (Integer) - Starting value
+   p_end   (Integer) - Ending value.
+   p_step  (Integer) - The step value of the increment between start and end
+ RETURN
+   Array of Integers (T_IntValues)
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>     Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>     Simon Greener - Jan 2008 - Original coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>     (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+
+<hr />
+<a name="TOOLS2fST5fDB5fVersion"></a>
+<a name="robo316"></a><h2>TOOLS/ST_DB_Version [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo3">TOOLS</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>ST_DB_Version</strong> -- Returns Database Version and sub version.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Static Function <strong>ST_DB_Version</strong>
+             Return Number Determinisitc
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    This function return database version which is useful when handling Oracle functions that only appear in certain versions
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    Database Version (NUMBER) - eg 11.2 Database(12.1)
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    select <a href="./T_Geometry_sql.html#robo24">T_GEOMETRY</a>.<strong>ST_DB_Version</strong>() as database_version
+      from DUAL;
+
+    DATABASE_VERSION
+    ----------------
+    11.2
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - May 2016 - Original coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2012-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+
+<hr />
+<a name="TOOLS2fST5fGetSridType"></a>
+<a name="robo317"></a><h2>TOOLS/ST_GetSridType [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo3">TOOLS</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>ST_GetSridType</strong> - Determines ref sys kind of provided p_srid
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function <strong>ST_GetSridType</strong>(p_srid IN Integer)
+      Return VarChar2 Deterministic;
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Given a null p_srid this function returns PLANAR.
+    The the p_srid is not null the function checks the Mdsys.Sdo_Coord_Ref_System table's coord_ref_sys_kind column, mapping its values as follows:
+      COMPOUND     ==&gt; PLANAR,
+      ENGINEERING  ==&gt; PLANAR,
+      GEOGENTRIC   ==&gt; GEOGRAPHIC,
+      GEOGRAPHIC2D ==&gt; GEOGRAPHIC,
+      GEOGRAPHIC3D ==&gt; GEOGRAPHIC,
+      PROJECTED    ==&gt; PLANAR,
+      VERTICAL     ==&gt; GEOGRAPHIC,
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    p_srid (integer) - Returns PLANAR or GEOGRAPHIC
+  NOTE
+    Used mainly in determinining type of arithmetic to be used when calculating distances etc
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    select distinct f.sridType
+      from (select Tools.<strong>ST_GetSridType</strong>(a.srid) as SridType
+              from cs_srs a
+             order by DBMS_RANDOM.VALUE
+           ) f
+     where rownum &lt; 100;
+
+    SRIDTYPE
+    ----------
+    PLANAR
+    GEOGRAPHIC
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>     Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>     Simon Greener - Jan 2011 - Original coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>     (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+
+<hr />
+<a name="TOOLS2fST5fisLocator"></a>
+<a name="robo318"></a><h2>TOOLS/ST_isLocator [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo3">TOOLS</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>ST_isLocator</strong> -- Makes best effort to osee if database is a locator databases.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function <strong>ST_isLocator</strong>
+      Return INTEGER Deterministic,
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    A method that attempts to determine if the host database is a Locator database or has Spatial objects.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    BOOLEAN (INTEGER) -- 1 Is Locator else 0 (Spatial)
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    select <a href="./T_Geometry_sql.html#robo24">T_GEOMETRY</a>.<strong>ST_isLocator</strong>() as isLocator
+      from dual;
+
+    ISLOCATOR
+    ---------
+    0
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - Jan 2016 - Original coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2012-2017 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+
+<hr />
+<a name="TOOLS2fTokenAggregator"></a>
+<a name="robo319"></a><h2>TOOLS/TokenAggregator [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo3">TOOLS</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>TokenAggregator</strong> - A string aggregator.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function <strong>TokenAggregator</strong>(p_tokenSet  IN &amp;&amp;INSTALL_SCHEMA..T_Tokens,
+                             p_delimiter IN VarChar2 DEFAULT ',')
+      Return VarChar2 Deterministic;
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Takes a set of strings an aggregates/appends them using supplied separator
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    p_tokenSet  (T_Tokens) - The strings to be aggregated.
+    p_separator (varchar2) - The character that is placed between each token string.
+  NOTE
+    Requires t_Tokens Object Type to exist.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    with data as (
+      select t.ID, T.TOKEN, T.sEPARATOR
+        from table(<a href="#robo3">TOOLS</a>.<a href="#robo320">Tokenizer</a>('LINESTRING(0 0,10 0,10 5,10 10,5 10,5 5)',',()')) t
+    )
+    select <a href="#robo3">TOOLS</a>.<strong>TokenAggregator</strong>(tokens,',') AS result
+      from (select CAST(COLLECT(codesys.T_Token(l.id,l.token,l.separator)) AS T_Tokens) as tokens
+              from data l
+          ) f;
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    ----------------------------------------
+    LINESTRING(0 0,10 0,10 5,10 10,5 10,5 5)
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>     Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>     Simon Greener - Jan 2011 - Original coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>     (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+
+<hr />
+<a name="TOOLS2fTokenizer"></a>
+<a name="robo320"></a><h2>TOOLS/Tokenizer [ Functions ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo3">TOOLS</a> ] [ <a href="./robo_functions.html#robo_top_of_doc">Functions</a> ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>Tokenizer</strong> - Splits any string into tokens and separators.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function <strong>Tokenizer</strong> (
+                  p_string     varchar2,
+               OR p_string     varchar2, 
+                  p_separators varchar2 default ' '
+             )
+      Return T_Tokens Pipelined
+
+     Where T_Tokens is array of T_Token:
+       id        integer,
+       token     varchar2(30000),
+       separator varchar2(30000)
+     )
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Supplied a string and a list of separators this function returns resultant tokens as a table collection.
+    Function returns both the token and the separator.
+    Returned table collection contains a unique identifier to ensure tokens and separators are always correctly ordered.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    p_string     (varchar 30000) - Any non-null string.
+    p_separators (varchar 30000) - List of separators eg '(),'
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    Table (Array) of <a href="#robo30">T_TOKEN</a>:
+      id        (integer)       - Unique identifier for each row starting with first token/separator found.
+      token     (varchar 30000) - Token between separators
+      separator (varchar 30000) - Separator between tokens.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    select t.id, t.token, t.separator
+      from table(<a href="#robo3">TOOLS</a>.<strong>Tokenizer</strong>('LINESTRING(0 0,10 0,10 5,10 10,5 10,5 5)',',()')) t
+
+    ID TOKEN      SEPARATOR
+    -- ---------- ---------
+     1 LINESTRING         (
+     2 0 0                ,
+     3 10 0               ,
+     4 10 5               ,
+     5 10 10              ,
+     6 5 10               ,
+     7 5 5                )
+
+     7 rows selected
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - Jan 2008 - Original coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+
+</div> <!-- content -->
+<div id="footer">
+<p>Generated from ./src/Package_TOOLS.sql with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.36 on Sat Aug 17 2019 13:43:23
+</p>
+</div> <!-- footer -->
+</body>
+</html>

@@ -1,0 +1,131 @@
+<?xml version = '1.0'?>
+
+<!-- $Header: /cvsroot/pldoc/sources/build/build.xml,v 1.10 2006/01/24 16:15:39 gpaulissen Exp $ -->
+
+<project name="pldoc" default="dist" basedir=".">
+
+  <description>
+    PLdoc build file
+  </description>
+
+  <!-- set global properties for this build -->
+  <target name="init">
+
+    <!-- read the ENVIRONMENT variables -->
+<!--    <property name="env" environment="env" value="env" />-->
+    <property environment="env"/>
+
+    <!-- check the JAVACC_HOME environment or -D argument -->
+    <fail message="Set JAVACC_HOME to the directory where Java CC is installed.">
+      <condition>
+        <and>
+	  <not>
+            <isset property="env.JAVACC_HOME"/>
+	  </not>
+	  <not>
+            <isset property="JAVACC_HOME"/>
+          </not>
+	</and>
+      </condition>
+    </fail>
+
+    <!-- use the command line value (ant -D) or the environment variable -->
+    <property name="JAVACC_HOME" value="${env.JAVACC_HOME}"/>
+    <fail unless="JAVACC_HOME"
+      message="Set JAVACC_HOME to the directory where javacc is installed."/>
+
+    <property name="JAVAC_BOOTCLASSPATH" value="" />
+
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <echo>Build timestamp: ${DSTAMP} ${TSTAMP}</echo>
+
+    <!-- directories -->
+    <property name="src" value="${basedir}/../src"/>
+    <property name="javacc_source" value="${basedir}/../src/javacc" />
+    <property name="javacc_classes_source" value="${basedir}/../src/java/net/sourceforge/pldoc/parser" />
+    <property name="java_source" value="${basedir}/../src/java" />
+    <property name="docs" value="${basedir}/../docs"/>
+    <property name="classes" value="${basedir}/classes"/>
+    <property name="jarfile" value="${basedir}/../pldoc.jar"/>
+
+    <!-- (Re)create directories -->
+    <delete dir="${classes}"/>
+    <mkdir dir="${classes}"/>
+    <mkdir dir="${javacc_classes_source}"/>
+
+  </target>
+
+  <target name="generate" depends="init" description="generate the parser source" >
+
+    <!-- Remove pre-generated java files, they might be too old but JavaCC does not recreate them  -->
+    <delete verbose="true">
+      <fileset dir="${javacc_classes_source}" includes="*.java" />
+    </delete>
+
+    <!-- Concatenate the grammar files (javacc requires single file as input) -->
+    <delete verbose="true">
+      <fileset dir="${javacc_source}" includes="PLSQL.jj" />
+    </delete>
+    <concat destfile="${javacc_source}/PLSQL.jj">
+      <fileset dir="${javacc_source}">
+        <include name="Parser.jj" />
+        <include name="Tokens.jj" />
+        <include name="Productions.jj" />
+        <include name="ProductionsDDL.jj" />
+      </fileset>
+    </concat>
+
+    <!-- Generate parser from the grammar file -->
+    <!-- Using <java> task instead of <javacc> because Ant 1.5.3 does not support JavaCC 3.0 -->
+    <java classname="javacc" dir="${javacc_classes_source}" fork="true" failonerror="true">
+      <classpath>
+        <pathelement path="${JAVACC_HOME}/bin/lib/javacc.jar"/>
+      </classpath>
+      <arg value="${javacc_source}/PLSQL.jj"/>
+    </java>
+  </target>
+
+  <target name="compile" depends="init" description="compile the source" >
+
+    <!-- Compile the generated java code as well as CommentParser -->
+    <!-- NB: fork is needed because of a bug in javac leaves jars locked -->
+    <javac destdir="${classes}" source="1.2" target="1.2" debug="on" fork="yes">
+      <classpath>
+        <pathelement path="../xalan/bin/xml-apis.jar"/>
+        <pathelement path="../xalan/bin/xalan.jar"/>
+        <pathelement location="${java_source}"/>
+      </classpath>
+      <bootclasspath path="${JAVAC_BOOTCLASSPATH}" />
+      <src path="${java_source}" />
+      <include name="**/*.java" />
+    </javac>
+
+  </target>
+
+  <target name="docs" depends="init" description="generate documentation" >
+
+    <java classname="jjdoc" fork="true" failonerror="true">
+      <classpath>
+        <pathelement path="${JAVACC_HOME}/bin/lib/javacc.jar"/>
+      </classpath>
+      <arg line="-OUTPUT_FILE:${docs}/plsql.html ${javacc_source}/PLSQL.jj"/>
+    </java>
+
+  </target>
+
+  <target name="dist" depends="generate,compile,docs" description="generate the distribution" >
+
+    <jar destfile="${jarfile}">
+      <manifest>
+        <attribute name="Main-Class" value="net.sourceforge.pldoc.PLDoc"/>
+      </manifest>
+      <fileset dir="${classes}" />
+      <fileset dir="${src}" includes="resources/*" />
+    </jar>
+    <delete dir="${classes}"/>
+
+  </target>
+
+</project>
+

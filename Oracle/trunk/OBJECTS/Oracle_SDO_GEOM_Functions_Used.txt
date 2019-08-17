@@ -1,0 +1,19 @@
+Free at 12C Only
+MDSYS.SDO_GEOM.relate             --> ST_Relate
+MDSYS.SDO_GEOM.sdo_difference     --> ST_Difference
+MDSYS.SDO_GEOM.sdo_intersection   --> ST_Intersection
+
+Free From 11g onwards
+MDSYS.SDO_GEOM.sdo_PointOnsurface
+MDSYS.SDO_GEOM.sdo_arc_densify
+MDSYS.SDO_GEOM.sdo_area
+MDSYS.SDO_GEOM.sdo_buffer
+MDSYS.SDO_GEOM.sdo_centroid
+MDSYS.SDO_GEOM.sdo_closest_points
+MDSYS.SDO_GEOM.sdo_distance
+MDSYS.SDO_GEOM.sdo_length
+MDSYS.SDO_GEOM.sdo_mbr
+MDSYS.SDO_GEOM.validate_geometry
+MDSYS.SDO_GEOM.validate_geometry_with_context
+MDSYS.SDO_UTIL.GetVertices
+

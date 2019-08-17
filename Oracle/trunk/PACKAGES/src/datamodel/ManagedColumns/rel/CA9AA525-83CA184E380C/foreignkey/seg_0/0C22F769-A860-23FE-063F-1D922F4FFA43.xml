@@ -1,0 +1,17 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<FKIndexAssociation class="oracle.dbtools.crest.model.design.relational.FKIndexAssociation" directorySegmentName="seg_0" id="0C22F769-A860-23FE-063F-1D922F4FFA43" containerWithKeyObject="E212214E-F8B1-CC76-D2D2-2C9DBD712BC4" localFKIndex="F5236F13-AD0A-AFBD-9EDC-0109EEA94067" name="COLUMN_ANALYSIS_FK">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>CODESYS</sourceObjSchema>
+<sourceObjName>COLUMN_ANALYSES_FK</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:21 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<deleteRule>CASCADE</deleteRule>
+<referredTableID>94888382-0247-CEEE-8C13-C0F16B2815FA</referredTableID>
+<keyObject>AA22E266-C90A-E44C-8B70-0AD44BA80E42</keyObject>
+<referredKeyID>AA22E266-C90A-E44C-8B70-0AD44BA80E42</referredKeyID>
+<mandatory>false</mandatory>
+<transferable>true</transferable>
+<rely>false</rely>
+<columnDependencyConstraintGenerateInDDL>true</columnDependencyConstraintGenerateInDDL>
+</FKIndexAssociation>

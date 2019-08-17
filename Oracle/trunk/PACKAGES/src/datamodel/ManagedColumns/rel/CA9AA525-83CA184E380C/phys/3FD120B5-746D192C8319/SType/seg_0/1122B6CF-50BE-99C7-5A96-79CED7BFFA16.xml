@@ -1,0 +1,37 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<StructuredTypeProxyOraclev10g class="oracle.dbtools.crest.model.design.storage.oracle.v10g.StructuredTypeProxyOraclev10g" name="T_ERROR" directorySegmentName="seg_0" id="1122B6CF-50BE-99C7-5A96-79CED7BFFA16">
+<sourceConnName>codesys12</sourceConnName>
+<sourceObjSchema>CODESYS</sourceObjSchema>
+<sourceObjName>T_ERROR</sourceObjName>
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:19 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<owner>CD237EE0-EC38-4CFB-299A-D68C1EE5DB10</owner>
+<attributes itemClass="oracle.dbtools.crest.model.design.storage.oracle.v9i.TypeElementProxyOraclev9i">
+<Attribute name="ELEMENT" id="138211FA-4C04-4327-9D08-BE655FA94CF2">
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:19 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+</Attribute>
+<Attribute name="ID" id="30AA55FC-271A-838F-4E02-6AC65CBF144A">
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:19 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+</Attribute>
+<Attribute name="ERROR" id="5A60882C-A8AE-D075-6547-06F6EB5D8A8C">
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:19 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+</Attribute>
+<Attribute name="RING" id="AA8FEF47-61E7-DD22-05E7-DB7042DB39BF">
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:19 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+</Attribute>
+<Attribute name="GEOM" id="E1824974-7586-ACEF-3D8B-C34F46D48EBD">
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:19 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+</Attribute>
+</attributes>
+</StructuredTypeProxyOraclev10g>

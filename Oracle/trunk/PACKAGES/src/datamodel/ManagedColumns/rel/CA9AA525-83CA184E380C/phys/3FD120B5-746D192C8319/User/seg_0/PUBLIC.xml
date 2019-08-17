@@ -1,0 +1,108 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<UserOraclev10g class="oracle.dbtools.crest.model.design.storage.oracle.v10g.UserOraclev10g" name="PUBLIC" directorySegmentName="seg_0" id="PUBLIC">
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:19 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<nullInstance>true</nullInstance>
+<storableNullInstance>true</storableNullInstance>
+<permissions>
+<Permission class="oracle.dbtools.crest.model.design.storage.oracle.v10g.PermissionsOraclev10g" name="Permissions1" id="B460DBE0-D67A-4DDE-AF1D-16A0603B66CE">
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:21 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<privileges>EXECUTE</privileges>
+<structuredTypeOracle>1122B6CF-50BE-99C7-5A96-79CED7BFFA16</structuredTypeOracle>
+</Permission>
+<Permission class="oracle.dbtools.crest.model.design.storage.oracle.v10g.PermissionsOraclev10g" name="Permissions10" id="2BA825DC-2BF6-B8B1-2E4C-52A5B3F1C8A0">
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:21 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<privileges>DELETE, INSERT, SELECT, UPDATE</privileges>
+<table>331D2CE6-7F05-3AF0-616C-DE9E0762539F</table>
+</Permission>
+<Permission class="oracle.dbtools.crest.model.design.storage.oracle.v10g.PermissionsOraclev10g" name="Permissions11" id="8C96F06E-0733-F826-80EC-AD94AA62D672">
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:21 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<privileges>DELETE, INSERT, SELECT, UPDATE</privileges>
+<table>94888382-0247-CEEE-8C13-C0F16B2815FA</table>
+</Permission>
+<Permission class="oracle.dbtools.crest.model.design.storage.oracle.v10g.PermissionsOraclev10g" name="Permissions12" id="3BABC734-CD4D-D60E-C2F6-D120B4D96E3B">
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:21 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<privileges>SELECT</privileges>
+<table>9A75689F-4DAE-E7BA-F55C-E473DD2099E9</table>
+</Permission>
+<Permission class="oracle.dbtools.crest.model.design.storage.oracle.v10g.PermissionsOraclev10g" name="Permissions13" id="87EF57F1-2EDD-078C-5F37-EC952FCA6C59">
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:21 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<package>02F07A81-F8FB-FA75-4F5B-9A73646E54C7</package>
+<privileges>EXECUTE</privileges>
+</Permission>
+<Permission class="oracle.dbtools.crest.model.design.storage.oracle.v10g.PermissionsOraclev10g" name="Permissions14" id="62A589F6-27CB-12FD-3350-05CA6946EB9D">
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:21 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<package>E0E6AA71-A2D7-6B23-4C5F-C0BCD7A9E30F</package>
+<privileges>EXECUTE</privileges>
+</Permission>
+<Permission class="oracle.dbtools.crest.model.design.storage.oracle.v10g.PermissionsOraclev10g" name="Permissions2" id="771E19EB-6602-2EDA-BDE3-BE9D08610CD9">
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:21 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<privileges>SELECT</privileges>
+<sequence>76FCC3AD-95B3-33BB-DF93-67FA71AD23C0</sequence>
+</Permission>
+<Permission class="oracle.dbtools.crest.model.design.storage.oracle.v10g.PermissionsOraclev10g" name="Permissions3" id="760D52D9-D9F1-5677-2D79-B88B587C6BCD">
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:21 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<privileges>SELECT</privileges>
+<sequence>A6734A1E-EE56-6CAA-916F-CB763339E02A</sequence>
+</Permission>
+<Permission class="oracle.dbtools.crest.model.design.storage.oracle.v10g.PermissionsOraclev10g" name="Permissions4" id="7A6F8619-3A4A-27CE-9EE2-163B63B22C94">
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:21 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<privileges>SELECT</privileges>
+<sequence>1D28BCEC-CB8C-105A-979E-120B3722E39A</sequence>
+</Permission>
+<Permission class="oracle.dbtools.crest.model.design.storage.oracle.v10g.PermissionsOraclev10g" name="Permissions5" id="2D9913D1-8686-3E66-7084-A6639207F93E">
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:21 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<privileges>SELECT</privileges>
+<sequence>A53E736A-9F18-5A92-0F02-701FA241AEC8</sequence>
+</Permission>
+<Permission class="oracle.dbtools.crest.model.design.storage.oracle.v10g.PermissionsOraclev10g" name="Permissions6" id="C95B92F8-7A3C-BFAB-A8B5-D585E07A4D75">
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:21 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<privileges>SELECT</privileges>
+<sequence>27BE2C36-1312-F0E2-1529-A5A81B85DD34</sequence>
+</Permission>
+<Permission class="oracle.dbtools.crest.model.design.storage.oracle.v10g.PermissionsOraclev10g" name="Permissions7" id="E73BA1E3-C7FC-BBA7-DC9E-2C5B00B1AAD7">
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:21 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<privileges>DELETE, INSERT, SELECT, UPDATE</privileges>
+<table>E212214E-F8B1-CC76-D2D2-2C9DBD712BC4</table>
+</Permission>
+<Permission class="oracle.dbtools.crest.model.design.storage.oracle.v10g.PermissionsOraclev10g" name="Permissions8" id="DD8B04B2-3E34-2951-668C-2D2EA41D965F">
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:21 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<privileges>DELETE, INSERT, SELECT, UPDATE</privileges>
+<table>C3E03071-3A74-5636-280D-384A04B07D27</table>
+</Permission>
+<Permission class="oracle.dbtools.crest.model.design.storage.oracle.v10g.PermissionsOraclev10g" name="Permissions9" id="34DC4A3B-F2F8-3BD3-6A96-2153678AF9DD">
+<createdBy>Simon</createdBy>
+<createdTime>2015-10-27 07:11:21 UTC</createdTime>
+<ownerDesignName>ManagedColumns</ownerDesignName>
+<privileges>DELETE, INSERT, SELECT, UPDATE</privileges>
+<table>66F7B0A9-BC59-E2EE-2437-A84BA3BB0CD4</table>
+</Permission>
+</permissions>
+</UserOraclev10g>

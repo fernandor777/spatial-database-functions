@@ -1,0 +1,1036 @@
+// Copyright (C) 2002 Albert Tumanov
+/**
+ * 2006-05-22 - Matthias Hendler - Added parsing of triggers and global functions/procedures
+ *                                 Refactored printing of custom tags into the XML/DOM.
+ *                                 Custom tags are language independent. Reserved tags are linked
+ *                                 to the documented language like RETURN, PARAM and THROWS.
+ */
+
+/**
+ * 2006-05-22 - Matthias Hendler - added globalBody()
+ */
+void input() throws org.xml.sax.SAXException : {}
+{
+	(attachLibrary())*
+	(
+    (LOOKAHEAD(6) packageSpec() | LOOKAHEAD(6) packageBody() | sqlPlusCommand())
+		("/")*
+	)*
+	<EOF>
+}
+
+void sqlPlusCommand() : {}
+{
+  // e.g. SHOW ERRORS, GRANT EXECUTE ON ... TO ...
+  (LOOKAHEAD(2) (<IDENTIFIER>["."<IDENTIFIER>] | <EXECUTE> | <SET> | <ON> | <TO> | <PUBLIC> | "(" | ")" | <STRING_LITERAL>) )+
+  [";"]
+}
+
+void attachLibrary() :
+{}
+{
+	<".attach"> <IDENTIFIER> <IDENTIFIER> <END> <IDENTIFIER>
+}
+
+/**
+ * All global definitions of triggers, functions and procedures are evaluated here.
+ * Every occurence goes under a new PACKAGE-Node in the XML document.
+ * This happens, cause a global "block" does not have a definied start and end token 
+ * like a package specification or a package body.
+ * Thats why every construct is handled like a new part of the global package.
+ * To overcome this problem, I could use an infinity lookahead - which should solve the problem 
+ * and slow down the whole parsing.
+ * Another idea would be to lookahead the next tokens and decide wether they belong to a package definition or not.
+ * Then I could decide to stay in this global parsing state. By now lookahead gives the parser a hint to
+ * choose the correct way on a given base. So we can't negate it easily.
+ * On the other hand I could also hold the global state in a global variable. 
+ * But this does not seems the correct way to solve the problem, I think.
+ *
+ * 2006-05-17 - Matthias Hendler - added
+ */
+void global() throws SAXException :
+{ 
+	Token name = null; 
+}
+{
+	{
+		if (m_out != null)
+		{
+			// now start printing the package
+			m_out.pushAttribute("NAME", "_GLOBAL");
+			m_out.pushAttribute("SCHEMA", "");
+			m_out.startElement("PACKAGE");
+		}
+	}
+
+	(LOOKAHEAD ([<DECLARE> declarativeSection(false)] <BEGIN>) globalBlock() | LOOKAHEAD (4) programUnit(true) | triggerUnit())
+
+	{
+		if (m_out != null)
+		{
+			m_out.endElement("PACKAGE");
+		}
+	}
+
+}
+
+
+
+/**
+ * Static blocks like package initializers.
+ * 
+ * 2006-05-17 - Matthias Hendler - added
+ */
+void globalBlock() throws SAXException :
+{ 
+	Token name = null; 
+}
+{
+	[
+		<DECLARE>
+		declarativeSection(false)
+	]
+	
+	<BEGIN> (statement())* (exceptionHandler())? <END> ";"
+}
+
+
+
+void packageSpec() throws SAXException :
+{ Token schema = null, name = null, tokenCreate = null, tokenPackage = null, tokenIsAs = null; }
+{
+	[tokenCreate=<CREATE> [<OR> <REPLACE>]]
+	tokenPackage=<PACKAGE> (LOOKAHEAD(2) schema=ID()".")? name=ID()
+	{
+		if (m_out != null)
+		{
+			String schemaString = "";
+			if (schema != null) {
+				schemaString = schema.toString();
+			}
+			// now start printing the package
+			m_out.pushAttribute("NAME", purifyIdentifier(name.toString()));
+			m_out.pushAttribute("SCHEMA", purifyIdentifier(schemaString.toString()));
+			m_out.startElement("PACKAGE");
+		}
+		// possibly, package comment is here
+		processPackageComment(tokenCreate);
+		processPackageComment(tokenPackage);
+	}
+
+	(tokenIsAs=<AUTHID> (<CURRENT_USER> | <DEFINER>))?
+	{
+		// possibly, package comment is here
+		processPackageComment(tokenIsAs);
+	}
+
+	(tokenIsAs=<IS> | tokenIsAs=<AS>)
+	{
+		// possibly, package comment is here
+		processPackageComment(tokenIsAs);
+	}
+
+	declarativeSection(true)
+
+	<END> [ID()] ";"
+	{ 
+		if (m_out != null) m_out.endElement("PACKAGE"); 
+	}
+}
+
+void packageBody() throws SAXException :
+{ Token name=null; }
+{
+	[<CREATE> [<OR> <REPLACE>]]
+
+	<PACKAGE> <BODY> (LOOKAHEAD(2) ID()".")? name=ID()
+	{
+		if (m_out != null)
+		{
+			m_out.pushAttribute("NAME", purifyIdentifier(name.toString()));
+			m_out.startElement("PACKAGE_BODY");
+		}
+	}
+
+	(<IS> | <AS>)
+
+		declarativeSection(false)
+
+	[ <BEGIN> (statement())* (exceptionHandler())? ] <END> [ID()] ";"
+	{
+		if (m_out != null) m_out.endElement("PACKAGE_BODY");
+	}
+}
+
+void declarativeSection(boolean isPackageLevel) throws SAXException :
+{}
+{
+	(
+		pragma(isPackageLevel) |
+		LOOKAHEAD(2)
+		exceptionDeclaration(isPackageLevel) |
+		LOOKAHEAD(2)
+		subtype_definition(isPackageLevel) |
+		LOOKAHEAD(4)
+		variableOrConstantDeclaration(isPackageLevel) |
+		LOOKAHEAD(2)
+		cursorSpec(isPackageLevel) |
+		cursorBody(isPackageLevel) |
+		collectionDeclaration(isPackageLevel) |
+		programUnit(isPackageLevel) 
+	)*
+}
+
+
+
+/**
+ * 2006-05-22 - Matthias Hendler - Printing of custom tag "@deprecated" removed.
+ *                                 Printing of any custom tag added. Now user can define his own
+ *								   custom tags which he can evaluate in the XSLT.
+ *                                 This methode also documents global functions/procedures.
+ */
+void programUnit(boolean isPackageLevel) throws SAXException :
+{
+	Token start, name;
+	Token globalStart = null;
+	Token startToken = null;
+	String memberName = null;
+	String type = null;
+	Hashtable tags;
+}
+{
+	(
+
+	[globalStart=<CREATE> [<OR> <REPLACE>]]
+
+	(start=<FUNCTION>|start=<PROCEDURE>) (LOOKAHEAD(2) ID()".")? name=ID()
+	{
+		// element generated only on the package level
+		if (m_out != null && isPackageLevel) {
+			memberName = start.toString().toUpperCase();
+			startToken = (globalStart == null) ? start : globalStart;
+			tags = processMemberComment(startToken, memberName, name.toString());
+		} else {
+			tags = new Hashtable();
+		}
+	}
+
+	( "(" parameterDeclaration(tags,isPackageLevel) ( "," parameterDeclaration(tags,isPackageLevel) )* ")" )*
+	[<RETURN> type=datatype()
+	{
+		// element generated only on the package level
+		if (m_out != null && isPackageLevel) 
+		{
+			// @return
+			String returnComment = null;
+			Collection tagValues = (Collection) tags.get("@return");
+			if (tagValues != null) 
+			{
+				for(Iterator it = tagValues.iterator(); it.hasNext(); )
+					returnComment = (String) it.next();
+			}
+			m_out.pushAttribute("TYPE", purifyIdentifier(type.toString()));
+			m_out.startElement("RETURN");
+			if (returnComment != null) 
+			{
+				m_out.startElement("COMMENT");
+				m_out.cdata(returnComment);
+				m_out.endElement("COMMENT");
+			}
+			m_out.endElement("RETURN");
+		}
+	}
+	]
+	{
+		// element generated only on the package level
+		if (m_out != null && isPackageLevel)
+		{
+			// @throws
+			String throwsComment = null;
+			String exceptionName = null;
+			Collection tagValues = (Collection) tags.get("@throws");
+			if (tagValues != null)
+			{
+				Iterator it = tagValues.iterator();
+				while(it.hasNext()) {
+					throwsComment = (String) it.next();
+					// extract when first word - it's the exception name
+					StringTokenizer st = new StringTokenizer(throwsComment);
+					if (st.hasMoreTokens())
+						 exceptionName = st.nextToken();
+					if (exceptionName != null)
+					{
+						m_out.pushAttribute("NAME", purifyIdentifier(exceptionName));
+						m_out.startElement("THROWS");
+						if (throwsComment != null)
+						{
+							m_out.startElement("COMMENT");
+							m_out.cdata(throwsComment.substring(exceptionName.length()));
+							m_out.endElement("COMMENT");
+						}
+						m_out.endElement("THROWS");
+					}
+				}
+			}
+		}
+		
+		// now print all custom tags
+		if (m_out != null && isPackageLevel)
+		{
+			printCustomTags(tags);
+		}
+	}
+
+	[<DETERMINISTIC>]
+	[<PARALLEL_ENABLE>]
+	[<PIPELINED>]
+
+	// body
+	[
+		(<IS> | <AS>)
+		(
+			LOOKAHEAD(2)
+			callSpecTail(isPackageLevel)
+			|
+			(
+				declarativeSection(false)
+				<BEGIN> (statement())* (exceptionHandler())? <END> [ID()]
+			)
+		)
+	]
+	";"
+	)
+	{
+		// element generated only on the package level
+		if (m_out != null && isPackageLevel)
+		{
+			m_out.endElement(purifyIdentifier(start.toString().toUpperCase()));
+		}
+	}
+}
+
+void parameterDeclaration(Hashtable tags,boolean isPackageLevel) throws SAXException :
+{
+	Token name;
+	String paramMode = "", paramType, paramDefault = "";
+}
+{
+	name=ID()
+	// the order of outer "|" is important !
+	( LOOKAHEAD(2) ( LOOKAHEAD(2) ( (<OUT>{paramMode = "OUT";}|(<IN> <OUT>{paramMode = "IN OUT";})) (LOOKAHEAD(2) <NOCOPY>)? ) | <IN> ) )?
+	paramType=datatype()
+	( (":="|<_DEFAULT>) paramDefault=Expression() )?
+	{
+		if (m_out != null && isPackageLevel)
+		{
+			String paramName = name.toString();
+			String paramComment = getParamComment(paramName, tags);
+			m_out.pushAttribute("NAME", purifyIdentifier(paramName));
+			m_out.pushAttribute("MODE", paramMode);
+			m_out.pushAttribute("TYPE", purifyIdentifier(paramType));
+			m_out.pushAttribute("DEFAULT", purifyIdentifier(paramDefault));
+			m_out.startElement("ARGUMENT");
+			if (paramComment != null) {
+				m_out.startElement("COMMENT");
+				m_out.cdata(paramComment);
+				m_out.endElement("COMMENT");
+			}
+			m_out.endElement("ARGUMENT");
+		}
+	}
+}
+
+
+
+/** 
+ * Trigger
+ * Triggers are always outside of a package.
+ *
+ *  2006-05-17 - Matthias Hendler - added 
+ */
+void triggerUnit() throws SAXException :
+{
+	Token start = null;
+	Token node;
+	Token name;
+	Token table;
+	Token dec_start;
+	Token dec_end;
+	StringBuffer declaration = new StringBuffer();
+	Hashtable tags = new Hashtable();
+}
+{
+	[start=<CREATE> [<OR> <REPLACE>]]
+	
+	(node=<TRIGGER>) (LOOKAHEAD(2) ID()".")? name=ID()
+
+	(dec_start=<BEFORE> |dec_start=<AFTER> | dec_start=<INSTEADOF>)
+	(<DELETE> | <INSERT> | <UPDATE>) 
+	
+	(<OR> (<DELETE> | <INSERT> | <UPDATE>) [LOOKAHEAD(6)<OF> <IDENTIFIER> ("," <IDENTIFIER>)*])*
+	
+	[<OF> <IDENTIFIER> ("," <IDENTIFIER>)*]
+	
+	dec_end=<ON> table=ID()
+	{
+		// Read the declaration part of the trigger
+		Token runner = dec_start;
+		while(runner != dec_end) {
+			declaration.append(runner.image);
+			declaration.append(" ");
+			runner = runner.next;
+		}
+
+		if (m_out != null) {
+			final String fullname = table.toString()+"."+name.toString();
+			tags = processMemberComment(start, node.toString().toUpperCase(), fullname);
+			
+			// print the parsed declaration
+			m_out.pushAttribute("TEXT", declaration.toString());
+			m_out.startElement("DECLARATION");
+			m_out.endElement("DECLARATION");
+	
+			// print custom tags		
+			printCustomTags(tags);
+
+		} else {
+			tags = new Hashtable();
+		}
+	}
+
+	[<REFERENCING> ((<OLD> | <NEW> | <PARENT>) <AS> ID())+]
+	
+	[<FOREACHROW>]
+	
+	[<WHEN> (PrimaryExpression())+ ]
+	
+	[
+	<DECLARE>
+		declarativeSection(false)
+	]
+	
+	<BEGIN> (statement())* (exceptionHandler())? <END> [ID()] ";"
+	
+	{
+		if (m_out != null)
+		{
+			m_out.endElement(purifyIdentifier(node.toString().toUpperCase()));
+		}
+	}
+	
+}
+
+
+
+String datatype() :
+{ String name; }
+{
+	(
+		// this should be first
+		LOOKAHEAD(2) name=scalar_datatype_name()
+		|
+		(
+			( [LOOKAHEAD(2) <REF>] name=qualifiedName() ["%" (<TYPE>{name += "%TYPE";}|<ROWTYPE>{name += "%ROWTYPE";})] )
+		)
+	)
+	{ return name; }
+}
+
+String scalar_datatype_name() :
+{ Token size=null, precision=null;
+	String name = null;
+}
+{
+	(
+	// scalar types - numeric:
+  	<BINARY_INTEGER> | <DEC> | <DECIMAL> | (<DOUBLE><PRECISION> {name = "DOUBLE PRECISION";}) |
+  	<FLOAT> | <INT> | <INTEGER> | <NATURAL> |
+	<NATURALN> | <NUMBER> | <NUMERIC> | <PLS_INTEGER> | <POSITIVE> | <POSITIVEN> | <REAL> | <SIGNTYPE> |
+	<SMALLINT> |
+
+	// scalar types - character:
+	<CHAR> | <CHARACTER> | LOOKAHEAD(2) <LONG> | LOOKAHEAD(2) (<LONG><RAW> {name = "LONG RAW";}) |
+	<NCHAR> | <NVARCHAR2> | <RAW> | <ROWID> |
+	<STRING> | <UROWID> | <VARCHAR> | <VARCHAR2> |
+
+	// scalar types - boolean:
+	<BOOLEAN> |
+
+	// composite types
+  	<TABLE> | <VARRAY> | (<VARYING><ARRAY> {name = "VARYING ARRAY";}) |
+	// <RECORD> - defined elsewhere
+
+	// LOB types
+	<BFILE> | <BLOB> | <CLOB> | <NCLOB> |
+
+	// reference types
+  	(<REF><CURSOR> {name = "REF CURSOR";}) |
+	//<REF> object_type - defined elsewhere
+
+	// scalar types - date/time:
+	<DATE> |
+    LOOKAHEAD(2) (<INTERVAL><DAY><TO><SECOND> {name = "INTERVAL DAY TO SECOND";}) |
+    (<INTERVAL><YEAR><TO><MONTH> {name = "INTERVAL YEAR TO MONTH";}) |
+    LOOKAHEAD(3) (<TIMESTAMP> <WITH> <LOCAL> <TIME> <ZONE> {name = "TIMESTAMP WITH LOCAL TIME ZONE";}) |
+    LOOKAHEAD(2) (<TIMESTAMP> <WITH> <TIME> <ZONE> {name = "TIMESTAMP WITH TIME ZONE";}) |
+    <TIMESTAMP>
+	)
+
+	{
+      if (name == null) {
+        name = token.toString();
+      }
+    }
+	(LOOKAHEAD(2) "(" size=numericLiteral() {name += "(" + size;}
+		["," precision=numericLiteral() {name += "," + precision;}]
+	")" {name += ")";})?
+	{ return name; }
+}
+
+void exceptionHandler() throws org.xml.sax.SAXException :
+{}
+{
+	<EXCEPTION>
+		( LOOKAHEAD(2) <WHEN> qualifiedName() (<OR> qualifiedName())* <THEN> (statement())+ )*
+		[ <WHEN> <OTHERS> <THEN> (statement())+ ]
+}
+
+void skip2NextTerminator(String initiator,String terminator) :
+{
+  Token t = getToken(1);
+  int count = (initiator == null) ? 0 : 1;
+  if(t.image.equals(initiator)) count++;
+  while (count > 0 || !t.image.equals(terminator))
+  {
+    t = getNextToken();
+    t = getToken(1);
+	  if(t.image.equals(initiator)) count++;
+	  if(t.image.equals(terminator)) count--;
+  }
+}
+{
+	{ return; }
+}
+
+/**
+ * 2006-05-24 - Matthias Hendler - added MERGE
+ */
+void sqlStatement(String initiator, String terminator) throws SAXException :
+{}
+{
+	(<SELECT>|<UPDATE>|<INSERT>|<DELETE>|<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<EXECUTE>|<SET><TRANSACTION>|<LOCK><TABLE>|<MERGE>)
+	skip2NextTerminator(initiator,terminator)
+}
+
+
+
+// ============================================================================
+// S T A T E M E N T S
+// ============================================================================
+
+/**
+ * 2006-05-24 - Matthias Hendler - added MERGE, EXECUTE choice and LOOKAHEAD at <LOOP>
+ */
+void statement() throws SAXException :
+{}
+{
+	LOOKAHEAD(["("] <SELECT>|<UPDATE>|<INSERT>|<DELETE>|<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<EXECUTE>|<SET><TRANSACTION>|<LOCK><TABLE>|<MERGE>) sqlStatement(null,";") [";"]
+	| <IF> Expression() <THEN> (statement())+
+		( <ELSIF> Expression() <THEN> (statement())+ )*
+		( <ELSE> (statement())+ )*
+		<END> <IF> ";"
+	| <FOR> ID() <IN> [<REVERSE>] Expression()[".."Expression()] <LOOP> (statement())+ <END> <LOOP> [<IDENTIFIER>] ";"
+	| <FORALL> ID() <IN> Expression() [".." Expression()] sqlStatement(null,";") ";"
+	| LOOKAHEAD(2) <LOOP> (statement())+ <END> <LOOP> [<IDENTIFIER>] ";"
+	| <WHILE> Expression() <LOOP> (statement())+ <END> <LOOP> [<IDENTIFIER>] ";"
+	//
+	| <GOTO> qualifiedName() ";"
+	| <RETURN> [Expression()] ";"
+	| <EXIT> [<WHEN> Expression() | <IDENTIFIER> [<WHEN> Expression()]] ";"
+	| <RAISE> [qualifiedName()] ";"
+	//
+	| <CLOSE> qualifiedName() ";"
+	| <OPEN> [Expression()]
+		//[LOOKAHEAD(functionCall()) functionCall() | qualifiedName()]
+		[<FOR> Expression() [<USING> Expression() ("," Expression())*]] ";"
+	| <FETCH> qualifiedName() [<BULK> <COLLECT>]
+	  //MMUE 04/08/2005 <INTO> (LOOKAHEAD(functionCall()) functionCall() | qualifiedName()) ("," (LOOKAHEAD(functionCall()) functionCall() | qualifiedName()))* ";"
+	  <INTO> Expression() ("," Expression())* [<LIMIT> Expression()] ";"
+	//
+	| "<<" <IDENTIFIER> ">>" statement()
+	| [<DECLARE> declarativeSection(false)] <BEGIN> (statement())* (exceptionHandler())? <END> [<IDENTIFIER>] ";"
+	//
+	| Expression() ";"
+	| <EXECUTE> <IMMEDIATE> <STRING_LITERAL> ";"
+}
+
+void subtype_definition(boolean isPackageLevel) throws SAXException :
+{
+	Token start, subtype_name=null, constraint=null, element_type=null;
+	Token collection = null, collection2 = null;
+	String baseType = null, returnType = null, indexBy = null;
+	Hashtable tags = null;
+	int lastField = 0;
+}
+{
+
+	(
+		( start=<SUBTYPE> subtype_name=<IDENTIFIER>
+			{
+				// element generated only on the package level
+				if (m_out != null && isPackageLevel) {
+					tags = processMemberComment(start, "TYPE", subtype_name.toString());
+				}
+			}
+			<IS> baseType=datatype() ("(" constraint=<IDENTIFIER> ")")? (<NOT> <NULL>)?
+			{
+				returnType = baseType;
+				if (constraint != null) {
+					returnType += "(" + constraint + ")";
+				}
+			}
+		) |
+		( start=<TYPE> subtype_name=<IDENTIFIER>
+			{
+				// element generated only on the package level
+				if (m_out != null && isPackageLevel) {
+					tags = processMemberComment(start, "TYPE", subtype_name.toString());
+				}
+			}
+			<IS>
+			(
+				(<RECORD> {baseType = "RECORD";} "(" fieldDeclaration(isPackageLevel, tags) ("," fieldDeclaration(isPackageLevel, tags))* ")" )
+				{
+					returnType = "RECORD";
+					// end for
+				}
+				|
+				((collection=<TABLE> | collection=<VARRAY> | collection=<VARYING> collection2=<ARRAY>)["(" constraint=numericLiteral() ")"]
+				<OF> baseType=datatype() (<NOT> <NULL>)? (<INDEX> <BY> indexBy=datatype())?)
+				{
+					returnType = collection.toString();
+					if (collection2 != null) {
+						returnType += " " + collection2;
+					}
+					if (constraint != null) {
+						returnType += "(" + constraint + ")";
+					}
+					returnType += " OF " + baseType + " INDEX BY " + indexBy;
+				}
+				|
+				<REF> <CURSOR> [<RETURN> baseType=datatype()]
+				{
+					returnType = "REF CURSOR";
+					if (baseType != null) {
+						returnType += " RETURN " + baseType;
+					}
+				}
+			)
+		)
+	)
+	";"
+	{
+		// element generated only at the package level
+		if (m_out != null && isPackageLevel)
+		{
+			if (returnType != null)
+			{
+				m_out.pushAttribute("TYPE", returnType);
+				m_out.element("RETURN");
+			}
+			m_out.endElement("TYPE");
+		}
+	}
+}
+
+void fieldDeclaration(boolean isPackageLevel, Hashtable tags) throws SAXException :
+{
+	Token name;
+	String dataType;
+}
+{
+	name=ID() dataType=datatype() ( (<NOT> <NULL>)? (":=" | <_DEFAULT>) Expression() )?
+	{
+		if (m_out != null && isPackageLevel)
+		{
+			String paramName = name.toString();
+			String paramComment = getParamComment(paramName, tags);
+			m_out.pushAttribute("NAME", purifyIdentifier(paramName));
+			m_out.pushAttribute("TYPE", purifyIdentifier(dataType));
+			m_out.startElement("FIELD");
+			if (paramComment != null) {
+				m_out.startElement("COMMENT");
+				m_out.cdata(paramComment);
+				m_out.endElement("COMMENT");
+			}
+			m_out.endElement("FIELD");
+		}
+	}
+}
+
+void collection_type_definition() : {} { <IDENTIFIER> }
+void collectionDeclaration(boolean isPackageLevel) : {} { <IDENTIFIER> }
+void objectDeclaration() : {} { <IDENTIFIER> }
+
+/** Java stored procedure, external function*/
+void callSpecTail(boolean isPackageLevel) : {}
+{
+	<LANGUAGE> (/*"C"*/<IDENTIFIER> | <JAVA>)
+
+	/*"NAME"*/<IDENTIFIER> <STRING_LITERAL>
+	/* ### or:
+		LIBRARY library_name
+		[NAME c_string_literal_name]
+		[WITH CONTEXT]
+		[PARAMETERS (external_parameter[, external_parameter]...)];
+
+		Where library_name is the name of your alias library, c_string_literal_name is the name of your external C procedure, and external_parameter stands for:
+
+		{	CONTEXT
+		 | SELF [{TDO | property}]
+		 | {parameter_name | RETURN} [property] [BY REFERENCE] [external_datatype]}
+
+		where property stands for:
+
+		{INDICATOR [{STRUCT | TDO}] | LENGTH | MAXLEN | CHARSETID | CHARSETFORM}
+	*/
+}
+
+
+
+
+
+
+/** Cursor (common part of specification and body) */
+void cursorUnit(boolean isPackageLevel) throws SAXException :
+{
+	Token start, name;
+	String type;
+	Hashtable tags = new Hashtable();
+}
+{
+	(
+	start=<CURSOR> name=ID()
+	{
+		// element generated only on the package level
+		if (m_out != null && isPackageLevel) {
+			tags = processMemberComment(start, start.toString().toUpperCase(), name.toString());
+		} else {
+			tags = new Hashtable();
+		}
+	}
+	( "(" parameterDeclaration(tags,isPackageLevel) ( "," parameterDeclaration(tags,isPackageLevel) )* ")" )*
+	[<RETURN> type=datatype()
+	{
+		// element generated only on the package level
+		if (m_out != null && isPackageLevel)
+		{
+			String returnComment = null;
+			Collection tagValues = (Collection) tags.get("@return");
+			if (tagValues != null)
+			{
+				Iterator it = tagValues.iterator();
+				while (it.hasNext())
+					returnComment = (String) it.next();
+			}
+			m_out.pushAttribute("TYPE", purifyIdentifier(type.toString()));
+			m_out.startElement("RETURN");
+			if (returnComment != null)
+			{
+				m_out.startElement("COMMENT");
+				m_out.cdata(returnComment);
+				m_out.endElement("COMMENT");
+			}
+			m_out.endElement("RETURN");
+		}
+	}
+	]
+	)
+	{
+		// element generated only on the package level
+		if (m_out != null && isPackageLevel) {
+			m_out.endElement(purifyIdentifier(start.toString().toUpperCase()));
+		}
+	}
+	[<IS> ("(")* sqlStatement(null,";")] ";"
+}
+
+void cursorSpec(boolean isPackageLevel) throws SAXException : {}
+{
+	cursorUnit(isPackageLevel)
+}
+
+void cursorBody(boolean isPackageLevel) throws SAXException : {}
+{
+	cursorUnit(isPackageLevel)
+//	<IS> /*<SQL_STATEMENT>*/
+}
+
+
+
+// ============================================================================
+// E X P R E S S I O N S
+// ============================================================================
+
+/*
+String expression() :
+{}
+{
+	"test"
+	{ return ""; }
+}
+*/
+
+String Expression() :
+{}
+{
+	(
+  	LOOKAHEAD( PrimaryExpression() ":=" ) Assignment()
+	|
+	  ConditionalOrExpression()
+	)
+  { return ""; }
+}
+
+void Assignment() :
+{}
+{
+  PrimaryExpression() ":=" Expression()
+}
+
+void ConditionalOrExpression() :
+{}
+{
+  ConditionalAndExpression() ( <OR> ConditionalAndExpression() )*
+}
+
+void ConditionalAndExpression() :
+{}
+{
+  EqualityExpression() ( <AND> EqualityExpression() )*
+}
+
+void EqualityExpression() :
+{}
+{
+  RelationalExpression() ( ( "=" | "!=" | "<>" | <IS>) RelationalExpression() )*
+}
+
+/**
+ * 2006-05-23 - Matthias Hendler - added FROM
+ */
+void RelationalExpression() :
+{}
+{
+  AdditiveExpression() ( ( "<" | ">" | "<=" | ">=" | [<NOT>] (<IN> | <BETWEEN> | <LIKE> | <FROM>) ) AdditiveExpression() )*
+}
+
+void AdditiveExpression() :
+{}
+{
+  MultiplicativeExpression() ( ( "+" | "-" | "||" ) MultiplicativeExpression() )*
+}
+
+void MultiplicativeExpression() :
+{}
+{
+  UnaryExpression() ( ( "*" | "/" | <MOD> ) UnaryExpression() )*
+}
+
+void UnaryExpression() :
+{}
+{
+  ( "+" | "-" ) UnaryExpression()
+|
+  UnaryExpressionNotPlusMinus()
+}
+
+void UnaryExpressionNotPlusMinus() :
+{}
+{
+  <NOT> UnaryExpression()
+|
+	PrimaryExpression()
+}
+
+/**
+ * 2006-05-23 - Matthias Hendler - Added lookahead otherwise warning encountered.
+ *                                 Warning arised while adding methode triggerUnit(). 
+ */
+void PrimaryExpression() :
+{}
+{
+  PrimaryPrefix() ( LOOKAHEAD(2) PrimarySuffix() )*
+}
+
+void PrimaryPrefix() :
+{}
+{
+  Literal()
+|
+  Name()
+|
+	LOOKAHEAD(<SELECT>) <SELECT> skip2NextTerminator(null,";")
+|
+	LOOKAHEAD(("(")+ <SELECT>) "(" skip2NextTerminator("(",")") ")"
+|
+  "(" Expression() ("," Expression())* ")"
+}
+
+void PrimarySuffix() :
+{}
+{
+  "." qualifiedID()
+|
+  Arguments()
+}
+
+void Literal() :
+{}
+{
+  numericLiteral()
+|
+  <CHARACTER_LITERAL>
+|
+  <STRING_LITERAL>
+|
+  BooleanLiteral()
+|
+  NullLiteral()
+}
+
+void BooleanLiteral() :
+{}
+{
+  <TRUE>
+|
+  <FALSE>
+}
+
+void NullLiteral() :
+{}
+{
+  <NULL>
+}
+
+/** Recognizes a numeric literal.
+* This may look like token, but it isn't. Not atomic enough.
+* E.g. "+1" would be valid literal, which make parsing of "i+1" impossible
+* (here, we have tokens "i", "+" and "1")
+*/
+Token numericLiteral() :
+{ Token main = null; }
+{
+	(
+		main=<UNSIGNED_NUMERIC_LITERAL>
+	)
+	{ return main; }
+}
+
+void Name() :
+{}
+{
+  unqualifiedID() (LOOKAHEAD(2) ("." | "%") qualifiedID())*
+}
+
+String qualifiedName() :
+{
+	Token token = null;
+	StringBuffer sb = new StringBuffer();
+}
+{
+	(token=unqualifiedID()) {sb.append(token); }
+	( ("." token=qualifiedID()) { sb.append("."); sb.append(token); } )*
+	{ return(sb.toString()); }
+}
+
+void Arguments() :
+{}
+{
+  "(" [ ArgumentList() ] ")"
+}
+
+void ArgumentList() :
+{}
+{
+  Argument() ("," Argument())*
+}
+
+void Argument() :
+{}
+{
+	[LOOKAHEAD(2) unqualifiedID() "=>"] Expression()
+}
+
+
+
+// ============================================================================
+// D E C L A R A T I O N S
+// ============================================================================
+
+void variableOrConstantDeclaration(boolean isPackageLevel) throws org.xml.sax.SAXException :
+{ Token name=null;
+	String type;
+	Hashtable tags = null;
+	String elementName = "VARIABLE";
+}
+{
+	name=ID() [LOOKAHEAD(2) <CONSTANT> {elementName = "CONSTANT";}] type=datatype()
+	[[<NOT>] <NULL>]
+	[
+	(":=" | <_DEFAULT>) Expression()] ";"
+	{
+		// element generated only on the package level
+		if (m_out != null && isPackageLevel)
+		{
+			tags = processMemberComment(name, elementName, name.toString());
+			m_out.pushAttribute("TYPE", purifyIdentifier(type));
+			m_out.startElement("RETURN");
+			m_out.endElement("RETURN");
+			m_out.endElement(elementName);
+		}
+	}
+}
+
+void datatypeDeclaration() : {} { <IDENTIFIER> }
+
+void pragma(boolean isPackageLevel) throws org.xml.sax.SAXException :
+{ Token start,name,functionName,exceptionName,errorNumber; Hashtable tags = null; }
+{
+	start=<PRAGMA>
+	(
+		name=<SERIALLY_REUSABLE>
+		|
+		name=<AUTONOMOUS_TRANSACTION>
+		|
+		name=<RESTRICT_REFERENCES> "(" (functionName=ID() /*| <_DEFAULT>*/)
+		("," (ID() | <STRING_LITERAL>) )+	")"
+		|
+		name=<EXCEPTION_INIT> "(" exceptionName=<IDENTIFIER> "," ["+"|"-"] errorNumber=numericLiteral() ")"
+		|
+		name=<INTERFACE> "(" <IDENTIFIER> "," <IDENTIFIER> "," numericLiteral() ")"
+	)
+	";"
+	{
+		// element generated only on the package level
+		if (m_out != null && isPackageLevel)
+		{
+			tags = processMemberComment(start, start.toString().toUpperCase(), name.toString());
+			m_out.endElement("PRAGMA");
+		}
+	}
+}
+
+void exceptionDeclaration(boolean isPackageLevel) throws org.xml.sax.SAXException :
+{ Token exception_name; Hashtable tags = null; }
+{
+	exception_name=<IDENTIFIER> <EXCEPTION> ";"
+	{
+		// element generated only on the package level
+		if (m_out != null && isPackageLevel)
+		{
+			tags = processMemberComment(exception_name, "EXCEPTION", exception_name.toString());
+			m_out.endElement("EXCEPTION");
+		}
+	}
+}

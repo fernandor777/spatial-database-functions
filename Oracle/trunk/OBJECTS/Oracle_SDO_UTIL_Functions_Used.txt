@@ -1,0 +1,11 @@
+MDSYS.SDO_UTIL.AffineTransforms 
+MDSYS.SDO_UTIL.Append
+MDSYS.SDO_UTIL.Bearing_Tilt_For_Points
+MDSYS.SDO_UTIL.Concat_Lines
+MDSYS.SDO_UTIL.Extract
+MDSYS.SDO_UTIL.GetNumElem
+MDSYS.SDO_UTIL.GetNumVertices
+MDSYS.SDO_UTIL.GetVertices
+MDSYS.SDO_UTIL.Point_At_Bearing
+MDSYS.SDO_UTIL.PolygonToLine
+MDSYS.SDO_UTIL.Remove_Duplicate_Vertices

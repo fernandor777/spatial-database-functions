@@ -1,0 +1,97 @@
+<html><head>
+<meta content="en-us" http-equiv="Content-Language"><title>PLDoc Task</title></head>
+
+<body>
+
+<h2><a name="pldoc">PLDoc</a></h2>
+<h3>Description</h3>
+<p>The PLDoc Ant task generates PL/SQL code documentation using the pldoc tool.</p>
+
+<p>To define task in project, add this task definition to the beginning of your build.xml file:</p>
+<pre>
+  &lt;taskdef
+    name="pldoc"
+    classname="net.sourceforge.pldoc.ant.PLDocTask"
+    classpath="pldoc.jar" /&gt;
+</pre>
+
+<p><strong>NB:</strong> if you are using Java 1.4 or later, you'll need to override the embedded XML classes.
+The simplest way to do this is to define environment variable <code>ANT_OPTS</code> before running Ant:</p>
+<pre>
+  export ANT_OPTS=-Djava.endorsed.dirs=$PLDOC_HOME/xalan/bin
+</pre>
+<p>or on Windows:</p>
+<pre>
+  set ANT_OPTS=-Djava.endorsed.dirs=%PLDOC_HOME\xalan\bin
+</pre>
+<p>where <code>PLDOC_HOME</code> is the directory where pldoc is installed.</p>
+
+<h3>Parameters</h3>
+<table cellspacing="0" cellpadding="2" border="1">
+  <tbody><tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td valign="top" align="center"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">destdir</td>
+    <td valign="top">Directory to store documentation files (created if doesn't exist). Defaults to the current directory.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">doctitle</td>
+    <td valign="top">Documentation title. Defaults to MyApplication.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">overview</td>
+    <td valign="top">File with overview in HTML format.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">stylesheet</td>
+    <td valign="top">File with CSS-stylesheet for the result documentation. If omitted, default CSS will be used.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">namesCase</td>
+    <td valign="top">Upper/lower case to format PL/SQL names (<code>upper</code> | <code>lower</code>). If omitted, no case conversion is done.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">inputEncoding</td>
+    <td valign="top">Input files encoding. By default, assuming the operation system default encoding.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+  <tr>
+    <td valign="top">exitOnError</td>
+    <td valign="top">"yes" forces program exit when some input file cannot be processed.
+    If "no" (the default), the file is skipped and processing continues.</td>
+    <td valign="top" align="center">No</td>
+  </tr>
+</tbody></table>
+
+<h3>Parameters specified as nested elements</h3>
+
+<h4>fileset</h4>
+
+<p>A <a href="http://ant.apache.org/manual/CoreTypes/fileset.html">FileSet</a>.  All matched
+files will be passed to pldoc as source files.</p>
+
+<h3>Example</h3>
+<pre>
+  &lt;pldoc
+        verbose=&quot;yes&quot;
+        destdir=&quot;SampleApplicationDoc&quot;
+        doctitle=&quot;Sample Application&quot;
+        overview=&quot;samples/overview1.html&quot;&gt;
+     &lt;fileset dir=&quot;samples&quot; includes=&quot;sample*.sql&quot;/&gt;
+  &lt;/pldoc&gt;
+</pre>
+
+
+
+<hr>
+
+
+</body></html>

@@ -1,0 +1,9 @@
+1. New line offset based on JTS
+2. Double/Triple check ST_Intersect 
+   -- Circle problem
+   -- 3D problem.
+3. Fix ST_LRS_Add_Measure for nearly whole circular arc.
+4. ST_Decompress/ST_Compress with Z (M is normally increasing from 0.0....)
+5. Replace call to SDO_INTERSECTION in ST_LRS_Intersection
+6. Unit Testing...
+
