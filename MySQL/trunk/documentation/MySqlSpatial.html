@@ -1,0 +1,730 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
+<link rel="stylesheet" href="./MySqlSpatial.css" type="text/css" />
+<title>./documentation/MySqlSpatial</title>
+<!-- Source: ./src/ -->
+<!-- Generated with ROBODoc Version 4.99.36 (Mar 13 2008) -->
+</head>
+<body>
+<div id="logo">
+<a name="robo_top_of_doc">SPDBA MySQL Function Documentation</a>
+</div> <!-- logo -->
+<h3>TABLE OF CONTENTS</h3>
+<ul>
+<li>1. <a href="#robo0">AFFINE/ST_Move (1.0)</a></li>
+<li>2. <a href="#robo1">AFFINE/ST_Rotate (1.0)</a></li>
+<li>3. <a href="#robo2">AFFINE/ST_Scale (1.0)</a></li>
+<li>4. <a href="#robo3">EDITOR/ST_DeleteN (1.0)</a></li>
+<li>5. <a href="#robo4">EDITOR/ST_DeletePoints (1.0)</a></li>
+<li>6. <a href="#robo5">EDITOR/ST_InsertN (1.0)</a></li>
+<li>7. <a href="#robo6">EDITOR/ST_Reverse (1.0)</a></li>
+<li>8. <a href="#robo7">EDITOR/ST_SwapOrdinates (1.0)</a></li>
+<li>9. <a href="#robo8">EDITOR/ST_Update (1.0)</a></li>
+<li>10. <a href="#robo9">EDITOR/ST_UpdateN (1.0)</a></li>
+<li>11. <a href="#robo10">INSPECT/ST_End_Point (1.0)</a></li>
+<li>12. <a href="#robo11">INSPECT/ST_Start_Point (1.0)</a></li>
+<li>13. <a href="#robo12">SORT/ST_Morton (1.0)</a></li>
+<li>14. <a href="#robo13">TOOLS/ST_Round (1.0)</a></li>
+</ul>
+<a name="robo0"></a>
+<a name="AFFINE2fST5fMove202812e029"></a>
+<h1>1.  AFFINE/ST_Move (1.0) [ Methods ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    ST_Move -- Function which moves a geometry the supplied delta X and delta Y.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function ST_Move (
+                p_geometry geometry,
+                p_dX       double,
+                p_dY       double,
+                p_round_xy int 
+             )
+     Returns geometry 
+</pre>
+<p class="item_name">USAGE</p>
+<pre>    SELECT ST_AsText(
+              ST_Move(
+                 ST_GeomFromText('LINESTRING(0.1 0.2,1.4 45.2)',0),
+                 -5.0, 30.1, 1
+              )
+           ) as movedGeom;
+
+    # movedGeom
+    'LINESTRING(-4.9 30.2,-3.6 31.5)'
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Function that moves the supplied geometry's ordinates the supplied x and y deltas.
+    The computed ordinates of the new geometry are rounded to p_round_xy number of decimal digits of precision.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    p_geometry (geometry) - supplied geometry of any type.
+    p_dX       (double)   - X ordinate delta shift.
+    p_dy       (double)   - Y ordinate delta shift.
+    p_round_xy (int)      - Decimal degrees of precision to which calculated XY ordinates are rounded.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    moved geom (geometry) - Input geometry moved by supplied X and Y ordinate deltas.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - December 2017 - Original Coding for MySQL.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2012-2017 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo1"></a>
+<a name="AFFINE2fST5fRotate202812e029"></a>
+<h1>2.  AFFINE/ST_Rotate (1.0) [ Methods ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    ST_Rotate -- Function which rotates a shape a supplied rotation point a provided number of degrees.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function ST_Rotate ( 
+                p_geometry geometry,
+                p_rX       double,
+                p_rY       double,
+                p_angle    double
+                p_round_xy int 
+             )
+     Returns geometry
+</pre>
+<p class="item_name">USAGE</p>
+<pre>    SELECT ST_AsText(
+              ST_Rotate(
+                 ST_GeomFromText('LINESTRING(0.1 0.2,1.4 45.2)',0),
+                 0.0, 0.0, 125, 2
+              )
+           ) as rotatedGeom;
+
+    # rotatedGeom
+    'LINESTRING(-0.14 -0.17,-1.95 -2.4)'
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Function that rotates the supplied geometry around a supplied point.
+    The rotation angle, p_angle, is in degrees between -360 and 360 degrees.
+    The computed ordinates of the new geometry are rounded to p_round_xy number of decimal digits of precision.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    p_geometry   (geometry) - supplied geometry of any type.
+    p_rX         (double)   - X ordinate of rotation point.
+    p_rY         (double)   - Y ordinate of rotation point.
+    p_angle      (double)   - Rotation angle specified in range degrees -360 to 360 degrees.
+    p_round_xy   (int)      - Decimal degrees of precision to which calculated XY ordinates are rounded.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    rotated geom (geometry) - Input geometry rotated p_angle degrees around supplied rotation point.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - December 2017 - Original Coding for MySQL.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2012-2017 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo2"></a>
+<a name="AFFINE2fST5fScale202812e029"></a>
+<h1>3.  AFFINE/ST_Scale (1.0) [ Methods ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    ST_Scale -- Function which scales a geometry using the required XY ordinate input factors.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function ST_Scale (
+                p_geometry geometry,
+                p_xFactor  double,
+                p_yFactor  double,
+                p_round_xy int 
+             )
+     Returns geometry 
+</pre>
+<p class="item_name">USAGE</p>
+<pre>    SELECT ST_AsText(
+              ST_Scale(
+                 ST_GeomFromText('LINESTRING(0.1 0.2,1.4 45.2)',0),
+                 -5.0, 3.2, 3
+              )
+           ) as scaledGeom;
+
+    # scaledGeom
+    'LINESTRING(-0.5 0.32,-7 4.48)'
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Function that scales the supplied geometry's ordinates using the supplied p_xFactor and p_yFactors .
+    The computed ordinates of the new geometry are rounded to p_round_xy number of decimal digits of precision.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    p_geometry  (geometry) - supplied geometry of any type.
+    p_xFactor   (double)   - X ordinate scale factor.
+    p_yFactor   (double)   - Y ordinate scale factor.
+    p_round_xy  (int)      - Decimal degrees of precision to which calculated XY ordinates are rounded.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    scaled geom (geometry) - Input geometry scaled by supplied X and Y ordinate factor values.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - December 2017 - Original Coding for MySQL.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2012-2017 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo3"></a>
+<a name="EDITOR2fST5fDeleteN202812e029"></a>
+<h1>4.  EDITOR/ST_DeleteN (1.0) [ Methods ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    STDeletePointN -- Function which deletes referenced coordinate from the supplied geometry.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function STDeletePointN (
+               p_geometry geometry,
+               p_position int 
+             )
+     Returns geometry 
+</pre>
+<p class="item_name">USAGE</p>
+<pre>    SELECT ST_AsText(
+              ST_DeletePointN(
+                 ST_GeomFromText('LINESTRING(0.1 0.2,1.4 45.2,120 394.23)',0),
+                 2
+              )
+           ) as deleteGeom; 
+
+    # deleteGeom
+    'LINESTRING(0.1 0.2,120 394.23)'
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Function that removes a single, nominated, coordinates from the supplied geometry.
+    The function does not process POINT or GEOMETRYCOLLECTION geometries.
+    The point to be deleted is supplied as a single integer.
+    The point number can be supplied as -1 (last number), or 1 to the total number of points in a WKT representation of the object.
+    A point number does not refer to a specific point within a specific sub-geometry eg point number 1 in the 2nd interiorRing in a polygon object.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    p_geometry   (geometry) - supplied geometry of any type.
+    p_position        (int) - Valid point number in geometry.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    smaller geom (geometry) - Input geometry with required point deleted. 
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    May throw error message ST_GeomFromText error if point deletion invalidates the geometry.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - December 2017 - Original Coding for MySQL.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2012-2017 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo4"></a>
+<a name="EDITOR2fST5fDeletePoints202812e029"></a>
+<h1>5.  EDITOR/ST_DeletePoints (1.0) [ Methods ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    ST_DeletePoints -- Function which deletes one or more coordinates from the supplied geometry.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function ST_DeletePoints (
+                p_geometry   geometry,
+                p_point_list text 
+             )
+     Returns geometry 
+</pre>
+<p class="item_name">USAGE</p>
+<pre>    SELECT ST_AsText(
+              ST_DeletePoints(
+                 ST_GeomFromText('LINESTRING(0.1 0.2,1.4 45.2,120 394.23)',0),
+                 '2'
+              )
+           ) as deleteGeom; 
+
+    # deleteGeom
+    'LINESTRING(0.1 0.2,120 394.23)'
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Function that removes one or more coordinates from the supplied geometry.
+    The function does not process POINT or GEOMETRYCOLLECTION geometries.
+    The list of points to be deleted is supplied as a comma separated string of point numbers.
+    The point numbers are from 1 to the total number of points in a WKT representation of the object.
+    Point numbers do not refer to specific points within a specific sub-geometry eg point number 1 in the 2nd interiorRing in a polygon object.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    p_geometry   (geometry) - supplied geometry of any type.
+    p_point_line (text)     - Comma separated list of point numbers from 1 to the total number in a geometry's WKT representation.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    smaller geom (geometry) - Input geometry with referenced points deleted. 
+  NOTE
+    May throw "Error Code: 3037. Invalid GIS data provided to function st_geometryfromtext." if point deletion invalidates the geometry.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - December 2017 - Original Coding for MySQL.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2012-2017 by TheSpatialDBAdvisor/Simon Greener
+  LICENSE
+    Creative Commons Attribution-Share Alike 2.5 Australia License.
+    <a href="http://creativecommons.org/licenses/by-sa/2.5/au/">http://creativecommons.org/licenses/by-sa/2.5/au/</a>
+</pre>
+<a name="robo5"></a>
+<a name="EDITOR2fST5fInsertN202812e029"></a>
+<h1>6.  EDITOR/ST_InsertN (1.0) [ Methods ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    ST_InsertN -- Function which inserts new coordinate (p_point) at position p_position in the supplied geometry.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function ST_InsertN (
+                p_geometry  geometry,
+                p_point     geometry,
+                p_position  int,
+                p_round_xy  int 
+             )
+     Returns geometry 
+</pre>
+<p class="item_name">USAGE</p>
+<pre>    SELECT ST_AsText(
+              ST_InsertN(
+                 ST_GeomFromText ('LINESTRING(0 0,2 2)',0),
+                 ST_PointFromText('POINT(1 1)',0),
+                 2,
+                 1 ) ) as newGeom;
+
+    # updatedGeom
+    'LINESTRING(0 0,1 1,2 2)'
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Function that inserts the coordinate p_point into position p_position in the supplied geometry.
+    p_position Values:
+      1. null -&gt; defaults to 1;
+      2. -1   -&gt; maximum number of points ie ST_NumPoints(p_geometry) 
+      3. Greater than ST_NumPoints(p_geometry) -&gt; maximum number of points ie ST_NumPoints(p_geometry)
+    The inserted coordinate's ordinates are rounded to p_round_xy number of decimal digits of precision.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    p_geometry  (geometry) - Supplied geometry of any type.
+    p_point     (geometry) - Insert coordinate
+    p_position  (int)      - Coordinate position in p_geometry: between 1 and STNumPoints.
+    p_round_xy  (int)      - Decimal degrees of precision to which calculated XY ordinates are rounded.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    larger geom (geometry) - Input geometry with coordinate inserted.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - December 2017 - Original Coding for MySQL.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2012-2017 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo6"></a>
+<a name="EDITOR2fST5fReverse202812e029"></a>
+<h1>7.  EDITOR/ST_Reverse (1.0) [ Methods ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    ST_Reverse -- Function which reverses the vertices of a linestring and parts/vertices of multilinestring.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function ST_Reverse (
+                p_geometry geometry 
+             )
+     Returns geometry 
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    select id, action, geom 
+      from (select 'Before' as action, id, ST_AsText(geom) as geom
+              from (select 1 as id, ST_GeomFromText('LINESTRING(0 0, 10 0)',0) as geom
+                    union all
+                    select 2 as id, ST_GeomFromText('MULTILINESTRING((1 1,2 2), (3 3, 4 4))',0) as geom
+                    union all
+                    select 3 as id, ST_GeomFromText('MULTIPOINT((1 1),(2 2),(3 3),(4 4))',0) as geom
+                    ) as data
+           union all
+           select 'After' as action, id, ST_AsText(ST_Reverse(geom)) as geom
+             from (select 1 as id, ST_GeomFromText('LINESTRING(0 0, 10 0)',0) as geom
+                   union all
+                   select 2 as id, ST_GeomFromText('MULTILINESTRING((1 1,2 2), (3 3, 4 4))',0) as geom
+                   union all
+                   select 3 as id, ST_GeomFromText('MULTIPOINT((1 1),(2 2),(3 3),(4 4))',0) as geom
+                  ) as data
+           ) as f
+    order by id, action desc;
+
+   id,  action,   geom
+   '1', 'Before', 'LINESTRING(0 0,10 0)'
+   '1', 'After',  'LINESTRING(10 0,0 0)'
+   '2', 'Before', 'MULTILINESTRING((1 1,2 2),(3 3,4 4))'
+   '2', 'After',  'MULTILINESTRING((4 4,3 3),(2 2,1 1))'
+   '3', 'Before', 'MULTIPOINT((1 1),(2 2),(3 3),(4 4))'
+   '3', 'After',  'MULTIPOINT((4 4),(3 3),(2 2),(1 1))'
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Function that reverses the coordinates of the supplied linestring.
+    If the geometry is a multilinestring, the parts, and then their vertices are reversed.
+    Supports reversal of MULTIPOINT geometries;
+    The function does not process POINT, (MULTI)POLYGON or GEOMETRYCOLLECTION geometries.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    p_geometry    (geometry) - Supplied geometry of supported type.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    reversed geom (geometry) -- Input geometry with parts and vertices reversed.
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    May throw "Error Code: 3037. Invalid GIS data provided to function st_geometryfromtext." if reversal invalidates the geometry.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - December 2017 - Original Coding for MySQL.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2012-2017 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo7"></a>
+<a name="EDITOR2fST5fSwapOrdinates202812e029"></a>
+<h1>8.  EDITOR/ST_SwapOrdinates (1.0) [ Methods ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    ST_SwapOrdinates -- Allows for swapping ordinate pairs in a geometry.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function ST_SwapOrdinates (
+               p_geometry geometry,
+               p_swap     varchar(2) = 'XY'
+             )
+     Returns geometry 
+</pre>
+<p class="item_name">USAGE</p>
+<pre>    SELECT [$(owner)].[ST_SwapOrdinates] (
+             ST_PointFromText('POINT(143.282374 20.293874)',4326),
+             'XY'
+           ).AsTextZM() as correctedOrdinates;
+    correctedOrdinates
+    POINT (20.293874 143.282374)
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Sometimes the ordinates of a geometry can be swapped such as latitude for X
+    and Longitude for Y when it should be reversed. This function allows for the
+    swapping of pairs of ordinates controlled by the p_swap parameter.
+    Will support Z and M ordinate values when MySQL provides such support.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    p_geometry (geometry)  - Supplied geometry object.
+    p_swap     (varchar 2) - The ordinate pair to swap: XY (only one supported), XZ, XM, YZ, YM or ZM
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    altered geom (geometry) - Changed Geometry;
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - January 2018 - Original Port to MYSQL
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2017 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo8"></a>
+<a name="EDITOR2fST5fUpdate202812e029"></a>
+<h1>9.  EDITOR/ST_Update (1.0) [ Methods ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    ST_Update -- Function that updates (replaces) all geometry points that are equal to the supplied point with the replacement point.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function ST_Update (
+                p_geometry      geometry,
+                p_point         geometry,
+                p_replace_point geometry,
+                p_round_xy      int
+             )
+     Returns geometry 
+</pre>
+<p class="item_name">USAGE</p>
+<pre>    SELECT ST_AsText(
+              ST_Update(
+                 ST_GeomFromText ('POLYGON(0 0,10 0,10 10,0 10,0 0)',0),
+                 ST_PointFromText('POINT(0 0)',0),
+                 ST_PointFromText('POINT(1 1)',0),
+                 1 
+              ) 
+           ) as newGeom;
+
+    # updatedGeom
+    'POLYGON(1 1,10 0,10 10,0 10,1 1)'
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Function that updates all coordinates that equal p_point with the supplied p_replace_point.
+    The p_round_xy value is used when comparing geometry point's XY ordinates to p_point's.
+    The updated coordinate's ordinates are rounded to p_round_xy number of decimal digits of precision.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    p_geometry      (geometry) - supplied geometry of any type.
+    p_point         (geometry) - Original coordinate to be replaced.
+    p_replace_point (geometry) - Replacement coordinate
+    p_round_xy      (int)      - Decimal degrees of precision to which calculated XY ordinates are rounded.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    updated geom    (geometry) - Input geometry with one or more coordinate replaced.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - December 2017 - Original Coding for MySQL.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2012-2017 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo9"></a>
+<a name="EDITOR2fST5fUpdateN202812e029"></a>
+<h1>10.  EDITOR/ST_UpdateN (1.0) [ Methods ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    ST_UpdateN -- Function which updates the coordinate at position p_position in the supplied geometry.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function ST_UpdateN (
+                p_geometry      geometry,
+                p_replace_point double,
+                p_position      int,
+                p_round_xy      int 
+             )
+     Returns geometry 
+</pre>
+<p class="item_name">USAGE</p>
+<pre>    SELECT ST_AsText(
+              ST_UpdateN(
+                 ST_GeomFromText ('LINESTRING(0 0,2 2)',0),
+                 ST_PointFromText('POINT(1 1)',0),
+                 2,
+                 1 
+              ) 
+           ) as newGeom;
+ 
+    # updatedGeom
+    'LINESTRING(0 0,1 1)'
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Function that updates coordinate identified by p_position with the new point (p_replace_point) in the supplied geometry.
+    p_position Values:
+      1. null -&gt; defaults to 1;
+      2. -1   -&gt; maximum number of points ie ST_NumPoints(p_geometry) 
+      3. Greater than ST_NumPoints(p_geometry) -&gt; maximum number of points ie ST_NumPoints(p_geometry)
+    The updated coordinate's ordinates are rounded to p_round_xy number of decimal digits of precision.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    p_geometry      (geometry) - supplied geometry of any type.
+    p_replace_point (geoemtry) - Replacement coordinate
+    p_position      (int)      - Coordinate position in p_geometry: between 1 and STNumPoints.
+    p_round_xy      (int)      - Decimal degrees of precision to which calculated XY ordinates are rounded.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    updated geom    (geometry)-- Input geometry with coordinate replaced.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - December 2017 - Original Coding for MySQL.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2012-2017 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo10"></a>
+<a name="INSPECT2fST5fEnd5fPoint202812e029"></a>
+<h1>11.  INSPECT/ST_End_Point (1.0) [ Methods ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    ST_End_Point -- Function which returns the last point in supplied geometry inclusive of all parts.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function ST_End_Point (
+                p_geometry geometry
+             )
+     Returns geometry 
+</pre>
+<p class="item_name">USAGE</p>
+<pre>    SELECT ST_AsText(
+              ST_End_Point(
+                 ST_GeomFromText('LINESTRING(0.1 0.2,1.4 45.2)',0),
+                 -5.0, 3.2, 3
+              )
+           ) as startPoint;
+
+    # startPoint
+    'POINT(1.4 45.2)'
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Function that returns last point in supplied geometry.
+    Standard MySQL ST_EndPoint does not work Multi(Geometry) objects.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    p_geometry (geometry) - supplied geometry of any type.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    point      (geometry) - Last point in Geometry inclusive of all parts.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - December 2017 - Original Coding for MySQL.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2012-2017 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo11"></a>
+<a name="INSPECT2fST5fStart5fPoint202812e029"></a>
+<h1>12.  INSPECT/ST_Start_Point (1.0) [ Methods ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    ST_Start_Point -- Function which returns first point in supplied geometry.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function ST_Start_Point (
+                p_geometry geometry
+             )
+     Returns geometry 
+</pre>
+<p class="item_name">USAGE</p>
+<pre>    SELECT ST_AsText(
+              ST_Start_Point(
+                 ST_GeomFromText('LINESTRING(0.1 0.2,1.4 45.2)',0),
+                 -5.0, 3.2, 3
+              )
+           ) as startPoint;
+
+    # startPoint
+    'POINT(0.1 0.2)'
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Function that returns first point in supplied geometry.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    p_geometry (geometry) - supplied geometry of any type.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    point      (geometry) - First point in Geometry
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - December 2017 - Original Coding for MySQL.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2012-2017 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo12"></a>
+<a name="SORT2fST5fMorton202812e029"></a>
+<h1>13.  SORT/ST_Morton (1.0) [ Methods ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    ST_Morton -- Function which creates a Morton (Space) Key from the supplied row and column reference.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function ST_Morton ( 
+                p_col int,
+                p_row int 
+             )
+     Returns int
+</pre>
+<p class="item_name">USAGE</p>
+<pre>    SELECT ST_Morton (10, 10) as mKey;
+
+     # mKey
+     828
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Function that creates a Morton Key from a row/col (grid) reference. 
+    The generated value can be used to order/sort geometry objects.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    p_col      (int) - Grid Column Reference.
+    p_row      (int) - Grid Row Reference.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    morton_key (int) - single integer morton key.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - December 2017 - Original Coding for MySQL.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2012-2017 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo13"></a>
+<a name="TOOLS2fST5fRound202812e029"></a>
+<h1>14.  TOOLS/ST_Round (1.0) [ Methods ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    ST_Round -- Function which rounds the XY ordinates of a geometry to the supplied number of decimal digits.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function ST_Round ( 
+                p_geometry geometry,
+                p_round_xy int 
+             )
+     Returns geometry 
+</pre>
+<p class="item_name">USAGE</p>
+<pre>    SELECT ST_AsText(ST_Round(ST_GeomFromText('POINT(100.12223 100.345456)',0),2)) as rGeom; 
+              ST_Round(
+                 ST_GeomFromText('POINT(100.12223 100.345456)',0),
+                 2)
+           ) as rGeom; 
+
+    # rGeom
+    'POINT(100.12 100.35)'
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    The ordinates of the supplied geometry are rounded to p_round_xy number of decimal digits of precision.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    p_geometry (geometry) - supplied geometry of any type.
+    p_round_xy (int)      - Decimal degrees of precision to which the geometry's XY ordinates are rounded.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    geometry   (geometry) - Input geometry rounded to the supplied number of decimal digits of precision.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - December 2017 - Original Coding for MySQL.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2012-2017 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<div id="footer">
+<p>Generated from ./src/ with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.36 on Sat Aug 17 2019 12:21:26
+</p>
+</div> <!-- footer -->
+</body>
+</html>
