@@ -1,0 +1,3 @@
+GeoJson - Move to new JTS code.
+ST_Round --- Z ordinates
+ST_AsEWKT---> GEOMETRY COLLECTION Z (POLYGON Z(), POLYGON ()

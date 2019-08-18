@@ -1,0 +1,2400 @@
+/*
+ * Created on aug-2009
+ *
+ * JASPA. JAva SPAtial for SQL.
+ * 
+ * Copyright (C) 2009 Jose Martinez-Llario. 
+ * 
+ * This file is part of JASPA. 
+ * JASPA is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *  
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *  
+ * For more information, contact:
+ *
+ *   Jose Martinez-Llario
+ *   Universidad Politecnica de Valencia
+ *   Camino de Vera s/n
+ *   46022 VALENCIA
+ *   SPAIN
+ *
+ *   +34 963877007 ext 75599
+ *   jomarlla@cgf.upv.es
+ *   http://www.upv.es
+ *   http://cartosig.upv.es
+ *   
+ * Acknowledge:
+ * 
+ * JASPA is based on other projects which I want to say thanks to:
+ * - PostGIS. http://postgis.refractions.net/
+ * - Java Topology Suite (JTS). http://sourceforge.net/projects/jts-topo-suite/
+ * - GeoTools. http://www.geotools.org/
+ * - H2 and H2 Spatial (small spatial extension for H2) 
+ *   http://www.h2database.com
+ *   http://geoserver.org/display/GEOS/H2+Spatial+Database 
+ * - PL/Java. http://pgfoundry.org/projects/pljava/
+ * - PostgreSQL. http://www.postgresql.org/
+ * 
+ */
+
+package es.upv.jaspa;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.List;
+
+import org.geotools.factory.GeoTools;
+
+import com.vividsolutions.jts.JTSVersion;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.operation.union.CascadedPolygonUnion;
+
+// SGG import es.upv.jaspa.datasource.JaspaJDBC;
+import es.upv.jaspa.exceptions.JASPAException;
+import es.upv.jaspa.exceptions.JASPAIllegalArgumentException;
+import es.upv.jaspa.exceptions.JASPASQLException;
+import es.upv.jaspa.io.BinaryFormat;
+import es.upv.jaspa.io.GBLOB2JTS;
+import es.upv.jaspa.tools.SQLCode;
+import es.upv.jaspa.topology.SpatialTableInfo;
+
+/**
+ * @author Jose Martinez-Llario
+ * 
+ */
+public final class SQL {
+
+	/*
+	 * ============================================================================ =========
+	 * 
+	 * JASPA User Functions
+	 * 
+	 * ============================================================================ ===========
+	 */
+
+	public static String jaspa_full_version() {
+
+		String text = "JASPA (JAva SPAtial) For ";
+		if (Core.getDB() == Core.dbPostgreSQL) {
+			text += "PostgreSQL";
+		}
+		if (Core.getDB() == Core.dbH2) {
+			text += "H2";
+		}
+
+		text += "=\"" + Core.jaspaVersion + "\" JTS=\"" + JTSVersion.CURRENT_VERSION
+				+ "\" GeoTools=\"" + GeoTools.getVersion().toString() + "\" JRE=\""
+				+ System.getProperty("java.version") + "\"";
+
+		return text;
+	}
+
+	public static String jaspa_java_properties() {
+
+		String text = "Java system properties:" + "\nos.name=\"" + System.getProperty("os.name")
+				+ "\"" + "\nos.arch=\"" + System.getProperty("os.arch") + "\"" + "\nos.version=\""
+				+ System.getProperty("os.version") + "\"" + "\nuser.dir=\""
+				+ System.getProperty("user.dir") + "\"" + "\nuser.home=\""
+				+ System.getProperty("user.home") + "\"" + "\nuser.name=\""
+				+ System.getProperty("user.name") + "\"" + "\njava.vendor=\""
+				+ System.getProperty("java.vendor") + "\"" + "\njava.version=\""
+				+ System.getProperty("java.version") + "\"" + "\njava.home=\""
+				+ System.getProperty("java.home") + "\"" + "\njava.class.path=\""
+				+ System.getProperty("java.class.path") + "\"";
+
+		return text;
+	}
+
+	public static String jaspa_version() {
+
+		String text = null;
+		if (Core.getDB() == Core.dbPostgreSQL) {
+			text = "For PostgreSQL-";
+		} else if (Core.getDB() == Core.dbH2) {
+			text = "For H2-";
+		} else {
+			text = "";
+		}
+
+		text += Core.jaspaVersion;
+		return text;
+	}
+
+	public static String jaspa_build_date() {
+
+		String res = "Jaspa=\"" + Core.buildDate + "\" JTS=\""
+				+ JTSVersion.CURRENT_VERSION.getBuildDate() + "\"";
+		return res;
+	}
+
+	/*
+	 * ============================================================================ =========
+	 * 
+	 * JASPA Geometry Outputs
+	 * 
+	 * ============================================================================ ===========
+	 */
+	// Alias: AsText
+	// Alias: AsWKT
+	public static String ST_AsText(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		return JP.ST_AsText(geom);
+	}
+
+	public static String ST_AsEWKT(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		return JP.ST_AsEWKT(geom);
+	}
+
+	public static byte[] ST_AsEWKB(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		if (geom == null) return null;
+		return Core.getEWKBFromJTSGeometry(geom);
+	}
+
+	public static byte[] ST_AsEWKB(byte sgeom[], String byteOrder)
+			throws JASPAException {
+
+		if (sgeom == null) return null;
+
+		Integer order = Core.getByteOrderFromText(byteOrder);
+		if (order == null) return null;
+
+		return Core.getEWKBFromGBLOB(sgeom, order);
+	}
+
+	public static byte[] ST_AsBinary(byte sgeom[], String byteOrder)
+			throws JASPAException {
+
+		if (sgeom == null) return null;
+
+		Integer order = Core.getByteOrderFromText(byteOrder);
+		if (order == null) return null;
+
+		return Core.getWKBFromGBLOB(sgeom, order);
+	}
+
+	public static byte[] ST_AsBinary(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		return Core.getWKBFromJTSGeometry(geom);
+	}
+
+	public static String ST_AsGML(byte[] sgeom)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		return JP.ST_AsGML(geom);
+	}
+
+	public static String ST_AsHEXEWKB(byte sgeom[], String byteOrder)
+			throws JASPAException {
+
+		return Core.getHexBinFromGBLOB(sgeom, byteOrder, BinaryFormat.wkbPostGISwithSRID);
+	}
+
+	public static String ST_AsHEXEWKB(byte sgeom[])
+			throws JASPAException {
+
+		return Core.getHexBinFromGBLOB(sgeom, "NDR", BinaryFormat.wkbPostGISwithSRID);
+	}
+
+	public static String ST_AsHEXWKB(byte sgeom[], String byteOrder)
+			throws JASPAException {
+
+		return Core.getHexBinFromGBLOB(sgeom, byteOrder, BinaryFormat.wkbPostGISwithoutSRID);
+	}
+
+	public static String ST_AsKML(double version, byte[] sgeom)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		return JP.ST_AsKML(version, geom);
+	}
+
+	public static String ST_AsKML(double version, byte[] sgeom, int scale)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		return JP.ST_AsKML(version, geom, scale);
+	}
+
+	public static String ST_AsKML(byte[] sgeom)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		return JP.ST_AsKML(geom);
+	}
+
+	public static String ST_AsHEXWKB(byte sgeom[])
+			throws JASPAException {
+
+		return Core.getHexBinFromGBLOB(sgeom, "NDR", BinaryFormat.wkbPostGISwithoutSRID);
+	}
+
+	/*
+	 * ============================================================================ =========
+	 * 
+	 * JASPA Geometry Constructors
+	 * 
+	 * ============================================================================ ===========
+	 */
+
+	public static byte[] ST_BdPolyFromText(String wktText, int SRID)
+			throws JASPAException {
+
+		Geometry res = JP.ST_BdPolyFromText(wktText, SRID);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_BdMPolyFromText(String wktText, int SRID)
+			throws JASPAException {
+
+		Geometry res = JP.ST_BdMPolyFromText(wktText, SRID);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_MakeGeomColl(byte[][] sgeomArray)
+			throws JASPAException {
+
+		Geometry res = JP.ST_MakeGeomColl(sgeomArray);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	/**
+	 * Creates a Linestring from point geometries.
+	 * <p>
+	 * ST_MakeLine comes in 3 forms: a spatial aggregate that takes rows of point geometries and
+	 * returns a line string, a function that takes an array of points, and a regular function that
+	 * takes two point geometries. You might want to use a subselect to order points before feeding
+	 * them to the aggregate version of this function.
+	 * 
+	 * @param sgeom0
+	 *           start point
+	 * @param sgeom1
+	 *           end point
+	 * @return a lineString geometry @ * @notes
+	 *         <ul>
+	 *         <li>This function supports Z and M values</li>
+	 *         </ul>
+	 * @alias <ul>
+	 *        <li>This function does not have alias</li>
+	 *        </ul>
+	 * @see ST_MakeLine(byte[], byte[])
+	 * @see ST_MakeLine(byte[][])
+	 * @example <code> 
+	 * <H4>Non-Spatial Aggregate version</H4>
+		<p> SELECT ST_AsEWKT(ST_MakeLine(ST_MakePoint(1,2,1), ST_MakePoint(3,4,5)));
+		<i>
+	    <BR>st_asewkt
+		<BR>-------------------------
+		<BR>LINESTRING(1 2 1,3 4 5)
+		</i>
+		<H4>Array Version</H4>
+		<p>SELECT ST_AsEWKT(ST_MakeLine(ARRAY[ST_MakePoint(1,2,3),ST_MakePoint(3,4,5), ST_MakePoint(6,6,6)]));
+		<i>
+	    <BR>st_asewkt
+		<BR>----------------------------------
+		<BR>LINESTRING (1 2 3, 3 4 5, 6 6 6) 		
+		</i>
+		
+	 <H4>Spatial Aggregate version</H4>
+		<p>create table points (name varchar, id integer, x float, y float);
+		<BR>insert into points values ('house',1,0,0);
+		<BR>insert into points values ('house',2,10,0);
+		<BR>insert into points values ('house',3,10,10);
+		<BR>insert into points values ('house',4,0,10);
+		<BR>insert into points values ('house',5,0,0);
+		<BR>insert into points values ('fence',1,0,12);
+		<BR>insert into points values ('fence',2,12,12);
+		<BR> select st_astext(st_makeline(geom)),name
+		<BR>	from (select st_makepoint (x,y) as geom,name 
+		<BR>		from points order by name,id) as foo 
+		<BR>	group by name;
+		<i>
+		<BR> 
+		<BR>                st_astext                 | name
+		<BR>------------------------------------------+-------
+		<BR> LINESTRING (0 12, 12 12)                 | fence
+		<BR> LINESTRING (0 0, 10 0, 10 10, 0 10, 0 0) | house
+		</i>
+		 		
+	 * </code>
+	 */
+	public static byte[] ST_MakeLine(byte[] sgeom0, byte sgeom1[])
+			throws JASPAException {
+
+		Geometry geom0 = Core.getJTSGeometryFromGBLOB(sgeom0);
+		if (Core.errorIfNotPoint(geom0, 1)) return null;
+
+		Geometry geom1 = Core.getJTSGeometryFromGBLOB(sgeom1);
+		if (Core.errorIfNotPoint(geom1, 2)) return null;
+
+		Geometry res = JP.ST_MakeLine((Point) geom0, (Point) geom1);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_MakeLine(byte[][] sgeomArray)
+			throws JASPAException {
+
+		Geometry res = JP.ST_MakeLine(sgeomArray);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_MakePoint(double x, double y)
+			throws JASPAException {
+
+		Geometry res = JP.ST_MakePoint(x, y);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_MakePoint(double x, double y, double z)
+			throws JASPAException {
+
+		Geometry res = JP.ST_MakePoint(x, y, z);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_MakePoint(double x, double y, double z, double m)
+			throws JASPAException {
+
+		Geometry res = JP.ST_MakePoint(x, y, z, m);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_MakePointM(double x, double y, double m)
+			throws JASPAException {
+
+		Geometry res = JP.ST_MakePoint(x, y, 0.0, m);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	/**
+	 * Returns a specified ST_Geometry value from Well-Known Text representation (WKT)
+	 * <p>
+	 * ST_Geometry is the internal binary representation of the Geometry Object. The internal binary
+	 * representation for jaspa is the WKB format extended with the SRID value.
+	 * 
+	 * @param wktGeom
+	 *           geometry in WKT format
+	 * @param SRID
+	 *           SRID
+	 * @return ST_Geometry in jaspa Binary format (actually is EWKB format). @ * @notes
+	 *         <ul>
+	 *         <li>Implements the OpenGIS Simple Features Implementation Specification for SQL</li>
+	 *         <li>Implements the SQL/MM specification: SQL-MM 3: 5.1.40 <li> <li>Works with any
+	 *         geometry type</li>
+	 *         </ul>
+	 * @alias <ul>
+	 *        <li>ST_WKTToSQL</li> <li>ST_GeometryFromText</li> <li> ST_GeomFromText</li> <li>
+	 *        GeometryFromText</li> <li>GeomFromText </li>
+	 *        </ul>
+	 * @see ST_GeomFromText(String)
+	 * @example <code>
+		<p> SELECT ST_NumPoints(ST_GeomFromtext('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'));
+		<BR> st_numpoints
+		<BR> --------------
+	    <BR>    	4	 
+	 * </code>
+	 */
+	public static byte[] ST_GeomFromText(String wktGeom, int SRID)
+			throws JASPAException {
+
+		Geometry res = JP.ST_GeomFromText(wktGeom, SRID);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	/**
+	 * Returns a specified ST_Geometry value from Well-Known Text representation (WKT)
+	 * <p>
+	 * ST_Geometry is the internal binary representation of the Geometry Object. The internal binary
+	 * representation for jaspa is the WKB format extended with the SRID value.
+	 * 
+	 * @param wktGeom
+	 *           geometry in WKT format
+	 * @return ST_Geometry in jaspa Binary format (actually is EWKB format). The SRID will be 0. @ * @notes
+	 *         <ul>
+	 *         <li>Implements the OpenGIS Simple Features Implementation Specification for SQL</li>
+	 *         <li>Implements the SQL/MM specification: SQL-MM 3: 5.1.40 <li> <li>Works with any
+	 *         geometry type</li>
+	 *         </ul>
+	 * @alias <ul>
+	 *        <li>ST_WKTToSQL</li> <li>ST_GeometryFromText</li> <li> ST_GeomFromText</li> <li>
+	 *        GeometryFromText</li> <li>GeomFromText </li>
+	 *        </ul>
+	 * @see ST_GeomFromText(String, int)
+	 * @example <code>
+		<p> SELECT ST_NumPoints(ST_GeomFromtext('LINESTRING(77.29 29.07,77.42 29.26,77.27 29.31,77.29 29.07)'));
+		<BR> st_numpoints
+		<BR> --------------
+	    <BR>    	4	 
+	 * </code>
+	 */
+	public static byte[] ST_GeomFromText(String wktGeom)
+			throws JASPAException {
+
+		Geometry res = JP.ST_GeomFromText(wktGeom);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_GeomFromEWKT(String wktGeom)
+			throws JASPAException {
+
+		Geometry geom = JP.ST_GeomFromEWKT(wktGeom);
+		return Core.getGBLOBFromJTSGeometry(geom);
+	}
+
+	public static byte[] ST_LineFromText(String wktGeom)
+			throws JASPAException {
+
+		Geometry res = JP.ST_LineFromText(wktGeom);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_LineFromText(String wktGeom, int SRID)
+			throws JASPAException {
+
+		Geometry res = JP.ST_LineFromText(wktGeom, SRID);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_PolygonFromText(String wktGeom)
+			throws JASPAException {
+
+		Geometry res = JP.ST_PolygonFromText(wktGeom);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_PolygonFromText(String wktGeom, int SRID)
+			throws JASPAException {
+
+		Geometry res = JP.ST_PolygonFromText(wktGeom, SRID);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_PointFromText(String wktGeom)
+			throws JASPAException {
+
+		Geometry res = JP.ST_PointFromText(wktGeom);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_PointFromText(String wktGeom, int SRID)
+			throws JASPAException {
+
+		Geometry res = JP.ST_PointFromText(wktGeom, SRID);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_MLineFromText(String wktGeom)
+			throws JASPAException {
+
+		Geometry res = JP.ST_MLineFromText(wktGeom);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_MLineFromText(String wktGeom, int SRID)
+			throws JASPAException {
+
+		Geometry res = JP.ST_MLineFromText(wktGeom, SRID);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_MPolyFromText(String wktGeom)
+			throws JASPAException {
+
+		Geometry res = JP.ST_MPolyFromText(wktGeom);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_MPolyFromText(String wktGeom, int SRID)
+			throws JASPAException {
+
+		Geometry res = JP.ST_MPolyFromText(wktGeom, SRID);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_MPointFromText(String wktGeom)
+			throws JASPAException {
+
+		Geometry res = JP.ST_MPointFromText(wktGeom);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_MPointFromText(String wktGeom, int SRID)
+			throws JASPAException {
+
+		Geometry res = JP.ST_MPointFromText(wktGeom, SRID);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_GeomCollFromText(String wktGeom)
+			throws JASPAException {
+
+		Geometry res = JP.ST_GeomCollFromText(wktGeom);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_GeomCollFromText(String wktGeom, int SRID)
+			throws JASPAException {
+
+		Geometry res = JP.ST_GeomCollFromText(wktGeom, SRID);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_LineFromWKB(byte[] sgeom)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_LineFromWKB(geom);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_LineFromWKB(byte[] sgeom, int SRID)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_LineFromWKB(geom, SRID);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_PolygonFromWKB(byte[] sgeom)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_PolygonFromWKB(geom);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_PolygonFromWKB(byte[] sgeom, int SRID)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_PolygonFromWKB(geom, SRID);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_PointFromWKB(byte[] sgeom)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_PointFromWKB(geom);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_PointFromWKB(byte[] sgeom, int SRID)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_PointFromWKB(geom, SRID);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_MLineFromWKB(byte[] sgeom)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_MLineFromWKB(geom);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_MLineFromWKB(byte[] sgeom, int SRID)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_MLineFromWKB(geom, SRID);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_MPolyFromWKB(byte[] sgeom)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_MPolyFromWKB(geom);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_MPolyFromWKB(byte[] sgeom, int SRID)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_MPolyFromWKB(geom, SRID);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_MPointFromWKB(byte[] sgeom)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_MPointFromWKB(geom);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_MPointFromWKB(byte[] sgeom, int SRID)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_MPointFromWKB(geom, SRID);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_GeomCollFromWKB(byte[] sgeom)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_GeomCollFromWKB(geom);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_GeomCollFromWKB(byte[] sgeom, int SRID)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_GeomCollFromWKB(geom, SRID);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_GeomFromEWKB(byte[] sgeom)
+			throws JASPAException {
+
+		Geometry res = JP.ST_GeomFromEWKB(sgeom);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_GeomFromGML(String gml)
+			throws JASPAException {
+
+		Geometry res = JP.ST_GeomFromGML(gml);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_GeomFromKML(String kml)
+			throws JASPAException {
+
+		Geometry res = JP.ST_GeomFromKML(kml);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_GeomFromWKB(byte[] sgeom)
+			throws JASPAException {
+
+		Geometry res = JP.ST_GeomFromWKB(sgeom);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_GeomFromWKB(byte[] sgeom, int SRID)
+			throws JASPAException {
+
+		Geometry res = JP.ST_GeomFromWKB(sgeom, SRID);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_LineFromMultiPoint(byte[] geometry)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(geometry);
+		Geometry res = JP.ST_LineFromMultiPoint(geom);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_MakePolygon(byte[] geometry)
+			throws JASPAException {
+
+		return ST_MakePolygon(geometry, (byte[]) null);
+	}
+
+	public static byte[] ST_Polygon(byte[] sgeom, int SRID)
+			throws JASPAException {
+
+		Geometry geomShell = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_Polygon(geomShell, SRID);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_MakePolygon(byte[] sgeomShell, byte[] sgeomHoles)
+			throws JASPAException {
+
+		Geometry shell = Core.getJTSGeometryFromGBLOB(sgeomShell);
+		Geometry holes = Core.getJTSGeometryFromGBLOB(sgeomHoles);
+		Geometry res = JP.ST_MakePolygon(shell, holes);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_MakeBox2D(byte[] spointGeom0, byte[] spointGeom1)
+			throws JASPAException {
+
+		Geometry geom0 = Core.getJTSGeometryFromGBLOB(spointGeom0);
+		if (Core.errorIfNotPoint(geom0, 1)) return null;
+
+		Geometry geom1 = Core.getJTSGeometryFromGBLOB(spointGeom1);
+		if (Core.errorIfNotPoint(geom0, 2)) return null;
+
+		Geometry res = JP.ST_MakeBox2D((Point) geom0, (Point) geom1);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_MakeBox3D(byte[] spointGeom0, byte[] spointGeom1)
+			throws JASPAException {
+
+		Geometry geom0 = Core.getJTSGeometryFromGBLOB(spointGeom0);
+		if (Core.errorIfNotPoint(geom0, 1)) return null;
+
+		Geometry geom1 = Core.getJTSGeometryFromGBLOB(spointGeom1);
+		if (Core.errorIfNotPoint(geom0, 2)) return null;
+
+		Geometry res = JP.ST_MakeBox3D((Point) geom0, (Point) geom1);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	/*
+	 * ============================================================================ =========
+	 * 
+	 * JASPA Geometry Processing Functions
+	 * 
+	 * ============================================================================ ===========
+	 */
+
+	public static byte[] ST_Collect(byte[] sgeom0, byte[] sgeom1)
+			throws JASPAException {
+
+		byte[][] geoms = new byte[2][];
+		geoms[0] = sgeom0;
+		geoms[1] = sgeom1;
+
+		return ST_Collect(geoms);
+	}
+
+	public static byte[] ST_Collect(byte[][] sgeomArray)
+			throws JASPAException {
+
+		if (sgeomArray == null || sgeomArray.length == 0) return null;
+		Geometry res = null;
+
+		List<Geometry> geomList = new ArrayList<Geometry>();
+
+		for (int i = 0; i < sgeomArray.length; i++) {
+			Geometry geom = Core.getJTSGeometryFromGBLOB(sgeomArray[i]);
+			if (!Core.isEmptyOrNullGeometry(geom)) {
+				geomList.add(geom);
+			}
+		}
+
+		if (geomList.size() > 0) {
+			res = Core.collectJTSGeometry(geomList, false, true, false);
+		}
+
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_Shift_Longitude(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_Shift_Longitude(geom);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_Intersection(byte sgeom0[], byte sgeom1[])
+			throws JASPAException {
+
+		Geometry geom0 = Core.getJTSGeometryFromGBLOB(sgeom0);
+		Geometry geom1 = Core.getJTSGeometryFromGBLOB(sgeom1);
+
+		Geometry res = JP.ST_Intersection(geom0, geom1);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_SelfIntersection(byte[] sgeom)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_SelfIntersection(geom);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_Union(byte sgeom0[], byte sgeom1[])
+			throws JASPAException {
+
+		Geometry geom0 = Core.getJTSGeometryFromGBLOB(sgeom0);
+		Geometry geom1 = Core.getJTSGeometryFromGBLOB(sgeom1);
+		Geometry res = JP.ST_Union(geom0, geom1);
+
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_Union(byte sgeomArray[][])
+			throws JASPAException {
+
+		if (sgeomArray == null || sgeomArray.length == 0) return null;
+
+		List<Geometry> geomList = new ArrayList<Geometry>();
+		int size = sgeomArray.length;
+
+		for (int i = 0; i < size; i++) {
+			geomList.add(Core.getJTSGeometryFromGBLOB(sgeomArray[i]));
+		}
+
+		if (GeomProperties.errorIfDifferentSRIDorCoorDim(geomList)) return null;
+
+		Geometry res = CascadedPolygonUnion.union(geomList);
+		if (res != null) {
+			res.setSRID(geomList.get(0).getSRID());
+		}
+
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_DelaunayTriangles(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_DelaunayTriangles(geom);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_Difference(byte sgeom0[], byte sgeom1[])
+			throws JASPAException {
+
+		Geometry geom0 = Core.getJTSGeometryFromGBLOB(sgeom0);
+		Geometry geom1 = Core.getJTSGeometryFromGBLOB(sgeom1);
+		Geometry res = JP.ST_Difference(geom0, geom1);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_SymDifference(byte sgeom0[], byte sgeom1[])
+			throws JASPAException {
+
+		Geometry geom0 = Core.getJTSGeometryFromGBLOB(sgeom0);
+		Geometry geom1 = Core.getJTSGeometryFromGBLOB(sgeom1);
+		Geometry res = JP.ST_SymDifference(geom0, geom1);
+
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_ConvexHull(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom0 = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_ConvexHull(geom0);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_BuildArea(byte arg0[])
+			throws JASPAException {
+
+		Geometry geom0 = Core.getJTSGeometryFromGBLOB(arg0);
+
+		Geometry res = JP.ST_BuildArea(geom0);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_Buffer(byte sgeom[], double radius)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_Buffer(geom, radius);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_Buffer(byte sgeom[], double radius, int nQuadrantSegments)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_Buffer(geom, radius, nQuadrantSegments);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	/*
+	 * SELECT ST_Npoints(the_geom) As np_before, ST_NPoints(ST_Simplify(the_geom,0.1)) As
+	 * np01_notbadcircle, ST_NPoints(ST_Simplify(the_geom,0.5)) As
+	 * np05_notquitecircle,ST_NPoints(ST_Simplify(the_geom,1)) A s np1_octagon,
+	 * ST_NPoints(ST_Simplify(the_geom,10)) As np10_triangle,(ST_Simplify(the_geom,100) is null) As
+	 * np100_geometrygoesaway FROM (SELECT ST_Buffer(st_geomfromtext('POINT(1 3)'), 10,12) As
+	 * the_geom) As foo;
+	 */
+	public static byte[] ST_Simplify(byte sgeom[], double distance)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_Simplify(geom, distance);
+
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_SimplifyPreserveTopology(byte sgeom[], double distance)
+			throws JASPAException {
+
+		Geometry geom0 = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_SimplifyPreserveTopology(geom0, distance);
+
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	// JASPA4PG with serialized geometry functions
+	public static byte[] ST_MinimumBoundingCircleExample(byte[] inputgeom, int segs_per_quarter)
+			throws JASPAException {
+
+		byte[] hull;
+		byte[] ring;
+		byte[] center = null; // Eclipse needs to initialize variable
+		double radius;
+		double dist;
+		double d;
+		int idx1 = 0; // Eclipse needs to initialize variable
+		int idx2 = 0; // Eclipse needs to initialize variable
+		byte[] l1;
+		byte[] l2;
+		byte[] p1;
+		byte[] p2;
+		double a1;
+		double a2;
+
+		// First compute the ConvexHull of the geometry
+		hull = ST_ConvexHull(inputgeom);
+
+		// A point really has no MBC
+		String geomTypeHull = ST_GeometryType(hull);
+		if (geomTypeHull.equals("ST_Point")) return null;
+
+		// convert the hull perimeter to a linestring so we can manipulate
+		// individual points
+		// If its already a linestring force it to a closed linestring
+		ring = (geomTypeHull.equals("ST_LineString")) ? ST_AddPoint(hull, ST_StartPoint(hull))
+				: ST_ExteriorRing(hull);
+
+		int ringNumPoints = ST_NumPoints(ring);
+		dist = 0;
+
+		// Brute Force - check every pair
+		for (int i = 1; i <= ringNumPoints - 2; i++) {
+			for (int j = i; j <= ringNumPoints - 1; j++) {
+				d = ST_Distance(ST_PointN(ring, i), ST_PointN(ring, j));
+				if (d > dist) {
+					dist = d;
+					idx1 = i;
+					idx2 = j;
+				}
+			}
+		}
+
+		// We now have the diameter of the convex hull. The following line
+		// returns it if desired.
+		// RETURN MakeLine(PointN(ring,idx1),PointN(ring,idx2));
+
+		// Now for the Minimum Bounding Circle. Since we know the two points
+		// furthest from each
+		// other, the MBC must go through those two points. Start with those
+		// points as a diameter of a circle.
+
+		// The radius is half the distance between them and the center is midway
+		// between them
+		radius = ST_Distance(ST_PointN(ring, idx1), ST_PointN(ring, idx2)) / 2.0;
+		center = ST_Line_Interpolate_Point(ST_MakeLine(ST_PointN(ring, idx1), ST_PointN(ring, idx2)),
+				0.5);
+
+		// Loop through each vertex and check if the distance from the center to
+		// the point
+		// is greater than the current radius.
+		for (int k = 1; k <= ringNumPoints - 1; k++) {
+			if ((k != idx1) && (k != idx2)) {
+				dist = ST_Distance(center, ST_PointN(ring, k));
+				if (dist > radius) {
+					// We have to expand the circle. The new circle must pass
+					// trhough
+					// three points - the two original diameters and this point.
+
+					// Draw a line from the first diameter to this point
+					l1 = ST_MakeLine(ST_PointN(ring, idx1), ST_PointN(ring, k));
+					// Compute the midpoint
+					p1 = ST_Line_Interpolate_Point(l1, 0.5);
+					// Rotate the line 90 degrees around the midpoint
+					// (perpendicular bisector)
+					l1 = ST_Translate(ST_Rotate(ST_Translate(l1, -ST_X(p1), -ST_Y(p1)), Math.PI / 2),
+							ST_X(p1), ST_Y(p1));
+					// Compute the azimuth of the bisector
+					a1 = ST_Azimuth(ST_PointN(l1, 1), ST_PointN(l1, 2));
+					// Extend the line in each direction the new computed
+					// distance to insure they will intersect
+					l1 = ST_AddPoint(
+							l1,
+							ST_MakePoint(ST_X(ST_PointN(l1, 2)) + Math.sin(a1) * dist,
+									ST_Y(ST_PointN(l1, 2)) + Math.cos(a1) * dist), -1);
+					l1 = ST_AddPoint(
+							l1,
+							ST_MakePoint(ST_X(ST_PointN(l1, 1)) - Math.sin(a1) * dist,
+									ST_Y(ST_PointN(l1, 1)) - Math.cos(a1) * dist), 0);
+
+					// Repeat for the line from the point to the other diameter
+					// point
+					l2 = ST_MakeLine(ST_PointN(ring, idx2), ST_PointN(ring, k));
+					p2 = ST_Line_Interpolate_Point(l2, 0.5);
+					l2 = ST_Translate(ST_Rotate(ST_Translate(l2, -ST_X(p2), -ST_Y(p2)), Math.PI / 2),
+							ST_X(p2), ST_Y(p2));
+					a2 = ST_Azimuth(ST_PointN(l2, 1), ST_PointN(l2, 2));
+					l2 = ST_AddPoint(
+							l2,
+							ST_MakePoint(ST_X(ST_PointN(l2, 2)) + Math.sin(a2) * dist,
+									ST_Y(ST_PointN(l2, 2)) + Math.cos(a2) * dist), -1);
+					l2 = ST_AddPoint(
+							l2,
+							ST_MakePoint(ST_X(ST_PointN(l2, 1)) - Math.sin(a2) * dist,
+									ST_Y(ST_PointN(l2, 1)) - Math.cos(a2) * dist), 0);
+
+					// The new center is the intersection of the two bisectors
+					center = ST_Intersection(l1, l2);
+					// The new radius is the distance to any of the three points
+					radius = ST_Distance(center, ST_PointN(ring, idx1));
+				}
+			}
+		}
+
+		return ST_Buffer(center, radius, segs_per_quarter);
+	}
+
+	// PLPGSQL (from PostGIS source code)
+	// The folowing PostGIS original code works perfectly in JASPA.
+	/*
+	 * CREATE OR REPLACE FUNCTION ST_MinimumBoundingCircle(inputgeom geometry, segs_per_quarter
+	 * integer) RETURNS geometry AS $BODY$ DECLARE hull geometry; ring geometry; center geometry;
+	 * radius DOUBLE PRECISION; dist DOUBLE PRECISION; d DOUBLE PRECISION; idx1 integer; idx2
+	 * integer; l1 geometry; l2 geometry; p1 geometry; p2 geometry; a1 DOUBLE PRECISION; a2 DOUBLE
+	 * PRECISION;
+	 * 
+	 * 
+	 * BEGIN -- First compute the ConvexHull of the geometry hull = ST_ConvexHull(inputgeom); --A
+	 * point really has no MBC IF ST_GeometryType(hull) = 'ST_Point' THEN RETURN hull; END IF; --
+	 * convert the hull perimeter to a linestring so we can manipulate individual points --If its
+	 * already a linestring force it to a closed linestring ring = CASE WHEN ST_GeometryType(hull) =
+	 * 'ST_LineString' THEN ST_AddPoint(hull, ST_StartPoint(hull)) ELSE ST_ExteriorRing(hull) END;
+	 * 
+	 * dist = 0; -- Brute Force - check every pair FOR i in 1 .. (ST_NumPoints(ring)-2) LOOP FOR j in
+	 * i .. (ST_NumPoints(ring)-1) LOOP d = ST_Distance(ST_PointN(ring,i),ST_PointN(ring,j)); --
+	 * Check the distance and update if larger IF (d > dist) THEN dist = d; idx1 = i; idx2 = j; END
+	 * IF; END LOOP; END LOOP; -- We now have the diameter of the convex hull. The following line
+	 * returns it if desired. -- RETURN MakeLine(PointN(ring,idx1),PointN(ring,idx2)); -- Now for the
+	 * Minimum Bounding Circle. Since we know the two points furthest from each -- other, the MBC
+	 * must go through those two points. Start with those points as a diameter of a circle. -- The
+	 * radius is half the distance between them and the center is midway between them radius =
+	 * ST_Distance(ST_PointN(ring,idx1),ST_PointN(ring,idx2)) / 2.0; center =
+	 * ST_Line_interpolate_point (ST_MakeLine(ST_PointN(ring,idx1),ST_PointN(ring,idx2)),0.5); --
+	 * Loop through each vertex and check if the distance from the center to the point -- is greater
+	 * than the current radius. FOR k in 1 .. (ST_NumPoints(ring)-1) LOOP IF(k <> idx1 and k <> idx2)
+	 * THEN dist = ST_Distance(center,ST_PointN(ring,k)); IF (dist > radius) THEN -- We have to
+	 * expand the circle. The new circle must pass trhough -- three points - the two original
+	 * diameters and this point. -- Draw a line from the first diameter to this point l1 =
+	 * ST_Makeline(ST_PointN(ring,idx1),ST_PointN(ring,k)); -- Compute the midpoint p1 =
+	 * ST_line_interpolate_point(l1,0.5); -- Rotate the line 90 degrees around the midpoint
+	 * (perpendicular bisector) l1 = ST_Translate(ST_Rotate
+	 * (ST_Translate(l1,-X(p1),-Y(p1)),pi()/2),X(p1),Y(p1)); -- Compute the azimuth of the bisector
+	 * a1 = ST_Azimuth(ST_PointN(l1,1),ST_PointN(l1,2)); -- Extend the line in each direction the new
+	 * computed distance to insure they will intersect l1 =
+	 * ST_AddPoint(l1,ST_Makepoint(X(ST_PointN(l1,2))+sin
+	 * (a1)*dist,Y(ST_PointN(l1,2))+cos(a1)*dist),-1); l1 = ST_AddPoint(l1,ST_Makepoint
+	 * (X(ST_PointN(l1,1))-sin(a1)*dist,Y(ST_PointN(l1,1))-cos(a1)*dist),0); -- Repeat for the line
+	 * from the point to the other diameter point l2 =
+	 * ST_Makeline(ST_PointN(ring,idx2),ST_PointN(ring,k)); p2 = ST_Line_interpolate_point(l2,0.5);
+	 * l2 = ST_Translate(ST_Rotate(ST_Translate (l2,-X(p2),-Y(p2)),pi()/2),X(p2),Y(p2)); a2 =
+	 * ST_Azimuth(ST_PointN(l2,1),ST_PointN(l2,2)); l2 = ST_AddPoint(l2,ST_Makepoint
+	 * (X(ST_PointN(l2,2))+sin(a2)*dist,Y(ST_PointN(l2,2))+cos(a2)*dist),-1); l2 =
+	 * ST_AddPoint(l2,ST_Makepoint(X(ST_PointN(l2,1))-sin(a2)*dist,Y(ST_PointN(l2
+	 * ,1))-cos(a2)*dist),0); -- The new center is the intersection of the two bisectors center =
+	 * ST_Intersection(l1,l2); -- The new radius is the distance to any of the three points radius =
+	 * ST_Distance(center,ST_PointN(ring,idx1)); END IF; END IF; END LOOP; --DONE!! Return the MBC
+	 * via the buffer command RETURN ST_Buffer(center,radius,segs_per_quarter);
+	 * 
+	 * END; $BODY$ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+	 */
+
+	// MinimumBoundingCircle with 10000 polygons: PLPGSQL-> 37000 ms
+	// MinimumBoundingCircle with 10000 polygons: JASPA4PG with serialized
+	// geometry functions -> 17800 ms
+	// MinimumBoundingCircle with 10000 polygons: JASPA4PG with deserialized
+	// geometry functions -> 9900 ms
+	// MinimumBoundingCircle with 10000 polygons (POSTGIS): PLPGSQL-> 20600 ms
+	public static byte[] ST_MinimumBoundingCircle(byte[] sgeom, int segsQuarter)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_MinimumBoundingCircle(geom, segsQuarter);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_MinimumBoundingCircle(byte[] sgeom)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_MinimumBoundingCircle(geom, 48);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_Polygonize(byte[][] sgeomArray)
+			throws JASPAException {
+
+		List<Geometry> geomList = Core.gblobArray2geomList(sgeomArray);
+		Geometry res = JP.ST_Polygonize(geomList);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	/*
+	 * ============================================================================ =========
+	 * 
+	 * JASPA Linear Referencing
+	 * 
+	 * ============================================================================ ===========
+	 */
+	// PostGIS interpolates M but jaspa does not. Check JTS linear referencing
+	// out. LinearLocation.java
+	// Fixed
+	public static byte[] ST_Line_Interpolate_Point(byte sgeom[], double fraction)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_Line_Interpolate_Point(geom, fraction);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_Line_Substring(byte sgeom[], double startFraction, double endFraction)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_Line_Substring(geom, startFraction, endFraction);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static Double ST_Line_Locate_Point(byte sgeom[], byte spointGeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry pointGeom = Core.getJTSGeometryFromGBLOB(spointGeom);
+		if (Core.errorIfNotPoint(pointGeom, 2)) return null;
+
+		return JP.ST_Line_Locate_Point(geom, (Point) pointGeom);
+	}
+
+	public static byte[] ST_Project_Point(byte sgeom[], byte spointGeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry pointGeom = Core.getJTSGeometryFromGBLOB(spointGeom);
+		if (Core.errorIfNotPoint(pointGeom, 2)) return null;
+
+		Geometry res = JP.ST_Project_Point(geom, (Point) pointGeom);
+
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_Locate_Along_Measure(byte sgeom[], double measure)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_Locate_Along_Measure(geom, measure);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_Locate_Between_Measures(
+			byte sgeom[], double measureStart, double measureEnd)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_Locate_Between_Measures(geom, measureStart, measureEnd);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_Locate_Along_Elevation(byte sgeom[], double measure)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_Locate_Along_Elevation(geom, measure);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_Locate_Between_Elevations(
+			byte sgeom[], double measureStart, double measureEnd)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_Locate_Between_Elevations(geom, measureStart, measureEnd);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	/*
+	 * ============================================================================ =========
+	 * 
+	 * JASPA Spatial Relationships and Measurements
+	 * 
+	 * ============================================================================ ===========
+	 */
+
+	public static byte[] ST_ClosestPoint(byte[] sgeom0, byte[] sgeom1)
+			throws JASPAException {
+
+		Geometry geom0 = Core.getJTSGeometryFromGBLOB(sgeom0);
+		Geometry geom1 = Core.getJTSGeometryFromGBLOB(sgeom1);
+
+		Geometry res = JP.ST_ClosestPoint(geom0, geom1);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static Double ST_Distance(byte[] sgeom0, byte[] sgeom1)
+			throws JASPAException {
+
+		Geometry geom0 = Core.getJTSGeometryFromGBLOB(sgeom0);
+		Geometry geom1 = Core.getJTSGeometryFromGBLOB(sgeom1);
+
+		return JP.ST_Distance(geom0, geom1);
+	}
+
+	public static Double ST_Distance_Sphere(byte[] sgeom0, byte[] sgeom1)
+			throws JASPAException {
+
+		Geometry geom0 = Core.getJTSGeometryFromGBLOB(sgeom0);
+		Geometry geom1 = Core.getJTSGeometryFromGBLOB(sgeom1);
+		return JP.ST_Distance_Sphere(geom0, geom1);
+	}
+
+	public static Double ST_Distance_Spheroid(byte sgeom0[], byte sgeom1[])
+			throws JASPAException {
+
+		Geometry geom0 = Core.getJTSGeometryFromGBLOB(sgeom0);
+		Geometry geom1 = Core.getJTSGeometryFromGBLOB(sgeom1);
+
+		return JP.ST_Distance_Spheroid(geom0, geom1);
+	}
+
+	public static Double ST_Distance_Spheroid(byte sgeom0[], byte sgeom1[], String wktSpheroid)
+			throws JASPAException {
+
+		Geometry pointGeom0 = Core.getJTSGeometryFromGBLOB(sgeom0);
+		Geometry pointGeom1 = Core.getJTSGeometryFromGBLOB(sgeom1);
+
+		return JP.ST_Distance_Spheroid(pointGeom0, pointGeom1, wktSpheroid);
+	}
+
+	public static Boolean ST_DWithin(byte sgeom0[], byte sgeom1[], double distance)
+			throws JASPAException {
+
+		Geometry geom0 = Core.getJTSGeometryFromGBLOB(sgeom0);
+		Geometry geom1 = Core.getJTSGeometryFromGBLOB(sgeom1);
+
+		return JP.ST_DWithin(geom0, geom1, distance);
+	}
+
+	public static Double ST_HausdorffDistance(byte[] sgeom0, byte[] sgeom1)
+			throws JASPAException {
+
+		Geometry geom0 = Core.getJTSGeometryFromGBLOB(sgeom0);
+		Geometry geom1 = Core.getJTSGeometryFromGBLOB(sgeom1);
+
+		return JP.ST_HausdorffDistance(geom0, geom1);
+	}
+
+	public static Double ST_HausdorffDistance(byte[] sgeom0, byte[] sgeom1, double densityFrac)
+			throws JASPAException {
+
+		Geometry geom0 = Core.getJTSGeometryFromGBLOB(sgeom0);
+		Geometry geom1 = Core.getJTSGeometryFromGBLOB(sgeom1);
+
+		return JP.ST_HausdorffDistance(geom0, geom1, densityFrac);
+	}
+
+	public static Double ST_Length3D_Spheroid(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		return JP.ST_Length3D_Spheroid(geom);
+	}
+
+	public static Double ST_Length2D_Spheroid(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		return JP.ST_Length2D_Spheroid(geom);
+	}
+
+	public static Double ST_Length2D_Spheroid(byte sgeom[], String wktEllipsoid)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		return JP.ST_Length2D_Spheroid(geom, wktEllipsoid);
+	}
+
+	public static Double ST_Length3D_Spheroid(byte sgeom[], String wktEllipsoid)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		return JP.ST_Length3D_Spheroid(geom, wktEllipsoid);
+	}
+
+	public static Boolean ST_Intersects(byte sgeom0[], byte sgeom1[])
+			throws JASPAException {
+
+		Geometry geom0 = Core.getJTSGeometryFromGBLOB(sgeom0);
+		Geometry geom1 = Core.getJTSGeometryFromGBLOB(sgeom1);
+		return JP.ST_Intersects(geom0, geom1);
+	}
+
+	public static Boolean ST_Contains(byte sgeom0[], byte sgeom1[])
+			throws JASPAException {
+
+		Geometry geom0 = Core.getJTSGeometryFromGBLOB(sgeom0);
+		Geometry geom1 = Core.getJTSGeometryFromGBLOB(sgeom1);
+
+		return JP.ST_Contains(geom0, geom1);
+	}
+
+	public static Boolean ST_Covers(byte sgeom0[], byte sgeom1[])
+			throws JASPAException {
+
+		Geometry geom0 = Core.getJTSGeometryFromGBLOB(sgeom0);
+		Geometry geom1 = Core.getJTSGeometryFromGBLOB(sgeom1);
+		return JP.ST_Covers(geom0, geom1);
+	}
+
+	public static Boolean ST_Within(byte sgeom0[], byte sgeom1[])
+			throws JASPAException {
+
+		Geometry geom0 = Core.getJTSGeometryFromGBLOB(sgeom0);
+		Geometry geom1 = Core.getJTSGeometryFromGBLOB(sgeom1);
+		return JP.ST_Within(geom0, geom1);
+	}
+
+	public static Boolean ST_CoveredBy(byte sgeom0[], byte sgeom1[])
+			throws JASPAException {
+
+		Geometry geom0 = Core.getJTSGeometryFromGBLOB(sgeom0);
+		Geometry geom1 = Core.getJTSGeometryFromGBLOB(sgeom1);
+		return JP.ST_CoveredBy(geom0, geom1);
+	}
+
+	public static Boolean ST_Crosses(byte sgeom0[], byte sgeom1[])
+			throws JASPAException {
+
+		Geometry geom0 = Core.getJTSGeometryFromGBLOB(sgeom0);
+		Geometry geom1 = Core.getJTSGeometryFromGBLOB(sgeom1);
+		return JP.ST_Crosses(geom0, geom1);
+	}
+
+	public static Boolean ST_Disjoint(byte sgeom0[], byte sgeom1[])
+			throws JASPAException {
+
+		Geometry geom0 = Core.getJTSGeometryFromGBLOB(sgeom0);
+		Geometry geom1 = Core.getJTSGeometryFromGBLOB(sgeom1);
+		return JP.ST_Disjoint(geom0, geom1);
+	}
+
+	public static Boolean ST_Equals(byte sgeom0[], byte sgeom1[])
+			throws JASPAException {
+
+		Geometry geom0 = Core.getJTSGeometryFromGBLOB(sgeom0);
+		Geometry geom1 = Core.getJTSGeometryFromGBLOB(sgeom1);
+		return JP.ST_Equals(geom0, geom1);
+	}
+
+	public static Boolean ST_Overlaps(byte sgeom0[], byte sgeom1[])
+			throws JASPAException {
+
+		Geometry geom0 = Core.getJTSGeometryFromGBLOB(sgeom0);
+		Geometry geom1 = Core.getJTSGeometryFromGBLOB(sgeom1);
+		return JP.ST_Overlaps(geom0, geom1);
+	}
+
+	public static Boolean ST_Touches(byte sgeom0[], byte sgeom1[])
+			throws JASPAException {
+
+		Geometry geom0 = Core.getJTSGeometryFromGBLOB(sgeom0);
+		Geometry geom1 = Core.getJTSGeometryFromGBLOB(sgeom1);
+
+		return JP.ST_Touches(geom0, geom1);
+	}
+
+	public static String ST_Relate(byte sgeom0[], byte sgeom1[])
+			throws JASPAException {
+
+		Geometry geom0 = Core.getJTSGeometryFromGBLOB(sgeom0);
+		Geometry geom1 = Core.getJTSGeometryFromGBLOB(sgeom1);
+		return JP.ST_Relate(geom0, geom1);
+	}
+
+	public static Boolean ST_Relate(byte sgeom0[], byte sgeom1[], String pattern)
+			throws JASPAException {
+
+		Geometry geom0 = Core.getJTSGeometryFromGBLOB(sgeom0);
+		Geometry geom1 = Core.getJTSGeometryFromGBLOB(sgeom1);
+		return JP.ST_Relate(geom0, geom1, pattern);
+	}
+
+	public static Boolean ST_ContainsProperly(byte sgeom0[], byte sgeom1[])
+			throws JASPAException {
+
+		Geometry geom0 = Core.getJTSGeometryFromGBLOB(sgeom0);
+		Geometry geom1 = Core.getJTSGeometryFromGBLOB(sgeom1);
+		return JP.ST_ContainsProperly(geom0, geom1);
+	}
+
+	public static Double ST_Area(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		return JP.ST_Area(geom);
+	}
+
+	/**
+	 * OGC defines this method just for lineal geometries. JTS returns values for all the geometries:
+	 * POINT, MULTIPOINT -> 0 LINE, LINESTRING -> LENGTH POLYGON, MULTIPOLYGON -> PERIMETER
+	 * GEOMETRYCOLLECTION -> SUM of PERIMETERS and LENGTH OGC does not define the method ST_Perimeter
+	 * but SQL/MM does ST_Perimeter is defined as an alias of ST_Length in jaspa
+	 * 
+	 * @param sgeom
+	 * @return @
+	 */
+	public static Double ST_Length(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		return JP.ST_Length(geom);
+	}
+
+	public static Double ST_Length3D(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		return JP.ST_Length3D(geom);
+	}
+
+	/**
+	 * From JTS:"Computes an interior point of this Geometry. An interior point is guaranteed to lie
+	 * in the interior of the Geometry, if it possible to calculate such a point exactly. Otherwise,
+	 * the point may lie on the boundary of the geometry" Extend SFS to work with geometries of
+	 * dimension 0 and 1.
+	 * 
+	 * @param sgeom
+	 * @return Point on the surface (Interior or Boundary) @
+	 */
+	public static byte[] ST_PointOnSurface(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_PointOnSurface(geom);
+
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_Centroid(byte arg0[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(arg0);
+		Geometry res = JP.ST_Centroid(geom);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static Double ST_Azimuth(byte arg0[], byte arg1[])
+			throws JASPAException {
+
+		Geometry geom0 = Core.getJTSGeometryFromGBLOB(arg0);
+		if (Core.errorIfNotPoint(geom0, 1)) return null;
+
+		Geometry geom1 = Core.getJTSGeometryFromGBLOB(arg1);
+		if (Core.errorIfNotPoint(geom1, 2)) return null;
+
+		return JP.ST_Azimuth((Point) geom0, (Point) geom1);
+	}
+
+	public static byte[] ST_MultiCentroid(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_MultiCentroid(geom);
+
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_PointOnBoundary(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_PointOnBoundary(geom);
+
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static Boolean ST_OrderingEquals(byte sgeom0[], byte sgeom1[]) {
+
+		// The SQL function ST_geometry_same has the STRICT parameter so the
+		// function will return NULL
+		// in the case some of the arguments is NULL
+
+		return Core.isEqualsGBLOB(sgeom0, sgeom1);
+	}
+
+	public static byte[] ST_ShortestLine(byte[] sgeom0, byte[] sgeom1)
+			throws JASPAException {
+
+		Geometry geom0 = Core.getJTSGeometryFromGBLOB(sgeom0);
+		Geometry geom1 = Core.getJTSGeometryFromGBLOB(sgeom1);
+
+		Geometry res = JP.ST_ShortestLine(geom0, geom1);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	/*
+	 * ============================================================================ =========
+	 * 
+	 * JASPA Geometry Accessors
+	 * 
+	 * ============================================================================ ===========
+	 */
+
+	public static Double ST_XMax(byte[] sgeom)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		return JP.ST_XMax(geom);
+	}
+
+	public static Double ST_YMax(byte[] sgeom)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		return JP.ST_YMax(geom);
+	}
+
+	public static Double ST_ZMax(byte[] sgeom)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		return JP.ST_ZMax(geom);
+	}
+
+	public static Double ST_XMin(byte[] sgeom)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		return JP.ST_XMin(geom);
+	}
+
+	public static Double ST_YMin(byte[] sgeom)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		return JP.ST_YMin(geom);
+	}
+
+	public static Double ST_ZMin(byte[] sgeom)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		return JP.ST_ZMin(geom);
+	}
+
+	// Binary version. To find the JTS version look for JP.ST_GeometryType
+	public static String geometryType(byte sgeom[])
+			throws JASPAException {
+
+		if (sgeom == null) return null;
+
+		int geomInfo[] = new int[3];
+		GBLOB2JTS.instance().read(sgeom, geomInfo);
+		return SpatialTableInfo.getGeomTypeTxtFromGeomType(geomInfo[2]);
+
+		// OGC Text geometry types
+		/*
+		 * Geometry geom = Core.getJTSGeometryFromJASPABinary(sgeom); return
+		 * SpatialTableInfo.getGeomTypeTxtFromGeomType(geom);
+		 */
+	}
+
+	// Binary version. To find the JTS version look for JP.ST_GeometryType
+	public static String ST_GeometryType(byte sgeom[])
+			throws JASPAException {
+
+		if (sgeom == null) return null;
+
+		int geomInfo[] = new int[3];
+		GBLOB2JTS.instance().read(sgeom, geomInfo);
+		return SpatialTableInfo.getST_GeomTypeTxtFromGeomType(geomInfo[2]);
+
+		/*
+		 * Geometry geom = Core.getJTSGeometryFromJASPABinary(sgeom); return
+		 * SpatialTableInfo.getST_GeomTypeTxtFromGeomType(geom);
+		 */
+
+	}
+
+	// Binary version. To find the JTS version look for JP.ST_SRID
+	public static Integer ST_SRID(byte sgeom[])
+			throws JASPAException {
+
+		if (sgeom == null) return null;
+
+		int geomInfo[] = new int[3];
+		GBLOB2JTS.instance().read(sgeom, geomInfo);
+		return geomInfo[0];
+
+		/*
+		 * Geometry geom = Core.getJTSGeometryFromJASPABinary(sgeom); return JP.ST_SRID(geom);
+		 */
+	}
+
+	// Geometry dimension
+	public static Integer ST_Dimension(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		return JP.ST_Dimension(geom);
+	}
+
+	// Coordinate dimension
+	// Alias: ST_NDims
+	// Alias: NDims (PostGIS compatibilty)
+	// Binary version. To find the JTS version look for JP.ST_CoordDim
+	public static Integer ST_CoordDim(byte sgeom[])
+			throws JASPAException {
+
+		if (sgeom == null) return null;
+
+		int geomInfo[] = new int[3];
+		GBLOB2JTS.instance().read(sgeom, geomInfo);
+		return geomInfo[1];
+		/*
+		 * Geometry geom = Core.getJTSGeometryFromJASPABinary(sgeom); return JP.ST_CoordDim(geom);
+		 */
+	}
+
+	public static Boolean ST_IsValid(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		return JP.ST_IsValid(geom);
+	}
+
+	public static byte[] ST_Boundary(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_Boundary(geom);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	/**
+	 * Returns the last point of a LINESTRING geometry as a POINT. POINT, MULTIPOINT -> null
+	 * GEOMETRYCOLLECTION -> null MULTILINESTRING -> last point of the last sub-LineString
+	 * 
+	 * @param arg0
+	 * @return POINT @
+	 */
+	public static byte[] ST_EndPoint(byte arg0[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(arg0);
+
+		Geometry res = JP.ST_EndPoint(geom);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	/**
+	 * Returns the first point of a LINESTRING geometry as a POINT. POINT, MULTIPOINT -> null
+	 * GEOMETRYCOLLECTION -> null MULTILINESTRING -> first point of the first sub-LineString
+	 * 
+	 * @param sgem
+	 * @return POINT @
+	 */
+	public static byte[] ST_StartPoint(byte sgem[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgem);
+		Geometry res = JP.ST_StartPoint(geom);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	/**
+	 * @param sgeom
+	 * @return @
+	 */
+	public static byte[] ST_ExteriorRing(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom0 = Core.getJTSGeometryFromGBLOB(sgeom);
+		if (geom0 == null) return null;
+
+		Geometry res = JP.ST_ExteriorRing(geom0);
+
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_GeometryN(byte sgeom[], int geomIndex)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_GeometryN(geom, geomIndex);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	/**
+	 * @param sgeom
+	 * @param ringIndex
+	 * @return @
+	 */
+	public static byte[] ST_InteriorRingN(byte sgeom[], int ringIndex)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_InteriorRingN(geom, ringIndex);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static Boolean ST_IsClosed(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		return JP.ST_IsClosed(geom);
+	}
+
+	/**
+	 * jaspa converts the empty geometries to null. This functions will not return false ever
+	 * 
+	 * @param sgeom
+	 * @return NULL is the geometry is null or empty TRUE if the geometry has coordinates FALSE if
+	 *         the geometry does not have any coordinate @
+	 */
+	public static Boolean ST_IsEmpty(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		return JP.ST_IsEmpty(geom);
+	}
+
+	public static Boolean ST_IsRing(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		return JP.ST_IsRing(geom);
+	}
+
+	// isSimple is defined in the parent object Geometry in OGC and JTS
+	public static Boolean ST_IsSimple(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		return JP.ST_IsSimple(geom);
+	}
+
+	public static String ST_IsValidReason(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		return JP.ST_IsValidReason(geom);
+	}
+
+	public static byte[] ST_RepeatedPoints(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_RepeatedPoints(geom);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static Double ST_X(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		if (Core.errorIfNotPoint(geom, 0)) return null;
+
+		return JP.ST_X((Point) geom);
+	}
+
+	public static Double ST_Y(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		if (Core.errorIfNotPoint(geom, 0)) return null;
+
+		return JP.ST_Y((Point) geom);
+	}
+
+	public static Double ST_Z(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		if (Core.errorIfNotPoint(geom, 0)) return null;
+
+		return JP.ST_Z((Point) geom);
+	}
+
+	public static Double ST_M(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		if (Core.errorIfNotPoint(geom, 0)) return null;
+
+		return JP.ST_M((Point) geom);
+	}
+
+	public static Integer ST_ZmFlag(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		return JP.ST_ZmFlag(geom);
+	}
+
+	public static String ST_Summary(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		return JP.ST_Summary(geom);
+	}
+
+	// PostGIS works with MultiLineString or GeometryCollection too, but just
+	// with the first sub-element that is a LineString.
+	/**
+	 * Return the number of points (vertexes) in a geometry.
+	 * <p>
+	 * According with the OGC, this method is just defined with LineString geometries. jaspa extends
+	 * this behavior to work with any type of geometry including GeometryCollection (as JTS library
+	 * does).
+	 * 
+	 * @param sgeom
+	 *           geometry
+	 * @return the number of vertexes. If the geometry is a Multi-Type or GeometryCollection this
+	 *         function will return the sum of the vertexes of all their subelements. If the geometry
+	 *         is null or empty it returns null @ *
+	 * @notes <ul>
+	 *        <li>Implements the OpenGIS Simple Features Implementation Specification for SQL</li>
+	 *        <li>Implements the SQL/MM specification: SQL-MM 3: 7.2.4 <li> <li>Works with any
+	 *        geometry type</li>
+	 *        </ul>
+	 * @alias <ul>
+	 *        <li>ST_NPoints</li> <li>npoints</li> <li>numpoints</li>
+	 *        </ul>
+	 * @see ST_X(byte[])
+	 * @example <code>	 
+		<p>SELECT ST_NumPoints(ST_GeomFromtext('MULTILINESTRING((0 0, 1 1, 1 2, 3 4),(1 2, 3 4))'));
+		<BR> st_numpoints
+		<BR> --------------
+	    <BR>     	6
+		<p> SELECT ST_NumPoints(ST_GeomFromtext('GEOMETRYCOLLECTION(POINT (0 0), LINESTRING(0 0, 1 1, 1 2, 3 4))'));
+		<BR> st_numpoints
+		<BR> --------------
+	    <BR>    		5
+	    
+	 * </code>
+	 */
+	public static Integer ST_NumPoints(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom0 = Core.getJTSGeometryFromGBLOB(sgeom);
+		return JP.ST_NumPoints(geom0);
+	}
+
+	// PostGIS returns the nrigns of the first polygon in multipolygons
+	// Alias: ST_NumInteriorRing
+	public static Integer ST_NumInteriorRings(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		return JP.ST_NumInteriorRings(geom);
+	}
+
+	public static Integer ST_NRings(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		return JP.ST_NRings(geom);
+	}
+
+	// TODO: Devolver 1 si es simple?
+	public static Integer ST_NumGeometries(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		return JP.ST_NumGeometries(geom);
+	}
+
+	public static byte[] ST_PointN(byte sgeom[], int pointIndex)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_PointN(geom, pointIndex);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	/**
+	 * Returns the minimum bounding box for the supplied geometry, as a geometry. The polygon is
+	 * defined by the corner points of the bounding box ((MINX, MINY), (MINX, MAXY), (MAXX, MAXY),
+	 * (MAXX, MINY), (MINX, MINY)). Todo: (jaspa will add a ZMIN/ZMAX coordinate as well). Degenerate
+	 * cases (vertical lines, points) will return a geometry of lower dimension than POLYGON, ie.
+	 * POINT or LINESTRING.
+	 * 
+	 * @param sgeom
+	 * @return @
+	 */
+	/*
+	 * public static byte[] ST_Envelope (byte [] arg0) { Geometry geom0 =
+	 * Core.getJTSGeometryFromEWKBorWKB(arg0); if (geom0 == null) return null;
+	 * 
+	 * //Todo: add the Z and M min/max values if
+	 * (WKBWriter.calculateDimensionOfGeometryCoordinates(geom0) == 2) { }
+	 * 
+	 * //Geometry res = _JTSGeometryFromEnvelope(geom0.getEnvelopeInternal()); Geometry res =
+	 * geom0.getEnvelope(); return Core.getEWKBFromJTSGeometry(res); }
+	 */
+
+	public static byte[] ST_Envelope(byte[] sgeom)
+			throws JASPAException {
+
+		return ST_Expand(sgeom, 0.0);
+	}
+
+	/*
+	 * ============================================================================ =========
+	 * 
+	 * JASPA Geometry Editors
+	 * 
+	 * ============================================================================ ===========
+	 */
+
+	public static byte[] ST_AddPoint(byte sgeom[], byte sgeomPoint[])
+			throws JASPAException {
+
+		return ST_AddPoint(sgeom, sgeomPoint, 0, true);
+	}
+
+	public static byte[] ST_AddPoint(byte sgeom[], byte sgeomPoint[], int pointIndex)
+			throws JASPAException {
+
+		return ST_AddPoint(sgeom, sgeomPoint, pointIndex, false);
+	}
+
+	private static byte[] ST_AddPoint(
+			byte sgeom[], byte sgeomPoint[], int pointIndex, boolean atTheEnd)
+			throws JASPAException {
+
+		if (pointIndex < -1) { throw new JASPAIllegalArgumentException(
+				"The third parameter can not be negative"); }
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		if (geom == null) return null;
+
+		Geometry geom0 = Core.getJTSGeometryFromGBLOB(sgeomPoint);
+		if (Core.errorIfNotPoint(geom0, 2)) return null;
+
+		Geometry res;
+		if (atTheEnd)
+			res = JP.ST_AddPoint(geom, (Point) geom0);
+		else
+			res = JP.ST_AddPoint(geom, (Point) geom0, pointIndex);
+
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_CleanPolygon(byte[] sgeom)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry geomres = JP.ST_CleanPolygon(geom);
+		return Core.getGBLOBFromJTSGeometry(geomres);
+	}
+
+	public static byte[] ST_CollectionExtract(byte[] sgeom, int geomDimension)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_CollectionExtract(geom, geomDimension);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	// Group and extract geometries
+	public static byte[] ST_Extract(byte[] sgeom, int geomDimension)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_Extract(geom, geomDimension);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_Multi(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry geomres = JP.ST_Multi(geom);
+
+		// If the geometry is the same one (already MULTI or GEOMCOLLECTION type)
+		// then dont convert to EWKB
+		return Core.getGBLOBFromJTSGeometry(geomres);
+	}
+
+	public static byte[] ST_NodeLine(byte[] sgeom)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry geomres = JP.ST_NodeLine(geom);
+		return Core.getGBLOBFromJTSGeometry(geomres);
+	}
+
+	/**
+	 * select st_asewkt(st_setsrid(st_makepoint (2,3,4),4)); st_asewkt ----------------------
+	 * SRID=4;POINT (2 3 4)
+	 * 
+	 * @param sgeom
+	 * @param SRID
+	 * @return @
+	 */
+	public static byte[] ST_SetSRID(byte sgeom[], int SRID)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_SetSRID(geom, SRID);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	private static byte[] ST_Force(byte sgeom[], int nDimension)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		if (geom == null) return null;
+
+		if (Core.setDimensionOfGeometryCoordinates(geom, nDimension))
+			return Core.getGBLOBFromJTSGeometry(geom);
+		else
+			// return geometry;
+			return sgeom;
+	}
+
+	public static byte[] ST_Force_2D(byte sgeom[])
+			throws JASPAException {
+
+		return ST_Force(sgeom, 2);
+	}
+
+	public static byte[] ST_Force_3D(byte sgeom[])
+			throws JASPAException {
+
+		return ST_Force(sgeom, 3);
+	}
+
+	public static byte[] ST_Force_4D(byte sgeom[])
+			throws JASPAException {
+
+		return ST_Force(sgeom, 4);
+	}
+
+	public static byte[] ST_Force_3DM(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_Force_3DM(geom);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_Force_Collection(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_Force_Collection(geom);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	// falta comprobaciones
+	public static byte[] ST_Transform(byte sgeom[], int SRID)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_Transform(geom, SRID);
+
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_RotateX(byte sgeom[], double angle)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+
+		Geometry res = JP.ST_RotateX(geom, angle);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_RotateY(byte sgeom[], double angle)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+
+		Geometry res = JP.ST_RotateY(geom, angle);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	// Alias
+	public static byte[] ST_Rotate(byte sgeom[], double angle)
+			throws JASPAException {
+
+		return ST_RotateZ(sgeom, angle);
+	}
+
+	public static byte[] ST_RotateZ(byte sgeom[], double angle)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+
+		Geometry res = JP.ST_RotateZ(geom, angle);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_TransScale(byte sgeom[], double tx, double ty, double hx, double hy)
+			throws JASPAException {
+
+		return ST_Affine(sgeom, hx, 0, 0, hy, tx * hx, ty * hy);
+	}
+
+	public static byte[] ST_TransScale(
+			byte sgeom[], double tx, double ty, double tz, double hx, double hy, double hz)
+			throws JASPAException {
+
+		return ST_Affine(sgeom, hx, 0, 0, 0, hy, 0, 0, 0, hz, tx * hx, ty * hy, tz * hz);
+	}
+
+	public static byte[] ST_Scale(byte sgeom[], double hx, double hy, double hz)
+			throws JASPAException {
+
+		return ST_Affine(sgeom, hx, 0, 0, 0, hy, 0, 0, 0, hz, 0, 0, 0);
+	}
+
+	public static byte[] ST_Scale(byte sgeom[], double hx, double hy)
+			throws JASPAException {
+
+		return ST_Affine(sgeom, hx, 0, 0, hy, 0, 0);
+	}
+
+	public static byte[] ST_Translate(byte sgeom[], double tx, double ty, double tz)
+			throws JASPAException {
+
+		return ST_Affine(sgeom, 1, 0, 0, 0, 1, 0, 0, 0, 1, tx, ty, tz);
+	}
+
+	public static byte[] ST_Translate(byte sgeom[], double tx, double ty)
+			throws JASPAException {
+
+		return ST_Affine(sgeom, 1, 0, 0, 1, tx, ty);
+	}
+
+	public static byte[] ST_Affine(
+			byte sgeom[], double m00, double m01, double m02, double m10, double m11, double m12,
+			double m20, double m21, double m22, double xoff, double yoff, double zoff)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_Affine(geom, m00, m01, m02, m10, m11, m12, m20, m21, m22, xoff, yoff,
+				zoff);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_Affine(
+			byte sgeom[], double m00, double m01, double m10, double m11, double xoff, double yoff)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_Affine(geom, m00, m01, m10, m11, xoff, yoff);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_LineMerge(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_LineMerge(geom);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_RemovePoint(byte sgeom[], int pointIndex)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_RemovePoint(geom, pointIndex);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_Segmentize(byte[] sgeom, double distance)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+
+		Geometry res = JP.ST_Segmentize(geom, distance);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_Snap(byte[] sgeom0, byte[] sgeom1, double tolerance)
+			throws JASPAException {
+
+		Geometry geom0 = Core.getJTSGeometryFromGBLOB(sgeom0);
+		Geometry geom1 = Core.getJTSGeometryFromGBLOB(sgeom1);
+
+		return Core.getGBLOBFromJTSGeometry(JP.ST_Snap(geom0, geom1, tolerance));
+	}
+
+	public static byte[] ST_SnapToGrid(byte[] sgeom, double size)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+
+		Geometry res = JP.ST_SnapToGrid(geom, size);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_SnapToGrid(byte[] sgeom, double sizeX, double sizeY)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+
+		Geometry res = JP.ST_SnapToGrid(geom, sizeX, sizeY);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_SnapToGrid(
+			byte[] sgeom, double originX, double originY, double sizeX, double sizeY)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+
+		Geometry res = JP.ST_SnapToGrid(geom, originX, originY, sizeX, sizeY);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_SnapToGrid(
+			byte[] sgeom, byte[] sgeomorigin, double sizeX, double sizeY, double sizeZ, double sizeM)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry geomorigin = Core.getJTSGeometryFromGBLOB(sgeomorigin);
+		if (Core.errorIfNotPoint(geomorigin, 2)) return null;
+
+		Geometry res = JP.ST_SnapToGrid(geom, (Point) geomorigin, sizeX, sizeY, sizeZ, sizeM);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_SetPoint(byte sgeom[], int index, byte spointGeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry pointGeom = Core.getJTSGeometryFromGBLOB(spointGeom);
+		if (Core.errorIfNotPoint(pointGeom, 3)) return null;
+
+		Geometry res = JP.ST_SetPoint(geom, index, (Point) pointGeom);
+
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static byte[] ST_Reverse(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_Reverse(geom);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	/*
+	 * public static byte[] ST_ForceRHR(byte arg0[]) { Geometry geom0 =
+	 * Core.getJTSGeometryFromEWKBorWKB(arg0); if (geom0 == null) return null;
+	 * 
+	 * if (geom0 instanceof Polygon) { Core.forceRHRPolygon((Polygon) geom0); } else if (geom0
+	 * instanceof MultiPolygon) { int nSubElements = geom0.getNumGeometries();
+	 * 
+	 * if (nSubElements > 0) { for (int i = 0; i < nSubElements; i++) {
+	 * Core.forceRHRPolygon((Polygon) geom0.getGeometryN(i)); } } } else { Core.manageException(new
+	 * jaspaException ("The argument must be a point or a multipoint")); return null; }
+	 * 
+	 * return Core.getEWKBFromJTSGeometry(geom0); }
+	 */
+
+	public static byte[] ST_ForceRHR(byte arg0[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(arg0);
+		Geometry res = JP.ST_ForceRHR(geom);
+
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	/*
+	 * ============================================================================ =========
+	 * 
+	 * JASPA Miscellaneous Functions
+	 * 
+	 * ============================================================================ ===========
+	 */
+		
+	public static byte[] ST_Expand(byte[] sgeom, double distance)
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry res = JP.ST_Expand(geom, distance);
+		return Core.getGBLOBFromJTSGeometry(res);
+	}
+
+	public static Integer ST_Mem_Size(byte[] sgeom)
+			throws JASPAException {
+
+		if (sgeom != null) return sgeom.length;
+		return null;
+	}
+
+	public static Boolean ST_Point_Inside_Circle(
+			byte spointGeom[], double cx, double cy, double radius)
+			throws JASPAException {
+
+		Geometry pointGeom = Core.getJTSGeometryFromGBLOB(spointGeom);
+		if (Core.errorIfNotPoint(pointGeom, 1)) return null;
+
+		return JP.ST_Point_Inside_Circle((Point) pointGeom, cx, cy, radius);
+	}
+
+	public static String ST_AsWKTSRS(int srid) {
+
+		return JP.ST_AsWKTSRS(srid);
+	}
+
+
+	public static byte[] ST_Box2D(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry polygon = JP.ST_Box2D(geom);
+		return Core.getGBLOBFromJTSGeometry(polygon);
+	}
+
+	public static byte[] ST_Box3D(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry polygon = JP.ST_Box3D(geom);
+		return Core.getGBLOBFromJTSGeometry(polygon);
+	}
+
+	public static byte[] ST_Box(byte sgeom[])
+			throws JASPAException {
+
+		Geometry geom = Core.getJTSGeometryFromGBLOB(sgeom);
+		Geometry polygon = JP.ST_Box(geom);
+		return Core.getGBLOBFromJTSGeometry(polygon);
+	}
+
+
+}

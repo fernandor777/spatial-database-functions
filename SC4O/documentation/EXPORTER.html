@@ -1,0 +1,559 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
+<link rel="stylesheet" href="./EXPORTER.css" type="text/css" />
+<title>./documentation/EXPORTER</title>
+<!-- Source: ./install/ -->
+<!-- Generated with ROBODoc Version 4.99.36 (Mar 13 2008) -->
+</head>
+<body>
+<div id="logo">
+<a name="robo_top_of_doc">SPDBA SC4O Exporter Documentation</a>
+</div> <!-- logo -->
+<h3>TABLE OF CONTENTS</h3>
+<ul>
+<li>1. <a href="#robo0">PACKAGE/EXPORTER</a></li>
+<ul>
+<li>1.1. <a href="#robo1">EXPORTER/ATTRIBUTES</a></li>
+<li>1.2. <a href="#robo2">EXPORTER/ExportTables</a></li>
+<li>1.3. <a href="#robo3">EXPORTER/RunCommand</a></li>
+<li>1.4. <a href="#robo4">EXPORTER/WriteGeoJson(RefCursor)</a></li>
+<li>1.5. <a href="#robo5">EXPORTER/WriteGMLFile(RefCursor)</a></li>
+<li>1.6. <a href="#robo6">EXPORTER/WriteKMLFile(RefCursor)</a></li>
+<li>1.7. <a href="#robo7">EXPORTER/WriteShapefile(refCursor)</a></li>
+<li>1.8. <a href="#robo8">EXPORTER/WriteShapefile(varchar2)</a></li>
+<li>1.9. <a href="#robo9">EXPORTER/writeSpreadsheet(RefCursor)</a></li>
+<li>1.10. <a href="#robo10">EXPORTER/writeSpreadsheet(varchar2)</a></li>
+<li>1.11. <a href="#robo11">EXPORTER/WriteTabFile(RefCursor)</a></li>
+<li>1.12. <a href="#robo12">EXPORTER/WriteTabFile(varchar2)</a></li>
+<li>1.13. <a href="#robo13">EXPORTER/WriteTextFile(RefCursor)</a></li>
+</ul>
+</ul>
+<a name="robo0"></a>
+<a name="PACKAGE2fEXPORTER"></a>
+<h1>1.  PACKAGE/EXPORTER [ Modules ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Modules ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>EXPORTER</strong> - This package exposes Java stored procedures that provide spatial data export.
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    A package that allows for spatial data to be exported from within the database to a number of formats.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - January 2008 - Original coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo1"></a>
+<a name="EXPORTER2fATTRIBUTES"></a>
+<h2>1.1.  EXPORTER/ATTRIBUTES [ Variables ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">EXPORTER</a> ] [ Variables ]</p>
+<p class="item_name">ATTRIBUTES</p>
+<p class="item_name">SOURCE</p>
+<pre class="source">  Type refcur_t  Is Ref Cursor<span class="sign">;</span>
+  Type tablist_t Is Table Of user_tab_columns<span class="sign">.</span>TABLE_NAME<span class="sign">%</span>Type<span class="sign">;</span>
+
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span>
+  <span class="sign">-</span><span class="sign">-</span> Excel Spreadssheet export
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span><span class="sign">=</span> 
+
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span>
+  <span class="sign">-</span><span class="sign">-</span> Constants
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span>
+  <span class="sign">-</span><span class="sign">-</span> 1<span class="sign">.</span> Stratification
+  <span class="sign">-</span><span class="sign">-</span>
+  c_HORIZONTAL_STRATIFICATION CONSTANT varchar2<span class="sign">(</span>1<span class="sign">)</span>  <span class="sign">:</span><span class="sign">=</span> <span class="squote">'H'</span><span class="sign">;</span>
+  c_VERTICAL_STRATIFICATION   CONSTANT varchar2<span class="sign">(</span>1<span class="sign">)</span>  <span class="sign">:</span><span class="sign">=</span> <span class="squote">'V'</span><span class="sign">;</span>
+  c_NO_STRATIFICATION         CONSTANT varchar2<span class="sign">(</span>1<span class="sign">)</span>  <span class="sign">:</span><span class="sign">=</span> <span class="squote">'N'</span><span class="sign">;</span>
+
+  <span class="sign">-</span><span class="sign">-</span> 2<span class="sign">.</span> Date<span class="sign">/</span>Time formats
+  <span class="sign">-</span><span class="sign">-</span>
+  c_DATEFORMAT                CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'yyyyMMdd'</span><span class="sign">;</span>
+  c_DATEFORMAT1               CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'M/d/yy'</span><span class="sign">;</span>
+  c_DATEFORMAT2               CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'d-MMM-yy'</span><span class="sign">;</span>
+  c_DATEFORMAT3               CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'d-MMM'</span><span class="sign">;</span>
+  c_DATEFORMAT4               CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'MMM-yy'</span><span class="sign">;</span>
+
+  c_TIMEFORMAT                CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'h:mm a'</span><span class="sign">;</span>
+  c_TIMEFORMAT1               CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'h:mm:ss a'</span><span class="sign">;</span>
+  c_TIMEFORMAT2               CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'H:mm'</span><span class="sign">;</span>
+  c_TIMEFORMAT3               CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'H:mm:ss'</span><span class="sign">;</span>
+  c_TIMEFORMAT4               CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'mm:ss'</span><span class="sign">;</span>
+  c_TIMEFORMAT5               CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'H:mm:ss'</span><span class="sign">;</span>
+  c_TIMEFORMAT6               CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'H:mm:ss'</span><span class="sign">;</span>
+
+  <span class="sign">-</span><span class="sign">-</span> 3<span class="sign">.</span> Shapefile
+  <span class="sign">-</span><span class="sign">-</span>
+  c_Point              CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'point'</span><span class="sign">;</span>
+  c_Point_Z            CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'pointz'</span><span class="sign">;</span>
+  c_Point_M            CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'pointm'</span><span class="sign">;</span>
+  c_LineString         CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'linestring'</span><span class="sign">;</span>
+  c_LineString_Z       CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'linestringz'</span><span class="sign">;</span>
+  c_LineString_M       CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'linestringm'</span><span class="sign">;</span>
+  c_Polygon            CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'polygon'</span><span class="sign">;</span>
+  c_Polygon_Z          CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'polygonz'</span><span class="sign">;</span>
+  c_Polygon_M          CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'polygonm'</span><span class="sign">;</span>
+  c_Multi_Point        CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'multipoint'</span><span class="sign">;</span>
+  c_Multi_Point_Z      CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'multipointz'</span><span class="sign">;</span>
+  c_Multi_Point_M      CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'multipointm'</span><span class="sign">;</span>
+  c_Multi_LineString   CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'multilinestring'</span><span class="sign">;</span>
+  c_Multi_LineString_Z CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'multilinestringz'</span><span class="sign">;</span>
+  c_Multi_LineString_M CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'multilinestringm'</span><span class="sign">;</span>
+  c_Multi_Polygon      CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'multipolygon'</span><span class="sign">;</span>
+  c_Multi_Polygon_Z    CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'multipolygonz'</span><span class="sign">;</span>
+  c_Multi_Polygon_M    CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'multipolygonm'</span><span class="sign">;</span>
+
+  <span class="sign">-</span><span class="sign">-</span> 4<span class="sign">.</span> Polygon Ring Ordering
+  <span class="sign">-</span><span class="sign">-</span>
+  c_Ring_Oracle        CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'ORACLE'</span><span class="sign">;</span>
+  c_Ring_Inverse       CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'INVERSE'</span><span class="sign">;</span>
+  c_Ring_Clockwise     CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'CLOCKWISE'</span><span class="sign">;</span>
+  c_Ring_AntiClockwise CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'ANTICLOCKWISE'</span><span class="sign">;</span>
+
+  <span class="sign">-</span><span class="sign">-</span> 5<span class="sign">.</span> DBASE file type choice
+  <span class="sign">-</span><span class="sign">-</span>
+  c_DBASEIII           CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'DBASEIII'</span><span class="sign">;</span>
+  c_DBASEIII_WITH_MEMO CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'DBASEIII_WITH_MEMO'</span><span class="sign">;</span>
+  c_DBASEIV            CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'DBASEIV'</span><span class="sign">;</span>
+  c_DBASEIV_WITH_MEMO  CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'DBASEIV_WITH_MEMO'</span><span class="sign">;</span>
+  c_FOXPRO_WITH_MEMO   CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'FOXPRO_WITH_MEMO'</span><span class="sign">;</span>
+
+  <span class="sign">-</span><span class="sign">-</span> 6<span class="sign">.</span> Shapefile and MapInfo Tab File ID NAMES
+  <span class="sign">-</span><span class="sign">-</span>
+  c_mapinfo_pk         CONSTANT varchar2<span class="sign">(</span>8<span class="sign">)</span>  <span class="sign">:</span><span class="sign">=</span> <span class="squote">'MI_PRINX'</span><span class="sign">;</span> <span class="sign">-</span><span class="sign">-</span> For use when recordset or table has only a geometry
+  c_shapefile_pk       CONSTANT varchar2<span class="sign">(</span>3<span class="sign">)</span>  <span class="sign">:</span><span class="sign">=</span> <span class="squote">'GID'</span><span class="sign">;</span>      <span class="sign">-</span><span class="sign">-</span> For use when recordset or table has only a geometry
+
+  <span class="sign">-</span><span class="sign">-</span> 7<span class="sign">.</span> Supported SDO_GEOMETRY as TEXT formats<span class="sign">.</span>
+  <span class="sign">-</span><span class="sign">-</span>
+  c_SDOGeometry CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'SDO_GEOMETRY'</span><span class="sign">;</span>
+  c_STGeometry  CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'ST_GEOMETRY'</span><span class="sign">;</span>
+  c_KML2        CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'KML2'</span><span class="sign">;</span>
+  c_GML2        CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'GML2'</span><span class="sign">;</span>
+  c_GML3        CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'GML3'</span><span class="sign">;</span>
+  c_KML         CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'KML'</span><span class="sign">;</span>
+  c_WKT         CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'WKT'</span><span class="sign">;</span>
+  c_GEOJSON     CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'GeoJSON'</span><span class="sign">;</span>
+
+  <span class="sign">-</span><span class="sign">-</span> 8<span class="sign">.</span> XML Flavours for handling attributes of KML files <span class="sign">.</span><span class="sign">.</span><span class="sign">.</span><span class="sign">.</span>
+  <span class="sign">-</span><span class="sign">-</span>
+  c_OGR          CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'OGR'</span><span class="sign">;</span>
+  c_FME          CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'FME'</span><span class="sign">;</span>
+  c_GML          CONSTANT varchar2<span class="sign">(</span>20<span class="sign">)</span> <span class="sign">:</span><span class="sign">=</span> <span class="squote">'GML'</span><span class="sign">;</span>
+
+  <span class="sign">-</span><span class="sign">-</span> 9<span class="sign">.</span> CharSet names
+  <span class="sign">-</span><span class="sign">-</span>
+  c_UTF8        CONSTANT varchar2<span class="sign">(</span>128<span class="sign">)</span><span class="sign">:</span><span class="sign">=</span> <span class="squote">'UTF-8'</span><span class="sign">;</span>
+</pre>
+<a name="robo2"></a>
+<a name="EXPORTER2fExportTables"></a>
+<h2>1.2.  EXPORTER/ExportTables [ Functions ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">EXPORTER</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>ExportTables</strong> -- Procedure that writes a collection of tables with geometry columns to disk
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<p class="item_name">ARGUMENTS</p>
+<pre>    p_tables     - list of tables to export
+    p_output_dir - the directory to write output files to.
+    p_digits_of_precision - number of decimal places of ordinates
+    p_commit              - When to write batch to disk
+    p_mi_coordsys         - MapInfo CoordSys string for writing to TAB file parameter.
+    p_mi_style            - A MapInfo symbol string for styling all geometry objects in tab file.
+    p_prj_string          - An ESRI PRJ file's contents.
+    p_geomFormat          - Format for non-SHP sdo_geometry eg WKT, GML, GML3
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<p class="item_name">NOTES</p>
+<pre>    Throws Exception if anything goes wrong.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - September 2011, Original Coding
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo3"></a>
+<a name="EXPORTER2fRunCommand"></a>
+<h2>1.3.  EXPORTER/RunCommand [ Functions ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">EXPORTER</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>RunCommand</strong> -- Method that allows an Oracle stored procedure to execute an external program (eg ogr2ogr) from within the database.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<p class="item_name">ARGUMENTS</p>
+<pre>  RETURNS
+    Error code: 0 if OK, otherwise error code.
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    This function allows an Oracle stored procedure to execute an external program from within the database.
+    An example might be the ability to execute ogr2ogr to convert a shapefile written by the WriteShapefile procedure
+    to another spatial format.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - September 2011, Original Coding
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo4"></a>
+<a name="EXPORTER2fWriteGeoJson28RefCursor29"></a>
+<h2>1.4.  EXPORTER/WriteGeoJson(RefCursor) [ Functions ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">EXPORTER</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    WriteGeoJson - Writes result of SQL Select to a GeoJson file.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<p class="item_name">ARGUMENTS</p>
+<pre>  RETURNS
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - September 2011, Original Coding
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo5"></a>
+<a name="EXPORTER2fWriteGMLFile28RefCursor29"></a>
+<h2>1.5.  EXPORTER/WriteGMLFile(RefCursor) [ Functions ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">EXPORTER</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    WriteGMLFile - Writes result of SQL Select to a GML file.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<p class="item_name">ARGUMENTS</p>
+<pre>  RETURNS
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - September 2011, Original Coding
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo6"></a>
+<a name="EXPORTER2fWriteKMLFile28RefCursor29"></a>
+<h2>1.6.  EXPORTER/WriteKMLFile(RefCursor) [ Functions ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">EXPORTER</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    WriteKMLFile -- Exports SQL Select refCursor to KML file.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<p class="item_name">ARGUMENTS</p>
+<pre>  RETURNS
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - September 2011, Original Coding
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo7"></a>
+<a name="EXPORTER2fWriteShapefile28refCursor29"></a>
+<h2>1.7.  EXPORTER/WriteShapefile(refCursor) [ Functions ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">EXPORTER</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    WriteShapefile -- Procedure that writes an ESRI shapefile from an existing refcursor
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<p class="item_name">ARGUMENTS</p>
+<pre>    p_RefCursor           - Open Oracle ref cursor.
+    p_output_dir          - the directory to write output files to.
+    p_file_name           - the file name of output files.
+    p_shape_type          - the type of shapefile eg polygon etc. See constants eg &amp;&amp;defaultSchema..<a href="#robo0">EXPORTER</a>.c_LineString
+    p_geometry_name       - the name of the geometry column.
+    p_ring_orientation    - Ring orientation to be applied to Polygon exports.
+    p_dbase_type          - This exporter supports DBASEIII/DBASEIV With Memo.
+                            Memo useful for exporting varchar2/clobs &gt; 255 charaters.
+    p_geometry_format     - Format for non-SHP sdo_geometry eg WKT, GML, GML3
+    p_prj_string          - An ESRI PRJ file's contents.
+                            PRJ writing. To have the shapefile writer create a correct PRJ file,
+                            supply the contents of an existing PRJ file to the p_prj_string parameter.
+                            If you do not have a valid PRJ file/string visit <a href="http://www.spatialreference.org/">http://www.spatialreference.org/</a>
+    p_digits_of_precision - number of decimal places of ordinates
+    p_commit              - When to write batch to disk
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<p class="item_name">NOTES</p>
+<pre>    Throws Exception if anything goes wrong.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - September 2011, Original Coding
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo8"></a>
+<a name="EXPORTER2fWriteShapefile28varchar229"></a>
+<h2>1.8.  EXPORTER/WriteShapefile(varchar2) [ Functions ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">EXPORTER</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    WriteShapefile -- Procedure that writes an ESRI shapefile from a SQL SELECT statement (string)
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<p class="item_name">ARGUMENTS</p>
+<pre>    p_sql                 - A SELECT Statement that include a geometry column.
+    p_output_dir          - the directory to write output files to.
+    p_file_name           - the file name of output files.
+    p_shape_type          - the type of shapefile eg polygon etc. See constants eg &amp;&amp;defaultSchema..<a href="#robo0">EXPORTER</a>.c_LineString
+    p_geometry_name       - the name of the geometry column.
+    p_ring_orientation    - Ring orientation to be applied to Polygon exports.
+    p_dbase_type          - This exporter supports DBASEIII/DBASEIV With Memo.
+                            Memo useful for exporting varchar2/clobs &gt; 255 charaters.
+    p_geometry_format     - Format for non-SHP sdo_geometry eg WKT, GML, GML3
+    p_prj_string          - An ESRI PRJ file's contents.
+                            PRJ writing. To have the shapefile writer create a correct PRJ file,
+                            supply the contents of an existing PRJ file to the p_prj_string parameter.
+                            If you do not have a valid PRJ file/string visit <a href="http://www.spatialreference.org/">http://www.spatialreference.org/</a>
+    p_digits_of_precision - number of decimal places of ordinates
+    p_commit              - When to write batch to disk
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<p class="item_name">NOTES</p>
+<pre>    Throws Exception if anything goes wrong.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - September 2011, Original Coding
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo9"></a>
+<a name="EXPORTER2fwriteSpreadsheet28RefCursor29"></a>
+<h2>1.9.  EXPORTER/writeSpreadsheet(RefCursor) [ Functions ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">EXPORTER</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    writeSpreadsheet - Writes data in result set to spreadsheet.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<p class="item_name">ARGUMENTS</p>
+<pre>    p_resultSet           - the result set, including a geometry column.
+    p_outputDirectory     - the directory to write output files to.
+    p_fileName            - the file name of output files.
+    p_sheetName           - Name of base or first sheet. Prefix for all others.
+    p_stratification      - Horizontal (H), Vertical (V) or None (N).
+    p_geomFormat          - Text format for sdo_geometry columns eg WKT, GML, GML3
+    p_dateFormat          - Format for output dates
+    p_timeFormat          - Format for output times
+    p_digits_of_precision - Number of decimal places of coordinates
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Creates and writes an Excel XLS format spreadsheet from the passed in resultSet.
+    Overflow of resultSet across Sheets is controlled by _stratification.
+    If number of rows in _resultSet is &gt; MAX_ROWS (65535) and _stratification
+    is N (NONE) or V (VERTICAL) then the resultSet processing will only output MAX_ROWS
+    in the first sheet. No more sheets will be created.
+
+    If _stratification is H (HORIZONTAL) a new sheet is created for the next MAX_ROWS (65535).
+    If the resultSet contains &gt; MAX_COLS (255) and _stratification is set to V (VERTICAL) then
+    the first 255 columns will be in the first sheet, the next 255 in the second sheet etc up
+    to the maxiumum number of rows that can be output in a SELECT statement.
+
+    If &gt; MAX_COLS exist and _stratification is H or N then only 255 columns will be output in
+    the first sheet: if &gt; MAX_ROWS also exists then overflow is controlled by _stratification = H or N.
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    Does not write any modern XML format spreadsheets.
+    Maximum size of an Excel spreadsheet cell is 32768 characters.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - October 2011, Original Coding
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo10"></a>
+<a name="EXPORTER2fwriteSpreadsheet28varchar229"></a>
+<h2>1.10.  EXPORTER/writeSpreadsheet(varchar2) [ Functions ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">EXPORTER</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    writeSpreadsheet - Executes SQL statement and writes resultset to an Excel spreadsheet.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<p class="item_name">ARGUMENTS</p>
+<pre>    p_sql                 - A SELECT Statement that include a geometry column.
+    p_outputDirectory     - the directory to write output files to.
+    p_fileName            - the file name of output files.
+    p_sheetName           - Name of base or first sheet. Prefix for all others.
+    p_stratification      - Horizontal (H), Vertical (V) or None (N).
+    p_geomFormat          - Text format for sdo_geometry columns eg WKT, GML, GML3 ...
+    p_dateFormat          - Format for output dates
+    p_timeFormat          - Format for output times
+    p_digits_of_precision - Number of decimal places of coordinates
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Creates and writes an Excel XLS format spreadsheet from the passed in resultSet.
+    Overflow of resultSet across Sheets is controlled by _stratification.
+    If number of rows in _resultSet is &gt; MAX_ROWS (65535) and _stratification
+    is N (NONE) or V (VERTICAL) then the resultSet processing will only output MAX_ROWS
+    in the first sheet. No more sheets will be created.
+
+    If _stratification is H (HORIZONTAL) a new sheet is created for the next MAX_ROWS (65535).
+    If the resultSet contains &gt; MAX_COLS (255) and _stratification is set to V (VERTICAL) then
+    the first 255 columns will be in the first sheet, the next 255 in the second sheet etc up
+    to the maxiumum number of rows that can be output in a SELECT statement.
+
+    If &gt; MAX_COLS exist and _stratification is H or N then only 255 columns will be output in
+    the first sheet: if &gt; MAX_ROWS also exists then overflow is controlled by _stratification = H or N.
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    Does not write any modern XML format spreadsheets.
+    Maximum size of an Excel spreadsheet cell is 32768 characters.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - October 2011, Original Coding
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo11"></a>
+<a name="EXPORTER2fWriteTabFile28RefCursor29"></a>
+<h2>1.11.  EXPORTER/WriteTabFile(RefCursor) [ Functions ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">EXPORTER</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    WriteTabFile -- Procedure that writes a MapInfo TAB from an existing refCursor
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<p class="item_name">ARGUMENTS</p>
+<pre>    p_RefCursor           - the result set, including a geometry column.
+    p_output_dir          - the directory to write output files to.
+    p_file_name           - the file name of output files.
+    p_shape_type          - the type of shapefile eg polygon etc. See constants eg &amp;&amp;defaultSchema..<a href="#robo0">EXPORTER</a>.c_LineString
+    p_geometry_name       - The name of the sdo_geometry column to export.
+    p_ring_orientation    - Ring orientation to be applied to Polygon exports.
+    p_dbase_type          - This exporter supports DBASEIII/DBASEIV With Memo.
+                            Memo useful for exporting varchar2/clobs &gt; 255 charaters.
+    p_geometry_format     - Format for non-SHP sdo_geometry eg WKT, GML, GML3
+    p_coordsys            - MapInfo CoordSys string for writing to TAB file parameter.
+    p_symbolisation       - A MapInfo symbol string for styling all geometry objects in tab file.
+    p_digits_of_precision - number of decimal places of ordinates
+    p_commit              - When to write batch to disk
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<p class="item_name">NOTES</p>
+<pre>    Throws Exception if anything goes wrong.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - September 2011, Original Coding
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo12"></a>
+<a name="EXPORTER2fWriteTabFile28varchar229"></a>
+<h2>1.12.  EXPORTER/WriteTabFile(varchar2) [ Functions ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">EXPORTER</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    WriteTabFile -- Procedure that writes a MapInfo TAB from a SQL SELECT statement (string)
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<p class="item_name">ARGUMENTS</p>
+<pre>    p_sql                 - A SELECT Statement that include a geometry column.
+    p_output_dir          - the directory to write output files to.
+    p_file_name           - the file name of output files.
+    p_shape_type          - the type of shapefile eg polygon etc. See constants eg &amp;&amp;defaultSchema..<a href="#robo0">EXPORTER</a>.c_LineString
+    p_ring_orientation    - Ring orientation to be applied to Polygon exports.
+    p_dbase_type          - This exporter supports DBASEIII/DBASEIV With Memo.
+                            Memo useful for exporting varchar2/clobs &gt; 255 charaters.
+    p_geometry_format     - Format for non-SHP sdo_geometry eg WKT, GML, GML3
+    p_coordsys            - MapInfo CoordSys string for writing to TAB file parameter.
+    p_symbolisation       - A MapInfo symbol string for styling all geometry objects in tab file.
+    p_digits_of_precision - number of decimal places of ordinates
+    p_commit              - When to write batch to disk
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<p class="item_name">NOTES</p>
+<pre>    THrows Exception if anything goes wrong.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - September 2011, Original Coding
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo13"></a>
+<a name="EXPORTER2fWriteTextFile28RefCursor29"></a>
+<h2>1.13.  EXPORTER/WriteTextFile(RefCursor) [ Functions ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">EXPORTER</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    WriteTextFile -- Writes result set to a delimited text file.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Procedure that writes a result set (including one or more sdo_geometry objects - as a delimited text file eg csv.
+    Supports all Oracle types except LONG, LONG RAW, BLOB, VARRAY and STRUCT (non SDO_GEOMETRY)
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre>    p_RefCursor           - The result set, including a geometry column.
+    p_outputDirectory     - The directory to write output files to.
+    p_fileName            - The file name of output files.
+    p_FieldSeparator      - The character between the values in the output file (could be a comma, or a pipe etc)
+                            Default if NULL is a comma ','
+    p_TextDelimiter       - The character used to enclose text strings (especially where contain cSeparator)
+                            Default if NULL is a double quote '''
+    p_DateFormat          - Format for output dates
+                            DEFAULT of NULL is 'yyyy/MM/dd hh:mm:ss a'
+    p_geomFormat          - Format for non-SHP sdo_geometry eg WKT, GML, GML3
+                            Default if NULL is WKT
+    p_charset             - CharSet of file being written
+                            Default if NULL is US-ASCII
+    p_digits_of_precision - Number of decimal places of ordinates
+                            Default if NULL is 3
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - May 2008, Original Coding
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<div id="footer">
+<p>Generated from ./install/ with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.36 on Sun Aug 18 2019 17:04:58
+</p>
+</div> <!-- footer -->
+</body>
+</html>
