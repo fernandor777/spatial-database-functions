@@ -112,6 +112,7 @@ AS
     END IF;
     RETURN;
   End T_GEOMETRY;
+
   Constructor Function T_GEOMETRY(SELF      IN OUT NOCOPY T_GEOMETRY,
                                   p_Segment in &&INSTALL_SCHEMA..T_Segment)
                 Return Self As Result
