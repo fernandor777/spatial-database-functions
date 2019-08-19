@@ -331,23 +331,6 @@
       <hash n="javaContentSet">
          <list n="constituent-sets">
             <hash>
-               <list n="pattern-filters">
-                  <string v="+**"/>
-               </list>
-               <list n="url-path">
-                  <url path="../../APIs/JTS/jts-1.15/"/>
-               </list>
-            </hash>
-            <hash>
-               <url n="content-folder-url" path="trunk/src/org/opengis/"/>
-               <list n="pattern-filters">
-                  <string v="+org/opengis/"/>
-               </list>
-               <list n="url-path">
-                  <url path="trunk/src/"/>
-               </list>
-            </hash>
-            <hash>
                <url n="content-folder-url" path="trunk/src/org/"/>
                <list n="pattern-filters">
                   <string v="-org/geotools/data/oracle/"/>
@@ -359,34 +342,9 @@
                </list>
             </hash>
             <hash>
-               <list n="pattern-filters">
-                  <string v="+**"/>
-               </list>
-               <list n="url-path">
-                  <url path="../../APIs/XBase/xBaseJMicro/src/"/>
-               </list>
-            </hash>
-            <hash>
-               <list n="pattern-filters">
-                  <string v="+**"/>
-               </list>
-               <list n="url-path">
-                  <url path="../../APIs/jexcelapi/src/"/>
-               </list>
-            </hash>
-            <hash>
                <url n="content-folder-url" path="trunk/src/es/"/>
                <list n="pattern-filters">
                   <string v="+es/"/>
-               </list>
-               <list n="url-path">
-                  <url path="trunk/src/"/>
-               </list>
-            </hash>
-            <hash>
-               <url n="content-folder-url" path="trunk/src/com/spdba/dbutils/io/"/>
-               <list n="pattern-filters">
-                  <string v="+com/spdba/dbutils/io/"/>
                </list>
                <list n="url-path">
                   <url path="trunk/src/"/>
@@ -409,6 +367,15 @@
                </list>
                <list n="url-path">
                   <url path="trunk/src/PLSQL/"/>
+               </list>
+            </hash>
+            <hash>
+               <url n="content-folder-url" path="trunk/src/jxl/"/>
+               <list n="pattern-filters">
+                  <string v="+jxl/"/>
+               </list>
+               <list n="url-path">
+                  <url path="trunk/src/"/>
                </list>
             </hash>
          </list>
@@ -463,11 +430,11 @@
             <value n="isJDK" v="false"/>
          </hash>
          <hash>
-            <value n="id" v="Xmlparserv2.jar"/>
+            <value n="id" v="Json-simple-1.1.1.jar"/>
             <value n="isJDK" v="false"/>
          </hash>
          <hash>
-            <value n="id" v="Json-simple-1.1.1.jar"/>
+            <value n="id" v="Xmlparserv2.jar"/>
             <value n="isJDK" v="false"/>
          </hash>
       </list>
@@ -505,29 +472,11 @@
             </hash>
             <hash>
                <list n="classPath">
-                  <url path="../../oracle/product/11.2.0/dbhome_1/jdbc/lib/ojdbc6.jar" jar-entry=""/>
-               </list>
-               <value n="deployedByDefault" v="true"/>
-               <value n="description" v="Ojdbc6.jar"/>
-               <value n="id" v="Ojdbc6.jar"/>
-               <value n="locked" v="true"/>
-            </hash>
-            <hash>
-               <list n="classPath">
                   <url path="../../oracle/product/11.2.0/dbhome_1/jdk/jre/lib/rt.jar" jar-entry=""/>
                </list>
                <value n="deployedByDefault" v="true"/>
                <value n="description" v="Rt.jar"/>
                <value n="id" v="Rt.jar"/>
-               <value n="locked" v="true"/>
-            </hash>
-            <hash>
-               <list n="classPath">
-                  <url path="../../oracle/product/11.2.0/dbhome_1/oui/jlib/xmlparserv2.jar" jar-entry=""/>
-               </list>
-               <value n="deployedByDefault" v="true"/>
-               <value n="description" v="Xmlparserv2.jar"/>
-               <value n="id" v="Xmlparserv2.jar"/>
                <value n="locked" v="true"/>
             </hash>
             <hash>
@@ -541,16 +490,16 @@
             </hash>
             <hash>
                <list n="classPath">
-                  <url path="../../oracle/product/11.2.0/dbhome_1/md/jlib/sdoapi.jar" jar-entry=""/>
+                  <url path="../../APIs/JTS/lib/json-simple-1.1.1.jar" jar-entry=""/>
                </list>
                <value n="deployedByDefault" v="true"/>
-               <value n="description" v="Sdoapi.jar"/>
-               <value n="id" v="Sdoapi.jar"/>
+               <value n="description" v="Json-simple-1.1.1.jar"/>
+               <value n="id" v="Json-simple-1.1.1.jar"/>
                <value n="locked" v="true"/>
             </hash>
             <hash>
                <list n="classPath">
-                  <url path="../../oracle/product/11.2.0/dbhome_1/md/jlib/sdoutl.jar" jar-entry=""/>
+                  <url path="../../../oracle/product/11.2.0/dbhome_1/md/jlib/sdoutl.jar" jar-entry=""/>
                </list>
                <value n="deployedByDefault" v="true"/>
                <value n="description" v="Sdoutl.jar"/>
@@ -559,11 +508,29 @@
             </hash>
             <hash>
                <list n="classPath">
-                  <url path="../../APIs/JTS/lib/json-simple-1.1.1.jar" jar-entry=""/>
+                  <url path="../../../oracle/product/11.2.0/dbhome_1/jdbc/lib/ojdbc6.jar" jar-entry=""/>
                </list>
                <value n="deployedByDefault" v="true"/>
-               <value n="description" v="Json-simple-1.1.1.jar"/>
-               <value n="id" v="Json-simple-1.1.1.jar"/>
+               <value n="description" v="Ojdbc6.jar"/>
+               <value n="id" v="Ojdbc6.jar"/>
+               <value n="locked" v="true"/>
+            </hash>
+            <hash>
+               <list n="classPath">
+                  <url path="../../../oracle/product/11.2.0/dbhome_1/LIB/xmlparserv2.jar" jar-entry=""/>
+               </list>
+               <value n="deployedByDefault" v="true"/>
+               <value n="description" v="Xmlparserv2.jar"/>
+               <value n="id" v="Xmlparserv2.jar"/>
+               <value n="locked" v="true"/>
+            </hash>
+            <hash>
+               <list n="classPath">
+                  <url path="../../../oracle/product/11.2.0/dbhome_1/md/jlib/sdoapi.jar" jar-entry=""/>
+               </list>
+               <value n="deployedByDefault" v="true"/>
+               <value n="description" v="Sdoapi.jar"/>
+               <value n="id" v="Sdoapi.jar"/>
                <value n="locked" v="true"/>
             </hash>
          </list>
@@ -599,11 +566,11 @@
             <value n="isJDK" v="false"/>
          </hash>
          <hash>
-            <value n="id" v="Xmlparserv2.jar"/>
+            <value n="id" v="Json-simple-1.1.1.jar"/>
             <value n="isJDK" v="false"/>
          </hash>
          <hash>
-            <value n="id" v="Json-simple-1.1.1.jar"/>
+            <value n="id" v="Xmlparserv2.jar"/>
             <value n="isJDK" v="false"/>
          </hash>
       </list>

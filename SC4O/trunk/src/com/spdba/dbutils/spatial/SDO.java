@@ -17,7 +17,7 @@ import org.locationtech.jts.geom.LinearRing;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.geom.PrecisionModel;
-import org.locationtech.jts.io.oracle.OraReader;
+import org.locationtech.jts.io.ora.OraReader;
 
 import java.awt.geom.Point2D;
 

@@ -15,7 +15,7 @@ import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.io.WKTWriter;
 import org.locationtech.jts.io.gml2.GMLWriter;
-import org.locationtech.jts.io.oracle.OraReader;
+import org.locationtech.jts.io.ora.OraReader;
 
 import java.io.File;
 import java.io.IOException;

@@ -17,7 +17,7 @@ import oracle.sql.BLOB;
 import oracle.sql.STRUCT;
 
 import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.io.oracle.OraWriter;
+import org.locationtech.jts.io.ora.OraWriter;
 
 public class EWKBImporter {
 
