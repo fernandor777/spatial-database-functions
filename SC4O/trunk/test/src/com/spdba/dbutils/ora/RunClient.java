@@ -9,7 +9,7 @@ public class RunClient {
     }
     public static void main(String[] args) {
         //ExporterTestHarness.main();
-        UtilityTester.main();
+        SC4OTester.main();
         //IOTest.main("U");   
     }
     

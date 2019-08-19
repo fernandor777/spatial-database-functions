@@ -50,7 +50,7 @@ import org.locationtech.jts.precision.GeometryPrecisionReducer;
 // Referenced classes of package com.spatialdbadvisor.dbutils.ora:
 //            Space, JTS
 
-public class UtilityTester
+public class SC4OTester
 {
 
     public static void main()
