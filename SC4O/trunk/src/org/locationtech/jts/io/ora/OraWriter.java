@@ -18,7 +18,7 @@
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
 
-package org.locationtech.jts.io.oracle;
+package org.locationtech.jts.io.ora;
 
 import java.sql.SQLException;
 import java.util.*;

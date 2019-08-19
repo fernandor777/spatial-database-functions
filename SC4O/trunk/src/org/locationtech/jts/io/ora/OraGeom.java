@@ -9,7 +9,7 @@
  *
  * http://www.eclipse.org/org/documents/edl-v10.php.
  */
-package org.locationtech.jts.io.oracle;
+package org.locationtech.jts.io.ora;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;

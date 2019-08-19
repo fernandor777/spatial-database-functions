@@ -286,10 +286,6 @@
                               <value n="type" v="1"/>
                            </hash>
                            <hash>
-                              <value n="pattern" v="jump-workbench-properties.xml"/>
-                              <value n="type" v="1"/>
-                           </hash>
-                           <hash>
                               <value n="pattern" v="org.rar"/>
                               <value n="type" v="1"/>
                            </hash>
@@ -463,33 +459,6 @@
          <list n="libraryDefinitions">
             <hash>
                <list n="classPath">
-                  <url path="../../oracle/product/11.2.0/dbhome_1/oui/jlib/classes12.jar" jar-entry=""/>
-               </list>
-               <value n="deployedByDefault" v="true"/>
-               <value n="description" v="Classes12.jar"/>
-               <value n="id" v="Classes12.jar"/>
-               <value n="locked" v="true"/>
-            </hash>
-            <hash>
-               <list n="classPath">
-                  <url path="../../oracle/product/11.2.0/dbhome_1/jdk/jre/lib/rt.jar" jar-entry=""/>
-               </list>
-               <value n="deployedByDefault" v="true"/>
-               <value n="description" v="Rt.jar"/>
-               <value n="id" v="Rt.jar"/>
-               <value n="locked" v="true"/>
-            </hash>
-            <hash>
-               <list n="classPath">
-                  <url path="../../oracle/product/11.2.0/dbhome_1/sqlj/lib/runtime12.jar" jar-entry=""/>
-               </list>
-               <value n="deployedByDefault" v="true"/>
-               <value n="description" v="Runtime12.jar"/>
-               <value n="id" v="Runtime12.jar"/>
-               <value n="locked" v="true"/>
-            </hash>
-            <hash>
-               <list n="classPath">
                   <url path="../../APIs/JTS/lib/json-simple-1.1.1.jar" jar-entry=""/>
                </list>
                <value n="deployedByDefault" v="true"/>
@@ -531,6 +500,33 @@
                <value n="deployedByDefault" v="true"/>
                <value n="description" v="Sdoapi.jar"/>
                <value n="id" v="Sdoapi.jar"/>
+               <value n="locked" v="true"/>
+            </hash>
+            <hash>
+               <list n="classPath">
+                  <url path="../../../oracle/product/11.2.0/dbhome_1/oui/jlib/classes12.jar" jar-entry=""/>
+               </list>
+               <value n="deployedByDefault" v="true"/>
+               <value n="description" v="Classes12.jar"/>
+               <value n="id" v="Classes12.jar"/>
+               <value n="locked" v="true"/>
+            </hash>
+            <hash>
+               <list n="classPath">
+                  <url path="../../../oracle/product/11.2.0/dbhome_1/sqlj/lib/runtime12.jar" jar-entry=""/>
+               </list>
+               <value n="deployedByDefault" v="true"/>
+               <value n="description" v="Runtime12.jar"/>
+               <value n="id" v="Runtime12.jar"/>
+               <value n="locked" v="true"/>
+            </hash>
+            <hash>
+               <list n="classPath">
+                  <url path="../../../oracle/product/11.2.0/dbhome_1/jdk/jre/lib/rt.jar" jar-entry=""/>
+               </list>
+               <value n="deployedByDefault" v="true"/>
+               <value n="description" v="Rt.jar"/>
+               <value n="id" v="Rt.jar"/>
                <value n="locked" v="true"/>
             </hash>
          </list>
