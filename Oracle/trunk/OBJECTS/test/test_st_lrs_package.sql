@@ -1,73 +1,82 @@
-create or replace package test_t_geometry
+/*
+test_st_lrs_package tests the ST_LRS package which also tests the underlying T_GEOMETRY ST_LRS_* methods
+*/
+
+create or replace package test_st_lrs_package
 AUTHID DEFINER
 as
 
-  --%suite(T_Geometry Object Test Suite)
+   --%suite(ST_LRS Package Test Suite)
 
-  --%test(Test ST_LRS_Dim)
-  procedure test_dim;
-  --%test(Test ST_LRS_IsMeasured)
-  procedure test_is_measured;
-  --%test(Test Measure Range)
-  procedure test_measure_range;  
-  --%test(Test Start Measure)
-  Procedure test_start_measure;
-  --%test(Test End Measure)
-  Procedure test_end_measure;
-  --%test(Test Is Measure Increasing)
-  Procedure test_is_measure_increasing;
-  --%test(Test Is Measure Decreasing)
-  Procedure test_is_measure_decreasing;
-  --%test(Test Measure_to_Percentage and Percentage_To_Measure)
-  Procedure test_measure_percentage;
-  --%test(Test Is Shape PT Measure)
-  Procedure test_is_shape_pt_measure;
-  --%test(Test Reset Measure)
-  Procedure test_reset_measure;
-  --%test(Test LRS Set Pt Measure)
-  Procedure test_set_pt_measure;
-  --%test(Test Convert To LRS Geom)
-  Procedure test_convert_to_lrs_geom;
-  --%test(Test Convert To Standard Geom)
-  Procedure test_convert_to_std_geom;
-  --%test(Test Revese Measure)
-  Procedure test_reverse_measure;
-  --%test(Test Reverse Geometry)
-  Procedure test_reverse_geometry;
-  --%test(Test Scale Segment)
-  Procedure test_scale_geom_segment;
-  --%test(Find Offset)
-  Procedure test_find_offset;
-  --%test(Find Measure)
-  Procedure test_find_measure;
-  --%test(Test Locate Pt)
-  Procedure test_Locate_Pt;
-  --%test(Test Clip geom Segment)
-  Procedure test_clip_geom_segment;
-  --%test(Test Dynamic Segment)
-  Procedure test_dynamic_segment;
-  --%test(Test Offset Geom Segment)
-  Procedure test_offset_geom_segment;
-  --%test(Test Project Point)
-  Procedure test_Project_Pt; 
-  --%test(Test Translate Segment)
-  Procedure test_translate_segment;
-  --%test(Test Split)
-  Procedure test_split;
-  --%test(Test Concatenate Line and Point)
-  Procedure test_concatenate_pt_arg;
-  --%test(Test Concatenate)
-  Procedure test_concatenate;
+   --%test(ST_LRS.Dim)
+   PROCEDURE st_lrs_dim;
+   --%test(ST_LRS.IsMeasured)
+   PROCEDURE st_lrs_ismeasured;   
+   --%test(ST_LRS.Get_Measure)
+   PROCEDURE st_lrs_get_measure;
+   --%test(ST_LRS.Start_Measure)
+   PROCEDURE st_lrs_start_measure;
+   --%test(ST_LRS.End_Measure)
+   PROCEDURE st_lrs_end_measure;
+   --%test(ST_LRS.Measure_Range)
+   PROCEDURE st_lrs_measure_range;
+   --%test(ST_LRS.Is_Measure_Decreasing)
+   PROCEDURE st_lrs_is_measure_decreasing;
+   --%test(ST_LRS.Is_Measure_Increasing)
+   PROCEDURE st_lrs_is_measure_increasing;
+   --%test(ST_LRS.Measure_To_Percentage)
+   PROCEDURE st_lrs_measure_to_percentage;
+   --%test(ST_LRS.Percentage_To_Measure
+   PROCEDURE st_lrs_percentage_to_measure;
+   --%test(Test LRS Set Pt Measure)
+   PROCEDURE st_lrs_set_pt_measure;
+   --%test(ST_LRS.is_Shape_PT_Measure)
+   PROCEDURE st_lrs_is_shape_pt_measure;
+   --%test(Test Convert To LRS Geom)
+   PROCEDURE st_lrs_convert_to_lrs_geom;
+   --%test(Test Convert To Standard Geom)
+   PROCEDURE st_lrs_convert_to_std_geom;
+   --%test(Test Reset Measure)
+   PROCEDURE st_lrs_reset_measure;
+   --%test(Test Revese Measure)
+   PROCEDURE st_lrs_reverse_measure;
+   --%test(Test Reverse Geometry)
+   PROCEDURE st_lrs_reverse_geometry;
+   --%test(Test Scale Segment)
+    PROCEDURE st_lrs_scale_geom_segment;
+   --%test(Find Offset)
+   PROCEDURE st_lrs_find_offset;
+   --%test(Find Measure)
+   PROCEDURE st_lrs_find_measure;
+   --%test(Test Locate Pt)
+   PROCEDURE st_lrs_Locate_Pt;
+   --%test(Test Clip geom Segment)
+   PROCEDURE st_lrs_clip_geom_segment;
+   --%test(Test Dynamic Segment)
+   PROCEDURE st_lrs_dynamic_segment;
+   --%test(Test Offset Geom Segment)
+   PROCEDURE st_lrs_offset_geom_segment;
+   --%test(Test Project Point)
+   PROCEDURE st_lrs_Project_Pt; 
+   --%test(Test Translate Segment)
+   PROCEDURE st_lrs_translate_segment;
+   --%test(Test Split)
+   PROCEDURE st_lrs_split;
+   --%test(Test Concatenate Line and Point)
+   PROCEDURE st_lrs_concatenate_pt_arg;
+   --%test(Test Concatenate)
+   PROCEDURE st_lrs_concatenate;
   
-  /**** IMPORT EXPORT *****/
-  --%test(Test ST_AsEWKT)
-  procedure test_asewkt;
+   /**** IMPORT EXPORT *****/
+   --%test(Test ST_AsEWKT)
+   PROCEDURE st_lrs_asewkt;
 
-end;
+end test_st_lrs_package;
 /
 SHOW ERRORS
 
-create or replace package body test_t_geometry as
+create or replace package body test_st_lrs_package
+as
 
   g_t_circular2D SPDBA.t_geometry := 
                  SPDBA.T_Geometry(
@@ -102,7 +111,7 @@ create or replace package body test_t_geometry as
    g_sdo_point     mdsys.sdo_geometry := SDO_GEOMETRY(2001,NULL,SDO_POINT_TYPE(10.719,8.644,NULL),NULL,NULL);
    g_sdo_point_3D  mdsys.sdo_geometry := SDO_GEOMETRY(3301,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,1,1),SDO_ORDINATE_ARRAY(8,10,35.398));
 
-  procedure test_dim
+  PROCEDURE st_lrs_dim
   As
     v_ST_LRS  pls_integer;
     v_SDO_LRS pls_integer;
@@ -112,9 +121,9 @@ create or replace package body test_t_geometry as
     ut.expect( v_ST_LRS, 
                'Failed to compare g_t_geometry.ST_LRS_Dim() to g_t_geometry.geom.get_lrs_dim()' 
              ).to_equal(v_SDO_LRS);
-  End;
+  End st_lrs_dim;
 
-  procedure test_is_measured
+  PROCEDURE ST_LRS_IsMeasured
   As
     v_ST_LRS  pls_integer;
     v_SDO_LRS pls_integer;
@@ -124,45 +133,51 @@ create or replace package body test_t_geometry as
     ut.expect( v_ST_LRS, 
                'failed to compare g_t_geometry.ST_LRS_isMeasured() to case when g_t_geometry.geom.get_lrs_dim()=0 then 0 else 1 end' 
              ).to_equal(v_SDO_LRS);
-  End test_is_measured;
+  End ST_LRS_IsMeasured;
 
-  procedure test_measure_range
-  As
-    v_ST_LRS  number;
-    v_SDO_LRS number;
-  Begin
-    v_ST_LRS := ST_LRS.MEASURE_RANGE(g_t_geometry.geom);
-    v_SDO_LRS:= MDSYS.SDO_LRS.MEASURE_RANGE(g_t_geometry.geom);
-    ut.expect( v_ST_LRS, 
-               'ST_LRS.MEASURE_RANGE(g_t_geometry.geom) did not produce same output as MDSYS.SDO_LRS.MEASURE_RANGE(g_t_geometry.geom)'
-              ).to_equal(v_SDO_LRS);
-  End;
+   PROCEDURE st_lrs_get_measure
+   As
+   Begin
+     NULL;
+   End st_lrs_get_measure;
 
-  Procedure test_start_measure
-  As
-    v_ST_LRS  number;
-    v_SDO_LRS number;
-  Begin
-    v_ST_LRS := ST_LRS.GEOM_SEGMENT_START_MEASURE(g_t_geometry.geom);
-    v_SDO_LRS:= MDSYS.SDO_LRS.GEOM_SEGMENT_START_MEASURE(g_t_geometry.geom);
-    ut.expect( v_ST_LRS, 
-               'ST_LRS.GEOM_SEGMENT_START_MEASURE(g_t_geometry.geom) did not produce same output as MDSYS.SDO_LRS.GEOM_SEGMENT_START_MEASURE(g_t_geometry.geom)'
-              ).to_equal(v_SDO_LRS);
-  End;
+   PROCEDURE st_lrs_start_measure
+   As
+     v_ST_LRS  number;
+     v_SDO_LRS number;
+   Begin
+     v_ST_LRS := ST_LRS.GEOM_SEGMENT_START_MEASURE(g_t_geometry.geom);
+     v_SDO_LRS:= MDSYS.SDO_LRS.GEOM_SEGMENT_START_MEASURE(g_t_geometry.geom);
+     ut.expect( v_ST_LRS, 
+                'ST_LRS.GEOM_SEGMENT_START_MEASURE(g_t_geometry.geom) did not produce same output as MDSYS.SDO_LRS.GEOM_SEGMENT_START_MEASURE(g_t_geometry.geom)'
+               ).to_equal(v_SDO_LRS);
+   End ST_LRS_start_measure;
 
-  Procedure test_end_measure
-  As
-    v_ST_LRS  number;
-    v_SDO_LRS number;
-  Begin
-    v_ST_LRS := ST_LRS.GEOM_SEGMENT_END_MEASURE(g_t_geometry.geom);
-    v_SDO_LRS:= MDSYS.SDO_LRS.GEOM_SEGMENT_END_MEASURE(g_t_geometry.geom);
-    ut.expect( v_ST_LRS, 
-               'ST_LRS.GEOM_SEGMENT_END_MEASURE(g_t_geometry.geom) did not produce same output as MDSYS.SDO_LRS.GEOM_SEGMENT_END_MEASURE(g_t_geometry.geom)'
-              ).to_equal(v_SDO_LRS);
-  End;
+   Procedure st_lrs_end_measure
+   As
+     v_ST_LRS  number;
+     v_SDO_LRS number;
+   Begin
+     v_ST_LRS := ST_LRS.GEOM_SEGMENT_END_MEASURE(g_t_geometry.geom);
+     v_SDO_LRS:= MDSYS.SDO_LRS.GEOM_SEGMENT_END_MEASURE(g_t_geometry.geom);
+     ut.expect( v_ST_LRS, 
+                'ST_LRS.GEOM_SEGMENT_END_MEASURE(g_t_geometry.geom) did not produce same output as MDSYS.SDO_LRS.GEOM_SEGMENT_END_MEASURE(g_t_geometry.geom)'
+                ).to_equal(v_SDO_LRS);
+   End st_lrs_end_measure;
 
-  Procedure test_is_measure_increasing
+   PROCEDURE st_lrs_measure_range
+   As
+     v_ST_LRS  number;
+     v_SDO_LRS number;
+   Begin
+     v_ST_LRS := ST_LRS.MEASURE_RANGE(g_t_geometry.geom);
+     v_SDO_LRS:= MDSYS.SDO_LRS.MEASURE_RANGE(g_t_geometry.geom);
+     ut.expect( v_ST_LRS, 
+                'ST_LRS.MEASURE_RANGE(g_t_geometry.geom) did not produce same output as MDSYS.SDO_LRS.MEASURE_RANGE(g_t_geometry.geom)'
+               ).to_equal(v_SDO_LRS);
+   End st_lrs_measure_range;
+
+  Procedure st_lrs_is_measure_increasing
   As
     v_ST_LRS  varchar(100);
     v_SDO_LRS varchar(100);
@@ -172,9 +187,9 @@ create or replace package body test_t_geometry as
     ut.expect( v_ST_LRS, 
                'ST_LRS.IS_MEASURE_INCREASING(g_t_geometry.geom) did not produce same output as MDSYS.SDO_LRS.IS_MEASURE_INCREASING(g_t_geometry.geom)'
               ).to_equal(v_SDO_LRS);
-  End;
+  End st_lrs_is_measure_increasing;
 
-  Procedure test_is_measure_decreasing
+  Procedure st_lrs_is_measure_decreasing
   As
     v_ST_LRS  varchar(100);
     v_SDO_LRS varchar(100);
@@ -184,9 +199,9 @@ create or replace package body test_t_geometry as
     ut.expect( v_ST_LRS, 
                'ST_LRS.IS_MEASURE_DECREASING(g_t_geometry.geom) did not produce same output as MDSYS.SDO_LRS.IS_MEASURE_DECREASING(g_t_geometry.geom)'
               ).to_equal(v_SDO_LRS);
-  End;
+  End st_lrs_is_measure_decreasing;
 
-  Procedure test_measure_percentage
+  Procedure st_lrs_measure_to_percentage
   As
     v_ST_LRS  number;
     v_SDO_LRS number;
@@ -197,15 +212,22 @@ create or replace package body test_t_geometry as
     ut.expect( v_ST_LRS, 
                'ST_LRS.MEASURE_TO_PERCENTAGE(g_t_geometry.geom,18) did not produce same output as MDSYS.SDO_LRS.MEASURE_TO_PERCENTAGE(g_t_geometry.geom,18)'
               ).to_equal(v_SDO_LRS);
+  End st_lrs_measure_to_percentage;
+
+  Procedure st_lrs_percentage_to_measure
+  As
+    v_ST_LRS  number;
+    v_SDO_LRS number;
+  Begin
     v_ST_LRS := ROUND(ST_LRS.PERCENTAGE_TO_MEASURE(g_t_geometry.geom,41.43),4);
     v_SDO_LRS:= ROUND(MDSYS.SDO_LRS.PERCENTAGE_TO_MEASURE(g_t_geometry.geom,41.43),4);
     dbms_output.put_line('     Test 2: Percentage of 41.43 to Measure SPDBA(' || v_st_lrs || ') SDO(' || v_sdo_lrs||')');
     ut.expect( v_ST_LRS, 
                'ST_LRS.PERCENTAGE_TO_MEASURE(g_t_geometry.geom,41.43) did not produce same output as MDSYS.SDO_LRS.PERCENTAGE_TO_MEASURE(g_t_geometry.geom,41.43)'
               ).to_equal(v_SDO_LRS);
-  End;
+  End st_lrs_percentage_to_measure;
 
-  Procedure test_is_shape_pt_measure
+  Procedure st_lrs_is_shape_pt_measure
   As
     v_ST_LRS  varchar(100);
     v_SDO_LRS varchar(100);
@@ -223,26 +245,9 @@ create or replace package body test_t_geometry as
     ut.expect( v_ST_LRS, 
                'ST_LRS.IS_SHAPE_PT_MEASURE(g_t_geometry.geom,25) did not produce same output as MDSYS.SDO_LRS.IS_SHAPE_PT_MEASURE(g_t_geometry.geom,25)'
               ).to_equal(v_SDO_LRS);
-  End;
+  End st_lrs_is_shape_pt_measure;
 
-  Procedure test_reset_measure
-  As
-    v_ST_LRS   SPDBA.t_geometry;
-    v_SDO_LRS  SPDBA.t_geometry;
-    v_sdo_geom sdo_geometry;
-  Begin
-    v_ST_LRS   := SPDBA.t_geometry(ST_LRS.RESET_MEASURE(g_t_geometry.geom),g_t_geometry.tolerance,g_t_geometry.dPrecision,g_t_geometry.projected);
-    v_sdo_geom := g_t_geometry.geom;
-    MDSYS.SDO_LRS.RESET_MEASURE(v_sdo_geom);
-    v_SDO_LRS := SPDBA.t_geometry(v_sdo_geom,g_t_geometry.tolerance,g_t_geometry.dPrecision,g_t_geometry.projected);
-    ut.expect( v_ST_LRS.ST_Round(3,3,2,3).ST_Equals(v_SDO_LRS.ST_Round(3,3,2,3).geom),
-               'ST_LRS.RESET_MEASURE(g_t_geometry.geom) did not produce same output as MDSYS.SDO_LRS.RESET_MEASURE(g_t_geometry.geom)'
-              ).to_equal('EQUAL');
-    dbms_output.put_line('       ST=' ||  v_ST_LRS.ST_Round(3,3,2,3).ST_AsEWKT());
-    dbms_output.put_line('      SDO=' || v_SDO_LRS.ST_Round(3,3,2,3).ST_AsEWKT());
-  End;
-
-  Procedure test_convert_to_lrs_geom
+  PROCEDURE st_lrs_convert_to_lrs_geom
   As
     v_ST_LRS  SPDBA.t_geometry;
     v_SDO_LRS SPDBA.t_geometry;
@@ -263,9 +268,9 @@ create or replace package body test_t_geometry as
               ).to_equal('EQUAL');
     dbms_output.put_line('       ST=' ||  v_ST_LRS.ST_Round(3,3,2,3).ST_AsEWKT());
     dbms_output.put_line('      SDO=' || v_SDO_LRS.ST_Round(3,3,2,3).ST_AsEWKT());
-  End;
+  End st_lrs_convert_to_lrs_geom;
 
-  Procedure test_convert_to_std_geom
+  PROCEDURE st_lrs_convert_to_std_geom
   As
     v_ST_LRS  SPDBA.t_geometry;
     v_SDO_LRS SPDBA.t_geometry;
@@ -279,9 +284,26 @@ create or replace package body test_t_geometry as
               ).to_equal('EQUAL');
     dbms_output.put_line('       ST=' ||  v_ST_LRS.ST_AsEWKT());
     dbms_output.put_line('      SDO=' || v_SDO_LRS.ST_AsEWKT());
-  End test_convert_to_std_geom;
+  End st_lrs_convert_to_std_geom;
 
-  Procedure test_scale_geom_segment
+  Procedure st_lrs_reset_measure
+  As
+    v_ST_LRS   SPDBA.t_geometry;
+    v_SDO_LRS  SPDBA.t_geometry;
+    v_sdo_geom sdo_geometry;
+  Begin
+    v_ST_LRS   := SPDBA.t_geometry(ST_LRS.RESET_MEASURE(g_t_geometry.geom),g_t_geometry.tolerance,g_t_geometry.dPrecision,g_t_geometry.projected);
+    v_sdo_geom := g_t_geometry.geom;
+    MDSYS.SDO_LRS.RESET_MEASURE(v_sdo_geom);
+    v_SDO_LRS := SPDBA.t_geometry(v_sdo_geom,g_t_geometry.tolerance,g_t_geometry.dPrecision,g_t_geometry.projected);
+    ut.expect( v_ST_LRS.ST_Round(3,3,2,3).ST_Equals(v_SDO_LRS.ST_Round(3,3,2,3).geom),
+               'ST_LRS.RESET_MEASURE(g_t_geometry.geom) did not produce same output as MDSYS.SDO_LRS.RESET_MEASURE(g_t_geometry.geom)'
+              ).to_equal('EQUAL');
+    dbms_output.put_line('       ST=' ||  v_ST_LRS.ST_Round(3,3,2,3).ST_AsEWKT());
+    dbms_output.put_line('      SDO=' || v_SDO_LRS.ST_Round(3,3,2,3).ST_AsEWKT());
+  End st_lrs_reset_measure;
+
+  PROCEDURE st_lrs_scale_geom_segment
   As
     v_ST_LRS  SPDBA.t_geometry;
     v_SDO_LRS SPDBA.t_geometry;
@@ -307,7 +329,7 @@ create or replace package body test_t_geometry as
     dbms_output.put_line('      SDO=' || v_SDO_LRS.ST_Round(3,3,2,3).ST_AsEWKT());
   End;
 
-  Procedure test_set_pt_measure
+  PROCEDURE st_lrs_set_pt_measure
   As
     v_ST_LRS   SPDBA.t_geometry;
     v_SDO_LRS  SPDBA.t_geometry;
@@ -334,9 +356,9 @@ create or replace package body test_t_geometry as
               ).to_equal('EQUAL');
     dbms_output.put_line('       ST=' ||  v_ST_LRS.ST_Round(3,3,2,3).ST_AsEWKT());
     dbms_output.put_line('      SDO=' || v_SDO_LRS.ST_Round(3,3,2,3).ST_AsEWKT());
-  End;
+  End st_lrs_set_pt_measure;
 
-  Procedure test_find_offset
+  PROCEDURE st_lrs_find_offset
   As
     v_st_offset  number;
     v_sdo_offset number;
@@ -357,9 +379,9 @@ create or replace package body test_t_geometry as
                'ST_LRS.FIND_OFFSET did not produce same output as MDSYS.SDO_LRS.FIND_OFFSET'
               ).to_equal(v_sdo_offset);
     dbms_output.put_line('       ST(' ||  v_st_offset ||') = SDO(' || v_sdo_offset||')');
-  End test_find_offset;
+  End st_lrs_find_offset;
 
-  Procedure test_find_measure
+  PROCEDURE st_lrs_find_measure
   As
     v_st_measure  number;
     v_sdo_measure number;
@@ -378,9 +400,9 @@ create or replace package body test_t_geometry as
                'ST_LRS.FIND_MEASURE did not produce same output as MDSYS.SDO_LRS.FIND_MEASURE'
               ).to_equal(v_sdo_measure);
     dbms_output.put_line('       ST(' ||  v_st_measure ||') = SDO(' || v_sdo_measure||')');
-  End test_find_measure;
+  End st_lrs_find_measure;
 
-  Procedure test_Locate_Pt
+  PROCEDURE st_lrs_Locate_Pt
   As
     v_ST_LRS  SPDBA.t_geometry;
     v_SDO_LRS SPDBA.t_geometry;
@@ -404,9 +426,9 @@ create or replace package body test_t_geometry as
               ).to_equal('EQUAL');
     dbms_output.put_line('       ST=' ||  v_ST_LRS.ST_Round(3,3,2,3).ST_AsEWKT());
     dbms_output.put_line('      SDO=' || v_SDO_LRS.ST_Round(3,3,2,3).ST_AsEWKT());
-  End;
+  End st_lrs_Locate_Pt;
 
-  Procedure test_reverse_measure
+  PROCEDURE st_lrs_reverse_measure
   As
     v_ST_LRS  SPDBA.t_geometry;
     v_SDO_LRS SPDBA.t_geometry;
@@ -419,9 +441,9 @@ create or replace package body test_t_geometry as
               ).to_equal('EQUAL');
     dbms_output.put_line('       ST=' ||  v_ST_LRS.ST_Round(3,3,2,3).ST_AsEWKT());
     dbms_output.put_line('      SDO=' || v_SDO_LRS.ST_Round(3,3,2,3).ST_AsEWKT());
-  End test_reverse_measure;
+  End st_lrs_reverse_measure;
 
-  Procedure test_reverse_geometry
+  PROCEDURE st_lrs_reverse_geometry
   As
     v_ST_LRS  SPDBA.t_geometry;
     v_SDO_LRS SPDBA.t_geometry;
@@ -436,9 +458,9 @@ create or replace package body test_t_geometry as
               ).to_equal('EQUAL');
     dbms_output.put_line('       ST=' ||  v_ST_LRS.ST_AsEWKT());
     dbms_output.put_line('      SDO=' || v_SDO_LRS.ST_AsEWKT());
-  End test_reverse_geometry;
+  End st_lrs_reverse_geometry;
 
-  Procedure test_clip_geom_segment
+  PROCEDURE st_lrs_clip_geom_segment
   As
     v_ST_LRS  SPDBA.t_geometry;
     v_SDO_LRS SPDBA.t_geometry;
@@ -461,9 +483,9 @@ create or replace package body test_t_geometry as
               ).to_equal('EQUAL');
     dbms_output.put_line('       ST=' ||  v_ST_LRS.ST_Round(3,3,2,3).ST_AsEWKT());
     dbms_output.put_line('      SDO=' || v_SDO_LRS.ST_Round(3,3,2,3).ST_AsEWKT());
-  End test_clip_geom_segment;
+  End st_lrs_clip_geom_segment;
 
-  Procedure test_dynamic_segment
+  PROCEDURE st_lrs_dynamic_segment
   As
     v_ST_LRS  SPDBA.t_geometry;
     v_SDO_LRS SPDBA.t_geometry;
@@ -492,9 +514,9 @@ create or replace package body test_t_geometry as
               ).to_equal('EQUAL');
     dbms_output.put_line('       ST=' ||  v_ST_LRS.ST_AsEWKT());
     dbms_output.put_line('      SDO=' || v_SDO_LRS.ST_AsEWKT());
-  End test_dynamic_segment;
+  End st_lrs_dynamic_segment;
 
-  Procedure test_offset_geom_segment
+  PROCEDURE st_lrs_offset_geom_segment
   As
     v_ST_LRS  SPDBA.t_geometry;
     v_SDO_LRS SPDBA.t_geometry;
@@ -521,7 +543,7 @@ create or replace package body test_t_geometry as
               ).to_equal('EQUAL');
     dbms_output.put_line('       ST=' ||  v_ST_LRS.ST_Round(3,3,2,3).ST_AsEWKT());
     dbms_output.put_line('      SDO=' || v_SDO_LRS.ST_Round(3,3,2,3).ST_AsEWKT());
-              
+
     dbms_output.put_line('     Test 2: 5-20 with 2.0 offset');
     v_ST_LRS  := SPDBA.t_geometry(
                    ST_LRS.OFFSET_GEOM_SEGMENT(
@@ -543,10 +565,10 @@ create or replace package body test_t_geometry as
               ).to_equal('EQUAL');
     dbms_output.put_line('       ST=' ||  v_ST_LRS.ST_Round(3,3,2,3).ST_AsEWKT());
     dbms_output.put_line('      SDO=' || v_SDO_LRS.ST_Round(3,3,2,3).ST_AsEWKT());
-    
-  End;
 
-  Procedure test_Project_Pt
+  End st_lrs_offset_geom_segment;
+
+  PROCEDURE st_lrs_Project_Pt
   As
     v_ST_LRS  SPDBA.t_geometry;
     v_SDO_LRS SPDBA.t_geometry;
@@ -570,9 +592,9 @@ create or replace package body test_t_geometry as
               ).to_equal('EQUAL');
     dbms_output.put_line('       ST=' ||  v_ST_LRS.ST_Round(3,3,2,3).ST_AsEWKT());
     dbms_output.put_line('      SDO=' || v_SDO_LRS.ST_Round(3,3,2,3).ST_AsEWKT());
-  End;
+  End st_lrs_Project_Pt;
 
-  Procedure test_translate_segment
+  PROCEDURE st_lrs_translate_segment
   As
     v_ST_LRS  SPDBA.t_geometry;
     v_SDO_LRS SPDBA.t_geometry;
@@ -590,9 +612,9 @@ create or replace package body test_t_geometry as
               ).to_equal('EQUAL');
     dbms_output.put_line('       ST=' ||  v_ST_LRS.ST_Round(3,3,2,3).ST_AsEWKT());
     dbms_output.put_line('      SDO=' || v_SDO_LRS.ST_Round(3,3,2,3).ST_AsEWKT());
-  End;
+  End st_lrs_translate_segment;
 
-  Procedure test_split
+  PROCEDURE st_lrs_split
   As
     v_ST_LRS_1  sdo_geometry;
     v_ST_LRS_2  sdo_geometry;
@@ -624,9 +646,9 @@ create or replace package body test_t_geometry as
     ut.expect( v_ST_LRS.ST_Round(3,3,2,3).ST_Equals(v_SDO_LRS.ST_Round(3,3,2,3).geom),
                'ST_LRS.SPLIT_GEOM_SEGMENT(segment_2) did not produce same output as MDSYS.SDO_LRS.SPLIT_GEOM_SEGMENT(segment_2)'
               ).to_equal('EQUAL');
-  End;
+  End st_lrs_split;
 
-  Procedure test_concatenate_pt_arg
+  PROCEDURE st_lrs_concatenate_pt_arg
   As
     c_i_point_not_line CONSTANT pls_integer := -20121;
     point_not_line     EXCEPTION;
@@ -646,9 +668,9 @@ create or replace package body test_t_geometry as
            dbms_output.put_line('      SQLERRM=' || SUBSTR(SQLERRM,12,100));
            ut.expect(SQLCODE,SQLERRM).to_equal(c_i_point_not_line);
     END;
-  End test_concatenate_pt_arg;
-  
-  Procedure test_concatenate
+  End st_lrs_concatenate_pt_arg;
+
+  PROCEDURE st_lrs_concatenate
   As
     v_ST_LRS_1  sdo_geometry;
     v_ST_LRS_2  sdo_geometry;
@@ -694,15 +716,15 @@ create or replace package body test_t_geometry as
               ).to_equal('EQUAL');
     dbms_output.put_line('       ST=' ||  v_ST_LRS.ST_Round(3,3,2,3).ST_AsEWKT());
     dbms_output.put_line('      SDO=' || v_SDO_LRS.ST_Round(3,3,2,3).ST_AsEWKT());
-  End;
+  End st_lrs_concatenate;
 
-  Procedure test_intersection
+  PROCEDURE st_lrs_intersection
   As
   Begin
     NULL;
-  End;
+  End st_lrs_intersection;
 
-  procedure test_asewkt
+  PROCEDURE st_lrs_asewkt
   As
     v_ST_GEOM   VARCHAR(32000);
     v_ewkt_geom SPDBA.t_geometry;
@@ -712,60 +734,20 @@ create or replace package body test_t_geometry as
                'v_ewkt OK'
               ).to_equal(V_ST_GEOM);
     dbms_output.put_line('       ST_AsEWKT=' || v_ST_GEOM);
-  End test_asewkt;
-  
-  Procedure test_from_ewkt
+  End st_lrs_asewkt;
+
+  PROCEDURE st_lrs_from_ewkt
   As
   Begin
-  End;
-  
-end test_t_geometry;
+    null;
+  End st_lrs_from_ewkt;
+
+End test_st_lrs_package;
 /
 SHOW ERRORS
 
 set serveroutput on size unlimited
 set long 800
 set linesize 800
-begin ut.run('test_t_geometry'); end;
-
-Test:
-
-1. Constructors.
-2. ST_Release
-ST_SetProjection
-ST_SetSdoGtype
-ST_SetSrid
-ST_SetPrecision
-ST_SetTolerance
-Nothing till...
-ST_AsEWKT
-ST_isEmpty
-ST_isClosed
-ST_NumSegments
-ST_Dimension
-ST_hasDimension
-
-
-'<gml:Polygon srsName="SDO:" xmlns:gml="http://www.opengis.net/gml"><gml:exterior><gml:LinearRing><gml:posList srsDimension="2">5.0 1.0 8.0 1.0 8.0 6.0 5.0 7.0 5.0 1.0</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon>'
-'<gml:Polygon srsName="SDO:" xmlns:gml="http://www.opengis.net/gml"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates decimal="." cs="," ts=" ">5.0,1.0 8.0,1.0 8.0,6.0 5.0,7.0 5.0,1.0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>'
-
-'POINTZ (-123.08963356 49.27575579 70)'
-select spdba.t_geometry(TO_CLOB('POINTZ (-123.08963356 49.27575579 70)')).geom from dual;
-'SRID=28355;POINTZ (-123.08963356 49.27575579 70)'
-select spdba.t_geometry(TO_CLOB('SRID=28355;POINTZ (-123.08963356 49.27575579 70)')).geom from dual;
-
-'LINESTRING (1 1,2 1,3 1)'
-'LINESTRING M (1 1 20,2 1 30,3 1 40)'
-'LINESTRING Z (1 1 20,2 1 30,3 1 40)'
-'LINESTRING ZM (1 1 20 0,2 1 30 10,3 1 40 20)'
-'POLYGON Z ((0 0 10,0 1 20,1 1 30,1 0 40,0 0 10))'
-'SRID=8307;LINESTRING Z ((0 0 10,0 1 20,1 1 30,1 0 40))'
-'SRID=8307;POLYGON Z ((0 0 10,0 1 20,1 1 30,1 0 40,0 0 10))'
-SDO_GEOMETRY(2001,28355,sdo_point_type(1,1,NULL),NULL,NULL)
-SDO_GEOMETRY(2001, 8307,sdo_point_type(147.5,-32.7,NULL),NULL,NULL)
-SDO_GEOMETRY(2001, NULL,sdo_point_type(147.5,-32.7,NULL),NULL,NULL)
-SDO_GEOMETRY(2002,28355,NULL,SDO_ELEM_INFO_ARRAY(1,2,1),SDO_ORDINATE_ARRAY(1,1,2,1,3,1))
-SDO_GEOMETRY(3001,28355,sdo_point_type(1,1,1),NULL,NULL)
-SDO_GEOMETRY(3001, NULL,sdo_point_type(1,1,1),NULL,NULL)
-SDO_GEOMETRY(3003, 8307,NULL,SDO_ELEM_INFO_ARRAY(1,1003,1),SDO_ORDINATE_ARRAY(0,0,10,1,0,40,1,1,30,0,1,20,0,0,10))
+begin ut.run('test_st_lrs_package'); end;
 
