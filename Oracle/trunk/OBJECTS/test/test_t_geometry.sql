@@ -686,17 +686,14 @@ CREATE OR REPLACE PACKAGE BODY test_t_geometry IS
    -- test st_asewkt case 1: ...
    --
    PROCEDURE st_asewkt IS
-      l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+    v_ST_GEOM   VARCHAR(32000);
+    v_ewkt_geom SPDBA.t_geometry;
    BEGIN
-      -- populate actual
-      -- t_geometry.st_asewkt;
-
-      -- populate expected
-      -- ...
-
-      -- assert
-      ut.expect(l_actual).to_equal(l_expected);
+     v_ST_GEOM  := dbms_lob.substr( g_t_geometry.ST_Round(3,3,2,3).ST_AsEWKT(), 500, 1);
+     ut.expect( v_st_geom,
+                'v_ewkt OK'
+               ).to_equal(V_ST_GEOM);
+     dbms_output.put_line('       ST_AsEWKT=' || v_ST_GEOM);
    END st_asewkt;
 
    --
