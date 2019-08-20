@@ -701,11 +701,11 @@ as
                      geom_segment_1 => v_SDO_LRS_1,
                      geom_segment_2 => v_SDO_LRS_2,
                      tolerance      => g_t_geometry.tolerance),g_t_geometry.tolerance,g_t_geometry.dPrecision,g_t_geometry.projected);
+    dbms_output.put_line('       ST=' ||  v_ST_LRS.ST_Round(3,3,2,3).ST_AsEWKT());
+    dbms_output.put_line('      SDO=' || v_SDO_LRS.ST_Round(3,3,2,3).ST_AsEWKT());
     ut.expect( v_ST_LRS.ST_Round(3,3,2,3).ST_Equals(v_SDO_LRS.ST_Round(3,3,2,3).geom),
                'ST_LRS.CONCATENATE_GEOM_SEGMENTS() did not produce same output as MDSYS.SDO_LRS.CONCATENATE_GEOM_SEGMENTS()'
               ).to_equal('EQUAL');
-    -- DEBUG dbms_output.put_line('       ST=' ||  v_ST_LRS.ST_Round(3,3,2,3).ST_AsEWKT());
-    -- DEBUG dbms_output.put_line('      SDO=' || v_SDO_LRS.ST_Round(3,3,2,3).ST_AsEWKT());
   End st_lrs_concatenate;
 
   PROCEDURE st_lrs_intersection
