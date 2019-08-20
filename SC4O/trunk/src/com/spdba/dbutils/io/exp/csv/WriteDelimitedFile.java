@@ -11,7 +11,7 @@ import com.spdba.dbutils.tools.Tools;
 
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.PrecisionModel;
-import org.locationtech.jts.io.ora.OraReader;
+import org.locationtech.jts.io.oracle.OraReader;
 
 import java.io.BufferedWriter;
 import java.io.File;

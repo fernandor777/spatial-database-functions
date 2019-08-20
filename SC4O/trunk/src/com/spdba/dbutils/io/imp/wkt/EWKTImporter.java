@@ -24,7 +24,7 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.io.WKTReader;
-import org.locationtech.jts.io.ora.OraWriter;
+import org.locationtech.jts.io.oracle.OraWriter;
 
 public class EWKTImporter{
 

@@ -11,7 +11,7 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.IntersectionMatrix;
 import org.locationtech.jts.geom.PrecisionModel;
-import org.locationtech.jts.io.ora.OraReader;
+import org.locationtech.jts.io.oracle.OraReader;
 import org.locationtech.jts.operation.relate.RelateOp;
 
 import java.sql.SQLException;

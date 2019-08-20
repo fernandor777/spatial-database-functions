@@ -8,7 +8,7 @@ import com.spdba.dbutils.tools.Tools;
 
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.WKTWriter;
-import org.locationtech.jts.io.ora.OraReader;
+import org.locationtech.jts.io.oracle.OraReader;
 
 import java.sql.Connection;
 import java.sql.SQLException;

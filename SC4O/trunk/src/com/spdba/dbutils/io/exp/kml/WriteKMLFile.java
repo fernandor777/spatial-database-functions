@@ -20,7 +20,7 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.locationtech.jts.io.WKTWriter;
 import org.locationtech.jts.io.kml.KMLWriter;
-import org.locationtech.jts.io.ora.OraReader;
+import org.locationtech.jts.io.oracle.OraReader;
 
 import java.io.BufferedWriter;
 import java.io.File;
