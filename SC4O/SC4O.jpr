@@ -67,7 +67,7 @@
       <string v="oracle.toplink.workbench.addin/toplinkContentSet"/>
       <string v="oracle.mds.internal.dt.ide.MDSADFLibVirtualNodeCSProvider/mdsLibVirtualNodeContentSet"/>
    </list>
-   <value n="defaultPackage" v="SC4OJTSE_Java_Topology_Suite_Edition"/>
+   <value n="defaultPackage" v="SC4OCJE_Java_Complete_Edition.jar"/>
    <hash n="oracle.bm.commonIde.data.project.ModelerProjectSettings">
       <hash n="modelersContentSet">
          <list n="url-path">
@@ -115,6 +115,9 @@
       </list>
    </hash>
    <hash n="oracle.jdeveloper.compiler.OjcConfiguration">
+      <list n="excludedUrls">
+         <string v="dtrunk/test/"/>
+      </list>
       <value n="internalEncoding" v="Cp1252"/>
       <list n="Javac.commandline.optionlist">
          <string v="-g"/>

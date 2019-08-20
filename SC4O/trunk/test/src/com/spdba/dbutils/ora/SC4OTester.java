@@ -1143,7 +1143,7 @@ public class SC4OTester
         try
         {
             Class.forName("oracle.jdbc.driver.OracleDriver");
-            OracleConnection database = (OracleConnection)DriverManager.getConnection("jdbc:oracle:thin:@localhost:1522:GISDB12", "spdba", "sPdbA");
+            OracleConnection database = (OracleConnection)DriverManager.getConnection("jdbc:oracle:thin:@localhost:1522:GISDB12", "spdba", "spdba12");
             Statement statement = database.createStatement();
             DBConnection.setConnection(database);
             ResultSet results = statement.executeQuery(
@@ -1166,10 +1166,10 @@ public class SC4OTester
                     gid  = ((BigDecimal)results.getObject("GID")).intValue();
                     System.out.println("Testing geometry gid=" + gid);
                     geom = (Struct)results.getObject("GEOM");
-                    int SRID      = getSRID(geom,-1);
-                    int GTYPE     = getGType(geom, 2001);
-                    int FullGType = getFullGType(geom, 2001);
-                    int DIM       = getDimension(geom,2);
+                    int SRID      = SDO.getSRID((STRUCT)geom,-1);
+                    int GTYPE     = SDO.getGType((STRUCT)geom, 2001);
+                    int FullGType = SDO.getFullGType((STRUCT)geom, 2001);
+                    int DIM       = SDO.getDimension((STRUCT)geom,2);
                     System.out.println(DIM + "D geometry of type " + GTYPE + " (" + FullGType + ") read from result set.");
                     or.setDimension(DIM); 
                     geo = or.read((STRUCT)geom);

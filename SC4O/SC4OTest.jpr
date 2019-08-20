@@ -83,6 +83,9 @@
       <url n="projectBuildfile" path="../../JTS/jts-topo-suite/tags/Version_1.13/jts/build.xml"/>
    </hash>
    <hash n="oracle.jdeveloper.compiler.OjcConfiguration">
+      <list n="excludedUrls">
+         <string v="dtrunk/test/src/org/locationtech/jts/"/>
+      </list>
       <value n="internalEncoding" v="Cp1252"/>
       <list n="Javac.commandline.optionlist">
          <string v="-g"/>
@@ -137,7 +140,28 @@
       </list>
    </hash>
    <hash n="oracle.jdevimpl.config.JProjectLibraries">
-      <list n="exportedReferences"/>
+      <list n="exportedReferences">
+         <hash>
+            <value n="id" v="Ojdbc6.jar"/>
+            <value n="isJDK" v="false"/>
+         </hash>
+         <hash>
+            <value n="id" v="Classes12.jar"/>
+            <value n="isJDK" v="false"/>
+         </hash>
+         <hash>
+            <value n="id" v="SC4OCJE_Java_Complete_Edition.jar"/>
+            <value n="isJDK" v="false"/>
+         </hash>
+         <hash>
+            <value n="id" v="Sdoapi.jar"/>
+            <value n="isJDK" v="false"/>
+         </hash>
+         <hash>
+            <value n="id" v="Sdoutl.jar"/>
+            <value n="isJDK" v="false"/>
+         </hash>
+      </list>
       <hash n="internalDefinitions">
          <list n="jdkDefinitions">
             <hash>
@@ -163,15 +187,6 @@
          <list n="libraryDefinitions">
             <hash>
                <list n="classPath">
-                  <url path="../lib/sdoutl.jar" jar-entry=""/>
-               </list>
-               <value n="deployedByDefault" v="true"/>
-               <value n="description" v="Sdoutl.jar"/>
-               <value n="id" v="Sdoutl.jar"/>
-               <value n="locked" v="true"/>
-            </hash>
-            <hash>
-               <list n="classPath">
                   <url path="../../../oracle/product/12.1.0/dbhome_1/jdbc/lib/ojdbc6.jar" jar-entry=""/>
                </list>
                <value n="deployedByDefault" v="true"/>
@@ -190,7 +205,7 @@
             </hash>
             <hash>
                <list n="classPath">
-                  <url path="../deploy/SC4OCJE_Java_Complete_Edition.jar" jar-entry=""/>
+                  <url path="deploy/SC4OCJE_Java_Complete_Edition.jar" jar-entry=""/>
                </list>
                <value n="deployedByDefault" v="true"/>
                <value n="description" v="SC4OCJE_Java_Complete_Edition.jar"/>
@@ -199,11 +214,20 @@
             </hash>
             <hash>
                <list n="classPath">
-                  <url path="../../../oracle/product/11.2.0/dbhome_1/md/jlib/sdoapi.jar" jar-entry=""/>
+                  <url path="../../../oracle/product/12.1.0/dbhome_1/md/jlib/sdoapi.jar" jar-entry=""/>
                </list>
                <value n="deployedByDefault" v="true"/>
                <value n="description" v="Sdoapi.jar"/>
                <value n="id" v="Sdoapi.jar"/>
+               <value n="locked" v="true"/>
+            </hash>
+            <hash>
+               <list n="classPath">
+                  <url path="../../../oracle/product/12.1.0/dbhome_1/md/jlib/sdoutl.jar" jar-entry=""/>
+               </list>
+               <value n="deployedByDefault" v="true"/>
+               <value n="description" v="Sdoutl.jar"/>
+               <value n="id" v="Sdoutl.jar"/>
                <value n="locked" v="true"/>
             </hash>
          </list>
@@ -215,6 +239,14 @@
       </hash>
       <list n="libraryReferences">
          <hash>
+            <value n="id" v="Ojdbc6.jar"/>
+            <value n="isJDK" v="false"/>
+         </hash>
+         <hash>
+            <value n="id" v="Classes12.jar"/>
+            <value n="isJDK" v="false"/>
+         </hash>
+         <hash>
             <value n="id" v="SC4OCJE_Java_Complete_Edition.jar"/>
             <value n="isJDK" v="false"/>
          </hash>
@@ -224,14 +256,6 @@
          </hash>
          <hash>
             <value n="id" v="Sdoutl.jar"/>
-            <value n="isJDK" v="false"/>
-         </hash>
-         <hash>
-            <value n="id" v="Ojdbc6.jar"/>
-            <value n="isJDK" v="false"/>
-         </hash>
-         <hash>
-            <value n="id" v="Classes12.jar"/>
             <value n="isJDK" v="false"/>
          </hash>
       </list>

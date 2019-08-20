@@ -1,14 +1,14 @@
 package com.spdba.dbutils.ora.io;
 
 import com.spdba.dbutils.Constants;
-import com.spdba.dbutils.io.export.csv.WriteDelimitedFile;
-import com.spdba.dbutils.io.export.geojson.WriteGeoJSONFile;
-import com.spdba.dbutils.io.export.gml.WriteGMLFile;
-import com.spdba.dbutils.io.export.kml.WriteKMLFile;
-import com.spdba.dbutils.io.export.shp.WriteSHPFile;
-import com.spdba.dbutils.io.export.spreadsheet.WriteExcelFile;
-import com.spdba.dbutils.io.export.tab.WriteTABFile;
-import com.spdba.dbutils.io.export.xbase.WriteXBaseFile;
+import com.spdba.dbutils.io.exp.csv.WriteDelimitedFile;
+import com.spdba.dbutils.io.exp.geojson.WriteGeoJSONFile;
+import com.spdba.dbutils.io.exp.gml.WriteGMLFile;
+import com.spdba.dbutils.io.exp.kml.WriteKMLFile;
+import com.spdba.dbutils.io.exp.shp.WriteSHPFile;
+import com.spdba.dbutils.io.exp.spreadsheet.WriteExcelFile;
+import com.spdba.dbutils.io.exp.tab.WriteTABFile;
+import com.spdba.dbutils.io.exp.xbase.WriteXBaseFile;
 import com.spdba.dbutils.spatial.Renderer;
 import com.spdba.dbutils.tools.FileUtils;
 

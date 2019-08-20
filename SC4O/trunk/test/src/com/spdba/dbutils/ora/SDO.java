@@ -24,23 +24,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import oracle.jdbc.OracleConnection;
-
 import oracle.spatial.geometry.J3D_Geometry;
 import oracle.spatial.geometry.JGeometry;
-import oracle.spatial.util.GML2;
-import oracle.spatial.util.GML3;
-import oracle.spatial.util.KML2;
-import oracle.spatial.util.WKT;
 
 import oracle.sql.Datum;
 import oracle.sql.NUMBER;
 
-import oracle.sql.STRUCT;
-
 import org.geotools.data.shapefile.shp.ShapeType;
-
-import org.locationtech.jts.geom.Coordinate;
 
 
 public class SDO 
@@ -567,7 +557,7 @@ public class SDO
 
     
     public static int getSRID(Struct _struct) {
-      return getSRID(_struct,Constants.SRID_NULL);
+      return getSRID(_struct,SDO.SRID_NULL);
     }
     
     
