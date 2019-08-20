@@ -2,7 +2,7 @@ DEFINE INSTALL_SCHEMA='&1'
 
 SET VERIFY OFF;
 
-CREATE OR REPLACE EDITIONABLE TYPE "&&INSTALL_SCHEMA."."T_GEOMETRY" 
+CREATE OR REPLACE EDITIONABLE TYPE &&INSTALL_SCHEMA..T_GEOMETRY 
 AUTHID DEFINER
 AS OBJECT (
 
@@ -192,7 +192,6 @@ AS OBJECT (
 
   -- ********** Member Functions ************************
 
-
   Member Function ST_AsGeometryRow(p_gid in integer default 1)
            Return &&INSTALL_SCHEMA..T_Geometry_Row Deterministic,
 
@@ -212,7 +211,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_SetSdoGtype (p_sdo_gtype in integer)
            Return &&INSTALL_SCHEMA..T_Geometry Deterministic,
 
@@ -232,7 +230,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_SetSRID(p_srid in integer)
            Return &&INSTALL_SCHEMA..T_Geometry Deterministic,
 
@@ -253,7 +250,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Procedure ST_SetProjection  (SELF IN OUT NOCOPY T_GEOMETRY),
 
   /****m* T_GEOMETRY/ST_SetPrecision
@@ -273,7 +269,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_SetPrecision(p_dPrecision in integer default 3)
            Return &&INSTALL_SCHEMA..T_Geometry Deterministic,
 
@@ -295,7 +290,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_SetTolerance (p_tolerance in number default 0.005)
            Return &&INSTALL_SCHEMA..T_Geometry Deterministic,
 
@@ -316,7 +310,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_SetPoint (p_point in mdsys.sdo_point_type)
            Return &&INSTALL_SCHEMA..T_GEOMETRY   Deterministic,
 
@@ -337,7 +330,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_GType
            Return Integer Deterministic,
 
@@ -358,7 +350,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Dims
            Return Integer Deterministic,
 
@@ -379,7 +370,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_SDO_GType
            Return Integer Deterministic,
 
@@ -400,7 +390,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Srid
            Return Integer Deterministic,
 
@@ -421,7 +410,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_AsWkb
            Return Blob Deterministic,
 
@@ -523,7 +511,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_AsWKT
            Return Clob Deterministic,
 
@@ -608,7 +595,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_AsEWKT(p_format_model in varchar2 default 'TM9')
            Return Clob Deterministic,
 
@@ -717,7 +703,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_AsText
            Return Clob Deterministic,
 
@@ -946,7 +931,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_AsTText(p_linefeed     in integer default 1,
                              p_format_model in varchar2 default 'TM9')
            Return Clob Deterministic,
@@ -997,7 +981,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_CoordDimension
            Return Smallint Deterministic,
 
@@ -1052,7 +1035,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Dimension
            Return Integer Deterministic,
 
@@ -1096,7 +1078,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_hasDimension   (p_dim  in integer default 2)
            Return Integer  Deterministic,
 
@@ -1139,7 +1120,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_hasZ
            Return Integer Deterministic,
 
@@ -1180,7 +1160,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_hasM
            Return Integer Deterministic,
 
@@ -1204,7 +1183,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_isValid
            Return Integer Deterministic,
 
@@ -1228,7 +1206,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Validate (p_context in integer default 0)
            Return varchar2 Deterministic,
 
@@ -1249,7 +1226,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_isValidContext
            Return varchar2 Deterministic,
 
@@ -1278,7 +1254,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_isEmpty
            Return Integer Deterministic,
 
@@ -1319,7 +1294,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_isClosed
            Return integer deterministic,
 
@@ -1365,7 +1339,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_isSimple
            Return integer deterministic,
 
@@ -1415,7 +1388,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_GeometryType
            Return VarChar2 Deterministic,
 
@@ -1450,7 +1422,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_NumGeometries
            Return integer Deterministic,
 
@@ -1482,7 +1453,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_NumVertices
            Return Integer Deterministic,
 
@@ -1517,7 +1487,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_NumPoints
            Return Integer Deterministic,
 
@@ -1557,7 +1526,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_NumElements
            Return Integer Deterministic,
 
@@ -1608,7 +1576,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_NumSubElements (p_subArcs in integer default 0)
            Return Integer Deterministic,
 
@@ -1671,7 +1638,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_ElementTypeAt (p_element in integer)
            Return integer Deterministic,
 
@@ -1706,7 +1672,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_NumInteriorRing
            Return Integer Deterministic,
 
@@ -1751,7 +1716,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_NumSegments
            Return Integer Deterministic,
 
@@ -1798,7 +1762,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_isOrientedPoint
            Return Integer Deterministic,
 
@@ -1834,7 +1797,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_hasCircularArcs
            Return Integer Deterministic,
 
@@ -1875,7 +1837,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_inCircularArc(p_point_number in integer)
            Return Integer,
 
@@ -1915,7 +1876,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_NumRectangles
            Return integer deterministic,
 
@@ -1957,7 +1917,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_hasRectangles
            Return Integer Deterministic,
 
@@ -1988,7 +1947,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Round(p_dec_places_x In integer default 8,
                            p_dec_places_y In integer Default null,
                            p_dec_places_z In integer Default 3,
@@ -2019,7 +1977,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_NumRings (p_ring_type in integer default 0)
            Return Integer Deterministic,
 
@@ -2050,7 +2007,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_ElemInfo
            Return &&INSTALL_SCHEMA..T_ElemInfoSet pipelined,
 
@@ -2086,7 +2042,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_NumElementInfo
            Return Integer deterministic,
 
@@ -2132,7 +2087,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Dump( p_subElements IN integer Default 0)
            Return &&INSTALL_SCHEMA..T_Geometries Pipelined,
 
@@ -2166,7 +2120,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_ExteriorRing
            Return &&INSTALL_SCHEMA..T_Geometry Deterministic,
 
@@ -2200,7 +2153,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Boundary
            Return &&INSTALL_SCHEMA..T_Geometry Deterministic,
 
@@ -2250,7 +2202,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Length (p_unit  in varchar2 default null,
                              p_round in integer default 0 )
            Return Number Deterministic,
@@ -2293,7 +2244,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Area   (p_unit in varchar2 default null,
                              p_round in integer default 0 )
            Return Number Deterministic,
@@ -2353,7 +2303,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Distance (p_geom in mdsys.sdo_geometry,
                                p_unit  in varchar2 default null,
                                p_round in integer  default 0 )
@@ -2447,7 +2396,6 @@ AS OBJECT (
    *  COPYRIGHT
    *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Relate(p_geom      in mdsys.sdo_geometry,
                             p_determine in varchar2 default 'DETERMINE')
            Return varchar2 Deterministic,
@@ -2563,7 +2511,6 @@ AS OBJECT (
    *  COPYRIGHT
    *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_SwapOrdinates (p_pair in varchar2 default 'XY')
            Return &&INSTALL_SCHEMA..T_GEOMETRY Deterministic,
 
@@ -2608,7 +2555,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_FilterRings(p_area in number,
                                  p_unit in varchar2 default null)
            Return &&INSTALL_SCHEMA..T_GEOMETRY   Deterministic,
@@ -2650,7 +2596,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_RemoveInnerRings
            Return &&INSTALL_SCHEMA..T_GEOMETRY Deterministic,
 
@@ -2760,7 +2705,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Extract (p_geomType in varchar2)
            Return &&INSTALL_SCHEMA..T_Geometry Deterministic,
 
@@ -2808,7 +2752,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_ExtractRings
            Return &&INSTALL_SCHEMA..T_GEOMETRIES Pipelined,
 
@@ -2858,7 +2801,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Vertices
            Return &&INSTALL_SCHEMA..T_Vertices Pipelined,
 
@@ -3348,7 +3290,6 @@ AS OBJECT (
   *  HISTORY
   *    Simon Greener - December 2017 - Original PLSQL Coding for Oracle
  ******/
-
   Member Function ST_Segmentize(p_filter       in varchar2  default 'ALL',
                                 p_id           in integer   default null,
                                 p_vertex       in &&INSTALL_SCHEMA..T_Vertex default null,
@@ -3394,7 +3335,6 @@ AS OBJECT (
  *  COPYRIGHT
  *    (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
 ******/
-
   Member Function ST_Flip_Segments(p_keep in integer default -1)
            Return &&INSTALL_SCHEMA..T_Segments Pipelined,
 
@@ -3434,7 +3374,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Rectangle2Polygon
            Return &&INSTALL_SCHEMA..T_GEOMETRY Deterministic,
 
@@ -3473,7 +3412,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Polygon2Rectangle
            Return &&INSTALL_SCHEMA..T_GEOMETRY Deterministic,
 
@@ -3560,7 +3498,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Geometry2Diminfo
            Return mdsys.Sdo_Dim_Array Deterministic,
 
@@ -3588,10 +3525,8 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
  ******/
-
   Member Function ST_MBR
            Return &&INSTALL_SCHEMA..T_GEOMETRY Deterministic,
-
 
   Member Function ST_toMultiPoint
            Return &&INSTALL_SCHEMA..T_GEOMETRY Deterministic,
@@ -3623,7 +3558,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
  ******/
-
   Member Function ST_Envelope
            Return &&INSTALL_SCHEMA..T_GEOMETRY Deterministic,
 
@@ -3663,7 +3597,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Polygon2Line
            Return &&INSTALL_SCHEMA..T_GEOMETRY Deterministic,
 
@@ -3708,7 +3641,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Multi
            Return &&INSTALL_SCHEMA..T_GEOMETRY Deterministic,
 
@@ -3833,7 +3765,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Append(p_geom        in mdsys.sdo_geometry,
                             p_concatenate in integer default 0)
            Return &&INSTALL_SCHEMA..T_GEOMETRY Deterministic,
@@ -3901,7 +3832,6 @@ AS OBJECT (
  *  COPYRIGHT
  *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
  ******/
-
   Member Function ST_Rotate (p_angle        in number,
                              p_dir          in integer,
                              p_rotate_point in mdsys.sdo_geometry,
@@ -3958,7 +3888,6 @@ AS OBJECT (
  *  COPYRIGHT
  *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
  ******/
-
   Member Function ST_Rotate (p_angle in number,
                              p_rx    in number,
                              p_ry    in number)
@@ -4013,7 +3942,6 @@ AS OBJECT (
  *  COPYRIGHT
  *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
  ******/
-
   Member Function ST_Rotate (p_angle        in number,
                              p_rotate_point in mdsys.sdo_geometry)
            Return &&INSTALL_SCHEMA..T_GEOMETRY deterministic,
@@ -4057,7 +3985,6 @@ AS OBJECT (
  *  COPYRIGHT
  *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
  ******/
-
   Member Function ST_Rotate (p_angle in number)
            Return &&INSTALL_SCHEMA..T_GEOMETRY deterministic,
 
@@ -4113,7 +4040,6 @@ AS OBJECT (
  *  COPYRIGHT
  *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
  ******/
-
   Member Function ST_Scale (p_sx          in number,
                             p_sy          in number,
                             p_sz          in number default null,
@@ -4163,7 +4089,6 @@ AS OBJECT (
  *  COPYRIGHT
  *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
  ******/
-
   Member Function ST_Translate (p_tx in number,
                                 p_ty in number,
                                 p_tz in number default null)
@@ -4207,7 +4132,6 @@ AS OBJECT (
  *  COPYRIGHT
  *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
  ******/
-
   Member Function ST_Reflect (p_reflect_geom  in mdsys.sdo_geometry,
                               p_reflect_plane in number default -1)
            Return &&INSTALL_SCHEMA..T_GEOMETRY deterministic,
@@ -4265,7 +4189,6 @@ AS OBJECT (
  *  COPYRIGHT
  *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
  ******/
-
   Member Function ST_RotTransScale (p_angle     in number,
                                     p_rs_point  in mdsys.sdo_geometry,
                                     p_sx        in number,
@@ -4377,7 +4300,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Affine(p_a    in number,
                             p_b    in number,
                             p_c    in number,
@@ -4494,7 +4416,6 @@ AS OBJECT (
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
 
-
   Member Function ST_FixOrdinates   (p_x_formula in varchar2,
                                      p_y_formula in varchar2,
                                      p_z_formula in varchar2 := null,
@@ -4553,7 +4474,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_VertexN (p_vertex in integer)
            Return &&INSTALL_SCHEMA..T_Vertex Deterministic,
 
@@ -4585,7 +4505,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_StartVertex
            Return &&INSTALL_SCHEMA..T_Vertex Deterministic,
 
@@ -4618,7 +4537,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_EndVertex
            Return &&INSTALL_SCHEMA..T_Vertex Deterministic,
 
@@ -4671,7 +4589,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_PointN(p_point in integer)
            Return &&INSTALL_SCHEMA..T_Geometry Deterministic,
 
@@ -4703,7 +4620,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_StartPoint
            Return &&INSTALL_SCHEMA..T_Geometry Deterministic,
 
@@ -4735,7 +4651,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_EndPoint
            Return &&INSTALL_SCHEMA..T_Geometry Deterministic,
 
@@ -4788,7 +4703,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_SegmentN (p_segment in integer)
            Return &&INSTALL_SCHEMA..T_Segment Deterministic,
 
@@ -4822,7 +4736,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_StartSegment
            Return &&INSTALL_SCHEMA..T_Segment Deterministic,
 
@@ -4856,7 +4769,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_EndSegment
            Return &&INSTALL_SCHEMA..t_SEGMENT Deterministic,
 
@@ -4942,7 +4854,6 @@ AS OBJECT (
  *  COPYRIGHT
  *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 ******/
-
   Member Function ST_InsertVertex (p_vertex in &&INSTALL_SCHEMA..T_Vertex)
            Return &&INSTALL_SCHEMA..T_GEOMETRY Deterministic,
 
@@ -4984,7 +4895,6 @@ AS OBJECT (
  *  COPYRIGHT
  *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 ******/
-
   Member Function ST_UpdateVertex (p_vertex in &&INSTALL_SCHEMA..T_Vertex)
            Return &&INSTALL_SCHEMA..T_GEOMETRY Deterministic,
 
@@ -5031,7 +4941,6 @@ AS OBJECT (
  *  COPYRIGHT
  *    (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
 ******/
-
   Member Function ST_UpdateVertex (p_old_vertex in &&INSTALL_SCHEMA..T_Vertex,
                                    p_new_vertex in &&INSTALL_SCHEMA..T_Vertex)
            Return &&INSTALL_SCHEMA..T_GEOMETRY Deterministic,
@@ -5077,7 +4986,6 @@ AS OBJECT (
  *  COPYRIGHT
  *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 ******/
-
   Member Function ST_DeleteVertex (p_vertex_id in integer)
            Return &&INSTALL_SCHEMA..T_GEOMETRY Deterministic,
 
@@ -5146,7 +5054,6 @@ AS OBJECT (
  *  COPYRIGHT
  *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 ******/
-
   Member Function ST_RemoveDuplicateVertices
            Return &&INSTALL_SCHEMA..T_GEOMETRY deterministic,
 
@@ -5257,7 +5164,6 @@ AS OBJECT (
  *  COPYRIGHT
  *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
  ******/
-
   Member Function ST_Extend (p_length    in number,
                              p_start_end in varchar2 default 'START',
                              p_unit      in varchar2 default null)
@@ -5351,7 +5257,6 @@ AS OBJECT (
  *  COPYRIGHT
  *    (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
  ******/
-
   Member Function ST_Reduce (p_length    in number,
                              p_start_end in varchar2 default 'START',
                              p_unit      in varchar2 default null)
@@ -5477,7 +5382,6 @@ AS OBJECT (
  *  COPYRIGHT
  *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 ******/
-
   Member Function ST_Cogo2Line(p_bearings_and_distances in &&INSTALL_SCHEMA..T_BEARING_DISTANCES)
            Return &&INSTALL_SCHEMA..T_Geometry Deterministic,
 
@@ -5566,7 +5470,6 @@ AS OBJECT (
  *  COPYRIGHT
  *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 ******/
-
   Member Function ST_Line2Cogo (p_unit in varchar2 default null)
            Return &&INSTALL_SCHEMA..T_BEARING_DISTANCES Pipelined,
 
@@ -5668,7 +5571,6 @@ AS OBJECT (
  *  COPYRIGHT
  *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 ******/
-
   Member Function ST_Cogo2Polygon(p_bearings_and_distances in &&INSTALL_SCHEMA..T_BEARING_DISTANCES)
            Return &&INSTALL_SCHEMA..T_Geometry Deterministic,
 
@@ -5786,7 +5688,6 @@ AS OBJECT (
  *  COPYRIGHT
  *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 ******/
-
   Member Function ST_TravellingSalesman(p_start_gid   in integer,
                                         p_start_point in mdsys.sdo_point_type default NULL,
                                         p_geo_fence   in mdsys.sdo_geometry   default NULL,
@@ -5860,7 +5761,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 ******/
-
   Member Function ST_Compress (p_delta_factor in number default 1,
                                p_origin       in &&INSTALL_SCHEMA..T_Vertex default null )
            Return &&INSTALL_SCHEMA..T_Geometry DETERMINISTIC,
@@ -5935,7 +5835,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 ******/
-
   Member Function ST_Decompress (p_delta_factor in number default 1,
                                  p_origin       in &&INSTALL_SCHEMA..T_Vertex default null )
            Return &&INSTALL_SCHEMA..T_Geometry DETERMINISTIC,
@@ -5961,7 +5860,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_SdoPoint2Ord
            Return &&INSTALL_SCHEMA..T_GEOMETRY Deterministic,
 
@@ -5984,7 +5882,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Ord2SdoPoint
            Return &&INSTALL_SCHEMA..T_GEOMETRY Deterministic,
 
@@ -6013,7 +5910,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_To2D
            Return &&INSTALL_SCHEMA..T_GEOMETRY Deterministic,
 
@@ -6040,7 +5936,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_To3D(p_zordtokeep IN Integer)
            Return &&INSTALL_SCHEMA..T_GEOMETRY Deterministic,
 
@@ -6071,7 +5966,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_To3D(p_start_z IN Number,
                           p_end_z   IN Number,
                           p_unit    in varchar2 default null)
@@ -6099,7 +5993,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_FixZ(p_default_z IN Number := -9999 )
            Return &&INSTALL_SCHEMA..T_GEOMETRY Deterministic,
 
@@ -6210,7 +6103,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_SmoothTile
            Return &&INSTALL_SCHEMA..T_GEOMETRY Deterministic,
 
@@ -6305,7 +6197,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_RemoveCollinearPoints
            Return &&INSTALL_SCHEMA..T_GEOMETRY Deterministic,
 
@@ -6436,7 +6327,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Densify(p_distance In Number,
                              p_unit     In Varchar2 Default NULL)
            Return &&INSTALL_SCHEMA..T_GEOMETRY deterministic,
@@ -6467,7 +6357,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_LineShift (p_distance in number)
            Return &&INSTALL_SCHEMA..T_GEOMETRY deterministic,
 
@@ -6497,12 +6386,10 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Parallel(p_offset in number,
                               p_curved in number default 0,
                               p_unit   in varchar2 default null)
            Return &&INSTALL_SCHEMA..T_GEOMETRY deterministic,
-
 
   Member Function ST_GetOffsetCurve(p_offset    in number,
                                     p_bufParams in &&INSTALL_SCHEMA..BufferParameters)
@@ -6536,7 +6423,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Rectangle(p_length in number,
                                p_width  in number)
            Return &&INSTALL_SCHEMA..T_GEOMETRY deterministic,
@@ -6576,7 +6462,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Centroid_L(p_option in varchar2 := 'LARGEST',
                                 p_unit   in varchar2 default null)
            Return &&INSTALL_SCHEMA..T_GEOMETRY deterministic,
@@ -6637,7 +6522,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Centroid_P
            Return &&INSTALL_SCHEMA..T_GEOMETRY deterministic,
 
@@ -6727,7 +6611,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Centroid_A(
                      P_method     In Integer Default 1,
                      P_Seed_Value In Number  Default Null,
@@ -6804,7 +6687,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Multi_Centroid(
                     p_method IN integer  := 1,
                     p_unit   IN varchar2 := NULL
@@ -6853,7 +6735,6 @@ AS OBJECT (
   *  DEPRECATED
   *    April 30th. Use ...
   ******/
-
   Member Function ST_Split_Segments(p_vertex in &&INSTALL_SCHEMA..T_Vertex,
                                    p_unit   in varchar2 DEFAULT null,
                                    p_pairs  in integer  DEFAULT 0)
@@ -6887,7 +6768,6 @@ AS OBJECT (
   *  DEPRECATED
   *    April 30th. Use ....
   ******/
-
   Member Function ST_Split_Segments(p_point  in mdsys.sdo_geometry,
                                     p_unit   in varchar2    DEFAULT null,
                                     p_pairs  in integer DEFAULT 0)
@@ -6921,7 +6801,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Split (p_vertex in &&INSTALL_SCHEMA..T_Vertex,
                             p_unit   in varchar2 default null)
            Return &&INSTALL_SCHEMA..T_GEOMETRIES Deterministic,
@@ -6949,7 +6828,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Split (p_point  in mdsys.sdo_geometry,
                             p_unit   in varchar2 DEFAULT null)
            Return &&INSTALL_SCHEMA..T_GEOMETRIES Deterministic,
@@ -6977,7 +6855,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Split (p_measure in number,
                             p_unit    in varchar2  DEFAULT null)
            Return &&INSTALL_SCHEMA..T_GEOMETRIES Deterministic,
@@ -7006,7 +6883,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Snap (p_point in mdsys.sdo_geometry,
                            p_unit  in varchar2 default null)
            Return &&INSTALL_SCHEMA..T_GEOMETRIES Deterministic,
@@ -7037,7 +6913,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_SnapN(p_point in mdsys.sdo_geometry,
                            p_id    in integer,
                            p_unit  in varchar2 default null)
@@ -7064,7 +6939,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Add_SEGMENT(p_SEGMENT in &&INSTALL_SCHEMA..T_SEGMENT)
            Return &&INSTALL_SCHEMA..T_Geometry deterministic,
 
@@ -7085,7 +6959,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Reverse_Linestring
            Return &&INSTALL_SCHEMA..T_GEOMETRY Deterministic,
 
@@ -7106,7 +6979,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Reverse_Geometry
            Return &&INSTALL_SCHEMA..T_GEOMETRY Deterministic,
 
@@ -7134,7 +7006,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Which_Side(p_point  in mdsys.sdo_geometry,
                                 p_unit   in varchar2 default null)
            Return varchar2 Deterministic,
@@ -7155,7 +7026,6 @@ AS OBJECT (
   *  HISTORY
   *    Simon Greener - Jan 2013 - Original Coding.
   ******/
-
   Member Function ST_Concat_Line(p_line in mdsys.sdo_geometry)
            Return &&INSTALL_SCHEMA..T_GEOMETRY Deterministic,
 
@@ -7192,7 +7062,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Intersection(p_geometry in mdsys.sdo_geometry,
                                   p_order    in varchar2 Default 'FIRST')
            Return &&INSTALL_SCHEMA..T_GEOMETRY deterministic,
@@ -7225,7 +7094,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Difference(p_geometry in mdsys.sdo_geometry,
                                 p_order    in varchar2 Default 'FIRST')
            Return &&INSTALL_SCHEMA..T_GEOMETRY deterministic,
@@ -7258,7 +7126,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Buffer(p_distance in number,
                             p_unit     in varchar2 default null)
            Return &&INSTALL_SCHEMA..T_GEOMETRY deterministic,
@@ -7287,7 +7154,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_SquareBuffer   (p_distance in number,
                                      p_curved   in number default 0,
                                      p_unit     in varchar2 default null)
@@ -7316,7 +7182,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_OneSidedBuffer (p_distance in number,
                                      p_curved   in number default 0,
                                      p_unit     in varchar2 default null)
@@ -7343,7 +7208,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_LRS_Dim
            Return Integer Deterministic,
 
@@ -7380,7 +7244,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_LRS_isMeasured
            Return Integer Deterministic,
 
@@ -7402,7 +7265,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_LRS_Get_Measure
           Return number deterministic,
 
@@ -7431,7 +7293,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_LRS_Project_Point(P_Point In Mdsys.Sdo_Geometry,
                                        p_unit  In varchar2 Default null)
            Return &&INSTALL_SCHEMA..T_GEOMETRY deterministic,
@@ -7460,7 +7321,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_LRS_Find_Measure(p_geom     in mdsys.sdo_geometry,
                                       p_measureN in integer  default 1,
                                       p_unit     in varchar2 default null)
@@ -7491,7 +7351,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_LRS_Find_MeasureN(p_geom     in mdsys.sdo_geometry,
                                        p_measureN in integer  default 1,
                                        p_unit     in varchar2 default null)
@@ -7520,7 +7379,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_LRS_Find_Offset(p_point in mdsys.sdo_geometry,
                                      p_unit  in varchar2 default null)
            Return Number Deterministic,
@@ -7572,7 +7430,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_LRS_Add_Measure(p_start_measure IN Number Default NULL,
                                      p_end_measure   IN Number Default NULL,
                                      p_unit          IN VarChar2 Default NULL)
@@ -7603,7 +7460,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_LRS_Update_Measures(p_start_measure IN Number,
                                          p_end_measure   IN Number,
                                          p_unit          IN VarChar2 DEFAULT NULL)
@@ -7630,7 +7486,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_LRS_Reset_Measure
            Return &&INSTALL_SCHEMA..T_GEOMETRY Deterministic,
 
@@ -7652,7 +7507,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_LRS_Reverse_Measure
            Return &&INSTALL_SCHEMA..T_GEOMETRY Deterministic,
 
@@ -7681,7 +7535,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_LRS_Scale_Measures(p_start_measure IN Number,
                                         p_end_measure   IN Number,
                                         p_shift_measure IN Number DEFAULT 0.0 )
@@ -7707,7 +7560,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_LRS_Concatenate(p_lrs_segment IN mdsys.sdo_geometry,
                                      p_unit        IN VarChar2 DEFAULT NULL)
            Return &&INSTALL_SCHEMA..T_Geometry Deterministic,
@@ -7730,7 +7582,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_LRS_Start_Measure
            Return Number deterministic,
 
@@ -7754,7 +7605,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_LRS_End_Measure(p_unit in varchar2 default null)
            Return Number deterministic,
 
@@ -7778,7 +7628,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_LRS_Measure_Range(p_unit in varchar2 default null)
            Return Number deterministic,
 
@@ -7802,7 +7651,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_LRS_Is_Measure_Decreasing
            Return varchar2 Deterministic,
 
@@ -7826,7 +7674,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_LRS_Is_Measure_Increasing
            Return varchar2 Deterministic,
 
@@ -7849,7 +7696,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_LRS_Is_Shape_Pt_Measure(p_measure IN Number)
            Return Varchar2 Deterministic,
 
@@ -7877,7 +7723,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_LRS_Measure_To_Percentage(p_measure in number default 0,
                                                p_unit    in varchar2 default null)
            Return Number deterministic,
@@ -7904,7 +7749,6 @@ AS OBJECT (
   *  HISTORY
   *    Simon Greener - Jan 2013 - Original Coding.
   ******/
-
   Member Function ST_LRS_Percentage_To_Measure(p_percentage in number default 0,
                                                p_unit       in varchar2 default null)
            Return Number deterministic,
@@ -7935,7 +7779,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_LRS_Locate_Measure (p_measure in number,
                                          p_offset  in number   default 0,
                                          p_unit    in varchar2 default null)
@@ -7965,7 +7808,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_LRS_Locate_Point(p_measure in number,
                                       p_offset  in number default 0)
            Return &&INSTALL_SCHEMA..T_GEOMETRY deterministic,
@@ -7987,7 +7829,6 @@ AS OBJECT (
   *  SEE ALSO
   *    ST_Locate_Measure(p_measure in number, ...)
   ******/
-
   Member Function ST_LRS_Locate_Along(p_measure in number,
                                       p_offset  in number   default 0,
                                       p_unit    in varchar2 default null)
@@ -8020,7 +7861,6 @@ AS OBJECT (
   *  HISTORY
   *    Simon Greener - Jan 2013 - Original Coding.
   ******/
-
   Member Function ST_LRS_Locate_Measures(p_start_measure in number,
                                          p_end_measure   in number,
                                          p_offset        in number default 0,
@@ -8046,7 +7886,6 @@ AS OBJECT (
   *  HISTORY
   *    Simon Greener - Jan 2013 - Original Coding.
   ******/
-
   Member Function ST_LRS_Locate_Between(p_start_measure in number,
                                         p_end_measure   in number,
                                         p_offset        in number default 0,
@@ -8073,7 +7912,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_LRS_Valid_Measure(p_measure in number)
            Return varchar2 deterministic,
 
@@ -8104,7 +7942,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_LRS_Valid_Point(p_diminfo in mdsys.sdo_dim_array)
            Return varchar2 deterministic,
 
@@ -8131,7 +7968,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_LRS_Valid_Segment(p_diminfo in mdsys.sdo_dim_array)
            Return varchar2 deterministic,
 
@@ -8159,7 +7995,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_LRS_Valid_Geometry(p_diminfo in mdsys.sdo_dim_array)
            Return varchar2 deterministic,
 
@@ -8185,7 +8020,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_LRS_Intersection(p_geom In Mdsys.Sdo_Geometry,
                                       P_unit in varchar2 default null)
            Return &&INSTALL_SCHEMA..T_GEOMETRY deterministic,
@@ -8221,7 +8055,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Sdo_Point_Equal(p_sdo_point   in mdsys.sdo_point_type,
                                      p_z_precision in integer default 2)
            Return Integer Deterministic,
@@ -8251,7 +8084,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Elem_Info_Equal(p_elem_info in mdsys.sdo_elem_info_array)
            Return Integer Deterministic,
 
@@ -8284,7 +8116,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Ordinates_Equal(p_ordinates   in mdsys.sdo_ordinate_array,
                                      p_z_precision in integer default 2,
                                      p_m_precision in integer default 3)
@@ -8324,7 +8155,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_Equals(p_geometry    in mdsys.sdo_Geometry,
                             p_z_precision in integer default 2,
                             p_m_precision in integer default 3)

@@ -2,7 +2,7 @@ DEFINE INSTALL_SCHEMA='&1'
 
 SET VERIFY OFF;
 
-CREATE OR REPLACE EDITIONABLE TYPE BODY "&&INSTALL_SCHEMA."."T_GEOMETRY" 
+CREATE OR REPLACE EDITIONABLE TYPE BODY &&INSTALL_SCHEMA..T_GEOMETRY 
 AS
   Constructor Function T_GEOMETRY(SELF IN OUT NOCOPY T_GEOMETRY)
                 Return Self As Result
@@ -14,6 +14,7 @@ AS
     SELF.projected  := NULL;
     RETURN;
   End T_GEOMETRY;
+
   Constructor Function T_GEOMETRY(SELF   IN OUT NOCOPY T_GEOMETRY,
                                   p_geom IN mdsys.sdo_geometry)
                 Return Self As Result
@@ -25,6 +26,7 @@ AS
     SELF.projected := 1;
     RETURN;
   End T_GEOMETRY;
+
   Constructor Function T_GEOMETRY(SELF        IN OUT NOCOPY T_GEOMETRY,
                                   p_geom      in mdsys.sdo_geometry,
                                   p_tolerance in number)
@@ -41,6 +43,7 @@ AS
     END IF;
     RETURN;
   End T_GEOMETRY;
+
   Constructor Function T_GEOMETRY(SELF        IN OUT NOCOPY T_GEOMETRY,
                                   p_geom      in mdsys.sdo_geometry,
                                   p_tolerance in number,
@@ -58,6 +61,7 @@ AS
     END IF;
     RETURN;
   End T_GEOMETRY;
+
   Constructor Function T_GEOMETRY(SELF        IN OUT NOCOPY T_GEOMETRY,
                                   p_geom      in mdsys.sdo_geometry,
                                   p_tolerance in number,
@@ -86,6 +90,7 @@ AS
                         end;
     RETURN;
   End T_GEOMETRY;
+
   Constructor Function T_GEOMETRY(SELF        IN OUT NOCOPY T_GEOMETRY,
                                   p_vertex    in mdsys.vertex_type,
                                   p_srid      in integer,
@@ -135,6 +140,7 @@ AS
                             end);
     RETURN;
   End T_GEOMETRY;
+
   Constructor Function T_GEOMETRY(SELF    IN OUT NOCOPY T_GEOMETRY,
                                   p_geoms IN mdsys.sdo_geometry_array)
                 Return Self As Result
@@ -223,6 +229,7 @@ AS
     SELF.geom := v_geom;
     RETURN;
   End T_GEOMETRY;
+
   Constructor Function T_GEOMETRY(SELF   IN OUT NOCOPY T_GEOMETRY,
                                   p_ewkt IN CLOB )
                 Return Self As Result
@@ -831,7 +838,7 @@ AS
         return 0;
      End If;
   End ST_hasDimension;
-
+  
   Member Function ST_hasZ
            Return Integer
   Is
@@ -845,7 +852,7 @@ AS
             else 0
         end;
   End ST_hasZ;
-
+  
   Member Function ST_hasM
            Return Integer
   Is
@@ -859,7 +866,7 @@ AS
             else 0
         end;
   End ST_hasM;
-
+  
   Member Function ST_Length (p_unit  in varchar2 default null,
                              p_round in integer default 0 )
            Return Number
@@ -869,6 +876,7 @@ AS
     v_length    number;
     v_tolerance number  := nvl(SELF.tolerance,0.005);
     v_isLocator boolean := false;
+    
     Function sdo_length3D(p_geom in mdsys.sdo_geometry)
     Return Number
     IS
@@ -878,6 +886,7 @@ AS
       v_element      mdsys.sdo_geometry;
       v_num_rings    pls_integer;
       v_ring         mdsys.sdo_geometry;
+      
       Function ComputeLength3D (P_Geom In Mdsys.Sdo_Geometry)
       Return Number
       Is
@@ -921,6 +930,7 @@ AS
           End If;
           Return v_length;
       End ComputeLength3D;
+      
     BEGIN
         v_num_elements := SELF.ST_NumElements();
         v_length := 0.0;
@@ -976,6 +986,7 @@ AS
     end if;
     return case when nvl(p_round,0) = 0 then v_length else round(v_length,nvl(self.dprecision,8)) end;
   end st_length;
+  
   member function st_area (p_unit  in varchar2 default null,
                            p_round in integer  default 0 )
            return number
@@ -991,6 +1002,7 @@ AS
     end if;
     return case when nvl(p_round,0) = 0 then v_area else round(v_area,nvl(self.dprecision,8)) end;
   end st_area;
+  
   member function st_distance(p_geom  in mdsys.sdo_geometry,
                               p_unit  in varchar2 default null,
                               p_round in integer  default 0 )
@@ -1007,7 +1019,7 @@ AS
                    end;
     Return case when NVL(p_round,0) = 0 then v_distance else round(v_distance,NVL(SELF.dPrecision,8)) end;
   End ST_Distance;
-
+  
   Member Function ST_Relate(p_geom      in mdsys.sdo_geometry,
                             p_determine in varchar2 default 'DETERMINE')
   Return varchar2
@@ -1565,7 +1577,6 @@ AS
     Return &&INSTALL_SCHEMA..T_GEOMETRY(v_geom,SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   END ST_Extract;
 
-
   Member Function ST_Extract
            Return &&INSTALL_SCHEMA..T_Geometries Pipelined
   IS
@@ -1764,7 +1775,6 @@ AS
     RETURN;
   End ST_Vertices;
   
-
   Member Function ST_Segmentize(p_filter       in varchar2  default 'ALL',
                                 p_id           in integer   default null,
                                 p_vertex       in &&INSTALL_SCHEMA..T_Vertex default null,
@@ -1842,7 +1852,8 @@ AS
             If ( v_distance = 0 ) THEN
               p_Segments.EXTEND(1);
               p_Segments(v_segments.COUNT) := new &&INSTALL_SCHEMA..T_Segment(p_Segment);
-            ELSIF (v_distance <  v_min_distance) Then
+            END IF;
+            IF (v_distance <  v_min_distance) Then
               p_min_distance := v_distance;
               p_min_Segment  := new &&INSTALL_SCHEMA..T_Segment(p_Segment);
             END IF;
@@ -1991,7 +2002,7 @@ AS
                           p_id        => v_coord_no,
                           p_sdo_gtype => v_point_gtype,
                           p_sdo_srid  => p_geometry.sdo_srid
-                        ) ,
+                        ),
                       midCoord      => new
                         &&INSTALL_SCHEMA..T_Vertex(
                           p_x         => p_geometry.sdo_ordinates(v_offset+v_dims),
@@ -2001,7 +2012,7 @@ AS
                           p_id        => v_coord_no + 1,
                           p_sdo_gtype => v_point_gtype,
                           p_sdo_srid  => p_geometry.sdo_srid
-                        ) ,
+                        ),
                       endCoord      => new
                         &&INSTALL_SCHEMA..T_Vertex(
                           p_x         => p_geometry.sdo_ordinates(v_offset+(v_dims*2)),
@@ -2206,6 +2217,7 @@ AS
         END LOOP element_extraction;
         RETURN v_segments;
     End segmentizeElement;
+    
   Begin
     IF ( v_filter not in ('ALL','DISTANCE','ID','RANGE','MEASURE','X','Y') ) Then
       raise_application_error(c_i_filter_value,
@@ -2239,7 +2251,7 @@ AS
            <<Extract_All_Rings>>
            FOR v_ring_no IN 1..v_num_rings LOOP
              v_ring := &&INSTALL_SCHEMA..T_GEOMETRY(MDSYS.SDO_UTIL.EXTRACT(SELF.geom,v_element_no,v_ring_no),
-                                                    SELF.tolerance,SELF.dPrecision,SELF.projected);
+                                        SELF.tolerance,SELF.dPrecision,SELF.projected);
              If ( v_ring is not null ) Then
                IF ( v_ring_no > 1 ) THEN
                  v_ring := v_ring.ST_Reverse_Geometry();
@@ -2266,13 +2278,17 @@ AS
          End If;
        End If;
     END LOOP extract_all_elements;
-    IF ( v_filter = 'DISTANCE' AND v_min_Segment is not null ) THEN
+    -- IF Distance filter.
+    -- If v_segments.count > 0 then already have had added segment(s) where distance=0 (could be more than one)
+    -- If v_segments.count = 0 then we save the egment with the minimum distance (v_min_segment)
+    IF ( v_filter = 'DISTANCE' AND v_min_Segment is not null AND v_segments.COUNT = 0 ) THEN
+      -- DEBUG dbms_output.put_line(' Returning by extending v_segment which currently has ' || v_segments.COUNT||' element: ' || v_segments(1).ST_AsText());
       v_segments.EXTEND(1);
       v_segments(v_segments.COUNT) := new &&INSTALL_SCHEMA..T_Segment(v_min_Segment);
     End If;
     Return v_segments;
   END ST_Segmentize;
-
+  
   Member Function ST_Flip_Segments(p_keep in integer default -1)
            Return &&INSTALL_SCHEMA..T_Segments Pipelined
   As
@@ -2335,7 +2351,7 @@ AS
     END LOOP all_segments;
     RETURN;
   End ST_Flip_Segments;
-
+  
   Member Function ST_VertexN(p_vertex in integer)
            Return &&INSTALL_SCHEMA..T_Vertex
   Is
@@ -2387,21 +2403,21 @@ AS
              p_sdo_srid  => SELF.ST_SRID()
            );
   End ST_VertexN;
-
+  
   Member Function ST_StartVertex
            Return &&INSTALL_SCHEMA..T_Vertex
   Is
   Begin
     Return SELF.ST_VertexN(1);
   End ST_StartVertex;
-
+  
   Member Function ST_EndVertex
            Return &&INSTALL_SCHEMA..T_Vertex
   Is
   Begin
     Return SELF.ST_VertexN(-1);
   End ST_EndVertex;
-
+  
   Member Function ST_PointN(p_point in integer)
            Return &&INSTALL_SCHEMA..T_Geometry
   Is
@@ -2413,7 +2429,7 @@ AS
     END IF;
     Return NULL;
   End ST_PointN;
-
+  
   Member Function ST_StartPoint
            Return &&INSTALL_SCHEMA..T_Geometry
   Is
@@ -2422,7 +2438,7 @@ AS
     v_vertex := SELF.ST_VertexN(1);
     Return &&INSTALL_SCHEMA..T_Geometry(v_vertex.ST_SdoGeometry(SELF.ST_Dims()),SELF.tolerance,SELF.dPrecision,SELF.projected);
   End ST_StartPoint;
-
+  
   Member Function ST_EndPoint
            Return &&INSTALL_SCHEMA..T_Geometry
   Is
@@ -2432,7 +2448,6 @@ AS
     return &&INSTALL_SCHEMA..T_Geometry(v_vertex.ST_SdoGeometry(SELF.ST_Dims()),SELF.tolerance,SELF.dPrecision,SELF.projected);
   End ST_EndPoint;
   
-
   Member Function ST_SegmentN(p_segment in integer)
            Return &&INSTALL_SCHEMA..t_Segment
   Is
@@ -2463,7 +2478,6 @@ AS
     Return v_segments(1);
   End ST_SegmentN;
   
-
   Member Function ST_StartSegment
            Return &&INSTALL_SCHEMA..t_Segment
   Is
@@ -2471,7 +2485,6 @@ AS
     return SELF.ST_SegmentN(1);
   End ST_startSegment;
   
-
   Member Function ST_EndSegment
            Return &&INSTALL_SCHEMA..t_Segment
   Is
@@ -2479,7 +2492,6 @@ AS
     return SELF.ST_SegmentN(-1);
   End ST_endSegment;
   
-
   Member Function ST_Which_Side(p_point in mdsys.sdo_geometry,
                                 p_unit  in varchar2 default null)
            Return VarChar2
@@ -2489,7 +2501,7 @@ AS
     v_offset := SELF.ST_LRS_Find_Offset(p_point,p_unit);
     Return case when v_offset = 0.0 then 'O' when SIGN(v_offset) = -1 then 'L' else 'R' end;
   End ST_Which_Side;
-
+  
   Member Function ST_inCircularArc(p_point_number in integer)
            Return Integer
   Is
@@ -2522,7 +2534,7 @@ AS
     end loop element_extraction;
     return 0;
   End ST_inCircularArc;
-
+  
   Member Function ST_Polygon2Rectangle
            Return &&INSTALL_SCHEMA..T_GEOMETRY
   As
@@ -2609,7 +2621,7 @@ AS
                                              v_out_geom.sdo_ordinates),
                                   SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   End ST_Polygon2Rectangle;
-
+  
   Member Function ST_Rectangle2Polygon
            Return &&INSTALL_SCHEMA..T_GEOMETRY
   As
@@ -2709,7 +2721,7 @@ AS
     v_return_tgeom.geom.sdo_gtype := SELF.geom.sdo_gtype;
     Return v_return_tgeom;
   End ST_Rectangle2Polygon;
-
+  
   Member Function ST_Geometry2Diminfo
            Return Mdsys.Sdo_Dim_Array
   As
@@ -2748,6 +2760,7 @@ AS
          Else Null
      End;
   End ST_Geometry2Diminfo;
+  
   Static Function ST_Diminfo2Rectangle(p_dim_array in mdsys.sdo_dim_array,
                                        p_srid      in integer default NULL)
   Return &&INSTALL_SCHEMA..T_Geometry
@@ -2793,7 +2806,7 @@ AS
                                                            mdsys.sdo_elem_info_array(1,1003,3),
                                                            v_ords));
   END ST_Diminfo2Rectangle;
-
+  
   Member Function ST_Multi
            Return &&INSTALL_SCHEMA..t_geometry
   As
@@ -2820,7 +2833,7 @@ AS
             SELF.dPrecision,
             SELF.projected);
   End ST_Multi;
-
+  
   Member Function ST_Polygon2Line
            Return &&INSTALL_SCHEMA..T_GEOMETRY
   As
@@ -2833,14 +2846,14 @@ AS
     End If;
     RETURN &&INSTALL_SCHEMA..T_GEOMETRY(MDSYS.SDO_UTIL.PolygonToLine(SELF.geom),SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   End ST_Polygon2Line;
-
+  
   Member Function ST_MBR
            Return &&INSTALL_SCHEMA..T_GEOMETRY
   As
   Begin
     RETURN &&INSTALL_SCHEMA..T_GEOMETRY(MDSYS.SDO_GEOM.sdo_mbr(SELF.geom));
   End ST_MBR;
-
+  
   Member Function ST_toMultiPoint
            Return &&INSTALL_SCHEMA..T_GEOMETRY
   As
@@ -2875,14 +2888,14 @@ AS
               SELF.dPrecision,
               SELF.projected);
   End ST_toMultiPoint;
-
+  
   Member Function ST_Envelope
            Return &&INSTALL_SCHEMA..T_GEOMETRY
   As
   Begin
     RETURN SELF.ST_MBR();
   End ST_Envelope;
-
+  
   Member Function ST_Append(p_geom        in mdsys.sdo_geometry,
                             p_concatenate in integer default 0)
            Return &&INSTALL_SCHEMA..T_GEOMETRY
@@ -2899,6 +2912,7 @@ AS
     v_num_Ords     pls_integer;
     v_base_gtype   pls_integer;
     v_start        pls_integer;
+    
     Procedure appendVertex(p_ordinates   in out nocopy mdsys.sdo_ordinate_array,
                            p_vertex      &&INSTALL_SCHEMA..t_vertex,
                            p_concatenate boolean default false)
@@ -3089,7 +3103,7 @@ AS
     End If;
     Return &&INSTALL_SCHEMA..T_Geometry(v_return_geom,SELF.tolerance,SELF.dPrecision,SELF.projected);
   End ST_Append;
-
+  
   Member Function ST_Concat_Line(p_line in mdsys.sdo_geometry)
            Return &&INSTALL_SCHEMA..T_GEOMETRY
   As
@@ -3111,8 +3125,7 @@ AS
                   v_line.ST_StartVertex(),
                   SELF.tolerance
               ) = 1 ) Then
-        -- DEBUG 
-        dbms_output.put_line('End/Start');
+        -- DEBUG dbms_output.put_line('End/Start');
         Return SELF.ST_Append(v_line.geom,1);
      End If;
      If ( SELF.ST_EndVertex()
@@ -3120,8 +3133,7 @@ AS
                   v_line.ST_EndVertex(),
                   SELF.tolerance
                ) = 1 ) Then
-        -- DEBUG 
-        dbms_output.put_line('END/END');
+        -- DEBUG dbms_output.put_line('END/END');
         v_rline := v_line.ST_Reverse_Linestring();
         Return SELF.ST_Append(v_rline.geom,1);
      End If;
@@ -3130,8 +3142,7 @@ AS
                   v_line.ST_EndVertex(),
                   SELF.tolerance
               ) = 1 ) Then
-        -- DEBUG 
-        dbms_output.put_line('START/END');
+        -- DEBUG dbms_output.put_line('START/END');
         Return v_line.ST_Append(SELF.geom,1);
      End If;
      If ( SELF.ST_StartVertex()
@@ -3146,7 +3157,7 @@ AS
      dbms_output.put_line('Not Connected');
      Return SELF.ST_Append(v_line.geom,0);
   End ST_Concat_Line;
-
+  
   Member Function ST_RemoveDuplicateVertices
            Return &&INSTALL_SCHEMA..T_GEOMETRY
   As
@@ -3164,7 +3175,7 @@ AS
                SELF.Projected
            );
   End ST_RemoveDuplicateVertices;
-
+  
   Member Function ST_InsertVertex(p_vertex in &&INSTALL_SCHEMA..T_Vertex)
            Return &&INSTALL_SCHEMA..T_GEOMETRY
   Is
@@ -3192,6 +3203,7 @@ AS
                          p_sdo_gtype => SELF.ST_sdo_gtype(),
                          p_sdo_srid  => SELF.ST_SRID()
                       );
+                      
     Procedure appendVertex(p_ordinates in out nocopy mdsys.sdo_ordinate_array,
                            p_vertex    in &&INSTALL_SCHEMA..T_Vertex)
     Is
@@ -3326,7 +3338,7 @@ AS
     End If;
     Return &&INSTALL_SCHEMA..T_GEOMETRY(v_geom,SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   End ST_InsertVertex;
-
+  
   Member Function ST_UpdateVertex (p_vertex in &&INSTALL_SCHEMA..T_Vertex)
            Return &&INSTALL_SCHEMA..T_GEOMETRY
   Is
@@ -3396,7 +3408,6 @@ AS
     Return &&INSTALL_SCHEMA..T_GEOMETRY(v_geom,SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   End ST_UpdateVertex;
 
-
   Member Function ST_UpdateVertex(p_old_vertex IN &&INSTALL_SCHEMA..T_Vertex,
                                   p_new_vertex IN &&INSTALL_SCHEMA..T_Vertex)
            Return &&INSTALL_SCHEMA..T_GEOMETRY
@@ -3432,6 +3443,7 @@ AS
     v_vertices         mdsys.vertex_set_type;
     v_sdo_point        Mdsys.SDO_Point_Type;
     v_valid            varchar2(4000);
+    
     Procedure appendVertex(p_ordinates in out nocopy mdsys.sdo_ordinate_array,
                            p_vertex    in &&INSTALL_SCHEMA..T_Vertex)
     Is
@@ -3513,7 +3525,7 @@ AS
     End If;
     Return &&INSTALL_SCHEMA..T_GEOMETRY(v_geom,SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   End ST_UpdateVertex;
-
+  
   Member Function ST_DeleteVertex(p_vertex_id in integer)
            Return &&INSTALL_SCHEMA..T_GEOMETRY
   Is
@@ -3584,7 +3596,7 @@ AS
     End If;
     Return &&INSTALL_SCHEMA..T_GEOMETRY(v_geom,SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   End ST_DeleteVertex;
-
+  
   Member Function ST_Extend(p_length    in number,
                             p_start_end in varchar2 default 'START',
                             p_unit      in varchar2 default null)
@@ -3599,6 +3611,7 @@ AS
     v_geom_length      number := 0;
     v_start_end        varchar2(100) := UPPER(SUBSTR(NVL(p_start_end,'START'),1,100));
     v_geom             &&INSTALL_SCHEMA..T_GEOMETRY;
+    
     Procedure Extend( p_geom           in out nocopy &&INSTALL_SCHEMA..T_GEOMETRY,
                       p_end_pt_id      in Number,
                       p_internal_pt_id in Number)
@@ -3664,7 +3677,7 @@ AS
     END IF;
     RETURN v_geom;
   end ST_Extend;
-
+  
   Member Function ST_Reduce(p_length    in number,
                             p_start_end in varchar2 default 'START',
                             p_unit      in varchar2 default null)
@@ -3778,7 +3791,7 @@ AS
     END IF;
     RETURN v_geom;
   End ST_Reduce;
-
+  
   Member Function ST_Cogo2Line(p_bearings_and_distances in &&INSTALL_SCHEMA..T_BEARING_DISTANCES)
            Return &&INSTALL_SCHEMA..T_GEOMETRY
   as
@@ -3822,7 +3835,7 @@ AS
     End Loop;
     RETURN &&INSTALL_SCHEMA..T_GEOMETRY(v_line,SELF.tolerance,SELF.dPrecision,SELF.projected);
   end ST_Cogo2Line;
-
+  
   Member Function ST_Line2Cogo (p_unit in varchar2 default null)
            Return &&INSTALL_SCHEMA..T_BEARING_DISTANCES Pipelined
   As
@@ -3850,15 +3863,15 @@ AS
                   from TABLE(CAST(SELF.ST_Vertices() as &&INSTALL_SCHEMA..T_Vertices)) v
              )
     loop
-      v_cogo.bearing  := v_start_vertex.ST_Bearing (p_vertex=>rec.vertex,p_projected=>SELF.projected);
-      v_cogo.distance := v_start_vertex.ST_Distance(p_vertex=>rec.vertex,p_unit=>p_unit);
+      v_cogo.bearing  := v_start_vertex.ST_Bearing (p_vertex=>rec.vertex,p_projected=>SELF.projected,p_normalize=>1);
+      v_cogo.distance := v_start_vertex.ST_Distance(p_vertex=>rec.vertex,p_tolerance=>SELF.tolerance,p_unit=>p_unit);
       v_cogo.Z        := rec.vertex.Z;
       PIPE ROW ( v_cogo );
       v_start_vertex  := rec.vertex;
     End Loop;
     Return;
   end ST_Line2Cogo;
-
+  
   Member Function ST_Cogo2Polygon(p_bearings_and_distances in &&INSTALL_SCHEMA..T_BEARING_DISTANCES)
            Return &&INSTALL_SCHEMA..T_GEOMETRY
   As
@@ -4421,7 +4434,6 @@ AS
     ),SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   End ST_RotTransScale;
 
-
   Member Function ST_Affine(p_a    in number,
                             p_b    in number,
                             p_c    in number,
@@ -4530,7 +4542,6 @@ AS
                       v_ordinates
     ),SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   End ST_Affine;
-
 
   Member Function ST_Compress (p_delta_factor in number default 1,
                                p_origin       in &&INSTALL_SCHEMA..T_Vertex default null )
@@ -5107,7 +5118,6 @@ SELECT CASE A.rin
              SELF.Projected);
   End ST_FixOrdinates;
   
-
   Member Function ST_Densify(p_distance In Number,
                              p_unit     In Varchar2 Default NULL)
            Return &&INSTALL_SCHEMA..T_GEOMETRY
@@ -5246,7 +5256,6 @@ SELECT CASE A.rin
              SELF.Projected);
   End ST_Densify;
   
-
   Member Function ST_LineShift(p_distance in number )
            Return &&INSTALL_SCHEMA..T_GEOMETRY
   AS
@@ -5285,7 +5294,6 @@ SELECT CASE A.rin
      END IF;
   END ST_LineShift;
   
-
   Member Function ST_Parallel(p_offset in number,
                               p_curved in number   default 0,
                               p_unit   in varchar2 default null)
@@ -5614,7 +5622,6 @@ SELECT CASE A.rin
      Return &&INSTALL_SCHEMA..T_GEOMETRY(v_return_geom,SELF.Tolerance,SELF.dPrecision,SELF.Projected).ST_Round(p_dec_places_x=>SELF.dPrecision);
   END ST_Parallel;
   
-
   Member Function ST_GetOffsetCurve(p_offset    in number,
                                     p_bufParams in &&INSTALL_SCHEMA..BufferParameters)
            Return &&INSTALL_SCHEMA..T_GEOMETRY 
@@ -5713,7 +5720,6 @@ SELECT CASE A.rin
     return null;
   End ST_GetOffsetCurve;
 
-
   Member Function ST_Rectangle(p_length in number,
                                p_width  in number)
            Return &&INSTALL_SCHEMA..T_GEOMETRY
@@ -5770,7 +5776,6 @@ SELECT CASE A.rin
     END LOOP;
     Return &&INSTALL_SCHEMA..T_GEOMETRY(v_rgeom,SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   End ST_Rectangle;
-
 
   Member Function ST_Tile(p_Tile_X    In number,
                           p_Tile_Y    In Number,
@@ -6100,7 +6105,6 @@ SELECT CASE A.rin
     Return &&INSTALL_SCHEMA..T_GEOMETRY(v_return_tgeom.geom,SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   End ST_RemoveCollinearPoints;
 
-
   Member Function ST_Split_Segments(p_vertex in &&INSTALL_SCHEMA..T_Vertex,
                                     p_unit   in varchar2    DEFAULT null,
                                     p_pairs  in integer DEFAULT 0)
@@ -6268,17 +6272,17 @@ SELECT CASE A.rin
                v_segments(v_segments.COUNT) := &&INSTALL_SCHEMA..T_Segment(v_rec.adjoiningSegment);
            end if;
         elsif ( ROUND(v_rec.lineDist,SELF.dPrecision) = 0 ) Then
-dbms_output.put_line('point is on line/circular arc between start and end of segment');
+           -- DEBUG dbms_output.put_line('point is on line/circular arc between start and end of segment');
            if ( v_rec.line.midCoord is not null ) Then
-dbms_output.put_line('Circular Arc: Point is ON circular arc between start and end of segment');
+             -- DEBUG dbms_output.put_line('Circular Arc: Point is ON circular arc between start and end of segment');
              v_arcAngle2SnapPt  := &&INSTALL_SCHEMA..COGO.ST_Degrees(v_centre.ST_SubtendedAngle(v_rec.line.startCoord,v_arcSnapPoint));
              v_arcLength2SnapPt := ROUND(&&INSTALL_SCHEMA..COGO.ComputeArcLength(v_centre.z ,v_arcAngle2SnapPt),SELF.dPrecision);
              v_arcAngle2Mid     := &&INSTALL_SCHEMA..COGO.ST_Degrees(v_centre.ST_SubtendedAngle(v_rec.line.startCoord,v_rec.line.midCoord));
              v_arcLength2Mid    := ROUND(&&INSTALL_SCHEMA..COGO.ComputeArcLength(v_centre.z ,v_arcAngle2Mid),SELF.dPrecision);
-dbms_output.put_line('&&INSTALL_SCHEMA..COGO.ST_Degrees(v_arcAngle2SnapPt)=' || v_arcAngle2SnapPt || ' v_arcLength2SnapPt= ' || v_arcLength2SnapPt);
-dbms_output.put_line('&&INSTALL_SCHEMA..COGO.ST_Degrees(v_arcAngle2Mid)   =' || v_arcAngle2Mid    || ' v_arcLength2Mid   = ' || v_arcLength2Mid );
-              if (ABS(v_arcLength2SnapPt) < ABS(v_arcLength2Mid) ) Then
-dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
+             -- DEBUG dbms_output.put_line('&&INSTALL_SCHEMA..COGO.ST_Degrees(v_arcAngle2SnapPt)=' || v_arcAngle2SnapPt || ' v_arcLength2SnapPt= ' || v_arcLength2SnapPt);
+             -- DEBUG dbms_output.put_line('&&INSTALL_SCHEMA..COGO.ST_Degrees(v_arcAngle2Mid)   =' || v_arcAngle2Mid    || ' v_arcLength2Mid   = ' || v_arcLength2Mid );
+             if (ABS(v_arcLength2SnapPt) < ABS(v_arcLength2Mid) ) Then
+               -- DEBUG dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
                 v_segments.EXTEND(2);
                 v_segments(v_segments.COUNT-1) :=
                    &&INSTALL_SCHEMA..T_Segment(
@@ -6436,15 +6440,15 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
            End If;
         Else
            If ( v_rec.line.midCoord is not null ) Then
-dbms_output.put_line('Circular arc: Point is off of a circular arc line');
+             -- DEBUG dbms_output.put_line('Circular arc: Point is off of a circular arc line');
              v_arcAngle2SnapPt  := &&INSTALL_SCHEMA..COGO.ST_Degrees(v_centre.ST_SubtendedAngle(v_rec.line.startCoord,v_arcSnapPoint));
              v_arcLength2SnapPt := ROUND(&&INSTALL_SCHEMA..COGO.ComputeArcLength(v_centre.z ,v_arcAngle2SnapPt),SELF.dPrecision);
              v_arcAngle2Mid     := &&INSTALL_SCHEMA..COGO.ST_Degrees(v_centre.ST_SubtendedAngle(v_rec.line.startCoord,v_rec.line.midCoord));
              v_arcLength2Mid    := ROUND(&&INSTALL_SCHEMA..COGO.ComputeArcLength(v_centre.z ,v_arcAngle2Mid),SELF.dPrecision);
-dbms_output.put_line('&&INSTALL_SCHEMA..COGO.ST_Degrees(v_arcAngle2SnapPt)=' || v_arcAngle2SnapPt || ' v_arcLength2SnapPt= ' || v_arcLength2SnapPt );
-dbms_output.put_line('&&INSTALL_SCHEMA..COGO.ST_Degrees(v_arcAngle2Mid)   =' || v_arcAngle2Mid    || ' v_arcLength2Mid   = ' || v_arcLength2Mid );
+             -- DEBUG dbms_output.put_line('&&INSTALL_SCHEMA..COGO.ST_Degrees(v_arcAngle2SnapPt)=' || v_arcAngle2SnapPt || ' v_arcLength2SnapPt= ' || v_arcLength2SnapPt );
+             -- DEBUG dbms_output.put_line('&&INSTALL_SCHEMA..COGO.ST_Degrees(v_arcAngle2Mid)   =' || v_arcAngle2Mid    || ' v_arcLength2Mid   = ' || v_arcLength2Mid );
              if (ABS(ROUND(v_arcLength2SnapPt,SELF.dPrecision)) < ABS(ROUND(v_arcLength2Mid,SELF.dPrecision)) ) Then
-dbms_output.put_line('Circular arc: length to snap point IS < length to midpoint');
+               -- DEBUG dbms_output.put_line('Circular arc: length to snap point IS < length to midpoint');
                 v_segments.EXTEND(2);
                 v_segments(v_segments.COUNT-1) :=
                   &&INSTALL_SCHEMA..T_Segment(
@@ -6567,7 +6571,6 @@ dbms_output.put_line('Circular arc: length to snap point IS < length to midpoint
     return v_segments;
   End ST_Split_Segments;
   
-
   Member Function ST_Split_Segments(p_point in mdsys.sdo_geometry,
                                     p_unit  in varchar2 DEFAULT null,
                                     p_pairs in integer  DEFAULT 0)
@@ -6595,7 +6598,6 @@ dbms_output.put_line('Circular arc: length to snap point IS < length to midpoint
                                   p_unit   => p_unit,
                                   p_pairs  => p_pairs);
   End ST_Split_Segments;
-
 
   Member Function ST_Split(p_vertex in &&INSTALL_SCHEMA..T_Vertex,
                            p_unit   in varchar2 DEFAULT null)
@@ -6638,6 +6640,7 @@ dbms_output.put_line('Circular arc: length to snap point IS < length to midpoint
         p_return_geom := NULL;
         Return;
     End addToGeomList;
+    
   Begin
     If ( SELF.ST_Dimension() <> 1 ) Then
        raise_application_error(c_i_not_geom,
@@ -6655,11 +6658,19 @@ dbms_output.put_line('Circular arc: length to snap point IS < length to midpoint
     End If;
     v_geometries.DELETE;
     <<process_nearest_Segments>>
-    FOR v_rec IN (SELECT i.line, i.startDist, i.midDist, i.endDist, i.lineDist, i.lineLen,
-                         min(i.lineDist) over (order by 1) as MinimumDist,
+    FOR v_rec IN (SELECT i.line, 
+                         i.startDist2Vertex, i.midDist2Vertex, i.endDist2Vertex, 
+                         case when i.line.ST_isCircularArc() = 1 
+                              then -1 /* Compute in code */
+                              else i.startDist2Vertex + i.endDist2Vertex  
+                              end as computedLength, /* If same as i.segmentLength then the segment is the intersecting segment */
+                         i.lineDist2Vertex, i.segmentLength,
+                         min(i.lineDist2Vertex) over (order by 1) as MinimumDist,
                          case when i.line.element_id <>
                                    lag(i.line.element_id,1) over (order by i.line.element_id, i.line.segment_id)
-                              then 1 else 0 end as lastSegment
+                              then 1 
+                              else 0 
+                          end as lastSegment
                     FROM (SELECT seg.ST_Self() as line,
                                  &&INSTALL_SCHEMA..T_Segment(
                                    p_Segment_id => 0,
@@ -6670,7 +6681,7 @@ dbms_output.put_line('Circular arc: length to snap point IS < length to midpoint
                                    p_projected  => seg.projected,
                                    p_precision  => seg.PrecisionModel.xy,
                                    p_tolerance  => seg.PrecisionModel.tolerance
-                                 ).ST_Length(p_unit) as startDist,
+                                 ).ST_Length(p_unit) as startDist2Vertex,
                                  case when seg.midCoord.x is not null
                                       then &&INSTALL_SCHEMA..T_Segment(
                                              p_Segment_id => 0,
@@ -6683,7 +6694,7 @@ dbms_output.put_line('Circular arc: length to snap point IS < length to midpoint
                                              p_tolerance  => seg.PrecisionModel.tolerance
                                             ).ST_Length(p_unit)
                                        else CAST(NULL as number)
-                                   end as midDist,
+                                   end as midDist2Vertex,
                                   &&INSTALL_SCHEMA..T_Segment(
                                       p_Segment_id => 0,
                                       p_startCoord => seg.endCoord,
@@ -6693,16 +6704,16 @@ dbms_output.put_line('Circular arc: length to snap point IS < length to midpoint
                                       p_projected  => seg.projected,
                                       p_precision  => seg.PrecisionModel.xy,
                                       p_tolerance  => seg.PrecisionModel.tolerance
-                                  ).ST_Length(p_unit) as endDist,
+                                  ).ST_Length(p_unit) as endDist2Vertex,
                                   seg.ST_Distance(p_vertex    => p_vertex,
                                                   p_unit      => p_unit)
-                                      as linedist,
-                                  seg.ST_Length(p_unit=>p_unit) as lineLen
+                                      as linedist2Vertex,
+                                  seg.ST_Length(p_unit=>p_unit) as segmentLength
                             FROM TABLE(SELF.ST_Segmentize(p_filter=>'ALL')) seg
                          ) i
             )
       LOOP
-        if ( v_rec.minimumDist <> v_rec.lineDist ) Then
+        if ( v_rec.minimumDist <> v_rec.lineDist2Vertex ) Then
           If ( v_return_geom is null) Then
             v_return_geom := &&INSTALL_SCHEMA..T_Geometry(v_rec.line.ST_SdoGeometry(SELF.ST_Dims()),SELF.tolerance,SELF.dPrecision,SELF.projected);
           Else
@@ -6717,15 +6728,15 @@ dbms_output.put_line('Circular arc: length to snap point IS < length to midpoint
                v_arcSnapPoint := v_centre.ST_FromBearingAndDistance(p_bearing=>v_bearing,p_distance=>v_centre.z,p_projected=>SELF.projected);
            End If;
         End If;
-        if ( ( ROUND(v_rec.startDist,SELF.dPrecision) = 0 ) OR
-             ( ROUND(v_rec.startDist,SELF.dPrecision) = ROUND(v_rec.lineDist,SELF.dPrecision) ) ) then
+        if ( ( ROUND(v_rec.startDist2Vertex,SELF.dPrecision) = 0 ) OR
+             ( ROUND(v_rec.startDist2Vertex,SELF.dPrecision) = ROUND(v_rec.lineDist2Vertex,SELF.dPrecision) ) ) then
            If ( v_return_geom is not null) Then
               v_geometries.EXTEND(1);
               v_geometries(v_geometries.COUNT) := &&INSTALL_SCHEMA..T_GEOMETRY_ROW(v_geometries.COUNT,v_return_geom.geom,SELF.tolerance,SELF.dPrecision,SELF.projected);
            End If;
            v_return_geom := &&INSTALL_SCHEMA..T_Geometry(v_rec.line.ST_SdoGeometry(SELF.ST_Dims()),SELF.tolerance,SELF.dPrecision,SELF.projected);
-        elsif ( ROUND(v_rec.midDist,SELF.dPrecision) = 0 ) OR
-              ( ROUND(v_rec.midDist,SELF.dPrecision) = ROUND(v_rec.lineDist,SELF.dPrecision) ) Then
+        elsif ( ROUND(v_rec.midDist2Vertex,SELF.dPrecision) = 0 ) OR
+              ( ROUND(v_rec.midDist2Vertex,SELF.dPrecision) = ROUND(v_rec.lineDist2Vertex,SELF.dPrecision) ) Then
            v_segment := &&INSTALL_SCHEMA..T_Segment(
                              p_element_id    => v_rec.line.element_id,
                              p_subelement_id => v_rec.line.subelement_id,
@@ -6754,8 +6765,8 @@ dbms_output.put_line('Circular arc: length to snap point IS < length to midpoint
                              p_sdo_gtype     => SELF.geom.sdo_gtype,
                              p_sdo_srid      => SELF.ST_Srid());
            v_return_geom := &&INSTALL_SCHEMA..T_Geometry(v_segment.ST_SdoGeometry(SELF.ST_Dims()),SELF.tolerance,SELF.dPrecision,SELF.projected);
-        elsif ( ROUND(v_rec.endDist,SELF.dPrecision) = 0 ) OR
-              ( ROUND(v_rec.endDist,SELF.dPrecision) = ROUND(v_rec.lineDist,SELF.dPrecision) ) then
+        elsif ( ROUND(v_rec.endDist2Vertex,SELF.dPrecision) = 0 ) OR
+              ( ROUND(v_rec.endDist2Vertex,SELF.dPrecision) = ROUND(v_rec.lineDist2Vertex,SELF.dPrecision) ) then
            If ( v_return_geom is null) Then
               v_return_geom := &&INSTALL_SCHEMA..T_Geometry(v_rec.line.ST_SdoGeometry(SELF.ST_Dims()),SELF.tolerance,SELF.dPrecision,SELF.projected);
            Else
@@ -6764,17 +6775,17 @@ dbms_output.put_line('Circular arc: length to snap point IS < length to midpoint
            v_geometries.EXTEND(1);
            v_geometries(v_geometries.COUNT) := &&INSTALL_SCHEMA..T_GEOMETRY_ROW(v_geometries.COUNT,v_return_geom.geom,SELF.tolerance,SELF.dPrecision,SELF.projected);
            v_return_geom := null;
-        elsif ( ROUND(v_rec.lineDist,SELF.dPrecision) = 0 ) Then
+        elsif ( ROUND(v_rec.lineDist2Vertex,SELF.dPrecision) = 0 ) Then
            if ( v_rec.line.midCoord is not null ) Then
-dbms_output.put_line('Circular Arc: Point is ON circular arc between start and end of segment');
+             -- DEBUG dbms_output.put_line('Circular Arc: Point is ON circular arc between start and end of segment');
              v_arcAngle2SnapPt  := &&INSTALL_SCHEMA..COGO.ST_Degrees(v_centre.ST_SubtendedAngle(v_rec.line.startCoord,v_arcSnapPoint));
              v_arcLength2SnapPt := ROUND(&&INSTALL_SCHEMA..COGO.ComputeArcLength(v_centre.z ,v_arcAngle2SnapPt),SELF.dPrecision);
              v_arcAngle2Mid     := &&INSTALL_SCHEMA..COGO.ST_Degrees(v_centre.ST_SubtendedAngle(v_rec.line.startCoord,v_rec.line.midCoord));
              v_arcLength2Mid    := ROUND(&&INSTALL_SCHEMA..COGO.ComputeArcLength(v_centre.z ,v_arcAngle2Mid),SELF.dPrecision);
-dbms_output.put_line('&&INSTALL_SCHEMA..COGO.ST_Degrees(v_arcAngle2SnapPt)=' || v_arcAngle2SnapPt || ' v_arcLength2SnapPt= ' || v_arcLength2SnapPt);
-dbms_output.put_line('&&INSTALL_SCHEMA..COGO.ST_Degrees(v_arcAngle2Mid)   =' || v_arcAngle2Mid    || ' v_arcLength2Mid   = ' || v_arcLength2Mid );
-              if (ABS(v_arcLength2SnapPt) < ABS(v_arcLength2Mid) ) Then
-dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
+             -- DEBUG dbms_output.put_line('&&INSTALL_SCHEMA..COGO.ST_Degrees(v_arcAngle2SnapPt)=' || v_arcAngle2SnapPt || ' v_arcLength2SnapPt= ' || v_arcLength2SnapPt);
+             -- DEBUG dbms_output.put_line('&&INSTALL_SCHEMA..COGO.ST_Degrees(v_arcAngle2Mid)   =' || v_arcAngle2Mid    || ' v_arcLength2Mid   = ' || v_arcLength2Mid );
+             if (ABS(v_arcLength2SnapPt) < ABS(v_arcLength2Mid) ) Then
+                -- DEBUG dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
                 v_segment := &&INSTALL_SCHEMA..T_Segment(
                                  p_element_id    => v_rec.line.element_id,
                                  p_subelement_id => v_rec.line.subelement_id,
@@ -6847,7 +6858,7 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
                 v_return_geom := &&INSTALL_SCHEMA..T_Geometry(v_segment.ST_SdoGeometry(SELF.ST_Dims()),SELF.tolerance,SELF.dPrecision,SELF.projected);
               End If;
            Else
-               v_ratio := v_rec.startDist / (v_rec.startDist+v_rec.endDist);
+               v_ratio := v_rec.startDist2Vertex / (v_rec.startDist2Vertex+v_rec.endDist2Vertex);
                v_vertex.x := ROUND(v_rec.line.startCoord.x+((v_rec.line.endCoord.x-v_rec.line.startCoord.x)*v_ratio),SELF.dPrecision);
                v_vertex.y := ROUND(v_rec.line.startCoord.y+((v_rec.line.endCoord.y-v_rec.line.startCoord.y)*v_ratio),SELF.dPrecision);
                If (v_rec.line.startCoord.z is not null ) then
@@ -6858,7 +6869,7 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
                v_segment := &&INSTALL_SCHEMA..T_Segment(
                                    p_element_id    => v_rec.line.element_id,
                                    p_subelement_id => v_rec.line.subelement_id,
-                                   p_Segment_id     => v_rec.line.segment_id,
+                                   p_Segment_id    => v_rec.line.segment_id,
                                    p_startCoord    => v_rec.line.startCoord,
                                    p_endCoord      => v_vertex,
                                    p_sdo_gtype     => SELF.ST_sdo_gtype(),
@@ -6867,7 +6878,7 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
                 v_segment := &&INSTALL_SCHEMA..T_Segment(
                                    p_element_id    => v_rec.line.element_id,
                                    p_subelement_id => v_rec.line.subelement_id,
-                                   p_Segment_id     => v_rec.line.segment_id,
+                                   p_Segment_id    => v_rec.line.segment_id,
                                    p_startCoord    => v_vertex,
                                    p_endCoord      => v_rec.line.endCoord,
                                    p_sdo_gtype     => SELF.ST_sdo_gtype(),
@@ -6926,13 +6937,13 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
               End If;
            Else
              v_ratio :=
-                      SQRT(POWER(v_rec.startDist,2) -
-                           POWER(v_rec.lineDist,2)) /
+                      SQRT(POWER(v_rec.startDist2Vertex,2) -
+                           POWER(v_rec.lineDist2Vertex,2)) /
                       v_rec.line.ST_Length(p_unit=>p_unit);
              v_vertex.x := ROUND(v_rec.line.startCoord.x+((v_rec.line.endCoord.x-v_rec.line.startCoord.x)*v_ratio),SELF.dPrecision);
              v_vertex.y := ROUND(v_rec.line.startCoord.y+((v_rec.line.endCoord.y-v_rec.line.startCoord.y)*v_ratio),SELF.dPrecision);
              if (SELF.ST_Lrs_Dim()<>0) Then
-                v_ratio := v_rec.startDist / (v_rec.startDist+v_rec.endDist);
+                v_ratio := v_rec.startDist2Vertex / (v_rec.startDist2Vertex+v_rec.endDist2Vertex);
                 If (SELF.ST_Lrs_Dim()=3) Then
                    v_vertex.z := v_rec.line.startCoord.z+(v_rec.line.endCoord.z-v_rec.line.startCoord.z)*v_ratio;
                 Else
@@ -6968,7 +6979,6 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
     return v_geometries;
   End ST_Split;
 
-
   Member Function ST_Split(p_point in mdsys.sdo_geometry,
                            p_unit  in varchar2 DEFAULT null)
            Return &&INSTALL_SCHEMA..T_GEOMETRIES
@@ -6986,7 +6996,7 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
     Return SELF.ST_SPLIT(P_VERTEX => &&INSTALL_SCHEMA..T_VERTEX(p_point => p_point),
                          P_UNIT   => P_UNIT);
   End ST_Split;
-
+  
   Member Function ST_Split(p_measure in number,
                            p_unit    in varchar2 DEFAULT null)
            Return &&INSTALL_SCHEMA..T_GEOMETRIES
@@ -6995,26 +7005,55 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
     c_s_null_measure CONSTANT VARCHAR2(100) := 'Measure must not be null';
     v_vertex         &&INSTALL_SCHEMA..t_Vertex;
     v_geom           mdsys.sdo_geometry;
+    v_geometries     &&INSTALL_SCHEMA..T_Geometries := &&INSTALL_SCHEMA..T_Geometries(&&INSTALL_SCHEMA..T_GEOMETRY_ROW(0,NULL,SELF.tolerance,SELF.dPrecision,SELF.projected));
   Begin
     if ( p_measure is null ) Then
        raise_application_error(c_i_null_measure,
                                c_s_null_measure,TRUE);
     End If;
-    If ( p_measure not between SELF.ST_LRS_Start_Measure() and SELF.ST_LRS_End_Measure(p_unit) ) Then
+    If ( p_measure not between SELF.ST_LRS_Start_Measure() 
+                           and SELF.ST_LRS_End_Measure(p_unit) ) Then
        Return null;
     End If;
+    v_geometries.DELETE;
+    v_geometries.EXTEND(2);
+    v_geometries(1) := &&INSTALL_SCHEMA..T_GEOMETRY_ROW(
+                         1,
+                         SELF.ST_LRS_Locate_Measures(
+                             p_start_measure => 0.0,
+                             p_end_measure   => p_measure,
+                             p_offset        => 0.0,
+                             p_unit          => p_unit).geom,
+                         SELF.tolerance,SELF.dPrecision,SELF.projected
+                       );
+    v_geometries(2) := &&INSTALL_SCHEMA..T_GEOMETRY_ROW(
+                         2,
+                         SELF.ST_LRS_Locate_Measures(
+                             p_start_measure => p_measure,
+                             p_end_measure   => SELF.ST_LRS_End_Measure(p_unit),
+                             p_offset        => 0.0,
+                             p_unit          => p_unit).geom,
+                         SELF.tolerance,SELF.dPrecision,SELF.projected
+                       );
+                             
+   return v_geometries;
+   /*
+    -- This works
     v_vertex := &&INSTALL_SCHEMA..T_VERTEX(
                   p_point => SELF.ST_LRS_Locate_Measure(p_measure => p_measure,
                                                         p_offset  => 0,
-                                                        p_unit  => p_unit).geom
+                                                        p_unit    => p_unit).geom
                 );
     IF ( v_vertex is null ) Then
        Return null;
     End If;
+    
+    -- This doesn't work.
     Return SELF.ST_SPLIT(P_Vertex => v_vertex,
                          p_unit   => p_unit);
+*/
   End ST_Split;
-
+  
   Member Function ST_Snap(p_point in mdsys.sdo_geometry,
                           p_unit  in varchar2 default null)
            Return &&INSTALL_SCHEMA..T_geometries
@@ -7050,6 +7089,7 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
     v_point      := &&INSTALL_SCHEMA..T_Vertex(p_point => p_point);
     v_geometries := new &&INSTALL_SCHEMA..T_GEOMETRIES(NULL);
     v_geometries.DELETE;
+
     If (&&INSTALL_SCHEMA..TOOLS.ST_DB_Version() >= 11.1
         AND
         SELF.ST_hasCircularArcs()=0 ) Then
@@ -7060,14 +7100,14 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
       IF ( v_segments IS NOT NULL and v_segments.COUNT > 0 ) THEN
         FOR rec in 1 .. v_segments.COUNT LOOP
           v_snap_vertex := v_segments(rec)
-                            .ST_Closest(p_geometry => v_Vertex.ST_SdoGeometry(),
-                                        p_unit     => p_unit );
-          IF ( SELF.ST_LRS_IsMeasured()=1 ) Then
-            v_snap_vertex :=
-              v_snap_vertex
-                 .ST_LRS_Set_Measure(v_segments(rec)
-                                      .ST_LRS_Compute_Measure(p_vertex    => v_snap_vertex,
-                                                              p_unit      => p_unit));
+                            .ST_ProjectPoint(p_vertex => v_Vertex,
+                                             p_unit   => p_unit );
+          -- Project Point sets measure.
+          IF ( SELF.ST_Dims() = 2 ) Then
+            v_snap_vertex := v_snap_vertex.ST_To2D(); -- remove it
+          ElsIf ( SELF.ST_LRS_IsMeasured()=0 ) Then
+            v_snap_vertex := v_snap_vertex.ST_To3D(p_keep_measure => 0, 
+                                                   p_default_z    => NULL);
           END IF;
           v_geometries.EXTEND(1);
           v_geometries(v_geometries.count) := &&INSTALL_SCHEMA..T_GEOMETRY_ROW(rec,v_snap_vertex.ST_SdoGeometry(),self.tolerance,SELF.dPrecision,SELF.projected);
@@ -7077,6 +7117,7 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
         END IF;
       END IF;
     END IF;
+
     <<process_nearest_Segments>>
     FOR v_rec IN (SELECT g.line,g.startDist,g.midDist,g.endDist,g.lineDist
                     FROM (SELECT f.line,f.startDist,f.midDist,f.endDist,f.lineDist,min(f.lineDist) over (order by 1) as minDist
@@ -7108,11 +7149,11 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
            v_vertex := &&INSTALL_SCHEMA..T_Vertex(p_vertex => v_rec.line.endCoord);
         elsif ( ROUND(v_rec.lineDist,SELF.dPrecision) = 0 ) then
            if ( v_rec.line.midCoord is not null ) Then
-             v_centre := v_rec.line.ST_FindCircle();
-             v_vertex    := &&INSTALL_SCHEMA..T_vertex(p_point => p_point);
-             v_bearing   := &&INSTALL_SCHEMA..COGO.ST_Degrees(v_centre.ST_Bearing(v_vertex,p_projected=>SELF.projected));
-             v_vertex := v_centre.ST_FromBearingAndDistance(v_bearing,v_centre.z,p_projected=>SELF.projected);
-             v_ratio    := v_rec.startDist / ( v_rec.startDist + v_rec.endDist );
+             v_centre  := v_rec.line.ST_FindCircle();
+             v_vertex  := &&INSTALL_SCHEMA..T_vertex(p_point => p_point);
+             v_bearing := &&INSTALL_SCHEMA..COGO.ST_Degrees(v_centre.ST_Bearing(v_vertex,p_projected=>SELF.projected));
+             v_vertex  := v_centre.ST_FromBearingAndDistance(v_bearing,v_centre.z,p_projected=>SELF.projected);
+             v_ratio   := v_rec.startDist / ( v_rec.startDist + v_rec.endDist );
              if (SELF.ST_Dims()>2) Then
                  v_vertex.sdo_gtype := TRUNC(SELF.geom.sdo_gtype/10)*10 + 1;
                  v_vertex.z := v_rec.line.startCoord.z+(v_rec.line.endCoord.z-v_rec.line.startCoord.z)*v_ratio;
@@ -7122,7 +7163,7 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
              End If;
           Else
              v_vertex := new &&INSTALL_SCHEMA..t_vertex(p_vertex => v_point);
-             v_ratio    := v_rec.startDist / ( v_rec.startDist + v_rec.endDist );
+             v_ratio  := v_rec.startDist / ( v_rec.startDist + v_rec.endDist );
              if (SELF.ST_Dims()>2) Then
                  v_vertex.sdo_gtype := TRUNC(SELF.geom.sdo_gtype/10)*10 + 1;
                  v_vertex.z := v_rec.line.startCoord.z+(v_rec.line.endCoord.z-v_rec.line.startCoord.z)*v_ratio;
@@ -7132,10 +7173,10 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
              End If;
            End If;
         elsif ( v_rec.line.midCoord is not null ) Then
-           v_centre := v_rec.line.ST_FindCircle();
-           v_vertex    := &&INSTALL_SCHEMA..T_vertex(p_point => p_point);
-           v_bearing   := &&INSTALL_SCHEMA..COGO.ST_Degrees(v_centre.ST_Bearing(p_vertex=>v_vertex,p_projected=>SELF.projected));
-           v_vertex := v_centre.ST_FromBearingAndDistance(v_bearing,v_centre.z,SELF.projected);
+           v_centre  := v_rec.line.ST_FindCircle();
+           v_vertex  := &&INSTALL_SCHEMA..T_vertex(p_point => p_point);
+           v_bearing := &&INSTALL_SCHEMA..COGO.ST_Degrees(v_centre.ST_Bearing(p_vertex=>v_vertex,p_projected=>SELF.projected));
+           v_vertex  := v_centre.ST_FromBearingAndDistance(v_bearing,v_centre.z,SELF.projected);
            v_ratio    := v_rec.startDist / ( v_rec.startDist + v_rec.endDist );
            if (SELF.ST_Dims()>2) Then
                v_vertex.sdo_gtype := TRUNC(SELF.geom.sdo_gtype/10)*10 + 1;
@@ -7151,11 +7192,9 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
            v_vertex.x := ROUND(v_rec.line.startCoord.x+((v_rec.line.endCoord.x-v_rec.line.startCoord.x)*v_ratio),SELF.dPrecision);
            v_vertex.y := ROUND(v_rec.line.startCoord.y+((v_rec.line.endCoord.y-v_rec.line.startCoord.y)*v_ratio),SELF.dPrecision);
            If (SELF.ST_Dims()>2) Then
-
                v_vertex.sdo_gtype := TRUNC(SELF.geom.sdo_gtype/10)*10 + 1;
                v_vertex.z := ROUND(v_rec.line.startCoord.z+((v_rec.line.endCoord.z-v_rec.line.startCoord.z)*v_ratio),SELF.dPrecision);
                if (SELF.ST_Dims()>3) Then
-
                   v_vertex.w := v_rec.line.startCoord.w+(v_rec.line.endCoord.w-v_rec.line.startCoord.w)*v_ratio;
                End If;
            End If;
@@ -7192,9 +7231,6 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
     Return &&INSTALL_SCHEMA..T_GEOMETRY(v_geometries(v_id).geometry,SELF.tolerance,SELF.dPrecision,SELF.projected);
   End ST_SnapN;
 
-
-
-
   Member Function ST_Ord2SdoPoint
            Return &&INSTALL_SCHEMA..T_GEOMETRY
   IS
@@ -7227,7 +7263,7 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
     END IF;
     RETURN &&INSTALL_SCHEMA..T_GEOMETRY(vGeometry,SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   END ST_Ord2SdoPoint;
-
+  
   Member Function ST_SdoPoint2Ord
            Return &&INSTALL_SCHEMA..T_GEOMETRY
   IS
@@ -7259,7 +7295,6 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
     END IF;
     RETURN &&INSTALL_SCHEMA..T_GEOMETRY(vGeometry,SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   END ST_SdoPoint2Ord;
-
 
   Member Function ST_To2D
            Return &&INSTALL_SCHEMA..T_GEOMETRY
@@ -7308,7 +7343,7 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
     END IF;
     RETURN &&INSTALL_SCHEMA..T_GEOMETRY(v_2D_geom,SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   END ST_To2D;
-
+  
   Member Function ST_To3D(p_zordtokeep IN INTEGER)
            Return &&INSTALL_SCHEMA..T_GEOMETRY
   Is
@@ -7470,7 +7505,6 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
     Return &&INSTALL_SCHEMA..T_GEOMETRY(V_3d_Geom,SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   End ST_To3d;
   
-
   Member Function ST_FixZ(p_default_z IN NUMBER := -9999)
            Return &&INSTALL_SCHEMA..T_GEOMETRY
   Is
@@ -7493,7 +7527,6 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
     return &&INSTALL_SCHEMA..T_GEOMETRY(v_3D_Geom,SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   END ST_FixZ;
   
-
   Member Function ST_Add_Segment(p_Segment in &&INSTALL_SCHEMA..T_Segment)
            Return &&INSTALL_SCHEMA..T_Geometry
   As
@@ -8816,7 +8849,7 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
     END IF;
     RETURN SELF.geom.sdo_ordinates(SELF.ST_LRS_Dim());
   End ST_LRS_Get_Measure;
-
+  
   Member Function ST_LRS_Project_Point(P_Point In Mdsys.Sdo_Geometry,
                                        p_unit  In varchar2    Default null)
            Return &&INSTALL_SCHEMA..T_GEOMETRY
@@ -8840,14 +8873,13 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
                                          '*GTYPE1*',SELF.ST_GeometryType()),
                                          '*GTYPE2*','Linestring'),TRUE);
     End If;
-
     v_geometries := SELF.ST_Snap(p_point,p_unit);
     if ( v_geometries is null or v_geometries.COUNT=0 ) Then
        Return null;
     end If;
     Return &&INSTALL_SCHEMA..T_GEOMETRY(v_geometries(1).geometry,SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   End ST_LRS_Project_Point;
-
+  
   Member Function ST_LRS_Locate_Measure(p_measure in number,
                                         p_offset  in number default 0,
                                         p_unit    in varchar2 default null)
@@ -9020,7 +9052,6 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
     return NULL;
   End ST_LRS_Locate_Measure;
 
-
   Member Function ST_LRS_Locate_Point(p_measure in number,
                                       p_offset  in number default 0)
            Return &&INSTALL_SCHEMA..T_GEOMETRY
@@ -9028,7 +9059,6 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
   Begin
     RETURN SELF.ST_LRS_Locate_Measure(p_measure=>p_measure,p_offset=>p_offset);
   ENd ST_LRS_Locate_Point;
-
 
   Member Function ST_LRS_Locate_Measures(p_start_measure in number,
                                          p_end_measure   in number,
@@ -9262,7 +9292,6 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
     return v_return_geom;
   End ST_LRS_Locate_Measures;
   
-
   Member Function ST_LRS_Locate_Along(p_measure in number,
                                       p_offset  in number   default 0,
                                       p_unit    in varchar2 default null)
@@ -9274,7 +9303,7 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
                           p_offset  => p_offset,
                           p_unit    => p_unit);
   End ST_LRS_Locate_Along;
-
+  
   Member Function ST_LRS_Locate_Between(p_start_measure in number,
                                         p_end_measure   in number,
                                         p_offset        in number   default 0,
@@ -9288,7 +9317,7 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
                    p_offset        => p_offset,
                    p_unit          => p_unit);
   End ST_LRS_Locate_Between;
-
+  
   Member Function ST_LRS_Add_Measure(p_start_measure IN NUMBER Default NULL,
                                      p_end_measure   IN NUMBER Default NULL,
                                      p_unit          IN VARCHAR2 Default NULL)
@@ -9432,7 +9461,6 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
                 ELSE 'FALSE'
             END;
   End ST_LRS_Valid_Point;
-
 
   Member Function ST_LRS_Valid_Segment(p_diminfo in mdsys.sdo_dim_array)
            Return varchar2

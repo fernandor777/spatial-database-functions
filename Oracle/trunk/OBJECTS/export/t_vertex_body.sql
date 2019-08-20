@@ -2,7 +2,7 @@ DEFINE INSTALL_SCHEMA='&1'
 
 SET VERIFY OFF;
 
-CREATE OR REPLACE EDITIONABLE TYPE BODY "&&INSTALL_SCHEMA."."T_VERTEX" 
+CREATE OR REPLACE EDITIONABLE TYPE BODY &&INSTALL_SCHEMA..T_VERTEX 
 AS
   Constructor Function T_Vertex(SELF IN OUT NOCOPY T_Vertex)
                 Return Self As Result
@@ -423,7 +423,7 @@ AS
     END IF;
     RETURN v_vertex;
   End ST_LRS_Set_Measure;
-
+  
   Member Function ST_hasZ
   RETURN integer Deterministic
   As
@@ -435,7 +435,7 @@ AS
                 ELSE 0
             END;
   End ST_hasZ;
-
+  
   Member Function ST_SdoPointType
            Return mdsys.sdo_point_type Deterministic
   AS
@@ -460,7 +460,7 @@ AS
     v_vertex.id := self.id;
     return v_vertex;
   End ST_VertexType;
-
+  
   Member Function ST_To2D
            Return &&INSTALL_SCHEMA..T_Vertex
   AS
@@ -475,7 +475,7 @@ AS
                        p_sdo_srid  =>SELF.sdo_srid)
             END;
   END ST_To2D;
-
+  
   Member Function ST_To3D(p_keep_measure in integer,
                           p_default_z    in number)
            Return &&INSTALL_SCHEMA..T_Vertex
@@ -714,7 +714,7 @@ AS
              p_sdo_srid =>SELF.sdo_srid
            );
   End ST_Scale;
-
+  
   Member Function ST_SubtendedAngle(p_start_vertex in &&INSTALL_SCHEMA..T_Vertex,
                                     p_end_vertex   in &&INSTALL_SCHEMA..T_Vertex,
                                     p_projected    in integer default 1)
@@ -802,7 +802,7 @@ AS
              );
     END IF;
   End ST_SubtendedAngle;
-
+  
   Member Function ST_FromBearingAndDistance(p_Bearing   in number,
                                             p_Distance  in number,
                                             p_projected in integer default 1)

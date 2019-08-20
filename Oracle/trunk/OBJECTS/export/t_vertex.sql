@@ -2,7 +2,7 @@ DEFINE INSTALL_SCHEMA='&1'
 
 SET VERIFY OFF;
 
-CREATE OR REPLACE EDITIONABLE TYPE "SPDBA"."T_VERTEX" 
+CREATE OR REPLACE EDITIONABLE TYPE &&INSTALL_SCHEMA..T_VERTEX
 AUTHID DEFINER
 AS OBJECT (
 
@@ -55,7 +55,7 @@ AS OBJECT (
        Return Self As Result,
 
   Constructor Function T_Vertex( SELF    IN OUT NOCOPY T_Vertex,
-                                 p_vertex In SPDBA.T_vertex )
+                                 p_vertex In &&INSTALL_SCHEMA..T_vertex )
        Return Self As Result,
 
   Constructor Function T_Vertex( SELF    IN OUT NOCOPY T_Vertex,
@@ -233,7 +233,7 @@ AS OBJECT (
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
   Member Function ST_Self
-           Return SPDBA.T_Vertex Deterministic,
+           Return &&INSTALL_SCHEMA..T_Vertex Deterministic,
 
   Member Procedure ST_SetCoordinate(
            SELF  IN OUT NOCOPY T_Vertex,
@@ -508,7 +508,7 @@ AS OBJECT (
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
   Member Function ST_LRS_Set_Measure(p_measure in number)
-           Return SPDBA.T_Vertex Deterministic,
+           Return &&INSTALL_SCHEMA..T_Vertex Deterministic,
 
   /****m* T_VERTEX/ST_To2D
   *  NAME
@@ -548,7 +548,7 @@ AS OBJECT (
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
   Member Function ST_To2D
-           Return SPDBA.T_Vertex Deterministic,
+           Return &&INSTALL_SCHEMA..T_Vertex Deterministic,
 
   /****m* T_VERTEX/ST_To3D
   *  NAME
@@ -604,7 +604,7 @@ AS OBJECT (
   ******/
   Member Function ST_To3D(p_keep_measure in integer,
                           p_default_z    in number)
-           Return SPDBA.T_Vertex Deterministic,
+           Return &&INSTALL_SCHEMA..T_Vertex Deterministic,
 
   /****m* T_VERTEX/ST_VertexType
   *  NAME
@@ -683,7 +683,7 @@ AS OBJECT (
   *  NAME
   *    ST_Bearing -- Returns bearing from SELF to supplied T_Vertex.
   *  SYNOPSIS
-  *    Member Function ST_Bearing(p_vertex    in SPDBA.T_Vertex,
+  *    Member Function ST_Bearing(p_vertex    in &&INSTALL_SCHEMA..T_Vertex,
   *                               p_projected in integer default 1,
   *                               p_normalize in integer default 1 )
   *             Return Number Deterministic
@@ -747,7 +747,7 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-  Member Function ST_Bearing(p_vertex    in SPDBA.T_Vertex,
+  Member Function ST_Bearing(p_vertex    in &&INSTALL_SCHEMA..T_Vertex,
                              p_projected in integer default 1,
                              p_normalize in integer default 1)
            Return Number Deterministic,
@@ -756,7 +756,7 @@ AS OBJECT (
   *  NAME
   *    ST_Distance -- Returns distance from current vertex (SELF) to supplied T_Vertex.
   *  SYNOPSIS
-  *    Member Function ST_Distance(p_vertex    in SPDBA.T_Vertex,
+  *    Member Function ST_Distance(p_vertex    in &&INSTALL_SCHEMA..T_Vertex,
   *                                p_tolerance in number   default 0.05,
   *                                p_unit      in varchar2 default NULL)
   *             Return Number Deterministic
@@ -815,7 +815,7 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-  Member Function ST_Distance(p_vertex    in SPDBA.T_Vertex,
+  Member Function ST_Distance(p_vertex    in &&INSTALL_SCHEMA..T_Vertex,
                               p_tolerance in number   default 0.05,
                               p_unit      in varchar2 default NULL)
            Return number Deterministic,
@@ -884,28 +884,28 @@ AS OBJECT (
   Member Function ST_FromBearingAndDistance(p_Bearing   in number,
                                             p_Distance  in number,
                                             p_projected in integer default 1)
-           Return SPDBA.T_Vertex Deterministic,
+           Return &&INSTALL_SCHEMA..T_Vertex Deterministic,
 
   /* ================= Useful Math Functions for Circle ===================*/
 
-  Member Function ST_Add(p_vertex in SPDBA.T_Vertex)
-           Return SPDBA.T_Vertex Deterministic,
+  Member Function ST_Add(p_vertex in &&INSTALL_SCHEMA..T_Vertex)
+           Return &&INSTALL_SCHEMA..T_Vertex Deterministic,
 
   Member Function ST_Normal
-           Return SPDBA.T_Vertex Deterministic,
+           Return &&INSTALL_SCHEMA..T_Vertex Deterministic,
 
-  Member Function ST_Subtract(p_vertex in SPDBA.T_Vertex)
-           Return SPDBA.T_Vertex Deterministic,
+  Member Function ST_Subtract(p_vertex in &&INSTALL_SCHEMA..T_Vertex)
+           Return &&INSTALL_SCHEMA..T_Vertex Deterministic,
 
   Member Function ST_Scale(p_scale in number default 1)
-           Return SPDBA.T_Vertex Deterministic,
+           Return &&INSTALL_SCHEMA..T_Vertex Deterministic,
 
   /****m* T_VERTEX/ST_SubtendedAngle
   *  NAME
   *    ST_SubtendedAngle -- Returns angle subtended by p_start_vertex/SELF/p_end_vertex
   *  SYNOPSIS
-  *    Member Function ST_SubtendedAngle(p_start_vertex in SPDBA.T_Vertex,
-  *                                      p_end_vertex   in SPDBA.T_Vertex)
+  *    Member Function ST_SubtendedAngle(p_start_vertex in &&INSTALL_SCHEMA..T_Vertex,
+  *                                      p_end_vertex   in &&INSTALL_SCHEMA..T_Vertex)
   *             Return Number deterministic
   *  DESCRIPTION
   *    This function computes the angle subtended by the three points:
@@ -992,8 +992,8 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-  Member Function ST_SubtendedAngle(p_start_vertex in SPDBA.T_Vertex,
-                                    p_end_vertex   in SPDBA.T_Vertex,
+  Member Function ST_SubtendedAngle(p_start_vertex in &&INSTALL_SCHEMA..T_Vertex,
+                                    p_end_vertex   in &&INSTALL_SCHEMA..T_Vertex,
                                     p_projected    in integer default 1)
            Return Number Deterministic,
 
@@ -1001,7 +1001,7 @@ AS OBJECT (
   *  NAME
   *    ST_WithinTolerance -- Discovers whether supplied vertex is within tolerance of current object vertex (SELF).
   *  SYNOPSIS
-  *    Member Function ST_WithinTolerance(p_vertex    in SPDBA.T_Vertex,
+  *    Member Function ST_WithinTolerance(p_vertex    in &&INSTALL_SCHEMA..T_Vertex,
   *                                       p_tolerance in number default 0.005)
   *             Return Integer deterministic
   *  DESCRIPTION
@@ -1061,7 +1061,7 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-  Member Function ST_WithinTolerance(P_Vertex    In SPDBA.T_Vertex,
+  Member Function ST_WithinTolerance(P_Vertex    In &&INSTALL_SCHEMA..T_Vertex,
                                      p_tolerance in number  default 0.005,
                                      p_projected in integer default 1)
            Return Integer Deterministic,
@@ -1130,7 +1130,7 @@ AS OBJECT (
                            p_dec_places_y In integer Default null,
                            p_dec_places_z In integer Default 3,
                            p_dec_places_m In integer Default 3)
-  Return SPDBA.T_Vertex Deterministic,
+  Return &&INSTALL_SCHEMA..T_Vertex Deterministic,
 
   /****m* T_VERTEX/ST_SdoGeometry
   *  NAME
@@ -1310,7 +1310,7 @@ AS OBJECT (
   *  NAME
   *    ST_Equals -- Compares current object (SELF) with supplied vertex.
   *  SYNOPSIS
-  *    Member Function ST_Equals(p_vertex    in SPDBA.T_Vertex,
+  *    Member Function ST_Equals(p_vertex    in &&INSTALL_SCHEMA..T_Vertex,
   *                              p_dPrecision in number default 3)
   *             Return Integer deterministic
   *  DESCRIPTION
@@ -1358,7 +1358,7 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-  Member Function ST_Equals(p_vertex     in SPDBA.T_Vertex,
+  Member Function ST_Equals(p_vertex     in &&INSTALL_SCHEMA..T_Vertex,
                             p_dPrecision in integer default 3)
            Return Number Deterministic,
 
@@ -1366,7 +1366,7 @@ AS OBJECT (
   *  NAME
   *    OrderBy -- Implements ordering function that can be used to sort a collection of T_Vertex objects.
   *  SYNOPSIS
-  *    Order Member Function OrderBy(p_vertex in SPDBA.T_Vertex)
+  *    Order Member Function OrderBy(p_vertex in &&INSTALL_SCHEMA..T_Vertex)
   *                   Return Number deterministic
   *  DESCRIPTION
   *    This order by function allows a collection of T_Vertex objects to be sorted.
@@ -1409,7 +1409,7 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-  Order Member Function OrderBy(p_vertex in SPDBA.T_Vertex)
+  Order Member Function OrderBy(p_vertex in &&INSTALL_SCHEMA..T_Vertex)
                  Return Number Deterministic
 
 )

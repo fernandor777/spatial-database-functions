@@ -2,7 +2,7 @@ DEFINE INSTALL_SCHEMA='&1'
 
 SET VERIFY OFF;
 
-CREATE OR REPLACE EDITIONABLE TYPE BODY "&&INSTALL_SCHEMA."."T_SEGMENT" 
+CREATE OR REPLACE EDITIONABLE TYPE BODY &&INSTALL_SCHEMA..T_SEGMENT 
 AS
 
   Constructor Function T_Segment(SELF IN OUT NOCOPY T_Segment)
@@ -1314,6 +1314,7 @@ AS
     v_tgeometry := &&INSTALL_SCHEMA..T_Geometry(p_geometry,SELF.PrecisionModel.tolerance,SELF.PrecisionModel.XY,SELF.projected);
     -- if start = end, then just compute distance to one of the endpoints
     if ( SELF.startCoord.ST_Equals(SELF.endCoord,SELF.PrecisionModel.XY) = 1 ) then
+      -- DEBUG dbms_output.put_line('startCoord = endCoord, so just compute distance to one of the endpoints' );
       Return v_tGeometry.ST_Distance(SELF.startCoord.ST_SdoGeometry(),
                                      p_unit,
                                      SELF.PrecisionModel.XY);
@@ -1336,16 +1337,16 @@ AS
       v_segment   :=        SELF.ST_To3D(p_keep_measure=>0,p_default_z=>NULL);
       v_tgeometry := v_tgeometry.ST_To3D(p_zordtokeep=>3);
     End If;
-    -- DEBUG dbms_output.put_line('  v_segment: ' || v_segment.ST_AsText() || ' v_tgeometry: ' || v_tgeometry.ST_AsEWKT());
+    -- DEBUG dbms_output.put_line(' vertex: ' || v_tgeometry.ST_AsEWKT() || ' v_segment: '  || v_segment.ST_AsEWKT());
     -- Get normalised segment as geometry
     v_segment_geom := v_segment.ST_SdoGeometry();
     -- DEBUG &&INSTALL_SCHEMA._DEBUG.PrintGeom(v_segment_geom,3,false,'v_segment_geom: ');
     -- DEBUG dbms_output.put_line('T_Segment.ST_DISTANCE: case when p_unit is not null and SELF.ST_Srid() is not null => '||case when p_unit is not null and SELF.ST_Srid() is not null then 'p_unit' else 'no p_unit' end);
     v_distance := case when p_unit is not null and SELF.ST_Srid() is not null
-                       then mdsys.sdo_geom.sdo_distance(v_tgeometry.geom,v_segment_geom,SELF.precisionModel.XY,p_unit)
-                       else mdsys.sdo_geom.sdo_distance(v_tgeometry.geom,v_segment_geom,SELF.precisionModel.XY)
+                       then mdsys.sdo_geom.sdo_distance(v_tgeometry.geom,v_segment_geom,SELF.precisionModel.tolerance,p_unit)
+                       else mdsys.sdo_geom.sdo_distance(v_tgeometry.geom,v_segment_geom,SELF.precisionModel.tolerance)
                    end;
-    -- DEBUG dbms_output.put_line('T_Segment.ST_DISTANCE: v_distance='||v_distance);
+    -- DEBUG dbms_output.put_line(' vertex: ' || v_tgeometry.ST_AsEWKT() || ' v_segment: '  || v_segment.ST_AsEWKT() || ' v_distance='||v_distance);
     v_has_z     := (SELF.ST_hasZ()=1 AND LEAST(v_tgeometry.ST_Dims(),SELF.ST_Dims()) > 2);
 
     -- DEBUG dbms_output.put_line('T_Segment.ST_DISTANCE: v_has_z='||case when v_has_z then 'T' else 'F' end || ' v_isLocator=' || case when v_isLocator then 'T' else 'F' end);
@@ -1426,8 +1427,9 @@ AS
                p_vertex => SELF.startCoord,
                p_unit   => p_unit
              ).ST_Distance(
-                  p_vertex => SELF.startCoord,
-                  p_unit   => p_unit
+                  p_vertex    => SELF.startCoord,
+                  p_tolerance => SELF.PrecisionModel.tolerance,
+                  p_unit      => p_unit
              );
     end if;
     
@@ -1439,6 +1441,7 @@ AS
                p_unit   => p_unit
              ).ST_Distance(
                   p_vertex => SELF.endCoord,
+                  p_tolerance => SELF.PrecisionModel.tolerance,
                   p_unit   => p_unit
              );
     End If;
@@ -1529,15 +1532,10 @@ AS
     End If;
     v_projected := case when SELF.sdo_srid is null then 1 else &&INSTALL_SCHEMA..t_segment.ST_GetProjected(SELF.sdo_srid) end;
     If ( SELF.ST_isCircularArc()=0 ) Then
-      RETURN SELF.ST_ProjectPoint(p_vertex => p_vertex,
-                                  p_unit   => p_unit
-                                 );
+      RETURN SELF.ST_PointToLineString(p_vertex => p_vertex);
     Else /* is Circular Arc */
       IF ( v_projected = 0 ) THEN
-        RETURN SELF.ST_Closest(
-                       p_geometry => p_vertex.ST_SdoGeometry(),
-                       p_unit   => p_unit
-                    );
+        RETURN NULL;
       End If;
     End If;
 
@@ -1594,6 +1592,7 @@ AS
       -- Compute length from centre to v_vertex
       v_length := v_centre.ST_Distance(
                     p_vertex    => v_vertex,
+                    p_tolerance => SELF.PrecisionModel.tolerance,
                     p_unit      => p_unit 
                   );
       if ( v_length < v_radius ) Then
@@ -1675,7 +1674,6 @@ AS
         v_intersection_point.W := v_length * v_ratio;
         v_intersection_point.sdo_gtype := 4401;
       Else 
-
         v_intersection_point.Z := v_length * v_ratio;
         v_intersection_point.sdo_gtype := 3301;
       End If;
@@ -1713,7 +1711,13 @@ AS
     Begin
       Return (p_v1.x - p_v2.x)    *     (p_v1.x - p_v2.x) +
              (p_v1.y - p_v2.y)    *     (p_v1.y - p_v2.y) +
-         NVL((p_v1.z - p_v2.z),0) * NVL((p_v1.z - p_v2.z),0);  -- SGG Is this correct if z is measure?
+             case when SELF.ST_Dims() = 2 
+                  then 0
+                  when SELF.ST_Dims() = 3 and SELF.ST_LRS_DIM() = 0 
+                    or SELF.ST_Dims() = 4 and SELF.ST_LRS_DIM() = 4 
+                  then NVL((p_v1.z - p_v2.z),0) * NVL((p_v1.z - p_v2.z),0)
+                  else 0
+              end;
     End sqrDistPP3D;
 
   Begin
@@ -1757,7 +1761,7 @@ AS
               );
     -- DEBUG dbms_output.put_line('  v_vertex='||v_vertex.ST_round(8).ST_AsText());
 
-    -- DEBUG dbms_output.put_line('<ST_PointToLineString>');
+    -- DEBUG dbms_output.put_line('</ST_PointToLineString>');
 
     Return v_vertex;
   END ST_PointToLineString;
@@ -1812,7 +1816,7 @@ AS
     v_centre.sdo_gtype         := 2001;
     v_point_to_centre_distance := p_vertex.ST_Distance(
                                     p_vertex    => v_centre,
-                                    p_tolerance => SELF.PrecisionModel.xy,
+                                    p_tolerance => SELF.PrecisionModel.tolerance,
                                     p_unit      => p_unit
                                   );
     -- DEBUG dbms_output.put_line('  ROUND(v_point_to_centre_distance,SELF.precisionModel.xy) (' ||ROUND(v_point_to_centre_distance,SELF.precisionModel.xy) || ') = ROUND(v_radius,SELF.precisionModel.xy) (' ||ROUND(v_radius,SELF.precisionModel.xy) || ')');
@@ -1843,6 +1847,7 @@ AS
     v_distance         number;
     v_segment          &&INSTALL_SCHEMA..T_Segment;
     v_vertex           &&INSTALL_SCHEMA..T_Vertex;
+    v_point            &&INSTALL_SCHEMA..T_Vertex;
   Begin
     -- DEBUG dbms_output.put_line('<ST_Closest p_geometry>');
     If (p_geometry is null) Then
@@ -1864,7 +1869,8 @@ AS
     --    So, convert both to Same Dimension and then add measure back in via alternate method
 
     -- DEBUG dbms_output.put_line(' SELF ' || SELF.ST_AsText());
-    -- DEBUG dbms_output.put_line(' p_geometry ' || p_geometry.ST_AsText());
+    -- DEBUG DEBUG.PrintGeom(p_geometry,3,false,'  p_geometry: ');
+
     v_tgeometry := &&INSTALL_SCHEMA..T_Geometry(p_geometry,SELF.PrecisionModel.tolerance,SELF.PrecisionModel.XY,SELF.projected); -- SGG IsGeographic
     v_segment   := &&INSTALL_SCHEMA..T_Segment(SELF);
     
@@ -1914,12 +1920,13 @@ AS
            geoma     => v_point_on_geom,
            geomb     => v_point_on_segment
       );
-      -- DEBUG DEBUG.PrintGeom(v_point_on_segment,3,false,'  v_point_on_segment (SDO_CLOSEST_POINTS): ');
+      -- DEBUG 
+      DEBUG.PrintGeom(v_point_on_segment,3,false,'  v_point_on_segment (SDO_CLOSEST_POINTS): ');
       EXCEPTION
         --WHEN NO_DATA_FOUND THEN
         --   Return NULL;
         WHEN geographic3D THEN
-          -- Force 2D answer
+      -- DEBUG dbms_output.put_line('SDO_CLOSEST_POINTS: Forcing 2D answer ');
           v_tgeometry    := v_tgeometry.ST_To2D();
           v_segment_geom :=   v_segment.ST_To2D().ST_SdoGeometry();
           MDSYS.SDO_GEOM.SDO_CLOSEST_POINTS(
@@ -1932,15 +1939,17 @@ AS
             geomb     => v_point_on_segment
          );
     END;
-    -- DEBUG 
-dbms_output.put_line('  Result of SDO_GEOM.SDO_CLOSEST_POINT, v_point_on_segment=' || case when v_point_on_segment is null then 'NULL' else DEBUG.PrintGeom(v_point_on_segment,3,0,null,0) end);
+    -- DEBUG dbms_output.put_line('  Result of SDO_GEOM.SDO_CLOSEST_POINT, v_point_on_segment=' || case when v_point_on_segment is null then 'NULL' else DEBUG.PrintGeom(v_point_on_segment,3,0,null,0) end);
 
     -- Check if CLOSEST_POINTS worked
     --
     IF ( v_point_on_segment is null or v_point_on_segment.sdo_gtype is null ) THEN
       -- dbms_output.put_line('  Situation where SDO_GEOM.SDO_CLOSEST_POINTS could not resolve (eg point off the end of line)');
       -- Call Older version which is only OK for projected data.
-      v_vertex := SELF.ST_PointToLineString(p_vertex=>&&INSTALL_SCHEMA..T_Vertex(p_geometry));
+      v_vertex := SELF.ST_ProjectPoint(p_vertex=>&&INSTALL_SCHEMA..T_Vertex(p_geometry));
+      IF ( v_vertex is null ) Then
+        return null;
+      END IF;
     ELSE
       v_vertex := &&INSTALL_SCHEMA..T_Vertex(v_point_on_segment);
       -- Circular Arc centre check -> closest will be centre
@@ -1953,18 +1962,23 @@ dbms_output.put_line('  Result of SDO_GEOM.SDO_CLOSEST_POINT, v_point_on_segment
          end if;
       end if;
     End If;
-   
-    v_segment_length := case when SELF.ST_isCircularArc()=0 
-                             then SELF.ST_Length(p_unit => p_unit)
-                             else -- ROUGH until Function written
-                                  SELF.startCoord.ST_Distance(v_vertex) + v_vertex.ST_Distance(SELF.endCoord,p_unit)
-                          end;
-    v_ratio          := case when SELF.ST_isCircularArc()=0 
-                             then SELF.startCoord.ST_Distance(v_vertex,p_unit) / v_segment_length
-                             else -- SGG SELF.ST_Compute_Ratio(v_vertex)
-                                  SELF.startCoord.ST_Distance(v_vertex,p_unit) / v_segment_length
-                         end;
-dbms_output.put_line(' Ratio='||v_ratio || '  Length=' || v_segment_length);
+
+    v_segment_length := SELF.ST_Length(p_unit => p_unit);
+    if ( SELF.ST_isCircularArc()=0  ) then
+      v_ratio := SELF.startCoord.ST_Distance(v_vertex,SELF.PrecisionModel.tolerance,p_unit) / v_segment_length;
+    else
+      v_point := SELF.ST_PointToCircularArc(p_vertex=>v_vertex,p_unit=>p_unit);
+      if ( v_point is null ) then
+        v_ratio := 0;
+      else
+        v_ratio := case v_point.ST_LRS_Dim()
+                   when 0 then v_point.w
+                   when 3 then v_point.z
+                   when 4 then v_point.w
+                  end;
+      end If;
+    end if;
+
     IF ( SELF.ST_isCircularArc() = 0 ) Then
         If ( SELF.ST_Lrs_Dim()=0 ) Then
           IF ( SELF.ST_Dims() in (3,4) ) Then
@@ -1987,7 +2001,6 @@ dbms_output.put_line(' Ratio='||v_ratio || '  Length=' || v_segment_length);
           End If;      
         End If;
     Else
-dbms_output.put_line('Set Z if CircularArc and > 2D (See ST_PointToCircularArc)');
       -- Set Z if CircularArc and > 2D (See ST_PointToCircularArc)
       v_vertex.sdo_gtype := SELF.sdo_gtype - 1;
       v_vertex.z := case when SELF.ST_Lrs_Dim() = 0 and SELF.ST_Dims() = 2      then v_segment_length * v_ratio
@@ -1998,11 +2011,9 @@ dbms_output.put_line('Set Z if CircularArc and > 2D (See ST_PointToCircularArc)'
                      end;
     End If;
 
-    -- DEBUG 
-dbms_output.put_line('</ST_Closest> = ' || v_vertex.ST_AsText());
+    -- DEBUG dbms_output.put_line('</ST_Closest> = ' || v_vertex.ST_AsText());
     RETURN v_Vertex;
   END ST_Closest;
-
 
   Member Function ST_ProjectPoint(p_vertex in &&INSTALL_SCHEMA..T_Vertex,
                                   p_unit   In varchar2 Default NULL)
@@ -2017,7 +2028,8 @@ dbms_output.put_line('</ST_Closest> = ' || v_vertex.ST_AsText());
     v_point_on_point   mdsys.sdo_geometry;
     v_point_on_segment mdsys.sdo_geometry;
     v_distance         number;
-    v_dim              PLS_INTEGER;
+    v_segment_length   number;
+    v_ratio            number;
 
   Begin
     -- DEBUG dbms_output.put_line('<ST_ProjectPoint>');
@@ -2076,46 +2088,54 @@ dbms_output.put_line('</ST_Closest> = ' || v_vertex.ST_AsText());
     END;
     -- DEBUG dbms_output.put_line('  After SDO_CLOSEST_POINTS');
     -- DEBUG debug.printGeom(v_point_on_point,   SELF.precisionModel.xy,false,p_vertex.Sdo_Gtype||' point_on_point    : ');
-    -- DEBUG 
-debug.printGeom(v_point_on_segment, SELF.precisionModel.xy,false,'     point_on_line ' || SELF.sdo_gtype||': ' );
+    -- DEBUG debug.printGeom(v_point_on_segment, SELF.precisionModel.xy,false,'     point_on_line ' || SELF.sdo_gtype||': ' );
 
-    If ( p_vertex.ST_Dims() = 2 ) Then
-      If ( SELF.ST_Dims() = 2 ) Then
-        v_vertex := &&INSTALL_SCHEMA..t_vertex(v_point_on_segment);
-      ElsIf ( SELF.ST_Dims() > 2 ) Then
-        If ( SELF.ST_Lrs_Dim() = 0 ) Then
-          v_vertex := &&INSTALL_SCHEMA..t_vertex(v_point_on_segment);
-        else
-          v_vertex           := &&INSTALL_SCHEMA..t_vertex(v_point_on_segment);
-          v_vertex.z         := SELF.ST_LRS_Compute_Measure(p_vertex => &&INSTALL_SCHEMA..t_vertex(v_point_on_segment));
-          v_vertex.sdo_gtype := 3301;
+    v_vertex := &&INSTALL_SCHEMA..T_Vertex(v_point_on_segment);
+    -- DEBUG dbms_output.put_line('  v_vertex=' || v_vertex.ST_AsText());
+
+    v_segment_length := case when SELF.ST_isCircularArc()=0 
+                             then SELF.ST_Length(p_unit => p_unit)
+                             else -- ROUGH until Function written
+                                  SELF.startCoord.ST_Distance(v_vertex,SELF.PrecisionModel.tolerance,p_unit) + 
+                                         v_vertex.ST_Distance(SELF.endCoord,SELF.PrecisionModel.tolerance,p_unit)
+                          end;                          
+    v_ratio          := case when SELF.ST_isCircularArc()=0 
+                             then SELF.startCoord.ST_Distance(v_vertex,SELF.PrecisionModel.tolerance,p_unit) / v_segment_length
+                             else -- SGG SELF.ST_Compute_Ratio(v_vertex)
+                                  SELF.startCoord.ST_Distance(v_vertex,SELF.PrecisionModel.tolerance,p_unit) / v_segment_length
+                         end;
+    IF ( SELF.ST_isCircularArc() = 0 ) Then
+        If ( SELF.ST_Lrs_Dim()=0 ) Then
+          IF ( SELF.ST_Dims() in (3,4) ) Then
+            v_vertex.Z := SELF.startCoord.z;
+            v_vertex.W := v_segment_length * v_ratio;
+            v_vertex.sdo_gtype := 4401;
+          Else 
+            v_vertex.Z := v_segment_length * v_ratio;
+            v_vertex.sdo_gtype := 3301;
+          End If;
+        Else
+          -- Now calculate Measure
+          if ( SELF.ST_Lrs_Dim() = 3 ) Then
+            v_vertex.z := SELF.startCoord.z + (SELF.endCoord.z - SELF.startCoord.z) * v_ratio; 
+            v_vertex.sdo_gtype := 3301;
+          elsif ( SELF.ST_Lrs_Dim() = 4 ) Then
+            v_vertex.Z := SELF.startCoord.Z;
+            v_vertex.w := SELF.startCoord.w + (SELF.endCoord.w - SELF.startCoord.w) * v_ratio; 
+            v_vertex.sdo_gtype := 4401;
+          End If;      
         End If;
-      End If;
-    ElsIf ( p_vertex.ST_Dims()=3 ) Then
-      If ( SELF.ST_Dims()=2 ) Then
-        v_vertex := &&INSTALL_SCHEMA..t_vertex(v_point_on_segment);
-      Else        
-        If ( SELF.ST_Lrs_Dim() = 0 ) Then
-          v_vertex := &&INSTALL_SCHEMA..t_vertex(v_point_on_segment);
-        else
-          v_vertex           := &&INSTALL_SCHEMA..t_vertex(v_point_on_segment);
-          v_vertex.z         := SELF.ST_LRS_Compute_Measure(p_vertex => &&INSTALL_SCHEMA..t_vertex(v_point_on_segment));
-          v_vertex.sdo_gtype := 3301;
-        End If;
-      End If;
-    ElsIf ( p_vertex.ST_Dims()=4 ) Then
-      If ( SELF.ST_Dims() = 2 ) Then
-          v_vertex := &&INSTALL_SCHEMA..t_vertex(v_point_on_segment);
-      Else
-        If ( SELF.ST_Lrs_Dim() = 0 ) Then
-          v_vertex := &&INSTALL_SCHEMA..t_vertex(v_point_on_segment);
-        else
-          v_vertex   := &&INSTALL_SCHEMA..t_vertex(v_point_on_segment);
-          v_vertex.z := SELF.ST_LRS_Compute_Measure(p_vertex => &&INSTALL_SCHEMA..t_vertex(v_point_on_segment));
-          v_vertex.sdo_gtype := 3301;
-        End If;
-      End If;      
+    Else
+      -- Set Z if CircularArc and > 2D (See ST_PointToCircularArc)
+      v_vertex.sdo_gtype := SELF.sdo_gtype - 1;
+      v_vertex.z := case when SELF.ST_Lrs_Dim() = 0 and SELF.ST_Dims() = 2      then v_segment_length * v_ratio
+                         when SELF.ST_Lrs_Dim() = 0 and SELF.ST_Dims() in (3,4) then SELF.startCoord.z
+                         when SELF.ST_Lrs_Dim() = 3 and SELF.ST_Dims() = 3      then SELF.startCoord.z + (SELF.endCoord.z - SELF.startCoord.z) * v_ratio -- SGG Compute Measure
+                         when SELF.ST_Lrs_Dim() = 3 and SELF.ST_Dims() = 4      then SELF.startCoord.w + (SELF.endCoord.w - SELF.startCoord.w) * v_ratio
+                         when SELF.ST_Lrs_Dim() = 4 and SELF.ST_Dims() = 4      then SELF.startCoord.w + (SELF.endCoord.w - SELF.startCoord.w) * v_ratio
+                     end;
     End If;
+
     -- DEBUG dbms_output.put_line('  Returned vertex ' || v_vertex.ST_AsText());
     -- DEBUG dbms_output.put_line('</ST_ProjectPoint>');
     return v_vertex;
@@ -3038,8 +3058,8 @@ debug.printGeom(v_point_on_segment, SELF.precisionModel.xy,false,'     point_on_
     --v_pt1_line               := v_line_segment.ST_Distance(p_vertex=>v_p1,p_tolerance=>p_tolerance,p_unit=>p_unit);
     --v_pt1_arc                := v_circular_arc.ST_Distance(p_vertex=>v_p1,p_tolerance=>p_tolerance,p_unit=>p_unit);
 
-    v_dist_int_pt2CurveStart := v_iPoints.startCoord.ST_Distance(v_circular_arc.startCoord,SELF.PrecisionModel.XY,p_unit);
-    v_dist_int_pt2CurveEnd   := v_iPoints.startCoord.ST_Distance(v_circular_arc.endCoord,  SELF.PrecisionModel.XY,p_unit);
+    v_dist_int_pt2CurveStart := v_iPoints.startCoord.ST_Distance(v_circular_arc.startCoord,SELF.PrecisionModel.tolerance,p_unit);
+    v_dist_int_pt2CurveEnd   := v_iPoints.startCoord.ST_Distance(v_circular_arc.endCoord,  SELF.PrecisionModel.tolerance,p_unit);
 
     -- DEBUG dbms_output.put_line('     v_dist_int_pt2CurveStart=' || v_dist_int_pt2CurveStart);  
     -- DEBUG dbms_output.put_line('       v_dist_int_pt2CurveEnd=' || v_dist_int_pt2CurveEnd);
@@ -3675,8 +3695,7 @@ debug.printGeom(v_point_on_segment, SELF.precisionModel.xy,false,'     point_on_
                            p_geometry => p_vertex.ST_SdoGeometry(),
                            p_unit     => v_unit
                          );
-      -- DEBUG 
-      dbms_output.put_line('  AFTER CLOSEST: v_vertex='||v_vertex.ST_AsText());
+      -- DEBUG dbms_output.put_line('  AFTER CLOSEST: v_vertex='||v_vertex.ST_AsText());
     End If;
 
     -- DEBUG dbms_output.put_line('  measure='||case v_vertex.ST_Lrs_Dim() when 0 then v_vertex.z when 3 then v_vertex.z when 4 then v_vertex.w end);
@@ -3938,6 +3957,5 @@ debug.printGeom(v_point_on_segment, SELF.precisionModel.xy,false,'     point_on_
   END orderBy;
 
 END;
-/
-show errors
 
+/

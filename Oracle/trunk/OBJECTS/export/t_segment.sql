@@ -2,7 +2,7 @@ DEFINE INSTALL_SCHEMA='&1'
 
 SET VERIFY OFF;
 
-CREATE OR REPLACE EDITIONABLE TYPE "&&INSTALL_SCHEMA."."T_SEGMENT" 
+CREATE OR REPLACE EDITIONABLE TYPE &&INSTALL_SCHEMA..T_SEGMENT 
 AUTHID DEFINER
 AS OBJECT (
 
@@ -1467,6 +1467,47 @@ AS OBJECT (
                              )
            Return &&INSTALL_SCHEMA..T_Vertex deterministic,
 
+ /****m* T_SEGMENT/ST_isPointOnSegment
+ *  NAME
+ *    ST_isPointOnSegment -- Checks if supplied point falls on the underlying segment.
+ *  SYNOPSIS
+ *    ST_isPointOnSegment(p_vertex in &&INSTALL_SCHEMA..T_Vertex,
+ *                        p_unit   in varchar2)
+ *     Return integer deterministic
+ *  DESCRIPTION
+ *    This function checks if the supplied point falls on the underlying segment.
+ *    
+ *    Computes for LineString or CircularString.
+ *  NOTES
+ *    Geodetic/geographic CircularArc segments treated as planar
+ *  INPUTS
+ *    p_vertex (t_vertex) - Point on to linestring or CircularString.
+ *    p_unit   (varchar2) - Unit of measure for SRID.
+ *  RESULT
+ *    booelan (integer) -- 1 if point on segment; 0 otherwise
+ *  EXAMPLE
+ *    select T_Segment(MDSYS.SDO_GEOMETRY(3302,8307,NULL,MDSYS.SDO_ELEM_INFO_ARRAY(1,2,1),MDSYS.SDO_ORDINATE_ARRAY(147.41,-43.132,100, 147.5,-43.387,30000)))
+ *             .ST_isPointOnSegment (
+ *                t_vertex(SDO_GEOMETRY(3301,8307,SDO_POINT_TYPE(147.44551945,-43.23290209,11930.116),NULL,NULL))
+ *           ) as is_on 
+ *      from dual union all
+ *    select T_Segment(MDSYS.SDO_GEOMETRY(3302,8307,NULL,MDSYS.SDO_ELEM_INFO_ARRAY(1,2,1),MDSYS.SDO_ORDINATE_ARRAY(147.41,-43.132,100, 147.5,-43.387,30000)))
+ *             .ST_isPointOnSegment (
+ *                t_vertex(SDO_GEOMETRY(3301,8307,SDO_POINT_TYPE(147.445,-43.232,11930.116),NULL,NULL))
+ *           ) as is_on 
+ *      from dual;
+ *
+ *          IS_ON
+ *    ----------
+ *             1
+ *             0
+ *  AUTHOR
+ *    Simon Greener
+ *  HISTORY
+ *    Simon Greener - August 2019 - Original coding.
+ *  COPYRIGHT
+ *    (c) 2008-2019 by TheSpatialDBAdvisor/Simon Greener
+******/
   Member Function ST_isPointOnSegment(p_vertex    in &&INSTALL_SCHEMA..T_Vertex,
                                       p_unit      in varchar2 default null)
       Return integer deterministic,
@@ -1672,19 +1713,18 @@ AS OBJECT (
  *    select 'Geodetic Point has relationship with XYZM Geodetic LineString' as test,
  *           T_Segment(MDSYS.SDO_GEOMETRY(3302,4326,NULL,MDSYS.SDO_ELEM_INFO_ARRAY(1,2,1),MDSYS.SDO_ORDINATE_ARRAY(147.5,-43.132,100,147.41,-43.387,30000)))
  *             .ST_ProjectPoint (
- *                t_vertex(SDO_GEOMETRY('POINT(147.5912 -43.134)',8307))
+ *                 t_vertex(SDO_GEOMETRY(2001,8307,SDO_POINT_TYPE(147.509,-43.221,NULL),NULL,NULL))
  *           ).ST_Round(3).ST_AsEWKT() as project_point
- *    
  *    from dual ;
  *    
  *    TEST                                                                                  PROJECT_POINT
- *    ------------------------------------------------------------------------------------- -----------------------------
+ *    ------------------------------------------------------------------------------------- ---------------------------------
  *    Point is on centre of the XYZ circular arc (returns start point)                      POINTZ (3 6.325 -1)
  *    Point does not have relationship with XYM CircularSring                               NULL
  *    Point projects on to point half way along XY circular arc (returns measure as length) POINTM (0 7 3.1)
  *    Point has relationship with XYM CircularSring                                         POINTM (1.698 6.791 1.374)
  *    Point has relationship with XYZM circular arc                                         POINTZM (1.698 6.791 -2.1 1.374)
- *    Geodetic Point has relationship with XYZM Geodetic LineString                         SRID=8307;POINT (147.591 -43.134)
+ *    Geodetic Point has relationship with XYZM Geodetic LineString                         SRID=8307;POINTM (147.44551945 -43.23290209 11930.116)
  *  AUTHOR
  *    Simon Greener
  *  HISTORY
