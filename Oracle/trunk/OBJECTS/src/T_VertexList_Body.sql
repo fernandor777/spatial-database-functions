@@ -2,7 +2,7 @@ DEFINE INSTALL_SCHEMA='&1'
 
 SET VERIFY OFF;
 
-create or replace TYPE BODY         "T_VERTEXLIST" 
+CREATE OR REPLACE TYPE BODY T_VERTEXLIST 
 AS
 
   Constructor Function T_VERTEXLIST(SELF IN OUT NOCOPY T_VERTEXLIST)
@@ -295,7 +295,7 @@ AS
     v_ord_position   pls_integer;
     v_numCoordinates pls_integer;
     v_vertexBase     pls_integer;
-    v_vertex         spdba.t_vertex;
+    v_vertex         &&INSTALL_SCHEMA..t_vertex;
   Begin
     if ( p_ordinates is null or p_ordinates.COUNT = 1 or v_dims not in (2,3,4) ) then
       return;
@@ -313,7 +313,7 @@ AS
     SELF.vertexList.EXTEND(v_numCoordinates);
     FOR i IN 1..v_numCoordinates LOOP
       v_ord_position := ((i-1) * v_dims) + 1;
-      v_vertex := spdba.t_vertex(
+      v_vertex := &&INSTALL_SCHEMA..t_vertex(
                       p_x         => p_ordinates(v_ord_position),
                       p_y         => p_ordinates(v_ord_position+1),
                       p_id        => SELF.vertexList.count + i,
@@ -326,7 +326,7 @@ AS
            v_vertex.w := p_ordinates(v_ord_position+3);
          End If;
        End If;
-       SELF.vertexList(v_vertexBase + i) := spdba.t_vertex(v_vertex);
+       SELF.vertexList(v_vertexBase + i) := &&INSTALL_SCHEMA..t_vertex(v_vertex);
     END LOOP;
   END addOrdinates;
 

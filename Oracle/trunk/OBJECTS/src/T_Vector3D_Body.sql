@@ -5,14 +5,15 @@ SET VERIFY OFF;
 -- Always aim for a clean compile
 ALTER SESSION SET PLSQL_WARNINGS='ERROR:ALL';
 -- Enable optimizations
-ALTER SESSION SET plsql_optimize_level=2;
+-- ALTER SESSION SET plsql_optimize_level=2;
 
 CREATE OR REPLACE TYPE BODY &&INSTALL_SCHEMA..T_VECTOR3D 
 AS
 
   Constructor Function T_VECTOR3D( SELF      IN OUT NOCOPY T_VECTOR3D,
 	                           p_SEGMENT IN &&INSTALL_SCHEMA..T_SEGMENT)
-                Return Self As Result as
+                Return Self As Result 
+  as
   Begin
     SELF.x := p_SEGMENT.endCoord.x - p_SEGMENT.startCoord.x;
     SELF.y := p_SEGMENT.endCoord.y - p_SEGMENT.startCoord.y;
@@ -23,7 +24,8 @@ AS
   Constructor Function T_VECTOR3D( SELF           IN OUT NOCOPY T_VECTOR3D,
 	                           p_start_vertex IN &&INSTALL_SCHEMA..T_Vertex,
                                    p_end_vertex   IN &&INSTALL_SCHEMA..T_Vertex)
-                Return Self As Result as
+                Return Self As Result 
+  as
   begin
     SELF.x := p_end_Vertex.x - p_start_Vertex.x;
     SELF.y := p_end_Vertex.y - p_start_Vertex.y;
@@ -33,7 +35,8 @@ AS
 
   Constructor Function T_VECTOR3D( SELF     IN OUT NOCOPY T_VECTOR3D,
 	                           p_vertex IN &&INSTALL_SCHEMA..T_Vertex)
-                Return Self As Result as
+                Return Self As Result 
+  as
   begin
     SELF.x := p_vertex.x;
     SELF.y := p_vertex.y;

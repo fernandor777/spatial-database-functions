@@ -4,10 +4,8 @@ SET VERIFY OFF;
 
 -- Always aim for a clean compile
 ALTER SESSION SET PLSQL_WARNINGS='ERROR:ALL';
--- Enable optimizations
-ALTER SESSION SET plsql_optimize_level=2;
 
-CREATE OR REPLACE TYPE BODY T_VERTEX
+CREATE OR REPLACE TYPE BODY &&INSTALL_SCHEMA..T_VERTEX 
 AS
 
   Constructor Function T_Vertex(SELF IN OUT NOCOPY T_Vertex)
@@ -21,6 +19,7 @@ AS
     self.id        := NULL;
     self.sdo_gtype := 2001;
     self.sdo_srid  := null;
+    self.deleted   := 0;
     RETURN;
   END T_Vertex;
 
@@ -37,6 +36,7 @@ AS
       self.id        := NULL;
       self.sdo_gtype := 2001;
       self.sdo_srid  := null;
+      self.deleted   := 0;
     ELSE
       self.x         := p_vertex.x;
       self.y         := p_vertex.y;
@@ -45,6 +45,7 @@ AS
       self.id        := p_vertex.id;
       self.sdo_gtype := TRUNC(NVL(p_vertex.sdo_gtype,2001)/10)*10+1;
       self.sdo_srid  := p_vertex.sdo_srid;
+      self.deleted   := p_vertex.deleted;
     END If;
     RETURN;
   END T_Vertex;
@@ -63,6 +64,7 @@ AS
     self.id        := NULL;
     self.sdo_gtype := 2001;
     self.sdo_srid  := null;
+    self.deleted   := 0;
     IF (p_point is null) Then
       Return;
     ElsIf( p_point.sdo_Point is not null) Then
@@ -90,6 +92,7 @@ AS
   Begin
     self.id        := NVL(p_id,1);
     self.sdo_srid  := p_sdo_srid;
+    self.deleted   := 0;
     IF ( p_coord_string is null ) THEN
        RETURN;
     END IF;
@@ -133,6 +136,24 @@ AS
     self.id        := p_id;
     self.sdo_gtype := TRUNC(NVL(p_sdo_gtype,2001)/10)*10+1;
     self.sdo_srid  := p_sdo_srid;
+    self.deleted   := 0;
+    RETURN;
+  End T_Vertex;
+
+  Constructor Function T_Vertex( SELF        IN OUT NOCOPY T_Vertex,
+                                 p_x         In number,
+                                 p_y         In number)
+       Return Self As Result
+  As
+  Begin
+    self.x         := p_x;
+    self.y         := p_y;
+    self.z         := NULL;
+    self.w         := NULL;
+    self.id        := 1;
+    self.sdo_gtype := 2001;
+    self.sdo_srid  := NULL;
+    self.deleted   := 0;
     RETURN;
   End T_Vertex;
 
@@ -153,6 +174,7 @@ AS
     self.id        := p_id;
     self.sdo_gtype := TRUNC(NVL(p_sdo_gtype,2001)/10)*10+1;
     self.sdo_srid  := p_sdo_srid;
+    self.deleted   := 0;
     RETURN;
   End T_Vertex;
 
@@ -174,6 +196,7 @@ AS
     self.id        := p_id;
     self.sdo_gtype := TRUNC(NVL(p_sdo_gtype,2001)/10)*10+1;
     self.sdo_srid  := p_sdo_srid;
+    self.deleted   := 0;
     RETURN;
   End T_Vertex;
 
@@ -191,6 +214,7 @@ AS
     self.id        := p_id;
     self.sdo_gtype := TRUNC(NVL(p_sdo_gtype,2001)/10)*10+1;
     self.sdo_srid  := p_sdo_srid;
+    self.deleted   := 0;
     RETURN;
   END T_Vertex;
 
@@ -216,6 +240,7 @@ AS
     END IF;
     self.sdo_gtype := TRUNC(NVL(p_sdo_gtype,2001)/10)*10+1;
     self.sdo_srid  := p_sdo_srid;
+    self.deleted   := 0;
     RETURN;
   END T_Vertex;
 
@@ -241,6 +266,7 @@ AS
     self.id        := p_id;
     self.sdo_gtype := TRUNC(NVL(p_sdo_gtype,2001)/10)*10+1;
     self.sdo_srid  := p_sdo_srid;
+    self.deleted   := 0;
     RETURN;
   END T_Vertex;
 
@@ -263,6 +289,7 @@ AS
     self.w         := NULL;
     self.sdo_gtype := TRUNC(NVL(p_sdo_gtype,2001)/10)*10+1;
     self.sdo_srid  := p_sdo_srid;
+    self.deleted   := 0;
     Return;
   End T_Vertex;
 
@@ -277,6 +304,8 @@ AS
   Member Function ST_SRID      Return integer AS BEGIN RETURN SELF.SDO_SRID;  END ST_SRID;
   Member Function ST_SDO_GTYPE Return integer AS BEGIN RETURN SELF.SDO_GTYPE; END ST_SDO_GTYPE;
 
+  Member Function ST_isDeleted  Return integer AS BEGIN RETURN SELF.deleted;   END ST_isDeleted;
+
   Member Function ST_IsMeasured Return integer 
   AS
   Begin
@@ -286,6 +315,29 @@ AS
              END;
   End ST_IsMeasured;
 
+  Member Procedure ST_SetCoordinate(
+           SELF  IN OUT NOCOPY T_Vertex,
+           p_x   in number,
+           p_y   in number,
+           p_z   in number default null,
+           p_w   in number default null
+         )
+  As
+  Begin
+    -- SGG: Leave sdo_gtype alone for now.
+    SELF.x := p_x;
+    SELF.y := p_y;
+    SELF.Z := p_z;
+    SELF.w := p_w;
+  end ST_SetCoordinate;
+  
+  Member Procedure ST_SetDeleted(SELF      IN OUT NOCOPY T_Vertex,
+                                 p_deleted IN INTEGER default 1)
+  As
+  Begin
+    SELF.deleted := case when NVL(p_deleted,1) = 1 then 1 else 0 end;
+  End ST_SetDeleted;
+  
   Member Function ST_isEmpty
            Return integer Deterministic
   AS
@@ -842,12 +894,23 @@ AS
       dEndE := dDeltaE + SELF.x;
       dEndN := dDeltaN + SELF.y;
       -- DEBUG dbms_output.put_line('ST_FromBearingAndDistance: RETURN=' ||&&INSTALL_SCHEMA..T_Vertex(p_x => dEndE,p_y => dEndN,p_id => 1,p_sdo_gtype => self.sdo_gtype,p_sdo_srid => self.sdo_srid).ST_AsText());
-      RETURN &&INSTALL_SCHEMA..T_Vertex(
+      RETURN case when SELF.ST_HasZ()=1
+                  then &&INSTALL_SCHEMA..T_Vertex(
                p_x         => dEndE,
                p_y         => dEndN,
+                         p_z         => SELF.z,
                p_id        => 1,
-               p_sdo_gtype => self.sdo_gtype,
-               p_sdo_srid  => self.sdo_srid);
+                         p_sdo_gtype => 3001,
+                         p_sdo_srid  => self.sdo_srid
+                       )
+                  else &&INSTALL_SCHEMA..T_Vertex(
+                         p_x         => dEndE,
+                         p_y         => dEndN,
+                         p_id        => 1,
+                         p_sdo_gtype => 2001,
+                         p_sdo_srid  => self.sdo_srid
+                       )
+             end;
     Else
       -- Geodetic
       BEGIN
@@ -920,26 +983,11 @@ AS
     RETURN NULL;
   End ST_SdoGeometry;
 
-  Member Function ST_AsText(p_format_model in varchar2 default 'FM999999999999990D09999999999')
-           Return VarChar2
-  AS
-    v_format_model varchar2(38)  := NVL(p_format_model,'FM999999999999990D09999999999');
-  Begin
-    Return 'T_Vertex(p_x=>' || NVL(to_char(self.x,v_format_model), 'NULL') || 
-                   ',p_y=>' || NVL(to_char(self.y,v_format_model), 'NULL') || 
-                   ',p_z=>' || NVL(to_char(self.z,v_format_model), 'NULL') || 
-                   ',p_w=>' || NVL(to_char(self.w,v_format_model), 'NULL') || 
-                  ',p_id=>' || NVL(to_char(self.id),               'NULL') || 
-                  ',p_sdo_gtype=>' || NVL(to_char(self.sdo_gtype), 'NULL') || 
-                   ',p_sdo_srid=>' || NVL(to_char(self.sdo_srid),  'NULL') || 
-           ')';
-  End ST_AsText;
-
   Member Function ST_AsCoordString(p_separator    in varchar2 Default ' ',
-                                   p_format_model in varchar2 default 'FM999999999999990D09999999999')
+                                   p_format_model in varchar2 default 'TM9')
            Return VarChar2
   AS
-    v_format_model varchar2(38)  := NVL(p_format_model,'FM999999999999990D09999999999');
+    v_format_model varchar2(38)  := NVL(p_format_model,'TM9');  -- FM999999999999990D09999999999
     v_separator    varchar2(100) := SUBSTR(NVL(p_separator,' '),1,100);
   Begin
     Return NVL(to_char(self.x,v_format_model),'NULL') || 
@@ -956,6 +1004,48 @@ AS
                 else ''
             end;
   End ST_AsCoordString;
+
+  Member Function ST_AsText(p_format_model     in varchar2 default 'TM9',
+                            p_coordinates_only in integer default 0)
+           Return VarChar2
+  AS
+    v_format_model varchar2(38)  := NVL(p_format_model,'TM9'); -- 'FM999999999999990D09999999999'
+  Begin
+    Return case when NVL(p_coordinates_only,0)=0
+                then 'T_Vertex('||
+                        'p_x=>' || NVL(to_char(self.x,v_format_model), 'NULL') ||
+                   ',p_y=>' || NVL(to_char(self.y,v_format_model), 'NULL') || 
+                   ',p_z=>' || NVL(to_char(self.z,v_format_model), 'NULL') || 
+                   ',p_w=>' || NVL(to_char(self.w,v_format_model), 'NULL') || 
+                  ',p_id=>' || NVL(to_char(self.id),               'NULL') || 
+                  ',p_sdo_gtype=>' || NVL(to_char(self.sdo_gtype), 'NULL') || 
+                   ',p_sdo_srid=>' || NVL(to_char(self.sdo_srid),  'NULL') || 
+                     ')'
+                else'T_Vertex('||
+                        'p_x=>' || NVL(to_char(self.x,v_format_model), 'NULL') ||
+                       ',p_y=>' || NVL(to_char(self.y,v_format_model), 'NULL') ||
+                       ',p_z=>' || NVL(to_char(self.z,v_format_model), 'NULL') ||
+                       ',p_w=>' || NVL(to_char(self.w,v_format_model), 'NULL') ||
+                     ')'
+            end;
+  End ST_AsText;
+
+  Member Function ST_AsEWKT(p_format_model in varchar2 default 'TM9')
+           Return VarChar2 
+  AS
+    v_format_model varchar2(38)  := NVL(p_format_model,'TM9');
+  BEGIN
+    RETURN case when SELF.ST_Srid() is not null 
+                then 'SRID='||SELF.SDO_SRID||';' 
+                else '' 
+            end ||
+           'POINT' || 
+           case when SELF.ST_Dims()=4 then 'ZM'
+                when SELF.ST_Dims()>2 and SELF.ST_Lrs_Dim()=0  then 'Z' 
+                when SELF.ST_Dims()>2 and SELF.ST_Lrs_Dim()<>0 then 'M'
+            end ||
+           ' (' || SELF.ST_AsCoordString(p_separator=>' ',p_format_model=>p_format_model) || ')';
+  End ST_AsEWkt;
 
   Member Function ST_Equals(p_vertex     in &&INSTALL_SCHEMA..T_Vertex,
                             p_dPrecision In integer default 3)

@@ -33,6 +33,7 @@ AS OBJECT (
   *    ID        -- Identifier
   *    sdo_gtype -- Geometry Type of Vertex
   *    sdo_srid  -- Spatial Reference ID of Vertex
+  *    deleted   -- Flag for use in collections like varrays or T_Vertices
   *  SOURCE
   */
   x         number,
@@ -42,6 +43,7 @@ AS OBJECT (
   id        integer,
   sdo_gtype integer,
   sdo_srid  integer,
+  deleted   integer,
   /*******/
 
   /****m* T_VERTEX/CONSTRUCTORS(T_VERTEX)
@@ -116,7 +118,21 @@ AS OBJECT (
 
   Constructor Function T_Vertex( SELF        IN OUT NOCOPY T_Vertex,
                                  p_x         In number,
+                                 p_y         In number)
+       Return Self As Result,
+
+  Constructor Function T_Vertex( SELF        IN OUT NOCOPY T_Vertex,
+                                 p_x         In number,
                                  p_y         In number,
+                                 p_id        In integer,
+                                 p_sdo_gtype in integer,
+                                 p_sdo_srid  in integer)
+       Return Self As Result,
+
+  Constructor Function T_Vertex( SELF        IN OUT NOCOPY T_Vertex,
+                                 p_x         In number,
+                                 p_y         In number,
+                                 p_z         In number,
                                  p_id        In integer,
                                  p_sdo_gtype in integer,
                                  p_sdo_srid  in integer)
@@ -127,15 +143,6 @@ AS OBJECT (
                                  p_y         In number,
                                  p_z         In number,
                                  p_w         In number,
-                                 p_id        In integer,
-                                 p_sdo_gtype in integer,
-                                 p_sdo_srid  in integer)
-       Return Self As Result,
-
-  Constructor Function T_Vertex( SELF        IN OUT NOCOPY T_Vertex,
-                                 p_x         In number,
-                                 p_y         In number,
-                                 p_z         In number,
                                  p_id        In integer,
                                  p_sdo_gtype in integer,
                                  p_sdo_srid  in integer)
@@ -182,6 +189,7 @@ AS OBJECT (
   Member Function ST_ID         Return integer Deterministic,
   Member Function ST_SRID       Return integer Deterministic,
   Member Function ST_SDO_GTYPE  Return integer Deterministic,
+  Member Function ST_IsDeleted  Return integer Deterministic,
   Member Function ST_IsMeasured Return integer Deterministic,
   /*******/
 
@@ -227,6 +235,16 @@ AS OBJECT (
   Member Function ST_Self
            Return &&INSTALL_SCHEMA..T_Vertex Deterministic,
 
+  Member Procedure ST_SetCoordinate(
+           SELF  IN OUT NOCOPY T_Vertex,
+           p_x   in number,
+           p_y   in number,
+           p_z   in number default null,
+           p_w   in number default null
+         ),
+  
+  Member Procedure ST_SetDeleted(SELF      IN OUT NOCOPY T_Vertex,
+                                 p_deleted IN INTEGER DEFAULT 1),
   /****m* T_VERTEX/ST_isEmpty
   *  NAME
   *    ST_isEmpty -- Checks if Vertex data exists or not.
@@ -1208,14 +1226,14 @@ AS OBJECT (
   *  NAME
   *    ST_AsText -- Returns text Description of Vertex
   *  SYNOPSIS
-  *    Member Function ST_AsText(p_format_model in varchar2 default 'FM999999999999990D09999999999')
+  *    Member Function ST_AsText(p_format_model in varchar2 default 'TM9')
   *             Return Varchar2 Deterministic,
   *  DESCRIPTION
   *    Returns textual description of vertex.
   *    If rounding of ordinates is required, first use ST_Round.
   *  PARAMETERS
   *    p_format_model (varchar2) -- Oracle Number Format Model (see documentation)
-  *                                 default 'FM999999999999990D09999999999')
+  *                                 default 'TM9') -- was 'TM9'
   *  RESULT
   *    Vertex Representation (varchar2)
   *  EXAMPLE
@@ -1239,7 +1257,11 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-  Member Function ST_AsText(p_format_model in varchar2 default 'FM999999999999990D09999999999')
+  Member Function ST_AsText(p_format_model     in varchar2 default 'TM9',
+                            p_coordinates_only in integer default 0)
+           Return VarChar2 Deterministic,
+
+  Member Function ST_AsEWKT(p_format_model     in varchar2 default 'TM9')
            Return VarChar2 Deterministic,
 
   /****m* T_VERTEX/ST_AsCoordString
@@ -1247,7 +1269,7 @@ AS OBJECT (
   *    ST_AsCoordString -- Returns text Description of Vertex
   *  SYNOPSIS
   *    Member Function ST_AsCoordString(p_separator    in varchar2 Default ' ',
-  *                                     p_format_model in varchar2 default 'FM999999999999990D09999999999')
+  *                                     p_format_model in varchar2 default 'TM9')
   *             Return Varchar2 Deterministic,
   *  DESCRIPTION
   *    Returns textual description of the vertex's ordinates only.
@@ -1256,7 +1278,7 @@ AS OBJECT (
   *  PARAMETERS
   *    p_separator    (varchar2) -- Separator between ordinates.
   *    p_format_model (varchar2) -- Oracle Number Format Model (see documentation)
-  *                                 default 'FM999999999999990D09999999999')
+  *                                 default 'TM9')
   *  RESULT
   *    Coordinate String (varchar2)
   *  EXAMPLE
@@ -1281,7 +1303,7 @@ AS OBJECT (
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
   Member Function ST_AsCoordString(p_separator    in varchar2 Default ' ',
-                                   p_format_model in varchar2 default 'FM999999999999990D09999999999')
+                                   p_format_model in varchar2 default 'TM9')
            Return VarChar2 Deterministic,
 
   /****m* T_VERTEX/ST_Equals

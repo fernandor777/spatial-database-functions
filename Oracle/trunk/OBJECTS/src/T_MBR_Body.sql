@@ -366,8 +366,8 @@ AS
 
   Begin
     v_self   := &&INSTALL_SCHEMA..T_MBR(SELF);
-    v_LL     := New &&INSTALL_SCHEMA..T_Vertex(c_MaxVal,c_MaxVal);
-    v_UR     := New &&INSTALL_SCHEMA..T_Vertex(c_MaxVal,c_MaxVal);
+    v_LL     := New &&INSTALL_SCHEMA..T_Vertex(p_x=>c_MaxVal,p_y=>c_MaxVal);
+    v_UR     := New &&INSTALL_SCHEMA..T_Vertex(p_x=>c_MaxVal,p_y=>c_MaxVal);
     -- Find minx
     v_LL.X   := MiddleValue(p_other.MinX, SELF.MinX, SELF.MaxX);
     v_LL.Y   := MiddleValue(p_other.MinY, SELF.MinY, SELF.MaxY);
@@ -407,7 +407,9 @@ AS
                 p_other.MaxY < SELF.MinY);
   End Overlap;
 
-  Static Member Function Intersects(p1 in &&INSTALL_SCHEMA..T_Vertex, p2 in &&INSTALL_SCHEMA..T_Vertex, q in &&INSTALL_SCHEMA..T_Vertex)
+  Static Function Intersects(p1 in &&INSTALL_SCHEMA..T_Vertex, 
+                             p2 in &&INSTALL_SCHEMA..T_Vertex, 
+                             q  in &&INSTALL_SCHEMA..T_Vertex)
            Return boolean
   As
   Begin
@@ -419,6 +421,42 @@ AS
     return false;
   end Intersects;
 
+  Static Function Intersects (
+                      p1 in &&INSTALL_SCHEMA..t_vertex, p2 in &&INSTALL_SCHEMA..T_Vertex, 
+                      q1 in &&INSTALL_SCHEMA..t_vertex, q2 in &&INSTALL_SCHEMA..t_vertex)
+           return boolean 
+  As
+    minq Number;
+    maxq Number;
+    minp Number;
+    maxp Number;
+  Begin  
+    minq := LEAST(q1.x, q2.x);
+    maxq := GREATEST(q1.x, q2.x);
+    minp := LEAST(p1.x, p2.x);
+    maxp := GREATEST(p1.x, p2.x);
+
+    if( minp > maxq ) then
+        return false;
+    end if;
+    if( maxp < minq ) then
+        return false;
+    end if;
+
+    minq := LEAST(q1.y, q2.y);
+    maxq := GREATEST(q1.y, q2.y);
+    minp := LEAST(p1.y, p2.y);
+    maxp := GREATEST(p1.y, p2.y);
+
+    if( minp > maxq ) then
+        return false;
+    end If;
+    if( maxp < minq ) then
+        return false;
+    end if;
+    return true;
+  End Intersects;
+  
   Member Function X
            Return Number
   Is
@@ -458,14 +496,14 @@ AS
            Return &&INSTALL_SCHEMA..T_Vertex
   Is
   Begin
-      Return &&INSTALL_SCHEMA..T_Vertex(SELF.X() ,SELF.Y() );
+      Return &&INSTALL_SCHEMA..T_Vertex(p_x=>SELF.X() ,p_y=>SELF.Y() );
   End Centre;
 
   Member Function Center
            Return &&INSTALL_SCHEMA..T_Vertex
   Is
   Begin
-      Return &&INSTALL_SCHEMA..T_Vertex(SELF.X() ,SELF.Y() );
+      Return &&INSTALL_SCHEMA..T_Vertex(p_x=>SELF.X() ,p_y=>SELF.Y() );
   End Center;
 
   Member Function AsDimArray

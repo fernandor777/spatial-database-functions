@@ -1,4 +1,4 @@
-DEFINE INSTALL_SCHEMA='SPDBA'
+DEFINE INSTALL_SCHEMA='&1'
 
 SET VERIFY OFF;
 
@@ -34,6 +34,8 @@ AS OBJECT (
   *    endCoord      -- Ordinates of end point
   *    sdo_gtype     -- Geometry Type of segment
   *    sdo_srid      -- Spatial Reference ID of segment
+  *    projected      -- If planar then 1 else 0 
+  *    precisionModel -- Holds precision information for object
   *  SOURCE
   */
   element_id     integer,
@@ -44,6 +46,8 @@ AS OBJECT (
   endCoord       &&INSTALL_SCHEMA..T_Vertex,
   sdo_gtype      integer,
   sdo_srid       integer,
+  projected      integer,
+  PrecisionModel &&INSTALL_SCHEMA..T_PrecisionModel,  /* Holds XYZM ordinate scale/precision values */
   /*******/
 
   /****m* T_SEGMENT/CONSTRUCTORS(T_SEGMENT)
@@ -61,12 +65,18 @@ AS OBJECT (
 
   Constructor Function T_SEGMENT(SELF         IN OUT NOCOPY T_SEGMENT,
                                  p_line       in mdsys.sdo_geometry,
-                                 p_segment_id in integer default 0)
+                                 p_segment_id in integer default 0,
+                                 p_precision  in integer default 3,
+                                 p_tolerance  in number default 0.005
+                       )
                 Return Self As Result,
 
   Constructor Function T_SEGMENT(SELF        IN OUT NOCOPY T_SEGMENT,
                                  p_sdo_gtype In Integer,
-                                 p_sdo_srid  In Integer)
+                                 p_sdo_srid  In Integer,
+                                 p_projected in integer default 1,
+                                 p_precision in integer default 3,
+                                 p_tolerance in number  default 0.005)
                 Return Self As Result,
 
   -- T_VERTEX Constructors
@@ -75,7 +85,10 @@ AS OBJECT (
                                  p_startCoord In &&INSTALL_SCHEMA..T_Vertex,
                                  p_endCoord   In &&INSTALL_SCHEMA..T_Vertex,
                                  p_sdo_gtype  In Integer default null,
-                                 p_sdo_srid   In Integer default null)
+                                 p_sdo_srid   In Integer default null,
+                                 p_projected  in integer default 1,
+                                 p_precision  in integer default 3,
+                                 p_tolerance  in number  default 0.005)
                 Return Self As Result,
 
   Constructor Function T_SEGMENT(SELF         IN OUT NOCOPY T_SEGMENT,
@@ -84,7 +97,10 @@ AS OBJECT (
                                  p_midCoord   In &&INSTALL_SCHEMA..T_Vertex,
                                  p_endCoord   In &&INSTALL_SCHEMA..T_Vertex,
                                  p_sdo_gtype  In Integer default null,
-                                 p_sdo_srid   In Integer default null)
+                                 p_sdo_srid   In Integer default null,
+                                 p_projected  in integer default 1,
+                                 p_precision  in integer default 3,
+                                 p_tolerance  in number  default 0.005 )
                 Return Self As Result,
 
   Constructor Function T_SEGMENT(SELF            IN OUT NOCOPY T_SEGMENT,
@@ -94,7 +110,10 @@ AS OBJECT (
                                  p_startCoord    In &&INSTALL_SCHEMA..T_Vertex,
                                  p_endCoord      In &&INSTALL_SCHEMA..T_Vertex,
                                  p_sdo_gtype     In Integer default null,
-                                 p_sdo_srid      In Integer default null)
+                                 p_sdo_srid      In Integer default null,
+                                 p_projected     in integer default 1,
+                                 p_precision     in integer default 3,
+                                 p_tolerance     in number default 0.005)
                 Return Self As Result,
 
   Constructor Function T_SEGMENT(SELF            IN OUT NOCOPY T_SEGMENT,
@@ -105,7 +124,10 @@ AS OBJECT (
                                  p_midCoord      In &&INSTALL_SCHEMA..T_Vertex,
                                  p_endCoord      In &&INSTALL_SCHEMA..T_Vertex,
                                  p_sdo_gtype     In Integer default null,
-                                 p_sdo_srid      In Integer default null)
+                                 p_sdo_srid      In Integer default null,
+                                 p_projected     in integer default 1,
+                                 p_precision     in integer default 3,
+                                 p_tolerance     in number default 0.005)
                 Return Self As Result,
 
   -- MDSYS.VERTEX_TYPE Constructors
@@ -114,7 +136,11 @@ AS OBJECT (
                                  p_startCoord In mdsys.vertex_type,
                                  p_endCoord   In mdsys.vertex_type,
                                  p_sdo_gtype  In Integer default null,
-                                 p_sdo_srid   In Integer default null)
+                                 p_sdo_srid   In Integer default null,
+                                 p_projected  in integer default 1,
+                                 p_precision  in integer default 3,
+                                 p_tolerance  in number default 0.005
+                        )
                 Return Self As Result,
 
   Constructor Function T_SEGMENT(SELF         IN OUT NOCOPY T_SEGMENT,
@@ -123,11 +149,71 @@ AS OBJECT (
                                  p_midCoord   In mdsys.vertex_type,
                                  p_endCoord   In mdsys.vertex_type,
                                  p_sdo_gtype  In Integer default null,
-                                 p_sdo_srid   In Integer default null)
+                                 p_sdo_srid   In Integer default null,
+                                 p_projected  in integer default 1,
+                                 p_precision  in integer default 3,
+                                 p_tolerance  in number  default 0.005)
                 Return Self As Result,
   /*******/
 
   /* ******************* Member Methods ************************ */
+
+  /****m* T_SEGMENT/ST_GetProjected
+  *  NAME
+  *    ST_getProjected -- Rerturns whether underlying segment is planar/projected (1) or geographic/geodetic (0).
+  *  SYNOPSIS
+  *    Static Function ST_GetProjection
+  *             Return integer deterministic,
+  *  DESCRIPTION
+  *    This function can be used to discover whether the underlying SRID is projeccted/planar or not.
+  *  AUTHOR
+  *    Simon Greener
+  *  HISTORY
+  *    Simon Greener - July 2019 - Original coding.
+  *  COPYRIGHT
+  *    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
+  ******/
+  Static Function ST_GetProjected(p_srid in integer default null)
+          Return integer deterministic,
+
+  /****m* T_SEGMENT/ST_SetPrecisionModel
+  *  NAME
+  *    ST_SetPrecisionModel -- Allows user to set object's t_precision object.
+  *  SYNOPSIS
+  *    Member Procedure ST_SetPrecisionModel(SELF IN OUT NOCOPY T_SEGMENT,
+  *                                          p_precision &&INSTALL_SCHEMA..T_PrecisionModel),
+  *  DESCRIPTION
+  *    This procedure allows a user to set the object's precision values in its t_precision object.
+  *    If a NULL value is provided for a precision object element, the existing value is maintained.
+  *  AUTHOR
+  *    Simon Greener
+  *  HISTORY
+  *    Simon Greener - August 2019 - Original coding.
+  *  COPYRIGHT
+  *    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
+  ******/
+  Member Procedure ST_SetPrecisionModel(SELF IN OUT NOCOPY T_SEGMENT,
+                                        p_PrecisionModel in &&INSTALL_SCHEMA..T_PrecisionModel),
+
+  Member Function ST_MBR  return mdsys.sdo_geometry deterministic,
+  Member Function ST_MinX return Number deterministic,
+  Member Function ST_MaxX return Number deterministic,
+  Member Function ST_MinY return Number deterministic,
+  Member Function ST_MaxY return Number deterministic,
+
+  Member Function ST_isHorizontal
+           return integer deterministic,
+           
+  Member Function ST_isVertical
+           return integer deterministic,
+
+  /**
+   * Computes the midpoint of the segment
+   *
+   * @return the midpoint of the segment
+   */
+  Member Function ST_midPoint
+           Return &&INSTALL_SCHEMA..T_Vertex Deterministic,
 
   Member Procedure ST_SetCoordinates(SELF         IN OUT NOCOPY T_SEGMENT,
                                      p_startCoord in &&INSTALL_SCHEMA..T_VERTEX,
@@ -207,6 +293,53 @@ AS OBJECT (
   ******/
   Member Function ST_isEmpty
            Return integer Deterministic,
+
+  /****m* T_SEGMENT/ST_CheckZ
+  *  NAME
+  *    ST_CheckZ -- Checks Z values on linString or CircularArc
+  *  SYNOPSIS
+  *    Member Function ST_CheckZ
+  *             Return Integer Deterministic,
+  *  DESCRIPTION
+  *    The circularArc mathematics are considered to be 2D; 
+  *    If a circularArc coordinate contains a Z ordinate, then its value has to be the same for all coordinates to remain in the same plane;
+  *    If the segment is a lineString, its Z values don't need checking;.
+  *  RESULT
+  *    BOOLEAN (INTEGER) -- 1 if segment's Z ordinates pass checking.
+  *  NOTES
+  *    See also t_segment constructors that take a valid midCoord t_vertex parameter value.
+  *    Where ST_CheckZ fails for a t_segment constructor, the error message is the same as for SQL Server Spatial.
+  *  EXAMPLE
+  *    -- Check ST_CheckZ for valid planar circularArc segment
+  *    select T_Segment(
+  *             SDO_GEOMETRY(3002,28355,NULL,SDO_ELEM_INFO_ARRAY(1,2,2),SDO_ORDINATE_ARRAY(252230.478,5526918.373,1.0, 252400.08,5526918.373,1.0, 252230.478,5527000.0,1.0))
+  *           ).ST_CheckZ() as tsegment 
+  *      from dual;
+  *
+  *      TSEGMENT
+  *    ----------
+  *             1
+  *
+  *    -- Test ST_CheckZ built in to circularArc segment constructors 
+  *    select T_Segment(
+  *             SDO_GEOMETRY(3002,28355,NULL,SDO_ELEM_INFO_ARRAY(1,2,2),SDO_ORDINATE_ARRAY(252230.478,5526918.373,2.0, 252400.08,5526918.373,2.5, 252230.478,5527000.0,3.0))
+  *           ) as tsegment 
+  *      from dual;
+  *
+  *    Error starting at line 129 in command:
+  *    select T_Segment(SDO_GEOMETRY(3002,28355,NULL,SDO_ELEM_INFO_ARRAY(1,2,2),SDO_ORDINATE_ARRAY(252230.478,5526918.373,2.0, 252400.08,5526918.373,2.5, 252230.478,5527000.0,3.0)))
+  *             as geom from dual
+  *    Error report:
+  *    SQL Error: ORA-20214: Circular arc segments with Z values must have equal Z value for all 3 points.
+  *  AUTHOR
+  *    Simon Greener
+  *  HISTORY
+  *    Simon Greener - July 2019 - Original coding.
+  *  COPYRIGHT
+  *    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
+  ******/
+  Member Function ST_CheckZ
+           return integer deterministic,
 
   /****m* T_SEGMENT/ST_isCircularArc
   *  NAME
@@ -368,18 +501,53 @@ AS OBJECT (
   Member Function ST_hasM
            Return integer Deterministic,
 
+  /****m* T_SEGMENT/ST_Angle
+  *  NAME
+  *    ST_Angle -- Computes the angle that the vector defined by this segment makes with the X-axis.
+  *  SYNOPSIS
+  *      Member Function ST_Angle
+  *               Return number Deterministic,
+  *  DESCRIPTION
+  *    Computes the angle that the vector defined by this segment makes with the X-axis.
+  *    The angle will be in the range [ -PI, PI ] radians.
+  *  RESULT
+  *    angle (Number) -- The angle this segment makes with the X-axis (in radians)
+  *  EXAMPLE
+  *    -- Simple angle 
+  *    select round(
+  *            T_Segment(
+  *              sdo_geometry('LINESTRING(0 0,10 10)',null)
+  *            ).ST_Angle(),
+  *            3
+  *           ) as angle
+  *      from dual;
+  *
+  *         ANGLE
+  *    ----------
+  *          .785
+  *  SEE ALSO
+  *    T_SEGMENT.ST_Bearing
+  *    COGO.ST_Degrees
+  *  AUTHOR
+  *    Simon Greener
+  *  HISTORY
+  *    Simon Greener - July 2019 - Original coding.
+  *  COPYRIGHT
+  *    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
+  ******/
+  Member Function ST_Angle
+           return number Deterministic,
+
   /****m* T_SEGMENT/ST_Bearing
   *  NAME
   *    ST_Bearing -- Returns Bearing, in degrees, from start to end (possibly normalized to 0..360 degree range.
   *  SYNOPSIS
-  *    Member Function ST_Bearing(p_projected in integer default 1,
-  *                               p_normalize in integer default 1)
+  *    Member Function ST_Bearing(p_normalize in integer default 1)
   *             Return Number Deterministic
   *  DESCRIPTION
   *    This function computes a bearing from the current object point's startCoord to its EndCoord.
   *    ST_Bearing returns a whole circle bearing in range 0..360 is normalize flag is set.
   *  ARGUMENTS
-  *    p_projected (integer) -- 1 is Planar, 0 is Geodetic
   *    p_normalize (integer) -- 1 is normalise bearing to 0..360 degree range, 0 leave as calculated
   *  RESULT
   *    bearing (Number) -- Bearing in Degrees.
@@ -389,7 +557,6 @@ AS OBJECT (
   *             T_Segment(
   *                sdo_geometry('LINESTRING(0 0,10 10)',null)
   *              ).ST_Bearing(
-  *                   p_projected=>1
   *              ),3) as bearing
   *      from dual;
   *
@@ -402,7 +569,6 @@ AS OBJECT (
   *             T_Segment(
   *               sdo_geometry(2002,4283,null,sdo_elem_info_array(1,2,1),sdo_ordinate_array(147.5,-42.5, 147.6,-42.5))
   *              ).ST_Bearing(
-  *                   p_projected=>0
   *              )) as bearing
   *      from dual;
   *
@@ -419,85 +585,19 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-  Member Function ST_Bearing(p_projected in integer default 1,
-                             p_normalize in integer default 1)
-           Return Number Deterministic,
-
-  /****m* T_SEGMENT/ST_Distance(p_vertex p_tolerance p_dPrecision p_unit)
-  *  NAME
-  *    ST_Distance -- Returns Distance from segment supplied T_Vertex (Wrapper)
-  *  SYNOPSIS
-  *    Member Function ST_Distance(p_vertex     in &&INSTALL_SCHEMA..T_Vertex,
-  *                                p_tolerance  in Number   DEFAULT 0.05,
-  *                                p_dPrecision In Integer  DEFAULT 2,
-  *                                p_unit       in varchar2 DEFAULT NULL)
-  *             Return Number Deterministic
-  *  DESCRIPTION
-  *    (Wrapper over sdo_geometry ST_Distance method).
-  *    This function computes a distance from the input T_Vertex object to the underlying T_SEGMENT.
-  *    Result is in the distance units of the SDO_SRID, or in p_units where supplied.
-  *  ARGUMENTS
-  *    p_geom      (T_VERTEX) - A single vertex from which a bearing to the segment is calculated.
-  *    p_tolerance   (NUMBER) - SDO_Tolerance for use with sdo_geom.sdo_distance.
-  *    p_dPrecision  (NUMBER) - Decimal digits of precision for a generic ordinate.
-  *    p_unit      (VARCHAR2) - Oracle Unit of Measure eg unit=M.
-  *  RESULT
-  *    distance (Number) -- Distance in SRID unit of measure or in supplied units (p_unit)
-  *  EXAMPLE
-  *    -- Examples of ST_Distance to T_Vertex single poins
-  *    with data as (
-  *      select 'Planar LineString to Point' as test,
-  *             sdo_geometry('LINESTRING(0 0,10 10)',null) as geom,
-  *             sdo_geometry('POINT(5 0)',null) as dGeom
-  *        from dual
-  *        union all
-  *      select 'Geo LineString to Point' as test,
-  *             sdo_geometry('LINESTRING(147.50 -43.132,147.41 -43.387)',4326) as geom,
-  *             sdo_geometry('POINT(147.3 -43.2)',4326) as dGeom
-  *        from dual
-  *       union all
-  *       select 'Planar CircularString to Point' as test,
-  *             SDO_GEOMETRY(2002,28355,NULL,
-  *                          SDO_ELEM_INFO_ARRAY(1,2,2), -- Circular Arc line string
-  *                          SDO_ORDINATE_ARRAY(252230.478,5526918.373, 252400.08,5526918.373,252230.478,5527000.0)) as geom,
-  *             SDO_GEOMETRY('POINT(252429.706 5527034.024)',28355) as dGeom
-  *        from dual
-  *    )
-  *    select a.test,
-  *           T_Segment(a.geom).ST_Distance(p_vertex=>T_Vertex(a.dGeom),p_tolerance=>0.005,p_dPrecision=>6,p_unit=>NULL) as d_in_meters,
-  *           T_Segment(a.geom).ST_Distance(p_vertex=>T_Vertex(a.dGeom),p_tolerance=>0.005,p_dPrecision=>6,p_unit=>'unit=KM') as l_in_km
-  *      from data a;
-  *
-  *    TEST                           D_IN_METERS    L_IN_KM
-  *    ------------------------------ ----------- ----------
-  *    Planar LineString to Point        3.535534   3.535534
-  *    Geo LineString to Point        13820.16185  13.820162
-  *    Planar CircularString to Point    42.61532   0.042615
-  *  AUTHOR
-  *    Simon Greener
-  *  HISTORY
-  *    Simon Greener - Jan 2013 - Original coding.
-  *  COPYRIGHT
-  *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
-  ******/
-  Member Function ST_Distance(p_vertex     in &&INSTALL_SCHEMA..T_Vertex,
-                              p_tolerance  in number   default 0.005,
-                              p_dPrecision In Integer  default 2,
-                              p_unit       in varchar2 default null)
+  Member Function ST_Bearing(p_normalize in integer default 1)
            Return Number Deterministic,
 
   /****m* T_SEGMENT/ST_Length
   *  NAME
   *    ST_Length -- Returns Length of the segment
   *  SYNOPSIS
-  *    Member Function ST_Length(p_tolerance in Number   DEFAULT 0.005,
-  *                              p_unit      in varchar2 DEFAULT NULL)
+  *    Member Function ST_Length(p_unit      in varchar2 DEFAULT NULL)
   *             Return Number Deterministic
   *  DESCRIPTION
   *    This function computes a length from the underlying T_SEGMENT.
   *    Result is in the distance units of the SDO_SRID, or in p_units where supplied.
   *  ARGUMENTS
-  *    p_tolerance   (NUMBER) - SDO_Tolerance for use with sdo_geom.sdo_distance.
   *    p_unit      (VARCHAR2) - Oracle Unit of Measure eg unit=M.
   *  RESULT
   *    distance (Number) -- Distance in SRID unit of measure or in supplied units (p_unit)
@@ -518,8 +618,8 @@ AS OBJECT (
   *        from dual
   *    )
   *    select a.test,
-  *           T_Segment(a.geom).ST_Length(p_tolerance=>0.005,p_unit=>NULL)      as l_in_meters,
-  *           T_Segment(a.geom).ST_Length(p_tolerance=>0.005,p_unit=>'unit=KM') as l_in_km
+  *           T_Segment(a.geom).ST_Length(p_unit=>NULL)      as l_in_meters,
+  *           T_Segment(a.geom).ST_Length(p_unit=>'unit=KM') as l_in_km
   *      from data a;
   *
   *    TEST                  L_IN_METERS    L_IN_KM
@@ -534,8 +634,7 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-  Member Function ST_Length(p_tolerance in number   default 0.005,
-                            p_unit      in varchar2 default NULL)
+  Member Function ST_Length(p_unit      in varchar2 default NULL)
            Return number Deterministic,
 
   /****m* T_SEGMENT/ST_LRS_Dim
@@ -566,16 +665,51 @@ AS OBJECT (
   Member Function ST_LRS_Dim
            Return Integer Deterministic,
 
+  /****m* T_SEGMENT/ST_LRS_isMeasured
+  *  NAME
+  *    ST_LRS_isMeasured -- Tests to see if segment is measured.
+  *  SYNOPSIS
+  *    Member Function ST_LRS_isMeasured
+  *             Return Integer Deterministic,
+  *    With data as (
+  *      Select T_GEOMETRY(sdo_geometry('LINESTRING(0 0,10 0,10 5,10 10,5 10,5 5)',null),0.005,3,1) as tgeom From Dual UNION ALL
+  *      Select T_GEOMETRY(sdo_geometry(3002,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,2,1),SDO_ORDINATE_ARRAY(0,0,1,10,0,2,10,5,3,10,10,4,5,10,5,5,5,6)),0.005,3,1) as tgeom From Dual UNION ALL
+  *      Select T_GEOMETRY(sdo_geometry(3302,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,2,1),SDO_ORDINATE_ARRAY(0,0,1,10,0,2,10,5,3,10,10,4,5,10,5,5,5,6)),0.005,3,1) as tgeom From Dual
+  *    )
+  *    select a.tgeom.ST_GType()          as sdo_gtype,
+  *           a.tgeom.ST_LRS_isMeasured() as isMeasured
+  *      from data a;
+  *
+  *    SDO_GTYPE GEOMTYPE       COORDDIM isMeasured
+  *    --------- -------------- -------- ----------
+  *            2 ST_LINESTRING         2          0
+  *            2 ST_LINESTRING         3          0
+  *            2 ST_LINESTRING         3          1
+  *  DESCRIPTION
+  *    Examines SDO_GTYPE (ST_LRS_Dim) to see if sdo_gtype has measure ordinate eg 3302 not 3002.
+  *  RESULT
+  *    BOOLEAN (Integer) -- 1 is measure ordinate exists, 0 otherwise.
+  *  AUTHOR
+  *    Simon Greener
+  *  HISTORY
+  *    Simon Greener - July 2019 - Original coding.
+  *  COPYRIGHT
+  *    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
+  ******/
+  Member Function ST_LRS_isMeasured
+           Return Integer Deterministic,
+
   /****m* T_SEGMENT/ST_LRS_Measure_Length
   *  NAME
   *    ST_LRS_Measure_Length -- Returns difference between end measure and start measure of segment.
   *  SYNOPSIS
-  *    Member Function ST_LRS_Measure_Length
+  *    Member Function ST_LRS_Measure_Length( p_unit IN VARCHAR2 Default NULL )
   *             Return Number Deterministic
   *  DESCRIPTION
   *    This function computes length by subtracting end and start measure ordinates.
+  *    If segment is without measures length is returned.
   *  RESULT
-  *    distance (Number) -- Difference between end and start measure ordinates (delta).
+  *    distance (Number) -- Difference between end and start measure ordinates (delta) or segment length.
   *  EXAMPLE
   *    with data as (
   *      select 'Planar LineString' as test,
@@ -602,15 +736,67 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-  Member Function ST_LRS_Measure_Length
+  Member Function ST_LRS_Measure_Length( p_unit IN VARCHAR2 Default NULL )
            Return number Deterministic,
+
+  /****m* T_SEGMENT/ST_LRS_Add_Measure
+  *  NAME
+  *    ST_LRS_Add_Measure -- Adds measures to 2D segment linestring/circularString
+  *  SYNOPSIS
+  *    Member Function ST_LRS_Add_Measure(p_start_measure IN Number Default NULL,
+  *                                       p_end_measure   IN Number Default NULL,
+  *                                       p_unit          IN VarChar2 Default NULL)
+  *             Return &&INSTALL_SCHEMA..T_Segment deterministic,
+  *  DESCRIPTION
+  *    Takes a 2D geometry and assigns supplied measures to the start/end vertices
+  *    and adds proportioned measure values to all vertices in between.
+  *    If p_start_measure/p_end_measure are null, length is used to add measures.
+  *  ARGUMENTS
+  *    p_start_measure (Number)   - Measure defining start point for segment .
+  *    p_end_measure   (Number)   - Measure defining end point for segment.
+  *    p_unit          (VarChar2) - Unit of measure for distance calculations.
+  *  RESULT
+  *    segment (T_segment) -- Measured segment
+  *  EXAMPLE
+  *    select t_geometry(SDO_GEOMETRY(2002,28355,NULL,
+  *                 SDO_ELEM_INFO_ARRAY(1,2,1),
+  *                 SDO_ORDINATE_ARRAY(
+  *                    571303.231,321126.963, 571551.298,321231.412, 572765.519,321322.805, 572739.407,321845.051,
+  *                    572752.463,322641.476, 573209.428,323398.732, 573796.954,323555.406, 574436.705,323790.416,
+  *                    574945.895,324051.539, 575128.681,324652.122, 575128.681,325161.311, 575898.993,325213.536,
+  *                    576238.453,324521.56, 576251.509,321048.626, 575259.242,322615.364, 574306.144,321296.693)),
+  *                    0.0005,3,1)
+  *             .ST_LRS_ADD_Measure(110.0)
+  *             .ST_Round(3,3,1,2)
+  *             .geom as mGeom
+  *      from dual;
+  *
+  *    MGEOM
+  *    ---------------------------------------------------------------------------------------------------------------------------------------
+  *    SDO_GEOMETRY(3302,28355,NULL,
+  *                 SDO_ELEM_INFO_ARRAY(1,2,1),
+  *                 SDO_ORDINATE_ARRAY(
+  *                     571303.231,321126.963,110.0,   571551.298,321231.412,377.21,   572765.519,321322.805,1586.05,  572739.407,321845.051,2105.16,
+  *                     572752.463,322641.476,2895.92, 573209.428,323398.732,3773.96,  573796.954,323555.406,4377.62,  574436.705,323790.416,5054.23,
+  *                     574945.895,324051.539,5622.33, 575128.681,324652.122,6245.56,  575128.681,325161.311,6751.06,  575898.993,325213.536,7517.55,
+  *                     576238.453,324521.56,8282.72,  576251.509,321048.626,11730.53, 575259.242,322615.364,13571.62, 574306.144,321296.693,15186.88))
+  *  AUTHOR
+  *    Simon Greener
+  *  HISTORY
+  *    Simon Greener - July 2019 - Original Coding.
+  *  COPYRIGHT
+  *    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
+  ******/
+  Member Function ST_LRS_Add_Measure(p_start_measure IN NUMBER Default NULL,
+                                     p_end_measure   IN NUMBER Default NULL,
+                                     p_unit          IN VARCHAR2 Default NULL)
+           Return &&INSTALL_SCHEMA..t_segment deterministic,
 
   /****m* T_SEGMENT/ST_LRS_Compute_Measure
   *  NAME
   *    ST_LRS_Compute_Measure -- Computes measure for supplied p_vertex against underlying LRS measured T_SEGMENT.
   *  SYNOPSIS
   *    Member Function ST_LRS_Compute_Measure(p_vertex    In &&INSTALL_SCHEMA..T_Vertex,
-  *                                           p_tolerance IN NUMBER   Default 0.005,
   *                                           p_unit      IN varchar2 Default null)
   *             Return Number Deterministic
   *  DESCRIPTION
@@ -619,7 +805,6 @@ AS OBJECT (
   *    and point.
   *  ARGUMENTS
   *    p_vertex  (T_VERTEX) - Finds p_vertex on LRS Segment and computes M ordinate
-  *    p_tolerance (NUMBER) - SDO_Tolerance for use with sdo_geom.sdo_distance.
   *    p_unit    (VARCHAR2) - Oracle Unit of Measure eg unit=M.
   *  RESULT
   *    -- Compute measure of point
@@ -635,7 +820,7 @@ AS OBJECT (
   *        from dual
   *    )
   *    select a.test,
-  *           T_Segment(a.geom).ST_LRS_Compute_Measure(p_vertex=>T_VERTEX(a.dGeom),p_tolerance=>0.005,p_unit=>NULL) as measure
+  *           T_Segment(a.geom).ST_LRS_Compute_Measure(p_vertex=>T_VERTEX(a.dGeom),p_unit=>NULL) as measure
   *      from data a;
   *
   *    TEST              MEASURE
@@ -652,7 +837,6 @@ AS OBJECT (
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
   Member Function ST_LRS_Compute_Measure(p_vertex    In &&INSTALL_SCHEMA..T_Vertex,
-                                         p_tolerance IN NUMBER   Default 0.005,
                                          p_unit      IN varchar2 Default null)
            Return number Deterministic,
 
@@ -692,7 +876,6 @@ AS OBJECT (
   *    ST_isReversed -- Returns 1 (true) if the underlying segment has its start/end coordinates reversed to supplied segment.
   *  SYNOPSIS
   *    Member Function ST_isReversed(p_other     IN &&INSTALL_SCHEMA..T_SEGMENT)
-  *                                  p_projected IN Integer Default 1)
   *             Return Integer Deterministic,
   *  DESCRIPTION
   *    Compares underlying T_SEGMENT's start and end coordinates against those of the supplied segment parameter.
@@ -700,14 +883,12 @@ AS OBJECT (
   *    If SDO_GTYPE is null, examines coordinates to see if W ordinate is not null.
   *  ARGUMENTS
   *    p_other   (T_Segment) -- Compared to SELF with return of 1 if reversed start/end coordinates
-  *    p_projected (integer) -- 1 is Planar, 0 is Geodetic
   *  RESULT
   *    True/False  (Integer) -- 1 if two segments have opposite direction.
   *    select T_Segment(
   *             sdo_geometry('LINESTRING(0 0,10 10)',null)
   *           ).ST_isReversed(
-  *                p_other    =>T_Segment(sdo_geometry('LINESTRING(10 10,0 0)',null)),
-  *                p_projected=>1
+  *                p_other    =>T_Segment(sdo_geometry('LINESTRING(10 10,0 0)',null))
   *            ) as isReversed
   *      from dual;
   *
@@ -721,8 +902,7 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-  Member Function ST_isReversed(p_other     In &&INSTALL_SCHEMA..T_Segment,
-                                p_projected In Integer default 1)
+  Member Function ST_isReversed(p_other In &&INSTALL_SCHEMA..T_Segment)
            Return integer Deterministic,
 
   /****m* T_SEGMENT/ST_To2D
@@ -825,20 +1005,64 @@ AS OBJECT (
                           p_default_z    in number  default null)
            Return &&INSTALL_SCHEMA..T_SEGMENT Deterministic,
 
+  /****m* T_SEGMENT/ST_isCollinear
+  *  NAME
+  *    ST_isCollinear -- Checks if two segments' coordinates are collinar.
+  *  SYNOPSIS
+  *    Member Function ST_isCollinear(p_segment in &&INSTALL_SCHEMA..T_SEGMENT)
+  *             Return Integer Deterministic
+  *  DESCRIPTION
+  *    This function determines if the two segments (underlying and supplied) have coordinates that fall in a line (collinear)
+  *    The segments should touch with a end/start relationship.
+  *    Supplied segments cannot be CircularArcs.
+  *  ARGUMENTS
+  *    p_segment  (T_Segment) -- Other, possibly connected, segment (LineString not CircularString)
+  *  RESULT
+  *    boolean      (integer) -- 1 is true (collinear) 0 if false.
+  *  NOTES
+  *    Ignores any measure ordinates.
+  *    Calculations are always planar.
+  *  EXAMPLE
+  *    -- 0. Uses T_Vector3D to compute whether segments can be merged by sharing vertex and having same normalized vectors.
+  *    with data as (
+  *    select sdo_geometry(2002,null,null,sdo_elem_info_array(1,2,1),sdo_ordinate_array(  0,  0, 100,100)) as line1,
+  *           sdo_geometry(2002,null,null,sdo_elem_info_array(1,2,1),sdo_ordinate_array(100,100, 200,200)) as line2
+  *      from dual
+  *     UNION ALL
+  *    select sdo_geometry(3002,null,null,sdo_elem_info_array(1,2,1),sdo_ordinate_array(  0,  0, 0, 100,100,10)) as line1,
+  *           sdo_geometry(3002,null,null,sdo_elem_info_array(1,2,1),sdo_ordinate_array(100,100,10, 200,200,20)) as line2
+  *      from dual
+  *    )
+  *    select T_Segment(a.line1)
+  *             .ST_IsCollinear(p_segment=>T_Segment(a.line2)) as isCollinear
+  *      from data a;
+  *
+  *    MS2
+  *    ----------------
+  *    0
+  *    1
+  *  AUTHOR
+  *    Simon Greener
+  *  HISTORY
+  *    Simon Greener - July 2019 -- Original coding.
+  *  COPYRIGHT
+  *    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
+  ******/
+  Member Function ST_isCollinear(p_segment in &&INSTALL_SCHEMA..T_SEGMENT)
+           Return integer Deterministic,
+
   /****m* T_SEGMENT/ST_Merge
   *  NAME
   *    ST_Merge -- Merge two straight line segments - does not support circular arc segments
   *  SYNOPSIS
-  *    Member Function ST_Merge(p_segment    in &&INSTALL_SCHEMA..T_SEGMENT,
-  *                             p_dPrecision in integer default 6)
-  *             Return Number Deterministic
+  *    Member Function ST_Merge(p_segment in &&INSTALL_SCHEMA..T_SEGMENT)
+  *             Return t_segment Deterministic
   *  DESCRIPTION
   *    This function determines if the two segments (underlying and supplied) for a straight line (no bend)
   *    and touch as a start/end coordinate pair.
   *    New segment is created from start/end coordinates.
   *  ARGUMENTS
   *    p_segment  (T_Segment) -- Other, possibly connected, segment
-  *    p_dPrecision (integer) -- To check if ST_Equals we need precision
   *  RESULT
   *    segment   (T_Segment) -- New segment.
   *  NOTES
@@ -997,8 +1221,7 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-  Member Function ST_Merge(p_segment    in &&INSTALL_SCHEMA..T_SEGMENT,
-                           p_dPrecision in integer default 6)
+  Member Function ST_Merge(p_segment    in &&INSTALL_SCHEMA..T_SEGMENT)
            Return &&INSTALL_SCHEMA..T_SEGMENT Deterministic,
 
   /****m* T_SEGMENT/ST_Densify
@@ -1006,14 +1229,12 @@ AS OBJECT (
   *    ST_Densify -- Implements a basic geometry densification algorithm.
   *  SYNOPSIS
   *    Member Function ST_Densify(p_distance in number)
-  *                               p_tolerance IN number   default 0.005,
-  *                               p_projected In Integer  default 1,
   *                               p_unit      IN varchar2 default NULL)
   *             Return mdsys.sdo_Geometry Deterministic
   *  DESCRIPTION
   *    This function add vertices to an existing vertex-to-vertex described geometry segment.
   *    New vertices are added in such a way as to ensure that no two vertices will
-  *    ever fall with p_tolerance.
+  *    ever fall with SELF.PrecisionModel.XY.
   *    Also, because of the nature of the implementation there is no guarantee that the
   *    added vertices will be p_distance apart.
   *    The implementation prefers to balance the added vertices across a complete segment
@@ -1038,8 +1259,6 @@ AS OBJECT (
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
   Member Function ST_Densify(p_distance  in number,
-                             p_tolerance IN number   default 0.005,
-                             p_projected In Integer  default 1,
                              p_unit      IN varchar2 default NULL)
            Return mdsys.sdo_geometry Deterministic,
 
@@ -1051,8 +1270,6 @@ AS OBJECT (
   *                         p_segment   In &&INSTALL_SCHEMA..T_Segment,
   *                         p_iVertex   in &&INSTALL_SCHEMA..T_Verex default NULL,
   *                         p_radius    In number        default null,
-  *                         p_tolerance In number        default 0.005,
-  *                         p_projected In Integer       default 1,
   *                         p_unit      In varchar2      default NULL)
   *               Return mdsys.sdo_Geometry Deterministic,
   *  DESCRIPTION
@@ -1070,8 +1287,6 @@ AS OBJECT (
   *    p_segment (T_Segment) -- Other, unconnected, segment
   *    p_iVertex  (T_Vertex) -- The intersectoin point between the two segments.
   *    p_radius     (number) -- Optional Radius.
-  *    p_tolerance  (Number) -- SDO_Tolerance for use with sdo_geom.sdo_distance.
-  *    p_projected (Integer) -- 1 is Planar, 0 is Geodetic
   *    p_unit     (Varchar2) -- If NULL, the calculations are done using the underlying projection default units.
   *                             If an Oracle Unit of Measure is supplied (eg unit=M) that is value for the SRID,
   *                             this value is used when calculating the p_offset distance.
@@ -1090,8 +1305,6 @@ AS OBJECT (
                      p_segment   In &&INSTALL_SCHEMA..T_SEGMENT,
                      p_iVertex   in &&INSTALL_SCHEMA..T_Vertex default NULL,
                      p_radius    In number         default null,
-                     p_tolerance In number         default 0.005,
-                     p_projected In Integer        default 1,
                      p_unit      In varchar2       default NULL)
            Return mdsys.sdo_Geometry Deterministic,
 
@@ -1099,15 +1312,13 @@ AS OBJECT (
   *  NAME
   *    ST_Parallel -- Moves segment parallel the provided p_offset distance.
   *  SYNOPSIS
-  *    Member Function ST_Parallel(p_offset    in Number,
-  *                                p_projected in integer default 1)
+  *    Member Function ST_Parallel(p_offset in Number)
   *             Return &&INSTALL_SCHEMA..T_SEGMENT Deterministic,
   *  DESCRIPTION
   *    Computes parallel offset, left or right of underlying geometry.
   *    Circular arcs are not yet correctly handled.
   *  ARGUMENTS
   *    p_offset     (Number) -- Value +/- numeric value.
-  *    p_projected (integer) -- 1 is Planar, 0 is Geodetic
   *  RESULT
   *    New segment (T_SEGMENT) -- Input segment moved parallel by p_offset units
   *  TODO
@@ -1128,7 +1339,7 @@ AS OBJECT (
   *    )
   *    select a.test,
   *           T_Segment(a.geom)
-  *             .ST_Parallel(p_offset=>a.offset,p_projected=>DECODE(a.geom.sdo_srid,4326,0,1))
+  *             .ST_Parallel(p_offset=>a.offset)
   *             .ST_Round(3,3,2,1)
   *             .ST_SdoGeometry() as pGeom
   *      from data a;
@@ -1146,26 +1357,40 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-  Member Function ST_Parallel(p_offset    in Number,
-                              p_projected in Integer default 1)
+  Member Function ST_Parallel(p_offset in Number)
            Return &&INSTALL_SCHEMA..T_SEGMENT Deterministic,
 
- /****m* T_SEGMENT/ST_Closest(p_point p_tolerance p_unit)
+    /**
+   * Computes the distance from a line segment AB to a line segment CD
+   * 
+   * Note: NON-ROBUST!
+   * 
+   * @param A - a point of one line
+   * @param B - the second point of (must be different to A)
+   * @param C - one point of the line
+   * @param D - another point of the line (must be different to A)
+   */
+  Member Function ST_SegmentToSegmentDistance(
+                     p_segment    in &&INSTALL_SCHEMA..T_Segment,
+                     p_unit       in varchar2 default null
+                  )
+           Return Number deterministic,
+
+ /****m* T_SEGMENT/ST_Closest(p_geometry p_unit)
   *  NAME
-  *    ST_Closest -- Finds nearest point on line where supplied vertex would fall (snap to).
+  *    ST_Closest -- Finds nearest point on line where supplied geometry comes closest (snap to).
   *  SYNOPSIS
-  *    Member Function ST_Closest(p_vertex    in &&INSTALL_SCHEMA..T_Vertex,
-                                  p_tolerance in number default 0.05,
-                                  p_unit      In Integer Default NULL)
+  *    Member Function ST_Closest(p_geometry  in mdys.sdo_geometry,
+  *                               p_unit      In varchar2 DEFAULT NULL
+  *                              )
   *             Return &&INSTALL_SCHEMA..T_Vertex Deterministic
   *  DESCRIPTION
-  *    Finds nearest point on line where supplied vertex would fall (snap to).
+  *    Finds nearest point on segment where supplied geometry comes closest (snap).
   *    Computations respect SRID and unit as uses SDO_GEOM.SDO_CLOSEST_POINTS.
   *    If SDO_GEOM.SDO_CLOSEST_POINTS fails, a result is calculated using planar arithmetic.
   *    This function handles fact that SDO_GEOM function does not support measured segments.
   *  ARGUMENTS
-  *    p_vertex  (T_Vertex) - Point expressed as a T_Vertex object.
-  *    p_tolerance (Number) - SDO_Tolerance for use with sdo_geom.sdo_distance.
+  *    p_geometry (sdo_geometry) - Any sdo_geometry object.
   *    p_unit    (Varchar2) - Oracle Unit of Measure eg unit=M.
   *  RESULT
   *    vertex    (T_Vertex) -- Nearest point on line supplied vertex is nearest to.
@@ -1173,7 +1398,7 @@ AS OBJECT (
   *    -- Planar
   *    -- Planar 3D
   *    With tGeom as (
-  *     select T_VERTEX(  sdo_geometry(3001,90000006,Sdo_point_type(562038.848,1013262.454,0.0),NULL,NULL)) as tVertex,
+  *     select sdo_geometry(3001,90000006,Sdo_point_type(562038.848,1013262.454,0.0),NULL,NULL) as geometry,
   *            t_geometry(SDO_GEOMETRY(3002,90000006,NULL,SDO_ELEM_INFO_ARRAY(1,2,1),
   *                                    SDO_ORDINATE_ARRAY(
   *                                       562046.642,1013077.602,0, 562032.193,1013252.074,0.035,
@@ -1198,15 +1423,14 @@ AS OBJECT (
   *    )
   *    select t.segment
   *            .ST_Closest(
-  *               p_vertex    => a.tVertex,
-  *               p_tolerance => 0.005,
+  *               p_geometry  => a.geometry,
   *               p_unit      => 'unit=M'
   *            )
   *            .ST_Round(3)
   *            .ST_AsText() as closestPoint
   *      from tGeom a,
   *            table(a.lrs_tgeom.ST_Segmentize(p_filter=>'DISTANCE',
-  *                                            p_vertex=>a.tVertex)) t;
+  *                                            p_vertex=>SELF.T_Vertex(a.geometry)) t;
   *
   *    CLOSESTPOINT
   *    ----------------------------------------------------------
@@ -1222,7 +1446,6 @@ AS OBJECT (
   *    select T_Segment(a.line)
   *            .ST_Closest(
   *               p_vertex    => T_Vertex(a.point),
-  *               p_tolerance => 0.005,
   *               p_unit      => 'unit=M'
   *            )
   *           .ST_Round(8)
@@ -1239,10 +1462,398 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-  Member Function ST_Closest (p_vertex    in &&INSTALL_SCHEMA..T_Vertex,
-                              p_tolerance in number default 0.05,
+  Member Function ST_Closest (p_geometry  in mdsys.sdo_geometry,
+                              p_unit      In varchar2 DEFAULT NULL
+                             )
+           Return &&INSTALL_SCHEMA..T_Vertex deterministic,
+
+ /****m* T_SEGMENT/ST_isPointOnSegment
+ *  NAME
+ *    ST_isPointOnSegment -- Checks if supplied point falls on the underlying segment.
+ *  SYNOPSIS
+ *    ST_isPointOnSegment(p_vertex in &&INSTALL_SCHEMA..T_Vertex,
+ *                        p_unit   in varchar2)
+ *     Return integer deterministic
+ *  DESCRIPTION
+ *    This function checks if the supplied point falls on the underlying segment.
+ *    
+ *    Computes for LineString or CircularString.
+ *  NOTES
+ *    Geodetic/geographic CircularArc segments treated as planar
+ *  INPUTS
+ *    p_vertex (t_vertex) - Point on to linestring or CircularString.
+ *    p_unit   (varchar2) - Unit of measure for SRID.
+ *  RESULT
+ *    booelan (integer) -- 1 if point on segment; 0 otherwise
+ *  EXAMPLE
+ *    select T_Segment(MDSYS.SDO_GEOMETRY(3302,8307,NULL,MDSYS.SDO_ELEM_INFO_ARRAY(1,2,1),MDSYS.SDO_ORDINATE_ARRAY(147.41,-43.132,100, 147.5,-43.387,30000)))
+ *             .ST_isPointOnSegment (
+ *                t_vertex(SDO_GEOMETRY(3301,8307,SDO_POINT_TYPE(147.44551945,-43.23290209,11930.116),NULL,NULL))
+ *           ) as is_on 
+ *      from dual union all
+ *    select T_Segment(MDSYS.SDO_GEOMETRY(3302,8307,NULL,MDSYS.SDO_ELEM_INFO_ARRAY(1,2,1),MDSYS.SDO_ORDINATE_ARRAY(147.41,-43.132,100, 147.5,-43.387,30000)))
+ *             .ST_isPointOnSegment (
+ *                t_vertex(SDO_GEOMETRY(3301,8307,SDO_POINT_TYPE(147.445,-43.232,11930.116),NULL,NULL))
+ *           ) as is_on 
+ *      from dual;
+ *
+ *          IS_ON
+ *    ----------
+ *             1
+ *             0
+ *  AUTHOR
+ *    Simon Greener
+ *  HISTORY
+ *    Simon Greener - August 2019 - Original coding.
+ *  COPYRIGHT
+ *    (c) 2008-2019 by TheSpatialDBAdvisor/Simon Greener
+******/
+  Member Function ST_isPointOnSegment(p_vertex    in &&INSTALL_SCHEMA..T_Vertex,
+                                      p_unit      in varchar2 default null)
+      Return integer deterministic,
+
+ /****m* T_SEGMENT/STPointToCircularArc
+ *  NAME
+ *    ST_PointToCircularArc -- Return a measured point by snapping provided point to the provided circularstring
+ *  SYNOPSIS
+ *    ST_PointToCircularArc(p_vertex in &&INSTALL_SCHEMA..T_Vertex,
+ *                          p_unit   in varchar2 default null)
+ *     Return &&INSTALL_SCHEMA..T_Vertex deterministic
+ *  DESCRIPTION
+ *    This function snaps supplied point to underlying circularString, returning the snapped point.
+ *
+ *    Computes Z and M values if exist on underlying CircularString.
+ *
+ *    If input circularString is 2D, length from start of circularString to point is returned in M ordinate of snapped point.
+ *
+ *  NOTES
+ *    Supports CircularString geometries only.
+ *  INPUTS
+ *    p_vertex (t_vertex) - Point near to linestring.
+ *    p_unit   (varchar2) - Unit of measure (depends on SRID)
+ *  RESULT
+ *    snapped point (t_vetex) -- First point found on circularString.
+ *  EXAMPLE
+ *    select 'Point is on centre of the XYZ circular arc (returns start point)' as test,
+ *           t_segment(SDO_GEOMETRY(3002,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,2,2),SDO_ORDINATE_ARRAY(3,6.3246,-1, 0,7,-1, -3,6.3246,-1)))
+ *             .ST_PointToCircularArc (
+ *                t_vertex(SDO_GEOMETRY('POINT(0 0)',NULL)),
+ *                null
+ *           ).ST_Round(3,3,3,3).ST_AsEWKT() as project_point
+ *    from dual union all
+ *    select 'Point does not have relationship with XYM CircularSring' as test,
+ *           t_segment(SDO_GEOMETRY(3302,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,2,2),SDO_ORDINATE_ARRAY(3,6.325,0, 0,7,3.08, -3,6.325,6.15)))
+ *             .ST_PointToCircularArc (
+ *                t_vertex(SDO_GEOMETRY('POINT(8 8)',NULL))
+ *           ).ST_AsEWKT() as project_point
+ *    from dual union all
+ *    select 'Point projects on to point half way along XY circular arc (returns measure as length)' as test,
+ *           t_segment(SDO_GEOMETRY('CIRCULARSTRING (3 6.3246, 0 7, -3 6.3246)',NULL))
+ *             .ST_PointToCircularArc (
+ *              t_vertex(SDO_GEOMETRY('POINT(0 3.5)',NULL)),
+ *              null
+ *           ).ST_Round(3,3,3,3).ST_AsEWKT() as project_point
+ *      from dual union all
+ *    select 'Point has relationship with XYM CircularSring' as test,
+ *           t_segment(SDO_GEOMETRY(3302,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,2,2),SDO_ORDINATE_ARRAY(3,6.325,0, 0,7,3.08, -3,6.325,6.15)))
+ *             .ST_PointToCircularArc (
+ *                t_vertex(SDO_GEOMETRY('POINT(2 8)',NULL))
+ *           ).ST_Round(3,3,3,3).ST_AsEWKT() as project_point
+ *    from dual union all
+ *    select 'Point has relationship with XYZM circular arc' as test,
+ *           t_segment(SDO_GEOMETRY(4402,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,2,2),SDO_ORDINATE_ARRAY(3,6.325,-2.1,0, 0,7,-2.1,3.08, -3,6.325,-2.1,6.15)))
+ *             .ST_PointToCircularArc (
+ *                t_vertex(SDO_GEOMETRY('POINT(2 8)',NULL)),
+ *                null
+ *           ).ST_Round(3).ST_AsEWKT() as project_point
+ *    from dual ;
+ *    
+ *    TEST                                                                                  PROJECT_POINT
+ *    ------------------------------------------------------------------------------------- -----------------------------
+ *    Point is on centre of the XYZ circular arc (returns start point)                      POINTZ (3 6.325 -1)
+ *    Point does not have relationship with XYM CircularSring                               NULL
+ *    Point projects on to point half way along XY circular arc (returns measure as length) POINTM (0 7 3.1)
+ *    Point has relationship with XYM CircularSring                                         POINTM (1.698 6.791 1.374)
+ *    Point has relationship with XYZM circular arc                                         POINTZM (1.698 6.791 -2.1 1.374)
+ *  AUTHOR
+ *    Simon Greener
+ *  HISTORY
+ *    Simon Greener - August 2019 - Original coding.
+ *  COPYRIGHT
+ *    (c) 2008-2019 by TheSpatialDBAdvisor/Simon Greener
+******/
+  Member Function ST_PointToCircularArc(p_vertex in &&INSTALL_SCHEMA..T_Vertex,
+                                        p_unit   in varchar2 default null)
+      Return &&INSTALL_SCHEMA..T_Vertex deterministic,
+
+ /****m* T_SEGMENT/STPointToLineString
+ *  NAME
+ *    ST_PointToLineString -- Return a measured point by snapping provided point to the underlying LineString
+ *  SYNOPSIS
+ *    ST_PointToLineString(p_vertex in &&INSTALL_SCHEMA..T_Vertex)
+ *     Return &&INSTALL_SCHEMA..T_Vertex deterministic
+ *  DESCRIPTION
+ *    This function snaps supplied point to underlying LineString, returning the snapped point.
+ *    
+ *    Computes Z and M values if exist on underlying LineString.
+ *    
+ *    If input circularString is 2D, length from start of LineString to point is returned in M ordinate of snapped point.
+ *    
+ *  NOTES
+ *    Supports LineString geometries only.
+ *  INPUTS
+ *    p_vertex (t_vertex) - Point near to linestring.
+ *  RESULT
+ *    snapped point (t_vetex) -- First point found on LineString.
+ *  EXAMPLE
+ *    select 'Point is on centre of the XYZ circular arc (returns start point)' as test,
+ *           t_segment(SDO_GEOMETRY(3002,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,2,2),SDO_ORDINATE_ARRAY(3,6.3246,-1, 0,7,-1, -3,6.3246,-1)))
+ *             .ST_PointToLineString (
+ *                t_vertex(SDO_GEOMETRY('POINT(0 0)',NULL)),
+ *                null
+ *           ).ST_Round(3,3,3,3).ST_AsEWKT() as project_point
+ *    from dual union all
+ *    select 'Point does not have relationship with XYM LineString' as test,
+ *           t_segment(SDO_GEOMETRY(3302,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,2,2),SDO_ORDINATE_ARRAY(3,6.325,0, 0,7,3.08, -3,6.325,6.15)))
+ *             .ST_PointToLineString (
+ *                t_vertex(SDO_GEOMETRY('POINT(8 8)',NULL))
+ *           ).ST_AsEWKT() as project_point
+ *    from dual union all
+ *    select 'Point projects on to point half way along XY circular arc (returns measure as length)' as test,
+ *           t_segment(SDO_GEOMETRY('CIRCULARSTRING (3 6.3246, 0 7, -3 6.3246)',NULL))
+ *             .ST_PointToLineString (
+ *              t_vertex(SDO_GEOMETRY('POINT(0 3.5)',NULL)),
+ *              null
+ *           ).ST_Round(3,3,3,3).ST_AsEWKT() as project_point
+ *      from dual union all
+ *    select 'Point has relationship with XYM LineString' as test,
+ *           t_segment(SDO_GEOMETRY(3302,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,2,2),SDO_ORDINATE_ARRAY(3,6.325,0, 0,7,3.08, -3,6.325,6.15)))
+ *             .ST_PointToLineString (
+ *                t_vertex(SDO_GEOMETRY('POINT(2 8)',NULL))
+ *           ).ST_Round(3,3,3,3).ST_AsEWKT() as project_point
+ *    from dual union all
+ *    select 'Point has relationship with XYZM circular arc' as test,
+ *           t_segment(SDO_GEOMETRY(4402,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,2,2),SDO_ORDINATE_ARRAY(3,6.325,-2.1,0, 0,7,-2.1,3.08, -3,6.325,-2.1,6.15)))
+ *             .ST_PointToLineString (
+ *                t_vertex(SDO_GEOMETRY('POINT(2 8)',NULL)),
+ *                null
+ *           ).ST_Round(3).ST_AsEWKT() as project_point
+ *    from dual ;
+ *    
+ *    TEST                                                                                  PROJECT_POINT
+ *    ------------------------------------------------------------------------------------- -----------------------------
+ *    Point is on centre of the XYZ circular arc (returns start point)                      POINTZ (3 6.325 -1)
+ *    Point does not have relationship with XYM CircularSring                               NULL
+ *    Point projects on to point half way along XY circular arc (returns measure as length) POINTM (0 7 3.1)
+ *    Point has relationship with XYM CircularSring                                         POINTM (1.698 6.791 1.374)
+ *    Point has relationship with XYZM circular arc                                         POINTZM (1.698 6.791 -2.1 1.374)
+ *  AUTHOR
+ *    Simon Greener
+ *  HISTORY
+ *    Simon Greener - August 2019 - Original coding.
+ *  COPYRIGHT
+ *    (c) 2008-2019 by TheSpatialDBAdvisor/Simon Greener
+******/
+  Member Function ST_PointToLineString(p_vertex in &&INSTALL_SCHEMA..t_vertex)
+      Return &&INSTALL_SCHEMA..T_Vertex deterministic,
+
+ /****m* T_SEGMENT/ST_ProjectPoint
+ *  NAME
+ *    ST_ProjectPoint -- Return a measured point by snapping provided point to the underlying LineString or circularString
+ *  SYNOPSIS
+ *    ST_ProjectPoint(p_vertex in &&INSTALL_SCHEMA..T_Vertex,
+ *                    p_unit   in varchar2)
+ *     Return &&INSTALL_SCHEMA..T_Vertex deterministic
+ *  DESCRIPTION
+ *    This function snaps supplied point to underlying LineString or CircularString, returning the snapped point.
+ *    
+ *    Computes Z and M values if exist on underlying LineString or CircularString.
+ *    
+ *    If input circularString is 2D, length from start of LineString or CircularString to point is returned in M ordinate of snapped point.
+ *  NOTES
+ *    Supports geodetic/geographic data.
+ *  INPUTS
+ *    p_vertex (t_vertex) - Point near to linestring or CircularString.
+ *  RESULT
+ *    snapped point (t_vetex) -- First point found on LineString.
+ *  EXAMPLE
+ *    select 'Point is on centre of the XYZ circular arc (returns start point)' as test,
+ *           t_segment(SDO_GEOMETRY(3002,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,2,2),SDO_ORDINATE_ARRAY(3,6.3246,-1, 0,7,-1, -3,6.3246,-1)))
+ *             .ST_ProjectPoint (
+ *                t_vertex(SDO_GEOMETRY('POINT(0 0)',NULL)),
+ *                null
+ *           ).ST_Round(3,3,3,3).ST_AsEWKT() as project_point
+ *    from dual union all
+ *    select 'Point does not have relationship with XYM LineString' as test,
+ *           t_segment(SDO_GEOMETRY(3302,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,2,2),SDO_ORDINATE_ARRAY(3,6.325,0, 0,7,3.08, -3,6.325,6.15)))
+ *             .ST_ProjectPoint (
+ *                t_vertex(SDO_GEOMETRY('POINT(8 8)',NULL))
+ *           ).ST_AsEWKT() as project_point
+ *    from dual union all
+ *    select 'Point projects on to point half way along XY circular arc (returns measure as length)' as test,
+ *           t_segment(SDO_GEOMETRY('CIRCULARSTRING (3 6.3246, 0 7, -3 6.3246)',NULL))
+ *             .ST_ProjectPoint (
+ *              t_vertex(SDO_GEOMETRY('POINT(0 3.5)',NULL)),
+ *              null
+ *           ).ST_Round(3,3,3,3).ST_AsEWKT() as project_point
+ *      from dual union all
+ *    select 'Point has relationship with XYM LineString' as test,
+ *           t_segment(SDO_GEOMETRY(3302,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,2,2),SDO_ORDINATE_ARRAY(3,6.325,0, 0,7,3.08, -3,6.325,6.15)))
+ *             .ST_ProjectPoint (
+ *                t_vertex(SDO_GEOMETRY('POINT(2 8)',NULL))
+ *           ).ST_Round(3,3,3,3).ST_AsEWKT() as project_point
+ *    from dual union all
+ *    select 'Point has relationship with XYZM circular arc' as test,
+ *           t_segment(SDO_GEOMETRY(4402,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,2,2),SDO_ORDINATE_ARRAY(3,6.325,-2.1,0, 0,7,-2.1,3.08, -3,6.325,-2.1,6.15)))
+ *             .ST_ProjectPoint (
+ *                t_vertex(SDO_GEOMETRY('POINT(2 8)',NULL)),
+ *                null
+ *           ).ST_Round(3).ST_AsEWKT() as project_point
+ *    from dual union all
+ *    select 'Geodetic Point has relationship with XYZM Geodetic LineString' as test,
+ *           T_Segment(MDSYS.SDO_GEOMETRY(3302,4326,NULL,MDSYS.SDO_ELEM_INFO_ARRAY(1,2,1),MDSYS.SDO_ORDINATE_ARRAY(147.5,-43.132,100,147.41,-43.387,30000)))
+ *             .ST_ProjectPoint (
+ *                 t_vertex(SDO_GEOMETRY(2001,8307,SDO_POINT_TYPE(147.509,-43.221,NULL),NULL,NULL))
+ *           ).ST_Round(3).ST_AsEWKT() as project_point
+ *    from dual ;
+ *    
+ *    TEST                                                                                  PROJECT_POINT
+ *    ------------------------------------------------------------------------------------- ---------------------------------
+ *    Point is on centre of the XYZ circular arc (returns start point)                      POINTZ (3 6.325 -1)
+ *    Point does not have relationship with XYM CircularSring                               NULL
+ *    Point projects on to point half way along XY circular arc (returns measure as length) POINTM (0 7 3.1)
+ *    Point has relationship with XYM CircularSring                                         POINTM (1.698 6.791 1.374)
+ *    Point has relationship with XYZM circular arc                                         POINTZM (1.698 6.791 -2.1 1.374)
+ *    Geodetic Point has relationship with XYZM Geodetic LineString                         SRID=8307;POINTM (147.44551945 -43.23290209 11930.116)
+ *  AUTHOR
+ *    Simon Greener
+ *  HISTORY
+ *    Simon Greener - August 2019 - Original coding.
+ *  COPYRIGHT
+ *    (c) 2008-2019 by TheSpatialDBAdvisor/Simon Greener
+******/
+  Member Function ST_ProjectPoint(p_vertex in &&INSTALL_SCHEMA..T_Vertex,
                               p_unit      In varchar2 Default NULL)
            Return &&INSTALL_SCHEMA..T_Vertex deterministic,
+
+  -- ************************************************************************
+  Member Function ST_Distance(p_geometry   in mdsys.sdo_geometry,
+                              p_unit       in varchar2 Default null)
+  Return Number deterministic,
+
+  /****m* T_SEGMENT/ST_Distance(p_vertex p_unit)
+  *  NAME
+  *    ST_Distance -- Returns Distance from segment supplied T_Vertex (Wrapper)
+  *  SYNOPSIS
+  *    Member Function ST_Distance(p_vertex     in &&INSTALL_SCHEMA..T_Vertex,
+  *                                p_unit       in varchar2 DEFAULT NULL)
+  *             Return Number Deterministic
+  *  DESCRIPTION
+  *    (Wrapper over sdo_geometry ST_Distance method).
+  *    This function computes a distance from the input T_Vertex object to the underlying T_SEGMENT.
+  *    Result is in the distance units of the SDO_SRID, or in p_units where supplied.
+  *  ARGUMENTS
+  *    p_geom      (T_VERTEX) - A single vertex from which a bearing to the segment is calculated.
+  *    p_unit      (VARCHAR2) - Oracle Unit of Measure eg unit=M.
+  *  RESULT
+  *    distance (Number) -- Distance in SRID unit of measure or in supplied units (p_unit)
+  *  EXAMPLE
+  *    -- Examples of ST_Distance to T_Vertex single poins
+  *    with data as (
+  *      select 'Planar LineString to Point' as test,
+  *             sdo_geometry('LINESTRING(0 0,10 10)',null) as geom,
+  *             sdo_geometry('POINT(5 0)',null) as dGeom
+  *        from dual
+  *        union all
+  *      select 'Geo LineString to Point' as test,
+  *             sdo_geometry('LINESTRING(147.50 -43.132,147.41 -43.387)',4326) as geom,
+  *             sdo_geometry('POINT(147.3 -43.2)',4326) as dGeom
+  *        from dual
+  *       union all
+  *       select 'Planar CircularString to Point' as test,
+  *             SDO_GEOMETRY(2002,28355,NULL,
+  *                          SDO_ELEM_INFO_ARRAY(1,2,2), -- Circular Arc line string
+  *                          SDO_ORDINATE_ARRAY(252230.478,5526918.373, 252400.08,5526918.373,252230.478,5527000.0)) as geom,
+  *             SDO_GEOMETRY('POINT(252429.706 5527034.024)',28355) as dGeom
+  *        from dual
+  *    )
+  *    select a.test,
+  *           T_Segment(a.geom).ST_Distance(p_vertex=>T_Vertex(a.dGeom),p_unit=>NULL) as d_in_meters,
+  *           T_Segment(a.geom).ST_Distance(p_vertex=>T_Vertex(a.dGeom),p_unit=>'unit=KM') as l_in_km
+  *      from data a;
+  *
+  *    TEST                           D_IN_METERS    L_IN_KM
+  *    ------------------------------ ----------- ----------
+  *    Planar LineString to Point        3.535534   3.535534
+  *    Geo LineString to Point        13820.16185  13.820162
+  *    Planar CircularString to Point    42.61532   0.042615
+  *  AUTHOR
+  *    Simon Greener
+  *  HISTORY
+  *    Simon Greener - Jan 2013 - Original coding.
+  *  COPYRIGHT
+  *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
+  ******/
+  Member Function ST_Distance(p_vertex     in &&INSTALL_SCHEMA..T_Vertex,
+                              p_unit       in varchar2 default null)
+           Return Number Deterministic,
+
+  /****m* T_SEGMENT/ST_Distance(p_segment p_unit)
+  *  NAME
+  *    ST_Distance -- Returns Distance from segment to the supplied segment (T_Segment)
+  *  SYNOPSIS
+  *    Member Function ST_Distance(p_segment    in &&INSTALL_SCHEMA..T_Segment,
+  *                                p_unit       in varchar2 DEFAULT NULL)
+  *             Return Number Deterministic
+  *  DESCRIPTION
+  *    (Wrapper over sdo_geometry ST_Distance method).
+  *    This function computes a distance from the input T_Segment object to the underlying T_SEGMENT.
+  *    Result is in the distance units of the SDO_SRID, or in p_units where supplied.
+  *  ARGUMENTS
+  *    p_segment  (T_SEGMENT) - A single T_Segment from which a distance to the segment is calculated.
+  *    p_unit      (VARCHAR2) - Oracle Unit of Measure eg unit=M.
+  *  RESULT
+  *    distance (Number) -- Distance in SRID unit of measure or in supplied units (p_unit)
+  *  EXAMPLE
+  *    -- Examples of ST_Distance to T_Vertex single poins
+  *    with data as (
+  *      select 'Planar LineString to Point' as test,
+  *             sdo_geometry('LINESTRING(0 0,10 10)',null) as geom,
+  *             sdo_geometry('POINT(5 0)',null) as dGeom
+  *        from dual
+  *        union all
+  *      select 'Geo LineString to Point' as test,
+  *             sdo_geometry('LINESTRING(147.50 -43.132,147.41 -43.387)',4326) as geom,
+  *             sdo_geometry('POINT(147.3 -43.2)',4326) as dGeom
+  *        from dual
+  *       union all
+  *       select 'Planar CircularString to Point' as test,
+  *             SDO_GEOMETRY(2002,28355,NULL,
+  *                          SDO_ELEM_INFO_ARRAY(1,2,2), -- Circular Arc line string
+  *                          SDO_ORDINATE_ARRAY(252230.478,5526918.373, 252400.08,5526918.373,252230.478,5527000.0)) as geom,
+  *             SDO_GEOMETRY('POINT(252429.706 5527034.024)',28355) as dGeom
+  *        from dual
+  *    )
+  *    select a.test,
+  *           T_Segment(a.geom).ST_Distance(p_vertex=>T_Vertex(a.dGeom),p_unit=>NULL) as d_in_meters,
+  *           T_Segment(a.geom).ST_Distance(p_vertex=>T_Vertex(a.dGeom),p_unit=>'unit=KM') as l_in_km
+  *      from data a;
+  *
+  *    TEST                           D_IN_METERS    L_IN_KM
+  *    ------------------------------ ----------- ----------
+  *    Planar LineString to Point        3.535534   3.535534
+  *    Geo LineString to Point        13820.16185  13.820162
+  *    Planar CircularString to Point    42.61532   0.042615
+  *  AUTHOR
+  *    Simon Greener
+  *  HISTORY
+  *    Simon Greener - Jan 2013 - Original coding.
+  *  COPYRIGHT
+  *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
+  ******/
+  Member Function ST_Distance(p_segment    in &&INSTALL_SCHEMA..T_Segment,
+                              p_unit       in varchar2 default null)
+           Return Number Deterministic,
 
  /****m* T_SEGMENT/ST_FindCircle
   *  NAME
@@ -1301,9 +1912,7 @@ AS OBJECT (
   *  SYNOPSIS
   *    Member Function ST_OffsetPoint(p_ratio     in Number,
   *                                   p_offset    in Number,
-  *                                   p_tolerance in Number  Default 0.05,
-  *                                   p_unit      In Integer Default NULL,
-  *                                   p_projected In Integer Default 1 )
+  *                                   p_unit      In Integer Default NULL)
   *             Return &&INSTALL_SCHEMA..T_Vertex Deterministic
   *  DESCRIPTION
   *    Supplied with a ratio value (0.0 -> 1.0), this function uses that value to find the
@@ -1318,11 +1927,9 @@ AS OBJECT (
   *    p_offset    (number) - The perpendicular distance to offset the point generated using p_ratio.
   *                           A negative value instructs the function to offet the point to the left (start-end),
   *                           and a positive value to the right.
-  *    p_tolerance (NUMBER) - SDO_Tolerance for use with sdo_geom.sdo_distance.
   *    p_unit    (VARCHAR2) - If NULL, the calculations are done using the underlying projection default units.
   *                           If an Oracle Unit of Measure is supplied (eg unit=M) that is value for the SRID,
   *                           this value is used when calculating the p_offset distance.
-  *    p_projected (integer) - 1 is Planar, 0 is Geodetic
   *  RESULT
   *    vertex     (T_VERTEX)   - New point on line with optional perpendicular offset.
   *  EXAMPLE
@@ -1338,9 +1945,7 @@ AS OBJECT (
   *           T_Segment(a.geom)
   *             .ST_OffsetPoint(p_ratio     => 0.25,
   *                             p_offset    => t.IntValue,
-  *                             p_tolerance => 0.005,
-  *                             p_unit      => 'unit=M',
-  *                             p_projected => 1)
+  *                             p_unit      => 'unit=M')
   *           .ST_Round(8)
   *           .ST_SdoGeometry() as offsetPoint
   *      from data a,
@@ -1365,9 +1970,7 @@ AS OBJECT (
   *           T_Segment(a.geom)
   *             .ST_OffsetPoint(p_ratio     => 0.25,
   *                             p_offset    => t.IntValue,
-  *                             p_tolerance => 0.005,
-  *                             p_unit      => 'unit=M',
-  *                             p_projected => 1)
+  *                             p_unit      => 'unit=M')
   *           .ST_Round(3)
   *           .ST_SdoGeometry() as offsetPoint
   *      from data a,
@@ -1387,9 +1990,7 @@ AS OBJECT (
   ******/
   Member Function ST_OffsetPoint(p_ratio     IN Number,
                                  p_offset    IN Number,
-                                 p_tolerance IN Number   Default 0.005,
-                                 p_unit      IN Varchar2 Default NULL,
-                                 p_projected IN Integer  Default 1)
+                                 p_unit      IN Varchar2 Default NULL)
            Return &&INSTALL_SCHEMA..T_Vertex Deterministic,
 
  /****m* T_SEGMENT/ST_OffsetBetween
@@ -1398,9 +1999,7 @@ AS OBJECT (
   *  SYNOPSIS
   *    Member Function ST_OffsetBetween(p_segment   in number,
   *                                     p_offset    in number,
-  *                                     p_tolerance in number  Default 0.05,
-  *                                     p_unit      In Integer Default NULL,
-  *                                     p_projected   In Integer Default 1)
+  *                                     p_unit      In Integer Default NULL)
   *             Return &&INSTALL_SCHEMA..T_Vertex Deterministic
   *  DESCRIPTION
   *    Supplied with a second segment (p_segment), this function computes the bisector
@@ -1415,11 +2014,9 @@ AS OBJECT (
   *    p_offset       (number) - The perpendicular distance to offset the point generated using p_ratio.
   *                              A negative value instructs the function to offet the point to the left (start-end),
   *                              and a positive value to the right.
-  *    p_tolerance    (number) - SDO_Tolerance for use with sdo_geom.sdo_distance.
   *    p_unit       (varchar2) - If NULL, the calculations are done using the underlying projection default units.
   *                              If an Oracle Unit of Measure is supplied (eg unit=M) that is value for the SRID,
   *                            - this value is used when calculating the p_offset distance.
-  *    p_projected   (integer) - 1 is Planar, 0 is Geodetic
   *  RESULT
   *    point        (T_Vertex) - New point on bisection point or along bisector line with optional perpendicular offset.
   *  EXAMPLE
@@ -1451,9 +2048,7 @@ AS OBJECT (
   *             .ST_OffsetBetween(
   *                 p_segment => T_Segment(a.nGeom),
   *                 p_offset       => t.IntValue,
-  *                 p_tolerance    => 0.005,
-  *                 p_unit         => 'unit=M',
-  *                 p_projected    => case when a.sGeom.get_dims()=2 then 0 else 1 end) -- if 3D geodetic, compute as planar otherwise Oracle error
+  *                 p_unit         => 'unit=M')
   *           .ST_Round(3)
   *           .ST_SdoGeometry() as OffsetBetween
   *      from data a,
@@ -1495,9 +2090,7 @@ AS OBJECT (
   *             .ST_OffsetBetween(
   *                 p_segment => T_Segment(a.nGeom),
   *                 p_offset       => t.IntValue,
-  *                 p_tolerance    => 0.005,
-  *                 p_unit         => 'unit=M',
-  *                 p_projected    => 0) -- if 3D geodetic, compute as planar otherwise Oracle error
+  *                 p_unit         => 'unit=M') -- if 3D geodetic, compute as planar otherwise Oracle error
   *           .ST_Round(8)
   *           .ST_SdoGeometry() as OffsetBetween
   *      from data a,
@@ -1519,10 +2112,88 @@ AS OBJECT (
   ******/
   Member Function ST_OffsetBetween(p_segment   In &&INSTALL_SCHEMA..T_SEGMENT,
                                    p_offset    In NUMBER,
-                                   p_tolerance In Number   Default 0.005,
-                                   p_unit      In Varchar2 Default NULL,
-                                   p_projected In Integer  Default 1)
+                                   p_unit       In Varchar2 Default NULL)
            Return &&INSTALL_SCHEMA..T_Vertex Deterministic,
+
+ /****m* T_SEGMENT/ST_PointAlong
+  *  NAME
+  *    ST_PointAlong -- Computes the vertex that lies a given fraction along the line defined by this segment.
+  *  SYNOPSIS
+  *    Member Function ST_pointAlong(segmentLengthFraction in Number)
+  *             Return &&INSTALL_SCHEMA..T_Vertex deterministic
+  *  DESCRIPTION
+  *    A fraction of <code>0.0</code> returns the start point of the segment;
+  *    a fraction of <code>1.0</code> returns the end point of the segment.
+  *    If the fraction is null; 0.0 or null; 1.0 the point returned
+  *    will lie before the start or beyond the end of the segment. 
+  *  INPUTS
+  *    p_segmentLengthFraction (number) -- The fraction of the segment length along the line
+  *  RESULT
+  *    Returns the vertex at that distance along the segment
+  *  NOTES
+  *    From JTS LineSegment.java
+  *    2D only; no circular arcs.
+  */
+  Member Function ST_pointAlong(p_segmentLengthFraction in Number)
+           Return &&INSTALL_SCHEMA..T_Vertex Deterministic,
+
+ /****m* T_SEGMENT/ST_PointAlongOffset
+  *  NAME
+  *    ST_PointAlongOffset -- Computes the vertex that lies a given fraction along the line defined by this segment and offset from the segment by a given distance.
+  *  SYNOPSIS
+  *    Member Function ST_pointAlongOffset(
+  *                       p_segmentLengthFraction in Number, 
+  *                       p_offsetDistance in Number
+  *                    )
+  *             Return &&INSTALL_SCHEMA..T_Vertex deterministic
+  *  DESCRIPTION
+  *    A fraction of 0.0 offsets from the start point of the segment;
+  *    a fraction of 1.0 offsets from the end point of the segment.
+  *    The computed point is offset to the left of the line if the offset distance is
+  *    positive, to the right if negative.
+  *  INPUTS
+  *    p_segmentLengthFraction (number) -- The fraction of the segment length along the line
+  *    p_offsetDistance        (number) -- The distance the point is offset from the segment (positive is to the left, negative is to the right)
+  *  RESULT
+  *    Returns the vertex at that distance and offset along the segment
+  *  NOTES
+  *    From JTS LineSegment.java
+  *    2D only; no circular arcs.
+  *    Throws Exception if the segment has zero length
+  */
+  Member Function ST_PointAlongOffset(
+                     p_segmentLengthFraction in Number, 
+                     p_offsetDistance in Number
+                  )
+          Return &&INSTALL_SCHEMA..T_Vertex deterministic,
+
+/****f* T_SEGMENT/ST_ComputeDeflectionAngle
+ *  NAME
+ *   ST_ComputeDeflectionAngle - Computes deflection angle between two segments.
+ *  SYNOPSIS
+ *    Member Function ST_ComputeDeflectionAngle
+ *             p_segment   t_segment default null,
+ *           )
+ *      Return Number
+ *  DESCRIPTION
+ *    This function computes the deflection angle between two segments: SELF.start->(bearing)->SELF.end deflect p_segment.start->(bearing)->p_segment.end
+ *    The deflection angle from the projection of the first line to the direction(bearing) of the first line.
+ *    If the underlying segment is a circular arc, p_segment is ignored and a deflection angle is computed between the circular arc's three vertices.
+ *    If p_segment is supplied its first coordinate is assumed to be the same as the last point of SELF; if not a "virtual" deflection is computed.
+ *    If SELF.projected = 0 deflection angle is computed using geodetic math (see MDSYS.SDO_UTIL.BEARING_TILT_FOR_POINTS)
+ *  INPUTS
+ *    p_segment (t_segment) - A linestring segment
+ *  RESULT
+ *    angle        (number) - Deflection angle in degrees.
+ *  AUTHOR
+ *    Simon Greener
+ *  HISTORY
+ *    Simon Greener - April 2019 - Original coding.
+ *  COPYRIGHT
+ *    (c) 2008-2019 by TheSpatialDBAdvisor/Simon Greener
+******/
+  Member Function ST_ComputeDeflectionAngle(p_segment in &&INSTALL_SCHEMA..t_segment default null)
+          return number deterministic,
 
  /****m* T_SEGMENT/ST_ComputeTangentPoint
   *  NAME
@@ -1530,19 +2201,15 @@ AS OBJECT (
   *  SYNOPSIS
   *    Member Function ST_ComputeTangentPoint(p_position  In VarChar2,
   *                                           p_fraction  In Number   default 0.0,
-  *                                           p_tolerance IN number   default 0.005,
-  *                                           p_projected In Integer  default 1,
   *                                           p_unit      IN varchar2 default NULL)
   *             Return T_Vertex Deterministic,
   *  DESCRIPTION
   *    There is a need to be able to compute an angle between a linestring and a circularstring.
-  *    To do this, one needs to compute a tangential line at the start, mid or end of a circularstring.
+  *    To do this, one needs to compute a tangential line at the start, mid, end or user fraction of a circularstring.
   *    This function computes point that would define a tangential line at the start, mid or end of a circular arc.
   *  INPUTS
   *    p_position (varchar2) -- Requests tangent point for 'START', 'MID', 'END' point, or 'FRACTION' of circular arc.
   *    p_fraction   (number) -- Fractional value between 0.0 and 1.0 (length)
-  *    p_projected (integer) -- 1 is Planar, 0 is Geodetic
-  *    p_tolerance  (number) -- SDO_Tolerance for use with sdo_geom.sdo_distance.
   *    p_unit     (varchar2) -- If NULL, the calculations are done using the underlying projection default units.
   *                             If an Oracle Unit of Measure is supplied (eg unit=M) that is value for the SRID.
   *  RESULT
@@ -1574,8 +2241,7 @@ AS OBJECT (
   *             p_sdo_gtype  => 2002,
   *             p_sdo_srid   => NULL
   *           )
-  *           .ST_ComputeTangentPoint(p_position =>'START',
-  *                                   p_projected=>1 )
+  *           .ST_ComputeTangentPoint(p_position =>'START')
   *           .ST_AsText() as tangentPoint
   *      from dual;
   *
@@ -1599,8 +2265,7 @@ AS OBJECT (
   *                                  when 1 then 'START'
   *                                  when 2 then 'MID'
   *                                  when 3 then 'END'
-  *                                  end as varchar(5)),
-  *                 p_projected => 1
+  *                                  end as varchar(5))
   *            ).ST_SdoGeometry() as geom
   *      from data b,
   *           table(tools.generate_series(1,3,1)) t;
@@ -1641,8 +2306,7 @@ AS OBJECT (
   *             p_sdo_srid   => NULL
   *           )
   *           .ST_ComputeTangentPoint(p_position  =>'FRACTION',
-  *                                   p_fraction  => CAST(t.IntValue as number) / 10.0,
-  *                                   p_projected => 1 )
+  *                                   p_fraction  => CAST(t.IntValue as number) / 10.0)
   *           .ST_Round(3)
   *           .ST_SdoGeometry() as tangentPoint
   *      from table(tools.generate_series(0,10,1)) t;
@@ -1663,7 +2327,7 @@ AS OBJECT (
   *
   *     11 rows selected
   *  NOTES
-  *    If p_projected is 1 then calculations are PLANAR or PROJECTED, otherwise GEODETIC/GEOGRAPHIC.
+  *    If SELF.projected is 1 then calculations are PLANAR or PROJECTED, otherwise GEODETIC/GEOGRAPHIC.
   *  AUTHOR
   *    Simon Greener
   *  HISTORY
@@ -1673,19 +2337,15 @@ AS OBJECT (
  ******/
   Member Function ST_ComputeTangentPoint(p_position  In VarChar2,
                                          p_fraction  In Number   default 0.0,
-                                         p_tolerance IN number   default 0.005,
-                                         p_projected In Integer  default 1,
                                          p_unit      IN varchar2 default NULL)
            Return &&INSTALL_SCHEMA..T_Vertex Deterministic,
 
  /****m* T_SEGMENT/ST_ComputeTangentLine
   *  NAME
-  *    ST_ComputeTangentLine -- Computes point that would define a tandential line at the start or end of a circular arc
+  *    ST_ComputeTangentLine -- Computes point that would define a tangential line at the nominated position on the circular arc
   *  SYNOPSIS
   *    Member Function ST_ComputeTangentLine(p_position  in VarChar2,
   *                                          p_fraction  In Number   default 0.0,
-  *                                          p_tolerance IN number   default 0.005,
-  *                                          p_projected In Integer  default 1,
   *                                          p_unit      IN varchar2 default NULL)
   *             Return T_Segment Deterministic,
   *  DESCRIPTION
@@ -1694,8 +2354,6 @@ AS OBJECT (
   *  INPUTS
   *    p_position (varchar2) -- Requests tangent point for 'START', 'MID', 'END' point, or 'FRACTION' of circular arc.
   *    p_fraction   (number) -- Fractional value between 0.0 and 1.0 (length)
-  *    p_projected (integer) -- 1 is Planar, 0 is Geodetic
-  *    p_tolerance  (number) -- SDO_Tolerance for use with sdo_geom.sdo_distance.
   *    p_unit     (varchar2) -- If NULL, the calculations are done using the underlying projection default units.
   *                             If an Oracle Unit of Measure is supplied (eg unit=M) that is value for the SRID.
   *  RESULT
@@ -1716,8 +2374,7 @@ AS OBJECT (
   *                            when 1 then 'START'
   *                            when 2 then 'MID'
   *                            when 3 then 'END'
-  *                            end,
-  *                p_projected => 1
+  *                            end
   *            ).ST_SdoGeometry() as geom
   *      from data b,
   *           table(tools.generate_series(1,3,1)) t;
@@ -1745,8 +2402,6 @@ AS OBJECT (
   *            .ST_ComputeTangentLine(
   *                p_position  =>'FRACTION',
   *                p_fraction  => CAST(t.IntValue as number) / 10.0,
-  *                p_tolerance => 0.0005,
-  *                p_projected => 1,
   *                p_unit      => 'unit=M' )
   *           .ST_Round(3)
   *           .ST_SdoGeometry() as tangentLine
@@ -1770,7 +2425,7 @@ AS OBJECT (
   *
   *     12 rows selected
   *  NOTES
-  *    If p_projected is 1 then calculations are PLANAR or PROJECTED, otherwise GEODETIC/GEOGRAPHIC.
+  *    If SELF.projected is 1 then calculations are PLANAR or PROJECTED, otherwise GEODETIC/GEOGRAPHIC.
   *  AUTHOR
   *    Simon Greener
   *  HISTORY
@@ -1780,18 +2435,14 @@ AS OBJECT (
  ******/
   Member Function ST_ComputeTangentLine(p_position  in VarChar2,
                                         p_fraction  In Number   default 0.0,
-                                        p_tolerance IN number   default 0.005,
-                                        p_projected In Integer  default 1,
                                         p_unit      IN varchar2 default NULL)
            Return &&INSTALL_SCHEMA..T_Segment Deterministic,
 
   Member Function ST_Intersect2CircularArcs(p_segment   in &&INSTALL_SCHEMA..T_Segment,
-                                            p_tolerance in number   default 0.005,
                                             p_unit      in varchar2 default NULL)
            Return &&INSTALL_SCHEMA..T_Segment Deterministic,
 
   Member Function ST_IntersectCircularArc(p_segment   in &&INSTALL_SCHEMA..T_Segment,
-                                          p_tolerance in number   default 0.005,
                                           p_unit      in varchar2 default NULL)
            Return &&INSTALL_SCHEMA..T_Segment Deterministic,
            
@@ -1800,7 +2451,6 @@ AS OBJECT (
   *    ST_IntersectDetail -- Computes intersecton point between two 2D segments.
   *  SYNOPSIS
   *    Member Function ST_IntersectDetail(p_segment   in T_SEGMENT,
-  *                                       p_tolerance in number   default 0.005,
   *                                       p_unit      in varchar2 default NULL)
   *             Return T_Vertex Deterministic,
   *  DESCRIPTION
@@ -1815,7 +2465,6 @@ AS OBJECT (
   *    4.  If intersection is virtual in p_segment and SELF, midCoord and endCoord are both set to virtual point (same as startCoord).
   *  ARGUMENTS
   *    p_segment  (T_Segment) -- Segment that is to be intersections with current object (SELF).
-  *    p_dPrecision (Integer) -- Decimal digits of precision for use with T_Vertex comparison for start/mid/end coords.
   *    p_unit      (varchar2) -- Oracle Unit of Measure for functions such as SDO_DISTANCE.
   *  RESULT
   *    intersection (T_Vertex) -- The intersection point or empty point with id = -9 for parallel segments.
@@ -1931,7 +2580,6 @@ AS OBJECT (
   ******/
 
   Member Function ST_IntersectDetail(p_segment   IN &&INSTALL_SCHEMA..T_SEGMENT,
-                                     p_tolerance IN Number   default 0.005,
                                      p_unit      IN VarChar2 default NULL)
            Return &&INSTALL_SCHEMA..T_Segment deterministic,
 
@@ -1940,8 +2588,6 @@ AS OBJECT (
   *    ST_IntersectDescription -- Interprets intersection that results from a call to STIntersectionDetail with same parameter values.
   *  SYNOPSIS
   *    Member Function ST_IntersectDescription(p_segment    in T_SEGMENT,
-  *                                            p_tolerance  in number   default 0.005,
-  *                                            p_dPrecision in integer  default 6,
   *                                            p_unit       in varchar2 default NULL)
   *             Return T_Vertex Deterministic,
   *  DESCRIPTION
@@ -1966,8 +2612,6 @@ AS OBJECT (
   *      Virtual Intersection Within 2 and Near Start 1
   *  ARGUMENTS
   *    p_segment  (T_Segment) -- Segment that is to be intersections with current object (SELF).
-  *    p_tolerance   (Number) -- Need to calculate distances using SDO_Length/Sdo_Distance.
-  *    p_dPrecision (Integer) -- Decimal digits of precision for use with T_Vertex comparison for start/mid/end coords.
   *    p_unit      (varchar2) -- Oracle Unit of Measure for functions such as SDO_DISTANCE.
   *  RESULT
   *    intersection (varchar2) -- Intersection description as in DESCRIPTION above.
@@ -2080,8 +2724,6 @@ AS OBJECT (
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
   Member Function ST_IntersectDescription(p_segment    IN &&INSTALL_SCHEMA..T_SEGMENT,
-                                          p_tolerance  IN Number   Default 0.005,
-                                          p_dPrecision IN Integer  Default 6,
                                           p_unit       IN VarChar2 Default NULL)
            Return varchar2 deterministic,
 
@@ -2090,8 +2732,6 @@ AS OBJECT (
   *    ST_Intersect -- Computes intersection point between two 2D or 3D segments, returning a single intersection vertex.
   *  SYNOPSIS
   *    Member Function ST_Intersect(p_segment   IN T_SEGMENT,
-  *                                 p_tolerance IN number   default 0.005,
-  *                                 p_projected in integer  default 1,
   *                                 p_unit      IN varchar2 default NULL)
   *             Return T_Vertex Deterministic,
   *  DESCRIPTION
@@ -2102,8 +2742,6 @@ AS OBJECT (
   *    However, the intersection between two circular arc segments is not yet supported.
   *  INPUTS
   *    p_segment (T_Segment) -- Second segment for which an intersection with current is computed.
-  *    p_tolerance  (Number) -- ST_Intersect may need to calculate distances using SDO_Length/Sdo_Distance which needs tolerance.
-  *    p_projected (integer) -- 1 is Planar, 0 is Geodetic
   *    p_unit     (varchar2) -- Oracle Unit of Measure eg unit=M.
   *  RESULT
   *    Intersection (T_Vertex) -- The intersection point or empty point with id = -9 for parallel segments.
@@ -2211,8 +2849,6 @@ AS OBJECT (
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
   Member Function ST_Intersect(p_segment   IN &&INSTALL_SCHEMA..T_SEGMENT,
-                               p_tolerance IN number   default 0.005,
-                               p_projected in integer  default 1,
                                p_unit      IN varchar2 default NULL)
            Return &&INSTALL_SCHEMA..T_Segment Deterministic,
 
@@ -2222,8 +2858,6 @@ AS OBJECT (
   *  SYNOPSIS
   *    Member Function ST_LineSubstring(p_start_fraction In Number   Default 0.0,
   *                                     p_end_fraction   In Number   Default 1.0,
-  *                                     p_tolerance      IN Number   Default 0.005,
-  *                                     p_projected      In Integer  Default 1,
   *                                     p_unit           In Varchar2 Default NULL)
   *             Return &&INSTALL_SCHEMA..T_Segment Deterministic
   *  DESCRIPTION
@@ -2240,8 +2874,6 @@ AS OBJECT (
   *                                 which describes the position of the first point in the substring.
   *    p_end_fraction   (Number) -- A value > p_start_fraction, from the start vertex of the segment,
   *                                 which describes the position of the last point in the substring.
-  *    p_tolerance      (Number) -- SDO_Tolerance for use with sdo_geom.sdo_distance.
-  *    p_projected     (Integer) -- 1 is Planar, 0 is Geodetic
   *    p_unit         (Varchar2) -- If NULL, the calculations are done using the underlying projection default units.
   *                                 If an Oracle Unit of Measure is supplied (eg unit=M) that is value for the SRID,
   *                                 this value is used when calculating the p_offset distance.
@@ -2257,8 +2889,6 @@ AS OBJECT (
   *    select T_Segment(a.geom)
   *             .ST_LineSubstring(p_start_fraction => 0.25,
   *                               p_end_fraction   => 0.75,
-  *                               p_tolerance      => 0.005,
-  *                               p_projected      => 1,
   *                               p_unit           => 'unit=M'
   *              )
   *             .ST_Round(3)
@@ -2278,8 +2908,6 @@ AS OBJECT (
   *    select T_Segment(a.geom)
   *             .ST_LineSubstring(p_start_fraction => 0.5,
   *                               p_end_fraction   => 0.5,
-  *                               p_tolerance      => 0.005,
-  *                               p_projected      => 1,
   *                               p_unit           => 'unit=M'
   *              )
   *             .ST_Round(3)
@@ -2304,8 +2932,6 @@ AS OBJECT (
   *    select T_Segment(a.geom)
   *             .ST_LineSubstring(p_start_fraction => 0.5,
   *                               p_end_fraction   => 0.9,
-  *                               p_tolerance      => 0.005,
-  *                               p_projected      => 0,
   *                               p_unit           => 'unit=M'
   *              )
   *             .ST_Round(8)
@@ -2328,8 +2954,6 @@ AS OBJECT (
   *    select T_Segment(a.geom)
   *             .ST_LineSubstring(p_start_fraction => 0.25,
   *                               p_end_fraction   => 0.75,
-  *                               p_tolerance      => 0.005,
-  *                               p_projected      => 1,
   *                               p_unit           => 'unit=M'
   *              )
   *             .ST_Round(3)
@@ -2348,8 +2972,6 @@ AS OBJECT (
   ******/
   Member Function ST_LineSubstring(p_start_fraction In Number   Default 0.0,
                                    p_end_fraction   In Number   Default 1.0,
-                                   p_tolerance      IN Number   Default 0.005,
-                                   p_projected      In Integer  Default 1,
                                    p_unit           In Varchar2 Default NULL)
            Return &&INSTALL_SCHEMA..T_Segment Deterministic,
 
@@ -2516,7 +3138,7 @@ AS OBJECT (
   *  NAME
   *    ST_Round -- Rounds X,Y,Z and m(w) ordinates of segment's coordinates to passed in precision.
   *  SYNOPSIS
-  *    Member Function ST_Round(p_dec_places_x in integer default 8,
+  *    Member Function ST_Round(p_dec_places_x in integer,
   *                             p_dec_places_y in integer default NULL,
   *                             p_dec_places_z in integer default 3,
   *                             p_dec_places_m in integer default 3)
@@ -2563,28 +3185,64 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-  Member Function ST_Round(p_dec_places_x In integer Default 8,
+  Member Function ST_Round(p_dec_places_x In integer,
                            p_dec_places_y In integer Default null,
                            p_dec_places_z In integer Default 3,
                            p_dec_places_m In integer Default 3)
            Return &&INSTALL_SCHEMA..T_SEGMENT Deterministic,
 
+  /****m* T_SEGMENT/ST_Round
+  *  NAME
+  *    ST_Round -- Rounds X,Y,Z and m(w) ordinates of segment's coordinates usoing object's PrecisionModel.
+  *  SYNOPSIS
+  *    Member Function ST_Round
+  *             Return &&INSTALL_SCHEMA..T_SEGMENT Deterministic,
+  *  DESCRIPTION
+  *    Applies internal object's precisionModel decimal digits of precision value to ordinates of object.
+  *    If internal PrecisionModel is null, the object is returned unchanged.
+  *    If an internal PrecisionModel element is null the default values for the called ST_Round are applied.
+  *  RESULT
+  *    segment (T_SEGMENT) -- T_Segment with rounded ordinates using SELF.PrecisionModel values.
+  *  NOTES
+  *    Is wrapper over ST_Round( y, y, z, m );
+  *  EXAMPLE
+  *    with data as (
+  *      select sdo_geometry(4402,null,null,sdo_elem_info_array(1,2,1),sdo_ordinate_array(0.0023763,0.18349,1.3456,0.0005, 10.87365,11.983645,1.98434,14.38573)) as geom
+  *        From Dual
+  *       Union all
+  *      select sdo_geometry(3002,null,null,sdo_elem_info_array(1,2,1),sdo_ordinate_array(0.0023763,0.18349,1.3456,10.87365,11.983645,1.98434)) as geom
+  *        From Dual
+  *       Union all
+  *      select sdo_geometry(2002,null,null,sdo_elem_info_array(1,2,1),sdo_ordinate_array(0.0023763,0.18349,       10.87365,11.983645        )) as geom
+  *        from dual
+  *    )
+  *    select T_Segment(a.geom)
+  *             .ST_Round().ST_SdoGeometry() as rGeom
+  *     from data a;
+  *
+  *    RGEOM
+  *    -------------------------------------------------------------------------------------------------------------------
+  *    SDO_GEOMETRY(4402,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,2,1),SDO_ORDINATE_ARRAY(0.002,0.183,1.3,0,10.874,11.984,2,14.39))
+  *    SDO_GEOMETRY(3002,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,2,1),SDO_ORDINATE_ARRAY(0.002,0.183,1.3,10.874,11.984,2))
+  *    SDO_GEOMETRY(2002,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,2,1),SDO_ORDINATE_ARRAY(0.002,0.183,10.874,11.984))
+  *  AUTHOR
+  *    Simon Greener
+  *  HISTORY
+  *    Simon Greener - July 2019 - Original coding.
+  *  COPYRIGHT
+  *    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
+  ******/
+  Member Function ST_Round
+           Return &&INSTALL_SCHEMA..T_Segment Deterministic,
+
   /****m* T_SEGMENT/ST_AsText
   *  NAME
   *    ST_AsText -- Returns text Description of underlying segment
   *  SYNOPSIS
-  *    Member Function ST_AsText(p_dec_places_x in integer default 8,
-  *                              p_dec_places_y in integer default 8,
-  *                              p_dec_places_z in integer default 3,
-  *                              p_dec_places_m in integer default 3)
+  *    Member Function ST_AsText
   *             Return Varchar2 Deterministic,
   *  DESCRIPTION
-  *    Returns textual description of segment with optional rounding of X,Y,Z and w ordinates to passed in precision.
-  *  ARGUMENTS
-  *    p_dec_places_x (integer) - value applied to x Ordinate.
-  *    p_dec_places_y (integer) - value applied to y Ordinate.
-  *    p_dec_places_z (integer) - value applied to z Ordinate.
-  *    p_dec_places_m (integer) - value applied to w/m Ordinate.
+  *    Returns textual description of segment.
   *  RESULT
   *    String - T_SEGMENT in text format.
   *  EXAMPLE
@@ -2615,10 +3273,82 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-  Member Function ST_AsText(p_dec_places_x In integer Default 8,
-                            p_dec_places_y In integer Default null,
-                            p_dec_places_z In integer Default 3,
-                            p_dec_places_m In integer Default 3)
+  Member Function ST_AsText
+           Return VarChar2 Deterministic,
+
+  /****m* T_GEOMETRY/ST_AsWKT
+  *  NAME
+  *    ST_AsWKT -- Exports T_SEGMENT object to its Extended Well Known Text (EWKT).
+  *  SYNOPSIS
+  *    Member Function ST_AsWKT
+  *             Return varchar2 Deterministic,
+  *  DESCRIPTION
+  *    Returns Extended Well Known Text representation of underlying T_GEOEMTRY.
+  *    Supports 2D/3D/4D t_segments.
+  *    Formatting of ordinates supported by supplied p_format_model eg TM9 or FM999999999999990D0
+  *  RESULT
+  *    WKT (CLOB) -- eg Well Known Text encoding of mdsys.sdo_geometry object.
+  *  EXAMPLE
+  *    With data as (
+  *     select t_segment(sdo_geometry(2002,28355,NULL,
+  *                                  sdo_elem_info_array(1,2,2),
+  *                                  sdo_ordinate_array(252230.4743434348,5526918.37343433, 252400.034348,5526918.33434333473,252230.4434343378,5527000.433445660))) as segment
+  *     from dual union all
+  *     select t_segment(SDO_GEOMETRY(3002,28355,NULL,
+  *                                  sdo_elem_info_array(1,2,2),
+  *                                  sdo_ordinate_array(252230.478,5526918.373,1.5, 252400.08,5526918.373,1.5, 252230.478,5527000.0,1.5))) as segment
+  *     from dual union all
+  *     select t_segment(SDO_GEOMETRY(3302,28355,NULL,
+  *                                  sdo_elem_info_array(1,2,2),
+  *                                  sdo_ordinate_array(252230.478,5526918.373,0.0, 252400.08,5526918.373,417.4, 252230.478,5527000.0,506.88))) as segment
+  *     from dual union all
+  *     select t_segment(SDO_GEOMETRY(4402,28355,NULL,
+  *                                  sdo_elem_info_array(1,2,2),
+  *                                  sdo_ordinate_array(252230.478,5526918.373,1.5,0.0, 252400.08,5526918.373,1.5,417.4, 252230.478,5527000.0,1.5,506.88))) as segment
+  *     from dual union all
+  *     select t_segment(sdo_geometry(2002,NULL,NULL,
+  *                                   sdo_elem_info_array(1,2,1),
+  *                                   sdo_ordinate_array(100,100,900,900.0))) as segment
+  *     from dual union all
+  *     select t_segment(sdo_geometry(3002,NULL,NULL,
+  *                                   sdo_elem_info_array(1,2,1),
+  *                                   sdo_ordinate_array(0,0,1, 10,0,2))) as segment
+  *     from dual union all
+  *     select t_segment(sdo_geometry(3302,NULL,NULL,
+  *                                   sdo_elem_info_array(1,2,1),
+  *                                   sdo_ordinate_array(0,0,1.5, 10,0,1.5, 10,5,1.5 ))) as segment
+  *     from dual union all
+  *     select t_segment(sdo_geometry(4402,4283,null,
+  *                                   sdo_elem_info_array(1,2,1),
+  *                                   sdo_ordinate_array(147.5,-42.5,849.9,102.0, 147.6,-42.5,1923.0,2100.0))) as segment
+  *     From Dual
+  *    )
+  *    select a.segment.sdo_gtype as gtype,
+  *         a.segment
+  *          .ST_Round(3)
+  *          .ST_AsEWKT('TM9') as ewkt
+  *    from data a;
+  *    
+  *    GTYPE EWKT
+  *    ----- ------------------------------------------------------------------------------------------------------------------------
+  *     2002 SRID=28355;CIRCULARSTRING (252230.474 5526918.373,252400.034 5526918.334,252230.443 5527000.433)
+  *     3002 SRID=28355;CIRCULARSTRINGZ (252230.478 5526918.373 1.5,252400.08 5526918.373 1.5,252230.478 5527000 1.5)
+  *     3302 SRID=28355;CIRCULARSTRINGM (252230.478 5526918.373 0,252400.08 5526918.373 417.4,252230.478 5527000 506.88)
+  *     4402 SRID=28355;CIRCULARSTRINGZM (252230.478 5526918.373 1.5 0,252400.08 5526918.373 1.5 417.4,252230.478 5527000 1.5 506.88)
+  *     2002 LINESTRING (100 100,900 900)
+  *     3002 LINESTRINGZ (0 0 1,10 0 2)
+  *     3302 LINESTRINGM (0 0 1.5,10 0 1.5)
+  *     4402 SRID=4283;LINESTRINGZM (147.5 -42.5 849.9 102,147.6 -42.5 1923 2100)
+  *    
+  *     8 rows selected
+  *  AUTHOR
+  *    Simon Greener
+  *  HISTORY
+  *    Simon Greener - July 2019 - Original coding.
+  *  COPYRIGHT
+  *    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
+  ******/
+  Member Function ST_AsEWKT (p_format_model varchar2 default 'TM9')
            Return VarChar2 Deterministic,
 
   /****m* T_SEGMENT/ST_Equals
@@ -2626,7 +3356,6 @@ AS OBJECT (
   *    ST_Equals -- Compares current object (SELF) with supplied segment.
   *  SYNOPSIS
   *    Member Function ST_Equals(p_segment    in &&INSTALL_SCHEMA..T_SEGMENT,
-  *                              p_dPrecision In Integer default 3,
   *                              p_coords     In Integer default 1)
   *             Return Integer deterministic
   *  DESCRIPTION
@@ -2637,7 +3366,6 @@ AS OBJECT (
   *    To compare all 4 ordinates, use ST_Round on both segments before calling ST_Equals
   *  ARGUMENTS
   *    p_segment  (T_Segment) -- Segment that is to be compared to current object (SELF).
-  *    p_dPrecision (Integer) -- Decimal digits of precision for use with T_Vertex comparison for start/mid/end coords.
   *    p_coords     (Integer) -- Boolean. If 1, only coordinates are compared; if 0, then all elements including segment_id etc are compared.
   *  RESULT
   *    BOOLEAN (INTEGER) - 1 is True (Equal); 0 is False.
@@ -2675,11 +3403,9 @@ AS OBJECT (
   *      v_segment2.segment_id := 2;
   *      dbms_output.put_line('Equals(With Metadata): ' ||
   *                             v_segment1.ST_Equals(p_segment    =>v_segment2,
-  *                                                  p_dPrecision => 3,
   *                                                  p_coords     => 0 ));
   *      dbms_output.put_line('Equals(Only Coords): ' ||
   *                             v_segment1.ST_Equals(p_segment    =>v_segment2,
-  *                                                  p_dPrecision => 3,
   *                                                  p_coords     => 1 ));
   *    END;
   *
@@ -2697,7 +3423,6 @@ AS OBJECT (
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
   Member Function ST_Equals(p_segment    in &&INSTALL_SCHEMA..T_SEGMENT,
-                            p_dPrecision In Integer default 8,
                             p_coords     In Integer default 1)
            Return Number Deterministic,
 

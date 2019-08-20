@@ -2,8 +2,6 @@ DEFINE INSTALL_SCHEMA='&1'
 
 SET VERIFY OFF;
 
-/* select text from all_source as of timestamp to_timestamp('22-APR-2014 16:00:00', 'DD-MON-YYYY HH24:MI:SS') where name = 'T_VECTOR3D' and type = 'TYPE BODY' */
-
 CREATE OR REPLACE TYPE &&INSTALL_SCHEMA..T_VECTOR3D 
 AUTHID DEFINER
 AS OBJECT (

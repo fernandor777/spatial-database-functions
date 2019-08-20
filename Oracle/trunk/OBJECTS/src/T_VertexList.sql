@@ -2,7 +2,7 @@ DEFINE INSTALL_SCHEMA='&1'
 
 SET VERIFY OFF;
 
-create or replace TYPE T_VERTEXLIST
+CREATE OR REPLACE TYPE &&INSTALL_SCHEMA..T_VERTEXLIST
 AUTHID DEFINER
 AS OBJECT (
 
@@ -36,9 +36,9 @@ AS OBJECT (
   dPrecision            integer,
   /*******/
 
-  /****m* T_VERTEX/CONSTRUCTORS(T_VERTEXE)
+  /****m* T_VERTEXLIST/CONSTRUCTORS(T_VERTEXE)
   *  NAME
-  *    A collection of T_VERTEXE Constructors.
+  *    A collection of T_VERTEXLIST Constructors.
   *  SOURCE
   */
   -- Useful as an "Empty" constructor.
@@ -155,10 +155,10 @@ AS OBJECT (
   *    set serveroutput on size unlimited
   *    declare
   *      v_vList    t_vertexlist;
-  *      v_vertices spdba.T_Vertices;
+  *      v_vertices &&INSTALL_SCHEMA..T_Vertices;
   *      v_tgeom    t_geometry;
   *    begin
-  *      v_vList    := T_VERTEXLIST(p_segment => spdba.T_SEGMENT(p_line=>sdo_geometry(2002,null,null,sdo_elem_info_array(1,2,1),sdo_ordinate_array(0,0,1,1))));
+  *      v_vList    := T_VERTEXLIST(p_segment => &&INSTALL_SCHEMA..T_SEGMENT(p_line=>sdo_geometry(2002,null,null,sdo_elem_info_array(1,2,1),sdo_ordinate_array(0,0,1,1))));
   *      dbms_output.put_line('Before v_vList.count=' || v_vList.vertexList.count);
   *      v_vList.addOrdinates(
   *               p_dim     => 2,
@@ -318,7 +318,7 @@ set serveroutput on size unlimited
 WHENEVER SQLERROR EXIT FAILURE;
 DECLARE
    v_OK       boolean := true;
-   v_obj_name varchar2(30) := 'T_VERTEXBODY';
+   v_obj_name varchar2(30) := 'T_VERTEXLIST';
 BEGIN
    FOR rec IN (select object_name,object_Type, status
                  from user_objects

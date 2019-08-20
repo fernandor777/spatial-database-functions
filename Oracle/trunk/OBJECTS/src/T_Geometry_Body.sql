@@ -5,7 +5,7 @@ SET VERIFY OFF;
 -- Always aim for a clean compile
 ALTER SESSION SET PLSQL_WARNINGS='ERROR:ALL';
 -- Enable optimizations
-ALTER SESSION SET plsql_optimize_level=2;
+-- ALTER SESSION SET plsql_optimize_level=2;
 
 CREATE OR REPLACE TYPE BODY &&INSTALL_SCHEMA..T_GEOMETRY
 AS
@@ -125,38 +125,26 @@ AS
   End T_GEOMETRY;
 
   Constructor Function T_GEOMETRY(SELF         IN OUT NOCOPY T_GEOMETRY,
-                                  p_Segment    in &&INSTALL_SCHEMA..T_Segment,
-                                  p_srid       in integer,
-                                  p_tolerance  in number   default 0.005,
-                                  p_dPrecision in integer  default 2,
-                                  p_projected  in varchar2 default 'PLANAR')
+                                  p_Segment in &&INSTALL_SCHEMA..T_Segment)
                 Return Self As Result
   As
     /* Creates, at best, a 3D single point */
     c_i_empty_Segment Constant Integer       := -20120;
     c_s_empty_Segment Constant VarChar2(100) := 'Input segment must not be null or empty';
-    v_segment         &&INSTALL_SCHEMA..T_Segment
-                   := &&INSTALL_SCHEMA..T_Segment(p_Segment);
   Begin
-    SELF.tolerance := CASE WHEN NVL(p_tolerance,0.005) = 0 THEN 0.005 ELSE NVL(p_tolerance,0.005) END;
-    SELF.projected := case when p_projected is null        then null
-                           when p_projected = 'GEOGRAPHIC' then 0
-                           when p_projected IN ('PROJECTED',
-                                                'PLANAR')  then 1
-                        end;
-    SELF.dPrecision := NVL(SELF.projected,
-                          case when p_projected = 'GEOGRAPHIC'
-                               then 9
-                               else (ROUND(log(10,(1/SELF.tolerance)/2)) + 1)
-                           end);
     If ( p_Segment is null OR
          p_Segment.startCoord is null ) THEN
        raise_application_error(c_i_empty_Segment,c_s_empty_Segment,true);
     End If;
-    If ( NVL(v_segment.sdo_srid,-1) <> NVL(p_srid,-1) ) Then
-       v_segment.sdo_srid := p_srid;
-    End If;
-    SELF.geom := v_segment.ST_SdoGeometry(p_dims=>SELF.ST_Dims());
+    SELF.geom       := p_segment.ST_SdoGeometry(p_dims=>p_segment.ST_Dims());
+    SELF.tolerance  := CASE WHEN p_segment.PrecisionModel.tolerance is null THEN 0.005 
+                            ELSE p_segment.PrecisionModel.tolerance
+                        END;
+    SELF.projected  := NVL(p_segment.projected,1);
+    SELF.dPrecision := NVL(p_segment.PrecisionModel.XY,
+                           case when p_segment.projected = 0 then 9
+                                else (ROUND(log(10,(1/SELF.tolerance)/2)) + 1)
+                            end);
     RETURN;
   End T_GEOMETRY;
 
@@ -490,7 +478,7 @@ AS
                                   REPLACE(c_s_invalid_srid,'*SRID*',SELF.ST_SRID()));
      END;
      SELF.projected := case when v_srid_type = 'PLANAR' then 1 else 0 end;
-     SELF.tolerance := NVL(SELF.tolerance,case when SELF.projected = 'GEOGRAPHIC' then 0.005 else 0.0005 end);
+     SELF.tolerance  := NVL(SELF.tolerance, case when SELF.projected = 'GEOGRAPHIC' then 0.05 else 0.0005 end);
      SELF.dPrecision := NVL(SELF.dPrecision,case when SELF.projected = 'GEOGRAPHIC' then 8    else (ROUND(log(10,(1/SELF.tolerance)/2))+1) end);
   END ST_SetProjection;
 
@@ -590,14 +578,18 @@ AS
     Return &&INSTALL_SCHEMA..T_GEOMETRY (sdo_geometry(p_wkt,p_srid));
   End ST_FromText;
 
-  Member Function ST_AsEWKT (p_format_model varchar2 default 'FM999999999999990D0')
+  Member Function ST_AsEWKT (p_format_model varchar2 default 'TM9')
            Return Clob
   As
     v_ewkt    CLOB;
     v_empty_s varchar2(100);
   Begin
     IF ( SELF.ST_isEmpty() = 1 ) THEN
-      v_empty_s := Case SELF.ST_GType()
+      v_empty_s := case when SELF.geom.sdo_srid is not null 
+                        then 'SRID='||SELF.geom.sdo_srid||';' 
+                        else '' 
+                    end ||
+                   Case SELF.ST_GType()
                         When 1 Then 'POINT EMPTY'
                         When 2 Then 'LINESTRING EMPTY'
                         When 3 Then 'POLYGON EMPTY'
@@ -611,16 +603,13 @@ AS
       v_ewkt := TO_CLOB( v_empty_s );
       Return v_ewkt;
     END IF;
-
-    IF (SELF.ST_Dims()=2) THEN
-      RETURN SELF.ST_AsText();
-    END IF;
-
+    -- Build EWKT String...
     With data as (
       select a.id,
              case when a.id = 1
                   then case when SELF.ST_Srid() is not null then 'SRID='||SELF.GEOM.SDO_SRID||';' else '' end ||
                        TRIM(a.token) ||
+                       case when SELF.ST_HasZ()=1 AND SELF.ST_HasM()=1 then 'ZM' else '' end ||
                        case when SELF.ST_HasZ()=1 then 'Z' else '' end ||
                        case when SELF.ST_HasM()=1 then 'M' else '' end ||
                        ' '
@@ -633,7 +622,7 @@ AS
                           p_id       => c.id,
                           p_sdo_gtype=> SELF.GEOM.SDO_GTYPE,
                           p_sdo_srid => SELF.GEOM.SDO_SRID
-                       ).ST_AsCoordString(p_format_model => NVL(p_format_model,'FM999999999999990D0'))
+                       ).ST_AsCoordString(p_format_model => NVL(p_format_model,'TM9'))
                   else a.token
               end as token,
              a.separator
@@ -1045,14 +1034,12 @@ AS
     ELSIF (SELF.ST_Dims() = 3 ) THEN
 
       IF ( Not v_isLocator ) Then
-         -- TODO: Check which version computes slope length
          -- Spatial computes 3D length ....
-         v_length := Case When P_UNIT IS NOT NULL --AND SELF.ST_Srid() IS NOT NULL
+         v_length := Case When P_UNIT IS NOT NULL
                           Then MDSYS.SDO_GEOM.sdo_length(SELF.geom,v_tolerance,P_UNIT)
                           Else MDSYS.SDO_GEOM.sdo_length(SELF.geom,v_tolerance)
                       End;
-         -- DEBUG 
-         dbms_output.put_line('spatial sdo_geom.sdo_length; p_unit=' || NVL(p_unit,'null'));
+         -- DEBUG dbms_output.put_line('spatial sdo_geom.sdo_length; p_unit=' || NVL(p_unit,'null'));
 
       ELSE -- is not Locator
         If ( SELF.ST_hasCircularArcs() = 1 ) then
@@ -1960,22 +1947,7 @@ AS
     v_ring         &&INSTALL_SCHEMA..T_GEOMETRY;
     v_geometries   &&INSTALL_SCHEMA..T_Geometries;
     v_min_Segment  &&INSTALL_SCHEMA..T_Segment;
-    v_segments     &&INSTALL_SCHEMA..T_Segments := NEW
-                     &&INSTALL_SCHEMA..T_Segments(
-                       &&INSTALL_SCHEMA..T_Segment(
-                         p_Segment_id => 0,
-                         p_startCoord => &&INSTALL_SCHEMA..T_Vertex(
-                                           p_id        => 1,
-                                           p_sdo_gtype => SELF.ST_sdo_gtype(),
-                                           p_sdo_srid  => SELF.ST_SRID()),
-                         p_endCoord   => &&INSTALL_SCHEMA..T_Vertex(
-                                           p_id        => 2,
-                                           p_sdo_gtype => SELF.ST_sdo_gtype(),
-                                           p_sdo_srid  => SELF.ST_SRID()),
-                          p_sdo_gtype  => SELF.St_sdo_gtype(),
-                         p_sdo_srid   => SELF.ST_srid()
-                       )
-                     );
+    v_segments     &&INSTALL_SCHEMA..T_Segments := NEW &&INSTALL_SCHEMA..T_Segments(&&INSTALL_SCHEMA..T_Segment());
 
     Function segmentizeElement(p_segment_id     in out nocopy pls_integer,
                                p_element_no     in integer,
@@ -2023,16 +1995,14 @@ AS
           ELSIF ( v_Filter = 'DISTANCE' ) THEN
             -- Snap to closest segment
             v_distance := p_Segment.ST_Distance(p_vertex    => p_vertex,
-                                                p_tolerance => SELF.tolerance,
-                                                p_dPrecision => SELF.dPrecision,
                                                 p_unit      => p_unit);
             If ( v_distance = 0 ) THEN
               -- Can't get any more min distance than 0!
               -- DEBUG dbms_output.put_line('ST_Segmentize.v_distance=0');
               p_Segments.EXTEND(1);
               p_Segments(v_segments.COUNT) := new &&INSTALL_SCHEMA..T_Segment(p_Segment);
-            ELSIF (v_distance <  v_min_distance) Then
-              -- DEBUG dbms_output.put_line('ST_Segmentize.v_distance='||v_distance||' < v_Min_distance='||v_min_distance);
+            END IF;
+            IF (v_distance <  v_min_distance) Then
               p_min_distance := v_distance;
               p_min_Segment  := new &&INSTALL_SCHEMA..T_Segment(p_Segment);
               -- DEBUG dbms_output.put_line('ST_Segmentize.p_min_Segment='||case when p_min_Segment is null then 'NULL' else p_min_Segment.ST_AsText() end);
@@ -2046,7 +2016,7 @@ AS
                                     and case v_mDimension
                                              when 3 then p_Segment.endCoord.z
                                              when 4 then p_Segment.endCoord.w
-                                             else p_total_length + p_segment.ST_Length(p_tolerance=>SELF.tolerance,p_unit=>p_unit)
+                                             else p_total_length + p_segment.ST_Length(p_unit=>p_unit)
                                          end) THEN
               p_Segments.EXTEND(1);
               p_Segments(p_Segments.COUNT) := new &&INSTALL_SCHEMA..T_Segment(p_Segment);
@@ -2060,7 +2030,7 @@ AS
                   < Least(case v_mDimension
                                when 3 then p_Segment.endCoord.z
                                when 4 then p_Segment.endCoord.w
-                               else p_total_length + p_segment.ST_Length(p_tolerance=>SELF.tolerance,p_unit=>p_unit)
+                               else p_total_length + p_segment.ST_Length(p_unit=>p_unit)
                            end,p_end_value) ) THEN
               -- Now save if Measure range overlaps user input range...
               -- DEBUG dbms_output.put_line('Greatest('||Greatest(case v_mDimension when 3 then v_segment.startCoord.z when 4 then v_segment.startCoord.w else -99999999 end,v_user_start_measure)||
@@ -2094,7 +2064,7 @@ AS
               p_Segments(p_Segments.COUNT) := new &&INSTALL_SCHEMA..T_Segment(p_Segment);
             END IF;
           END IF;
-          p_total_length := p_total_length + p_segment.ST_Length(p_tolerance=>SELF.tolerance,p_unit=>p_unit);
+          p_total_length := p_total_length + p_segment.ST_Length(p_unit=>p_unit);
         End addSegmentToOutput;
 
     Begin
@@ -2132,12 +2102,10 @@ AS
                    v_ord          := v_offset + (v_coord-1)*v_dims;
                    p_segment_id   := p_segment_id + 1;
                    v_segment      := &&INSTALL_SCHEMA..T_Segment (
-                       p_sdo_gtype     => p_geometry.sdo_gtype,
-                       p_sdo_srid      => p_geometry.sdo_srid,
-                       p_element_id    => p_element_no,
-                       p_subelement_id => p_sub_element_no,
-                       p_Segment_id    => case when v_filter = 'ID' And p_segment_id = v_id then p_segment_id else v_segment_no end,
-                       p_startCoord    => NEW
+                       element_id    => p_element_no,
+                       subelement_id => p_sub_element_no,
+                       Segment_id    => case when v_filter = 'ID' And p_segment_id = v_id then p_segment_id else v_segment_no end,
+                       startCoord    => NEW
                          &&INSTALL_SCHEMA..T_Vertex(
                            p_x         => p_geometry.sdo_ordinates(v_ord),
                            p_y         => p_geometry.sdo_ordinates(v_ord+1),
@@ -2146,9 +2114,9 @@ AS
                            p_id        => v_coord_no,
                            p_sdo_gtype => v_point_gtype,
                            p_sdo_srid  => p_geometry.sdo_srid
-                         ) /* T_Vertex */,
-                       p_midCoord      => NULL,
-                       p_endCoord      => NEW
+                         ) ,
+                       midCoord      => NULL,
+                       endCoord      => NEW
                          &&INSTALL_SCHEMA..T_Vertex(
                            p_x         => p_geometry.sdo_ordinates(v_ord+v_dims),
                            p_y         => p_geometry.sdo_ordinates(v_ord+v_dims+1),
@@ -2157,8 +2125,12 @@ AS
                            p_id        => V_COORD_NO + 1,
                            p_sdo_gtype => v_point_gtype,
                            p_sdo_srid  => p_geometry.sdo_srid
-                         ) /* T_Vertex */
-                   ); /* T_Segment */
+                         ),
+                       sdo_gtype     => p_geometry.sdo_gtype,
+                       sdo_srid      => p_geometry.sdo_srid,
+                       projected     => SELF.projected,
+                       PrecisionModel=> &&INSTALL_SCHEMA..T_PrecisionModel(XY=>SELF.dPrecision,Z=>SELF.dPrecision,W=>SELF.dPrecision,tolerance=>SELF.tolerance)
+                   );
                    AddSegmentToOutput(p_segment_id   => p_segment_id,
                                       p_Segments     => v_segments,
                                       p_total_length => v_total_length,
@@ -2178,12 +2150,10 @@ AS
                 for v_e in 1..v_nArcs loop
                   p_segment_id   := p_segment_id + 1;
                   v_segment      := &&INSTALL_SCHEMA..T_Segment (
-                      p_sdo_gtype     => p_geometry.sdo_gtype,
-                      p_sdo_srid      => p_geometry.sdo_srid,
-                      p_element_id    => p_element_no,
-                      p_subelement_id => p_sub_element_no,
-                      p_Segment_id    => case when v_filter = 'ID' And p_segment_id = v_id then p_segment_id else v_segment_no end,
-                      p_startCoord    => new
+                      element_id    => p_element_no,
+                      subelement_id => p_sub_element_no,
+                      Segment_id    => case when v_filter = 'ID' And p_segment_id = v_id then p_segment_id else v_segment_no end,
+                      startCoord    => new
                         &&INSTALL_SCHEMA..T_Vertex(
                           p_x         => p_geometry.sdo_ordinates(v_offset),
                           p_y         => p_geometry.sdo_ordinates(v_offset+1),
@@ -2192,8 +2162,8 @@ AS
                           p_id        => v_coord_no,
                           p_sdo_gtype => v_point_gtype,
                           p_sdo_srid  => p_geometry.sdo_srid
-                        ) /* T_Vertex */,
-                      p_midCoord      => new
+                        ),
+                      midCoord      => new
                         &&INSTALL_SCHEMA..T_Vertex(
                           p_x         => p_geometry.sdo_ordinates(v_offset+v_dims),
                           p_y         => p_geometry.sdo_ordinates(v_offset+v_dims+1),
@@ -2202,8 +2172,8 @@ AS
                           p_id        => v_coord_no + 1,
                           p_sdo_gtype => v_point_gtype,
                           p_sdo_srid  => p_geometry.sdo_srid
-                        ) /* T_Vertex */,
-                      p_endCoord      => new
+                        ),
+                      endCoord      => new
                         &&INSTALL_SCHEMA..T_Vertex(
                           p_x         => p_geometry.sdo_ordinates(v_offset+(v_dims*2)),
                           p_y         => p_geometry.sdo_ordinates(v_offset+(v_dims*2)+1),
@@ -2212,8 +2182,12 @@ AS
                           p_id        => v_coord_no + 2,
                           p_sdo_gtype => v_point_gtype,
                           p_sdo_srid  => p_geometry.sdo_srid
-                        )   /* T_Vertex */
-                  );       /* T_Segment */
+                        ),
+                      sdo_gtype     => p_geometry.sdo_gtype,
+                      sdo_srid      => p_geometry.sdo_srid,
+                      projected     => SELF.projected,
+                      PrecisionModel=> &&INSTALL_SCHEMA..T_PrecisionModel(XY=>SELF.dPrecision,Z=>SELF.dPrecision,W=>SELF.dPrecision,tolerance=>SELF.tolerance)
+                  );
                   AddSegmentToOutput(
                       p_segment_id   => p_segment_id,
                       p_Segments     => v_segments,
@@ -2238,7 +2212,7 @@ AS
                           p_id        => 1,
                           p_sdo_gtype => v_point_gtype,
                           p_sdo_srid  => p_geometry.sdo_srid
-                        ) /* T_Vertex */;
+                        ) ;
                 v_ur := &&INSTALL_SCHEMA..t_vertex(
                           p_x         => p_geometry.sdo_ordinates(v_offset+v_dims),
                           p_y         => p_geometry.sdo_ordinates(v_offset+v_dims+1),
@@ -2247,17 +2221,15 @@ AS
                           p_id        => 2,
                           p_sdo_gtype => v_point_gtype,
                           p_sdo_srid  => p_geometry.sdo_srid
-                        ) /* T_Vertex */;
+                        ) ;
                 <<all_rectangles>>
                 for v_j in 1..4 loop
                   p_segment_id := p_segment_id + 1;
                   v_segment    := &&INSTALL_SCHEMA..T_Segment(
-                      p_sdo_gtype     => p_geometry.sdo_gtype,
-                      p_sdo_srid      => p_geometry.sdo_srid,
-                      p_element_id    => p_element_no,
-                      p_subelement_id => p_sub_element_no,
-                      p_Segment_id    => case when v_filter = 'ID' And p_segment_id = v_id then p_segment_id else v_segment_no end,
-                      p_startCoord    => new
+                      element_id    => p_element_no,
+                      subelement_id => p_sub_element_no,
+                      Segment_id    => case when v_filter = 'ID' And p_segment_id = v_id then p_segment_id else v_segment_no end,
+                      startCoord    => new
                         &&INSTALL_SCHEMA..T_Vertex(
                           p_x => case v_j
                                       when 1 then v_ll.x
@@ -2292,9 +2264,9 @@ AS
                           p_id        => v_coord_no,
                           p_sdo_gtype => v_point_gtype,
                           p_sdo_srid  => p_geometry.sdo_srid
-                        ) /* Vertex */,
-                      p_midCoord => null,
-                      p_endCoord => new
+                        ) ,
+                      midCoord => null,
+                      endCoord => new
                         &&INSTALL_SCHEMA..T_Vertex(
                           p_x => case v_j
                                       when 1 then case when v_etype=1003 then v_ur.x else v_ll.x end
@@ -2329,8 +2301,12 @@ AS
                           p_id        => v_coord_no + 1,
                           p_sdo_gtype => v_point_gtype,
                           p_sdo_srid  => p_geometry.sdo_srid
-                        )   /* T_Vertex */
-                  );       /* T_Segment */
+                        ),
+                      sdo_gtype     => p_geometry.sdo_gtype,
+                      sdo_srid      => p_geometry.sdo_srid,
+                      projected     => SELF.projected,
+                      PrecisionModel=> &&INSTALL_SCHEMA..T_PrecisionModel(XY=>SELF.dPrecision,Z=>SELF.dPrecision,W=>SELF.dPrecision,tolerance=>SELF.tolerance)
+                  );
                   AddSegmentToOutput (
                       p_segment_id   => p_segment_id,
                       p_Segments     => v_segments,
@@ -2350,12 +2326,10 @@ AS
                 -- Segmentize circle as a single circular arc.
                 p_segment_id := p_segment_id + 1;
                 v_segment    := &&INSTALL_SCHEMA..T_Segment (
-                      p_sdo_gtype     => p_geometry.sdo_gtype,
-                      p_sdo_srid      => p_geometry.sdo_srid,
-                      p_element_id    => p_element_no,
-                      p_subelement_id => p_sub_element_no,
-                      p_Segment_id    => case when v_filter = 'ID' And p_segment_id = v_id then p_segment_id else v_segment_no end,
-                      p_startCoord    => new
+                      element_id    => p_element_no,
+                      subelement_id => p_sub_element_no,
+                      Segment_id    => case when v_filter = 'ID' And p_segment_id = v_id then p_segment_id else v_segment_no end,
+                      startCoord    => new
                         &&INSTALL_SCHEMA..T_Vertex(
                           p_x         => p_geometry.sdo_ordinates(v_offset),
                           p_y         => p_geometry.sdo_ordinates(v_offset+1),
@@ -2364,8 +2338,8 @@ AS
                           p_id        => 1,
                           p_sdo_gtype => v_point_gtype,
                           p_sdo_srid  => p_geometry.sdo_srid
-                        ) /* T_Vertex */,
-                      p_midCoord      => new
+                        ) ,
+                      midCoord      => new
                         &&INSTALL_SCHEMA..T_Vertex(
                           p_x         => p_geometry.sdo_ordinates(v_offset+v_dims),
                           p_y         => p_geometry.sdo_ordinates(v_offset+v_dims+1),
@@ -2374,8 +2348,8 @@ AS
                           p_id        => 2,
                           p_sdo_gtype => v_point_gtype,
                           p_sdo_srid  => p_geometry.sdo_srid
-                        ) /* T_Vertex */,
-                      p_endCoord      => new
+                        ) ,
+                      endCoord      => new
                         &&INSTALL_SCHEMA..T_Vertex(
                           p_x         => p_geometry.sdo_ordinates(v_offset+(v_dims*2)),
                           p_y         => p_geometry.sdo_ordinates(v_offset+(v_dims*2)+1),
@@ -2384,8 +2358,12 @@ AS
                           p_id        => 3,
                           p_sdo_gtype => v_point_gtype,
                           p_sdo_srid  => p_geometry.sdo_srid
-                        )   /* T_Vertex */
-                 );       /* T_Segment */
+                        ),
+                      sdo_gtype     => p_geometry.sdo_gtype,
+                      sdo_srid      => p_geometry.sdo_srid,
+                      projected     => SELF.projected,
+                      PrecisionModel=> &&INSTALL_SCHEMA..T_PrecisionModel(XY=>SELF.dPrecision,Z=>SELF.dPrecision,W=>SELF.dPrecision,tolerance=>SELF.tolerance)
+                 );
                  AddSegmentToOutput(p_segment_id   => p_segment_id,
                                     p_Segments     => v_segments,
                                     p_total_length => v_total_length,
@@ -2481,7 +2459,11 @@ AS
          End If;
        End If;
     END LOOP extract_all_elements;
-    IF ( v_filter = 'DISTANCE' AND v_min_Segment is not null ) THEN
+    -- IF Distance filter.
+    -- If v_segments.count > 0 then already have had added segment(s) where distance=0 (could be more than one)
+    -- If v_segments.count = 0 then we save the egment with the minimum distance (v_min_segment)
+    IF ( v_filter = 'DISTANCE' AND v_min_Segment is not null AND v_segments.COUNT = 0 ) THEN
+      -- DEBUG dbms_output.put_line(' Returning by extending v_segment which currently has ' || v_segments.COUNT||' element: ' || v_segments(1).ST_AsText());
       v_segments.EXTEND(1);
       v_segments(v_segments.COUNT) := new &&INSTALL_SCHEMA..T_Segment(v_min_Segment);
     End If;
@@ -2500,16 +2482,14 @@ AS
     <<all_segments>>
     FOR rec IN (select &&INSTALL_SCHEMA..T_Segment(
                           p_Segment_id => 0,
-                          p_startCoord =>
-                            &&INSTALL_SCHEMA..T_Vertex(
+                          p_startCoord => &&INSTALL_SCHEMA..T_Vertex(
                                     p_x        => E.Start_X,
                                     p_y        => E.Start_Y,
                                     p_id       => 1,
                                     p_sdo_gtype=> 2001,
                                     p_sdo_srid => SELF.geom.sdo_srid
                                   ),
-                          p_endCoord =>
-                            T_Vertex(
+                          p_endCoord => &&INSTALL_SCHEMA..T_Vertex(
                               p_x        => E.End_X,
                               p_y        => E.End_Y,
                               p_id       => 2,
@@ -2517,7 +2497,10 @@ AS
                               p_sdo_srid => SELF.geom.sdo_srid
                             ),
                           p_sdo_gtype  => SELF.geom.SDO_Gtype,
-                          p_sdo_srid   => SELF.geom.sdo_SRID
+                          p_sdo_srid   => SELF.geom.sdo_SRID,
+                          p_projected  => SELF.projected,
+                          p_precision  => SELF.dPrecision,
+                          p_tolerance  => SELF.tolerance
                         ) as segmnt
                   from (select d.Start_X,d.Start_Y,d.End_X,d.End_Y,
                                count(*) over (partition by d.Start_X,d.Start_Y,d.End_X,d.End_Y order by d.Start_X,d.Start_Y,d.End_X,d.End_Y) as duplicate_count
@@ -2900,11 +2883,10 @@ AS
         END IF;
         IF ( v_ring.geom.sdo_elem_info(3) = 3 ) THEN
           Begin
-            v_min_x := LEAST(   v_ring.geom.sdo_ordinates(1),v_ring.geom.sdo_ordinates(SELF.ST_Dims()+1));   -- Min X
-            v_min_y := LEAST(   v_ring.geom.sdo_ordinates(2),v_ring.geom.sdo_ordinates(SELF.ST_Dims()+2)); -- Min Y
-            v_max_x := GREATEST(v_ring.geom.sdo_ordinates(1),v_ring.geom.sdo_ordinates(SELF.ST_Dims()+1));   -- Max X
-            v_max_y := GREATEST(v_ring.geom.sdo_ordinates(2),v_ring.geom.sdo_ordinates(SELF.ST_Dims()+2)); -- Max Y
-            -- Note, handle Exterior Rings differently from interior Rings to maintain orientation
+            v_min_x := LEAST(   v_ring.geom.sdo_ordinates(1),v_ring.geom.sdo_ordinates(SELF.ST_Dims()+1));
+            v_min_y := LEAST(   v_ring.geom.sdo_ordinates(2),v_ring.geom.sdo_ordinates(SELF.ST_Dims()+2));
+            v_max_x := GREATEST(v_ring.geom.sdo_ordinates(1),v_ring.geom.sdo_ordinates(SELF.ST_Dims()+1));
+            v_max_y := GREATEST(v_ring.geom.sdo_ordinates(2),v_ring.geom.sdo_ordinates(SELF.ST_Dims()+2));
             If ( v_ring.geom.sdo_elem_info(2) = 1003 ) Then
               v_ring.geom.sdo_ordinates :=
                 new mdsys.sdo_ordinate_array(
@@ -3146,8 +3128,8 @@ AS
     v_return_geom  mdsys.sdo_geometry;
     v_geom         mdsys.sdo_geometry;
     v_x_offset     pls_integer;
-    v_last_vertex  &&INSTALL_SCHEMA..t_vertex;
     v_first_vertex &&INSTALL_SCHEMA..t_vertex;
+    v_last_vertex  &&INSTALL_SCHEMA..t_vertex;
     v_vertex       &&INSTALL_SCHEMA..t_vertex;
     v_offset       Number;
     v_elem         Number;
@@ -3825,8 +3807,8 @@ AS
                     z         => p_old_vertex.z,
                     w         => p_old_vertex.w,
                     id        => p_old_vertex.id,
-                        sdo_gtype => SELF.ST_Sdo_GType(),
-                        sdo_srid  => SELF.ST_SRID()
+                    sdo_gtype => SELF.ST_Sdo_GType(),
+                    sdo_srid  => SELF.ST_SRID()
                     );
     v_new_vertex := &&INSTALL_SCHEMA..T_Vertex(
                     x         => p_new_vertex.x,
@@ -3834,8 +3816,8 @@ AS
                     z         => p_new_vertex.z,
                     w         => p_new_vertex.w,
                     id        => p_new_vertex.id,
-                        sdo_gtype => SELF.ST_SDO_GType(),
-                        sdo_srid  => SELF.ST_SRID()
+                    sdo_gtype => SELF.ST_SDO_GType(),
+                    sdo_srid  => SELF.ST_SRID()
                     );
     -- If mdsys.sdo_geometry is a single point coded in sdo_point, then update it
     If ( v_geom.sdo_point is not null ) Then
@@ -3992,6 +3974,7 @@ AS
     Is
       v_end_pt      &&INSTALL_SCHEMA..T_Vertex;
       v_internal_pt &&INSTALL_SCHEMA..T_Vertex;
+      v_segment     &&INSTALL_SCHEMA..T_Segment;
       v_deltaX      number;
       v_deltaY      number;
       v_length      number;
@@ -4001,14 +3984,17 @@ AS
        v_deltaX      := v_end_pt.x - v_internal_pt.x;
        v_deltaY      := v_end_pt.y - v_internal_pt.y;
        -- DEBUG dbms_output.put_line('Extend old v_length=' || v_length);
-       v_length      := &&INSTALL_SCHEMA..T_Segment(
+       v_segment     := &&INSTALL_SCHEMA..T_Segment(
                           p_Segment_id  => 0,
                           p_startCoord => v_end_pt,
                           p_endCoord   => v_internal_pt,
                           p_sdo_gtype  => SELF.ST_sdo_gtype,
-                          p_sdo_srid   => SELF.ST_SRID()
-                        )
-                        .ST_Length(SELF.tolerance,p_unit);
+                          p_sdo_srid   => SELF.ST_SRID(),
+                          p_projected  => SELF.projected,
+                          p_precision  => SELF.dPrecision,
+                          p_tolerance  => SELF.tolerance
+                        );
+      v_length := v_segment.ST_Length(p_unit);
        -- DEBUG dbms_output.put_line('Extend T_Segment v_length=' || v_length);
       IF (v_length<>0.0) Then -- probably should get previous vertex but...
          -- Assign to global T_GEOMETRY in case BOTH extension type
@@ -4270,8 +4256,8 @@ AS
                   from TABLE(CAST(SELF.ST_Vertices() as &&INSTALL_SCHEMA..T_Vertices)) v
              )
     loop
-      v_cogo.bearing  := v_start_vertex.ST_Bearing (p_vertex=>rec.vertex,p_projected=>SELF.projected);
-      v_cogo.distance := v_start_vertex.ST_Distance(p_vertex=>rec.vertex,p_unit=>p_unit);
+      v_cogo.bearing  := v_start_vertex.ST_Bearing (p_vertex=>rec.vertex,p_projected=>SELF.projected,p_normalize=>1);
+      v_cogo.distance := v_start_vertex.ST_Distance(p_vertex=>rec.vertex,p_tolerance=>SELF.tolerance,p_unit=>p_unit);
       v_cogo.Z        := rec.vertex.Z;
       PIPE ROW ( v_cogo );
       v_start_vertex  := rec.vertex;
@@ -5235,7 +5221,11 @@ AS
                                         SELF.tolerance,SELF.dPrecision,SELF.projected);  -- Extract linestring
       v_current_meas := v_egeom.ST_LRS_Measure_Range(p_unit); -- Detects measure/length
       if ( SELF.ST_NumElements() = 1 ) Then
-         Return v_egeom.ST_LRS_Locate_Measure(v_current_meas / 2,0/*offset*/,p_unit);
+         Return v_egeom.ST_LRS_Locate_Measure(
+                           p_measure => v_current_meas / 2,
+                           p_offset  => 0,
+                           p_unit    => p_unit
+                );
       End If;
       if ( v_elem = 1 ) Then
           if ( v_option_value = 'LARGEST' ) Then
@@ -5246,17 +5236,34 @@ AS
       End If;
       If ( v_option_value = 'MULTI' ) Then
           if ( v_centroid is null ) then
-             v_centroid := v_egeom.ST_LRS_Locate_Measure(v_egeom.ST_LRS_Start_Measure()+(v_current_meas/2),0/*offset*/,p_unit).geom;
+             v_centroid := v_egeom.ST_LRS_Locate_Measure(
+                                      p_measure => v_egeom.ST_LRS_Start_Measure()+(v_current_meas/2),
+                                      p_offset  => 0,
+                                      p_unit    => p_unit).geom;
           Else
-             v_centroid := mdsys.sdo_util.append(v_centroid,
-                                                 v_egeom.ST_LRS_Locate_Measure(v_egeom.ST_LRS_Start_Measure()+(v_current_meas/2),0/*offset*/,p_unit).geom);
+             v_centroid := mdsys.sdo_util
+                                .append(v_centroid,
+                                        v_egeom.ST_LRS_Locate_Measure(
+                                                   p_measure => v_egeom.ST_LRS_Start_Measure()+(v_current_meas/2),
+                                                   p_offset  => 0,
+                                                   p_unit    => p_unit).geom
+                                 );
           End If;
       Else -- Smallest or Largest
+          -- SGG These are the same but should be different?
           if ( v_option_value = 'LARGEST' and v_current_meas > v_centroid_len_meas ) Then
-             v_centroid := v_egeom.ST_LRS_Locate_Measure(v_egeom.ST_LRS_Start_Measure()+(v_current_meas/2),0/*offset*/,p_unit).geom;
+             v_centroid := v_egeom.ST_LRS_Locate_Measure(
+                                      p_measure => v_egeom.ST_LRS_Start_Measure()+(v_current_meas/2),
+                                      p_offset  => 0,
+                                      p_unit    => p_unit
+                                  ).geom;
              v_centroid_len_meas := v_current_meas;
           ElsIf ( v_option_value = 'SMALLEST' and v_current_meas < v_centroid_len_meas ) Then
-             v_centroid := v_egeom.ST_LRS_Locate_Measure(v_egeom.ST_LRS_Start_Measure()+(v_current_meas/2),0/*offset*/,p_unit).geom;
+             v_centroid := v_egeom.ST_LRS_Locate_Measure(
+                                      p_measure => v_egeom.ST_LRS_Start_Measure()+(v_current_meas/2),
+                                      p_offset  => 0,
+                                      p_unit    => p_unit
+                                  ).geom;
              v_centroid_len_meas := v_current_meas;
           End If;
       End If;
@@ -5541,7 +5548,6 @@ AS
       IF ( v_centroid is null
            OR
            sdo_geom.relate(v_centroid,'INSIDE',SELF.geom,0.005)='FALSE' ) Then
-          -- DEBUG
           if ( v_mbr is null ) Then
              v_mbr := SELF.ST_MBR().geom;
           End If;
@@ -5762,8 +5768,6 @@ SELECT CASE A.rin
         v_dense_geom  := v_segments(i)
                            .ST_Densify(
                                p_distance  => p_distance,
-                               p_tolerance => v_tolerance,
-                               p_projected => SELF.projected,
                                p_unit      => p_unit
                             );
         -- DEBUG DEBUG.printGeom(v_dense_geom,3,false,'v_dense_geom=');
@@ -5962,8 +5966,8 @@ SELECT CASE A.rin
       v_int_2          &&INSTALL_SCHEMA..T_vertex := &&INSTALL_SCHEMA..T_Vertex(p_id=>0,p_sdo_gtype => SELF.ST_sdo_gtype(),p_sdo_srid  => SELF.ST_SRID());
       v_prev_start     &&INSTALL_SCHEMA..T_vertex := &&INSTALL_SCHEMA..T_Vertex(p_id=>0,p_sdo_gtype => SELF.ST_sdo_gtype(),p_sdo_srid  => SELF.ST_SRID());
       v_last_vertex    &&INSTALL_SCHEMA..T_vertex := &&INSTALL_SCHEMA..T_Vertex(p_id=>0,p_sdo_gtype => SELF.ST_sdo_gtype(),p_sdo_srid  => SELF.ST_SRID());
-      v_segment        &&INSTALL_SCHEMA..T_Segment := &&INSTALL_SCHEMA..T_Segment(p_sdo_gtype => SELF.ST_sdo_gtype(),p_sdo_srid  => SELF.ST_SRID());
-      v_intersection   &&INSTALL_SCHEMA..T_Segment := &&INSTALL_SCHEMA..T_Segment(p_sdo_gtype => SELF.ST_sdo_gtype(),p_sdo_srid  => SELF.ST_SRID());
+      v_segment        &&INSTALL_SCHEMA..T_Segment;
+      v_intersection   &&INSTALL_SCHEMA..T_Segment;
       v_distance       number;
       v_angle          number;
       v_ratio          number;
@@ -6025,8 +6029,7 @@ SELECT CASE A.rin
                     FROM (SELECT o.segment_id                as segment_id,
                                  count(*) over (order by 1)  as number_of_Segments,
                                  o.ST_Self()                 as original_Segment,
-                                 o.ST_Parallel(p_offset    => p_offset,
-                                               p_projected => SELF.projected) as parallel_Segment
+                                 o.ST_Parallel(p_offset => p_offset) as parallel_Segment
                             FROM TABLE(p_linestring.ST_Segmentize(p_filter=>'ALL')) o
                          ) f
                   ORDER BY f.segment_id
@@ -6036,8 +6039,7 @@ SELECT CASE A.rin
         bDeformed := false;
 
         -- Compute base offset
-        v_az := rec.original_Segment.ST_Bearing(p_projected=>SELF.projected);
-        --v_dir  := CASE WHEN v_az < &&INSTALL_SCHEMA..COGO.PI() THEN -1 ELSE 1 END;
+        v_az      := rec.original_Segment.ST_Bearing();
         v_dir  := CASE WHEN v_az < &&INSTALL_SCHEMA..COGO.PI() THEN -1 ELSE 1 END;
         v_delta.x := ABS(COS(v_az)) * p_offset * v_dir;
         v_delta.y := ABS(SIN(v_az)) * p_offset * v_dir;
@@ -6073,43 +6075,56 @@ SELECT CASE A.rin
         -- merge segments at this point?
         IF (rec.segment_id > 1) THEN
            v_int_coord := rec.original_Segment.startCoord;
-          -- DEBUG dbms_output.put_line('Segment_id>1: v_int_coord= ' || v_int_coord.ST_AsText(3));
+           -- DEBUG dbms_output.put_line('Segment_id>1: v_int_coord= ' || v_int_coord.ST_AsText(3));
            -- Get intersection of two lines parallel at distance p_offset from current ones
-           v_segment := &&INSTALL_SCHEMA..T_Segment(1,
-                           &&INSTALL_SCHEMA..T_Vertex(
+           v_segment := &&INSTALL_SCHEMA..T_Segment(
+                           p_segment_id => 1,
+                           p_startCoord => &&INSTALL_SCHEMA..T_Vertex(
                              p_x         => round(v_adjusted_coord.x,SELF.dPrecision),
                              p_y         => round(v_adjusted_coord.y,SELF.dPrecision),
                              p_id        => 1,
                              p_sdo_gtype => SELF.ST_Sdo_GType(),
                              p_sdo_srid  => SELF.ST_SRID()
                            ),
-                           &&INSTALL_SCHEMA..T_Vertex(
+                           p_endCoord => &&INSTALL_SCHEMA..T_Vertex(
                              p_x         => round(rec.original_Segment.startCoord.x + v_prev_delta.x,SELF.dPrecision),
                              p_y         => round(rec.original_Segment.startCoord.y + v_prev_delta.y,SELF.dPrecision),
                              p_id        => 2,
                              p_sdo_gtype => SELF.ST_Sdo_GType(),
                              p_sdo_srid  => SELF.ST_SRID()
-                           )
+                           ),
+                           p_sdo_gtype   => rec.original_Segment.sdo_gtype,
+                           p_sdo_srid    => rec.original_Segment.sdo_srid,
+                           p_projected   => SELF.projected,
+                           p_precision   => SELF.dPrecision,
+                           p_tolerance   => SELF.tolerance
                           );
+           v_segment.PrecisionModel := rec.original_Segment.PrecisionModel;
            v_intersection := v_segment.ST_IntersectDetail(
                                p_segment =>
                                  &&INSTALL_SCHEMA..T_Segment(
-                                   1,
-                                   &&INSTALL_SCHEMA..T_Vertex(
+                                   p_segment_id => 1,
+                                   p_startCoord => &&INSTALL_SCHEMA..T_Vertex(
                                      p_x         => round(rec.original_Segment.endCoord.x   + v_delta.x,SELF.dPrecision),
                                      p_y         => round(rec.original_Segment.endCoord.y   + v_delta.y,SELF.dPrecision),
                                      p_id        => 1,
-                                     p_sdo_gtype => SELF.ST_Sdo_GType(),
+                                     p_sdo_gtype => SELF.ST_Sdo_GType(), /* sdo_gtype created by constructor from segment gtype */
                                      p_sdo_srid  => SELF.ST_SRID()),
-                                   &&INSTALL_SCHEMA..T_Vertex(
+                                   p_endCoord => &&INSTALL_SCHEMA..T_Vertex(
                                      p_x         => Round(rec.original_Segment.startCoord.x + v_delta.x,SELF.dPrecision),
                                      p_y         => Round(rec.original_Segment.startCoord.y + v_delta.y,SELF.dPrecision),
                                      p_id        => 2,
                                      p_sdo_gtype => SELF.ST_Sdo_GType(),
-                                     p_sdo_srid  => SELF.ST_SRID())
+                                     p_sdo_srid  => SELF.ST_SRID()
                                    ),
-                               p_tolerance=> SELF.tolerance,
-                               p_unit     => p_unit
+                                   p_sdo_gtype   => rec.original_Segment.sdo_gtype,
+                                   p_sdo_srid    => rec.original_Segment.sdo_srid,
+                                   p_projected   => SELF.projected,
+                                   p_precision   => SELF.dPrecision,
+                                   p_tolerance   => SELF.tolerance
+                               )
+                               /* SGG p_tolerance=> SELF.tolerance,
+                               p_unit     => p_unit */
                              );
            v_int_coord := v_intersection.startCoord;
            v_int_1     := v_intersection.midCoord;
@@ -6178,8 +6193,11 @@ SELECT CASE A.rin
                                     p_startCoord => v_int_coord,
                                     p_endCoord   => rec.original_Segment.startCoord,
                                     p_sdo_gtype  => p_linestring.ST_Sdo_gtype(),
-                                    p_sdo_srid   => p_linestring.ST_Srid())
-                               .ST_Length(p_linestring.tolerance,p_unit);
+                                    p_sdo_srid   => p_linestring.ST_Srid(),
+                                    p_projected  => SELF.projected,
+                                    p_precision  => SELF.dPrecision,
+                                    p_tolerance  => SELF.tolerance
+                           ).ST_Length(p_unit); /* SGG */
              v_ratio := ( p_offset / v_distance ) * SIGN(p_offset);
              -- 2. Top point of intersection circular arc
              v_adjusted_coord.x := Round(rec.original_Segment.startCoord.x + (( v_int_coord.x - rec.original_Segment.startCoord.x ) * v_ratio ),SELF.dPrecision);
@@ -6768,29 +6786,8 @@ SELECT CASE A.rin
     v_arcSnapPoint     &&INSTALL_SCHEMA..T_Vertex := &&INSTALL_SCHEMA..T_Vertex(p_id=>0,p_sdo_gtype => SELF.ST_sdo_gtype(),p_sdo_srid  => SELF.ST_SRID());
     v_vertex           &&INSTALL_SCHEMA..T_Vertex := &&INSTALL_SCHEMA..T_Vertex(p_vertex => p_vertex);
     v_centre           &&INSTALL_SCHEMA..T_Vertex := &&INSTALL_SCHEMA..T_Vertex(p_id=>0,p_sdo_gtype => SELF.ST_sdo_gtype(),p_sdo_srid  => SELF.ST_SRID());
-    v_segments         &&INSTALL_SCHEMA..T_Segments :=
-        &&INSTALL_SCHEMA..t_Segments(
-          &&INSTALL_SCHEMA..t_Segment(
-            p_Segment_id  => 0,
-            p_startCoord => &&INSTALL_SCHEMA..t_vertex(p_id=>1,p_sdo_gtype => SELF.ST_sdo_gtype(),p_sdo_srid  => SELF.ST_SRID()),
-            p_endCoord   => &&INSTALL_SCHEMA..T_Vertex(p_id=>2,p_sdo_gtype => SELF.ST_sdo_gtype(),p_sdo_srid  => SELF.ST_SRID()),
-            p_sdo_gtype  => SELF.geom.sdo_gtype,
-            p_sdo_srid   => SELF.geom.sdo_srid
-          )
-        );
-
-    --PRAGMA INLINE (ComputeArcLength, 'YES');
-    Function ComputeArcLength(p_Radius in number,
-                              p_Angle  in number)
-    Return Number
-    IS
+    v_segments         &&INSTALL_SCHEMA..T_Segments := &&INSTALL_SCHEMA..t_Segments(&&INSTALL_SCHEMA..t_Segment());
     BEGIN
-      -- Replaced &&INSTALL_SCHEMA..COGO.PI() / 180 with acos(-1) / 180.0
-      Return p_Radius * p_Angle * acos(-1) / 180.0;
-    END ComputeArcLength;
-
-  Begin
-    -- Only makes sense to split a linestring with a point
     If ( SELF.ST_Dimension() <> 1 ) Then
        raise_application_error(c_i_not_geom,
                                REPLACE(
@@ -6843,16 +6840,22 @@ SELECT CASE A.rin
                                                            p_startCoord => seg.startCoord,
                                                            p_endCoord   => p_vertex,
                                                            p_sdo_gtype  => SELF.ST_sdo_gtype(),
-                                                           p_sdo_srid   => SELF.ST_Srid()
-                                                         ).ST_Length(SELF.tolerance,p_unit) as startDist,
+                                                           p_sdo_srid   => SELF.ST_Srid(),
+                                                           p_projected  => SELF.projected,
+                                                           p_precision  => SELF.dPrecision,
+                                                           p_tolerance  => SELF.tolerance
+                                                         ).ST_Length(p_unit) as startDist, /* SGG */
                                                          case when seg.midCoord.x is not null
                                                               then &&INSTALL_SCHEMA..T_Segment(
                                                                      p_Segment_id => 0,
                                                                      p_startCoord => seg.midCoord,
                                                                      p_endCoord   => p_vertex,
                                                                      p_sdo_gtype  => SELF.st_sdo_gtype(),
-                                                                     p_sdo_srid   => SELF.ST_Srid()
-                                                                   ).ST_Length(SELF.tolerance,p_unit)
+                                                                     p_sdo_srid   => SELF.ST_Srid(),
+                                                                     p_projected  => SELF.projected,
+                                                                     p_precision  => SELF.dPrecision,
+                                                                     p_tolerance  => SELF.tolerance
+                                                                   ).ST_Length(p_unit)
                                                               else CAST(NULL as number)
                                                           end as midDist,
                                                          &&INSTALL_SCHEMA..T_Segment(
@@ -6860,12 +6863,13 @@ SELECT CASE A.rin
                                                            p_startCoord => seg.endCoord,
                                                            p_endCoord   => p_vertex,
                                                            p_sdo_gtype  => SELF.st_sdo_gtype(),
-                                                           p_sdo_srid   => SELF.ST_Srid()
-                                                         ).ST_Length(SELF.tolerance,p_unit) as endDist,
+                                                           p_sdo_srid   => SELF.ST_Srid(),
+                                                           p_projected  => SELF.projected,
+                                                           p_precision  => SELF.dPrecision,
+                                                           p_tolerance  => SELF.tolerance
+                                                         ).ST_Length(p_unit) as endDist,  /* SGG */
                                                          seg.ST_Distance(p_vertex    => p_vertex,
-                                                                         p_tolerance => SELF.tolerance,
-                                                                         p_dPrecision => SELF.dPrecision,
-                                                                         p_unit      => p_unit) as linedist  -- will be slope dist if > 11gr2 and Spatial else planar
+                                                                         p_unit   => p_unit) as linedist
                                                    FROM TABLE(SELF.ST_Segmentize(p_filter=>'ALL')) seg
                                                   ORDER BY 5 /* linedist */
                                                  ) f
@@ -6895,7 +6899,7 @@ SELECT CASE A.rin
            -- DEBUG dbms_output.put_line('v_rec.line.midCoord = ' || v_rec.line.midCoord.ST_asText(3));
            -- All calculations assume that the circular arc segment/segment is no larger than a semi-circle.
            --
-           v_centre := v_rec.line.ST_FindCircle(); -- ID holds radius
+           v_centre := v_rec.line.ST_FindCircle(); -- ID holds flag indicating whether centre found.
            If ( v_centre.id = -9 ) Then -- Points are collinear and no finite-radius circle through them exists.
                -- DEBUG dbms_output.put_line('v_centre=(' || v_centre.x|| ',' || v_centre.y||','||v_centre.z||')');
                -- get bearing from centre to p_vertex
@@ -6916,9 +6920,9 @@ SELECT CASE A.rin
            -- DEBUG dbms_output.put_line('Point splits line at the start of the segment');
            -- Point splits line at the start of the segment
            v_segments.EXTEND(v_extend);
-           v_segments(v_segments.COUNT-(v_extend-1)) := &&INSTALL_SCHEMA..T_Segment(v_rec.line);
+           v_segments(v_segments.COUNT-(v_extend-1)) := &&INSTALL_SCHEMA..T_Segment(p_segment => v_rec.line);
            if ( v_extend = 2 ) Then
-               v_segments(v_segments.COUNT) := &&INSTALL_SCHEMA..T_Segment(v_rec.adjoiningSegment);
+               v_segments(v_segments.COUNT) := &&INSTALL_SCHEMA..T_Segment(p_segment => v_rec.adjoiningSegment);
            end if;
         elsif ( ROUND(v_rec.midDist,SELF.dPrecision) = 0 ) OR
               ( ROUND(v_rec.midDist,SELF.dPrecision) = ROUND(v_rec.lineDist,SELF.dPrecision) ) Then
@@ -6934,7 +6938,10 @@ SELECT CASE A.rin
                  p_midCoord      => v_centre.ST_FromBearingAndDistance(v_bearing - ABS(v_arcAngle2SnapPt / 2.0),v_centre.z,SELF.projected),
                  p_endCoord      => v_arcSnapPoint,
                  p_sdo_gtype     => SELF.geom.sdo_gtype,
-                 p_sdo_srid      => SELF.ST_Srid()
+                 p_sdo_srid      => SELF.ST_Srid(),
+                 p_projected     => SELF.projected,
+                 p_precision     => SELF.dPrecision,
+                 p_tolerance     => SELF.tolerance
                );
            -- segment two is the circular arc from the mid to the end
            v_arcAngle2End := &&INSTALL_SCHEMA..COGO.ST_Degrees(v_centre.ST_SubtendedAngle(v_arcSnapPoint,v_rec.line.EndCoord));
@@ -6947,7 +6954,10 @@ SELECT CASE A.rin
                  p_midCoord      => v_centre.ST_FromBearingAndDistance(v_bearing + ABS(v_arcAngle2End / 2.0),v_centre.z,SELF.projected),
                  p_endCoord      => v_rec.line.endCoord,
                  p_sdo_gtype     => SELF.geom.sdo_gtype,
-                 p_sdo_srid      => SELF.ST_Srid()
+                 p_sdo_srid      => SELF.ST_Srid(),
+                 p_projected     => SELF.projected,
+                 p_precision     => SELF.dPrecision,
+                 p_tolerance     => SELF.tolerance
                );
         elsif ( ROUND(v_rec.endDist,SELF.dPrecision) = 0 ) OR
               ( ROUND(v_rec.endDist,SELF.dPrecision) = ROUND(v_rec.lineDist,SELF.dPrecision) ) then
@@ -6961,23 +6971,18 @@ SELECT CASE A.rin
                v_segments(v_segments.COUNT) := &&INSTALL_SCHEMA..T_Segment(v_rec.adjoiningSegment);
            end if;
         elsif ( ROUND(v_rec.lineDist,SELF.dPrecision) = 0 ) Then
-           -- DEBUG
-dbms_output.put_line('point is on line/circular arc between start and end of segment');
+           -- DEBUG dbms_output.put_line('point is on line/circular arc between start and end of segment');
            if ( v_rec.line.midCoord is not null ) Then
-             -- DEBUG
-dbms_output.put_line('Circular Arc: Point is ON circular arc between start and end of segment');
+             -- DEBUG dbms_output.put_line('Circular Arc: Point is ON circular arc between start and end of segment');
              -- is length to point < length to midpoint?
              v_arcAngle2SnapPt  := &&INSTALL_SCHEMA..COGO.ST_Degrees(v_centre.ST_SubtendedAngle(v_rec.line.startCoord,v_arcSnapPoint));
-             v_arcLength2SnapPt := ROUND(ComputeArcLength(v_centre.z /*Radius*/,v_arcAngle2SnapPt),SELF.dPrecision);
+             v_arcLength2SnapPt := ROUND(&&INSTALL_SCHEMA..COGO.ComputeArcLength(v_centre.z ,v_arcAngle2SnapPt),SELF.dPrecision);
              v_arcAngle2Mid     := &&INSTALL_SCHEMA..COGO.ST_Degrees(v_centre.ST_SubtendedAngle(v_rec.line.startCoord,v_rec.line.midCoord));
-             v_arcLength2Mid    := ROUND(ComputeArcLength(v_centre.z /*Radius*/,v_arcAngle2Mid),SELF.dPrecision);
-              -- DEBUG
-dbms_output.put_line('&&INSTALL_SCHEMA..COGO.ST_Degrees(v_arcAngle2SnapPt)=' || v_arcAngle2SnapPt || ' v_arcLength2SnapPt= ' || v_arcLength2SnapPt);
-              -- DEBUG
-dbms_output.put_line('&&INSTALL_SCHEMA..COGO.ST_Degrees(v_arcAngle2Mid)   =' || v_arcAngle2Mid    || ' v_arcLength2Mid   = ' || v_arcLength2Mid );
+             v_arcLength2Mid    := ROUND(&&INSTALL_SCHEMA..COGO.ComputeArcLength(v_centre.z ,v_arcAngle2Mid),SELF.dPrecision);
+             -- DEBUG dbms_output.put_line('&&INSTALL_SCHEMA..COGO.ST_Degrees(v_arcAngle2SnapPt)=' || v_arcAngle2SnapPt || ' v_arcLength2SnapPt= ' || v_arcLength2SnapPt);
+             -- DEBUG dbms_output.put_line('&&INSTALL_SCHEMA..COGO.ST_Degrees(v_arcAngle2Mid)   =' || v_arcAngle2Mid    || ' v_arcLength2Mid   = ' || v_arcLength2Mid );
               if (ABS(v_arcLength2SnapPt) < ABS(v_arcLength2Mid) ) Then
-                -- DEBUG
-dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
+                -- DEBUG dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
                 -- Vertices that define:
                 -- First circular arc are Start/New/Mid
                 -- Second circular arc are Snap/Mid/End
@@ -6985,25 +6990,37 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
                 -- Need to calculate a point on the curve between start point and snap point
                 v_segments(v_segments.COUNT-1) :=
                    &&INSTALL_SCHEMA..T_Segment(
-                     p_element_id    => v_rec.line.element_id,
-                     p_subelement_id => v_rec.line.subelement_id,
-                     p_Segment_id    => v_rec.line.segment_id,
-                     p_startCoord    => v_rec.line.startCoord,
-                     p_midCoord      => v_centre.ST_FromBearingAndDistance(v_bearing - ABS(v_arcAngle2SnapPt / 2.0),v_centre.z,SELF.projected),
-                     p_endCoord      => v_rec.line.midCoord,
-                     p_sdo_gtype     => SELF.geom.sdo_gtype,
-                     p_sdo_srid      => SELF.ST_Srid()
+                     element_id    => v_rec.line.element_id,
+                     subelement_id => v_rec.line.subelement_id,
+                     Segment_id    => v_rec.line.segment_id,
+                     startCoord    => v_rec.line.startCoord,
+                     midCoord      => v_centre.ST_FromBearingAndDistance(v_bearing - ABS(v_arcAngle2SnapPt / 2.0),v_centre.z,SELF.projected),
+                     endCoord      => v_rec.line.midCoord,
+                     sdo_gtype     => SELF.geom.sdo_gtype,
+                     sdo_srid      => SELF.ST_Srid(),
+                     projected     => SELF.projected,
+                     precisionModel  => &&INSTALL_SCHEMA..T_PrecisionModel(
+                                                 xy        => SELF.dPrecision,
+                                                 z         => NULL,
+                                                 w         => NULL,
+                                                 tolerance => SELF.tolerance )
                    );
                 v_segments(v_segments.COUNT  ) :=
                     &&INSTALL_SCHEMA..T_Segment(
-                      p_element_id    => v_rec.line.element_id,
-                      p_subelement_id => v_rec.line.subelement_id,
-                      p_Segment_id    => v_rec.line.segment_id,
-                      p_startCoord    => v_arcSnapPoint,
-                      p_midCoord      => v_rec.line.midCoord,
-                      p_endCoord      => v_rec.line.endCoord,
-                      p_sdo_gtype     => SELF.geom.sdo_gtype,
-                      p_sdo_srid      => SELF.ST_Srid()
+                      element_id    => v_rec.line.element_id,
+                      subelement_id => v_rec.line.subelement_id,
+                      Segment_id    => v_rec.line.segment_id,
+                      startCoord    => v_arcSnapPoint,
+                      midCoord      => v_rec.line.midCoord,
+                      endCoord      => v_rec.line.endCoord,
+                      sdo_gtype     => SELF.geom.sdo_gtype,
+                      sdo_srid      => SELF.ST_Srid(),
+                      projected     => SELF.projected,
+                      precisionModel  => &&INSTALL_SCHEMA..T_PrecisionModel(
+                                                 xy        => SELF.dPrecision,
+                                                 z         => NULL,
+                                                 w         => NULL,
+                                                 tolerance => SELF.tolerance )
                     );
               ElsIf ( ROUND(v_arcLength2SnapPt,SELF.dPrecision) = ROUND(v_arcLength2Mid,SELF.dPrecision)) Then
                 -- DEBUG dbms_output.put_line('Circular arc: length to point IS = length to midpoint?');
@@ -7014,25 +7031,37 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
                 -- Need to calculate a point on the curve between start point and snap point
                 v_segments(v_segments.COUNT-1) :=
                     &&INSTALL_SCHEMA..T_Segment(
-                      p_element_id    => v_rec.line.element_id,
-                      p_subelement_id => v_rec.line.subelement_id,
-                      p_Segment_id    => v_rec.line.segment_id,
-                      p_startCoord    => v_rec.line.startCoord,
-                      p_midCoord      => v_centre.ST_FromBearingAndDistance(v_bearing - ABS(v_arcAngle2SnapPt / 2.0),v_centre.z,SELF.projected),
-                      p_endCoord      => v_rec.line.midCoord,
-                      p_sdo_gtype     => SELF.ST_sdo_gtype(),
-                      p_sdo_srid      => SELF.ST_Srid()
+                      element_id    => v_rec.line.element_id,
+                      subelement_id => v_rec.line.subelement_id,
+                      Segment_id    => v_rec.line.segment_id,
+                      startCoord    => v_rec.line.startCoord,
+                      midCoord      => v_centre.ST_FromBearingAndDistance(v_bearing - ABS(v_arcAngle2SnapPt / 2.0),v_centre.z,SELF.projected),
+                      endCoord      => v_rec.line.midCoord,
+                      sdo_gtype     => SELF.ST_sdo_gtype(),
+                      sdo_srid      => SELF.ST_Srid(),
+                      projected     => SELF.projected,
+                      precisionModel=> &&INSTALL_SCHEMA..T_PrecisionModel(
+                                                 xy        => SELF.dPrecision,
+                                                 z         => NULL,
+                                                 w         => NULL,
+                                                 tolerance => SELF.tolerance )
                     );
                 v_segments(v_segments.COUNT  ) :=
                     &&INSTALL_SCHEMA..T_Segment(
-                      p_element_id    => v_rec.line.element_id,
-                      p_subelement_id => v_rec.line.subelement_id,
-                      p_Segment_id    => v_rec.line.segment_id,
-                      p_startCoord    => v_rec.line.midCoord,
-                      p_midCoord      => v_centre.ST_FromBearingAndDistance(v_bearing + ABS(v_arcAngle2SnapPt / 2.0),v_centre.z,SELF.projected),
-                      p_endCoord      => v_rec.line.endCoord,
-                      p_sdo_gtype     => SELF.ST_sdo_gtype(),
-                      p_sdo_srid      => SELF.ST_Srid()
+                      element_id    => v_rec.line.element_id,
+                      subelement_id => v_rec.line.subelement_id,
+                      Segment_id    => v_rec.line.segment_id,
+                      startCoord    => v_rec.line.midCoord,
+                      midCoord      => v_centre.ST_FromBearingAndDistance(v_bearing + ABS(v_arcAngle2SnapPt / 2.0),v_centre.z,SELF.projected),
+                      endCoord      => v_rec.line.endCoord,
+                      sdo_gtype     => SELF.ST_sdo_gtype(),
+                      sdo_srid      => SELF.ST_Srid(),
+                      projected     => SELF.projected,
+                      precisionModel=> &&INSTALL_SCHEMA..T_PrecisionModel(
+                                                 xy        => SELF.dPrecision,
+                                                 z         => NULL,
+                                                 w         => NULL,
+                                                 tolerance => SELF.tolerance )
                    );
               Else
                 -- DEBUG dbms_output.put_line('Circular arc: length to point IS > length to midpoint?');
@@ -7043,26 +7072,39 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
                 -- need point on curve between snap point and end point
                 v_segments(v_segments.COUNT-1) :=
                    &&INSTALL_SCHEMA..T_Segment(
-                     p_element_id    => v_rec.line.element_id,
-                     p_subelement_id => v_rec.line.subelement_id,
-                     p_Segment_id    => v_rec.line.segment_id,
-                     p_startCoord    => v_rec.line.startCoord,
-                     p_midCoord      => v_rec.line.midCoord,
-                     p_endCoord      => v_arcSnapPoint,
-                     p_sdo_gtype     => SELF.ST_sdo_gtype(),
-                     p_sdo_srid      => SELF.ST_Srid()
+                     element_id    => v_rec.line.element_id,
+                     subelement_id => v_rec.line.subelement_id,
+                     Segment_id    => v_rec.line.segment_id,
+                     startCoord    => v_rec.line.startCoord,
+                     midCoord      => v_rec.line.midCoord,
+                     endCoord      => v_arcSnapPoint,
+                     sdo_gtype     => SELF.ST_sdo_gtype(),
+                     sdo_srid      => SELF.ST_Srid(),
+                     projected     => SELF.projected,
+                     precisionModel=> &&INSTALL_SCHEMA..T_PrecisionModel(
+                                                 xy        => SELF.dPrecision,
+                                                 z         => NULL,
+                                                 w         => NULL,
+                                                 tolerance => SELF.tolerance )
+
                   );
                 v_arcAngle2End := &&INSTALL_SCHEMA..COGO.ST_Degrees(v_centre.ST_SubtendedAngle(v_arcSnapPoint,v_rec.line.EndCoord));
                 v_segments(v_segments.COUNT) :=
                   &&INSTALL_SCHEMA..T_Segment(
-                    p_element_id    => v_rec.line.element_id,
-                    p_subelement_id => v_rec.line.subelement_id,
-                    p_Segment_id    => v_rec.line.segment_id,
-                    p_startCoord    => v_arcSnapPoint,
-                    p_midCoord      => v_centre.ST_FromBearingAndDistance(v_bearing + ABS(v_arcAngle2End / 2.0),v_centre.z,SELF.projected),
-                    p_endCoord      => v_rec.line.endCoord,
-                    p_sdo_gtype     => SELF.ST_sdo_gtype(),
-                    p_sdo_srid      => SELF.ST_Srid()
+                    element_id    => v_rec.line.element_id,
+                    subelement_id => v_rec.line.subelement_id,
+                    Segment_id    => v_rec.line.segment_id,
+                    startCoord    => v_arcSnapPoint,
+                    midCoord      => v_centre.ST_FromBearingAndDistance(v_bearing + ABS(v_arcAngle2End / 2.0),v_centre.z,SELF.projected),
+                    endCoord      => v_rec.line.endCoord,
+                    sdo_gtype     => SELF.ST_sdo_gtype(),
+                    sdo_srid      => SELF.ST_Srid(),
+                    projected     => SELF.projected,
+                    precisionModel=> &&INSTALL_SCHEMA..T_PrecisionModel(
+                                                 xy        => SELF.dPrecision,
+                                                 z         => NULL,
+                                                 w         => NULL,
+                                                 tolerance => SELF.tolerance )
                 );
               End If;
            Else
@@ -7082,68 +7124,89 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
                v_segments.EXTEND(2);
                v_segments(v_segments.COUNT-1) :=
                  &&INSTALL_SCHEMA..T_Segment(
-                   p_element_id    => v_rec.line.element_id,
-                   p_subelement_id => v_rec.line.subelement_id,
-                   p_Segment_id    => v_rec.line.segment_id,
-                   p_startCoord    => v_rec.line.startCoord,
-                   p_endCoord      => v_vertex,
-                   p_sdo_gtype     => SELF.ST_sdo_gtype(),
-                   p_sdo_srid      => SELF.ST_Srid()
+                    element_id    => v_rec.line.element_id,
+                    subelement_id => v_rec.line.subelement_id,
+                    Segment_id    => v_rec.line.segment_id,
+                    startCoord    => v_rec.line.startCoord,
+                    midCoord      => NULL,
+                    endCoord      => v_vertex,
+                    sdo_gtype     => SELF.ST_sdo_gtype(),
+                    sdo_srid      => SELF.ST_Srid(),
+                    projected     => SELF.projected,
+                    precisionModel=> &&INSTALL_SCHEMA..T_PrecisionModel(
+                                                 xy        => SELF.dPrecision,
+                                                 z         => NULL,
+                                                 w         => NULL,
+                                                 tolerance => SELF.tolerance )
                 );
                -- DEBUG dbms_output.put_line('    First segment: ' || v_segments(v_segments.COUNT-1).ST_AsText(SELF.dPrecision));
                v_segments(v_segments.COUNT  ) :=
                  &&INSTALL_SCHEMA..T_Segment(
-                   p_element_id    => v_rec.line.element_id,
-                   p_subelement_id => v_rec.line.subelement_id,
-                   p_Segment_id    => v_rec.line.segment_id,
-                   p_startCoord    => v_vertex,
-                   p_endCoord      => v_rec.line.endCoord,
-                   p_sdo_gtype     => SELF.ST_sdo_gtype(),
-                   p_sdo_srid      => SELF.ST_Srid()
+                    element_id    => v_rec.line.element_id,
+                    subelement_id => v_rec.line.subelement_id,
+                    Segment_id    => v_rec.line.segment_id,
+                    startCoord    => v_vertex,
+                    midCoord      => NULL,
+                    endCoord      => v_rec.line.endCoord,
+                    sdo_gtype     => SELF.ST_sdo_gtype(),
+                    sdo_srid      => SELF.ST_Srid(),
+                    projected     => SELF.projected,
+                    precisionModel=> &&INSTALL_SCHEMA..T_PrecisionModel(
+                                                 xy        => SELF.dPrecision,
+                                                 z         => NULL,
+                                                 w         => NULL,
+                                                 tolerance => SELF.tolerance )
                 );
                -- DEBUG dbms_output.put_line('   Second segment: ' || v_segments(v_segments.COUNT).ST_AsText(SELF.dPrecision));
            End If;
         Else
            If ( v_rec.line.midCoord is not null ) Then
-             -- DEBUG
-dbms_output.put_line('Circular arc: Point is off of a circular arc line');
-             -- is length to point < length to midpoint?
+             -- DEBUG dbms_output.put_line('Circular arc: Point is off of a circular arc line');
              v_arcAngle2SnapPt  := &&INSTALL_SCHEMA..COGO.ST_Degrees(v_centre.ST_SubtendedAngle(v_rec.line.startCoord,v_arcSnapPoint));
-             v_arcLength2SnapPt := ROUND(ComputeArcLength(v_centre.z /*Radius*/,v_arcAngle2SnapPt),SELF.dPrecision);
+             v_arcLength2SnapPt := ROUND(&&INSTALL_SCHEMA..COGO.ComputeArcLength(v_centre.z ,v_arcAngle2SnapPt),SELF.dPrecision);
              v_arcAngle2Mid     := &&INSTALL_SCHEMA..COGO.ST_Degrees(v_centre.ST_SubtendedAngle(v_rec.line.startCoord,v_rec.line.midCoord));
-             v_arcLength2Mid    := ROUND(ComputeArcLength(v_centre.z /*Radius*/,v_arcAngle2Mid),SELF.dPrecision);
-             -- DEBUG
-dbms_output.put_line('&&INSTALL_SCHEMA..COGO.ST_Degrees(v_arcAngle2SnapPt)=' || v_arcAngle2SnapPt || ' v_arcLength2SnapPt= ' || v_arcLength2SnapPt );
-             -- DEBUG
-dbms_output.put_line('&&INSTALL_SCHEMA..COGO.ST_Degrees(v_arcAngle2Mid)   =' || v_arcAngle2Mid    || ' v_arcLength2Mid   = ' || v_arcLength2Mid );
+             v_arcLength2Mid    := ROUND(&&INSTALL_SCHEMA..COGO.ComputeArcLength(v_centre.z ,v_arcAngle2Mid),SELF.dPrecision);
+             -- DEBUG dbms_output.put_line('&&INSTALL_SCHEMA..COGO.ST_Degrees(v_arcAngle2SnapPt)=' || v_arcAngle2SnapPt || ' v_arcLength2SnapPt= ' || v_arcLength2SnapPt );
+             -- DEBUG dbms_output.put_line('&&INSTALL_SCHEMA..COGO.ST_Degrees(v_arcAngle2Mid)   =' || v_arcAngle2Mid    || ' v_arcLength2Mid   = ' || v_arcLength2Mid );
              if (ABS(ROUND(v_arcLength2SnapPt,SELF.dPrecision)) < ABS(ROUND(v_arcLength2Mid,SELF.dPrecision)) ) Then
-                -- DEBUG
-dbms_output.put_line('Circular arc: length to snap point IS < length to midpoint');
+                -- DEBUG dbms_output.put_line('Circular arc: length to snap point IS < length to midpoint');
                 -- Vertices that define First  circular arc are Start/New/Snap
                 -- Vertices that define Second circular arc are Snap/Mid/End
                 v_segments.EXTEND(2);
                 -- Need to calculate a point on the curve between start point and snap point
                 v_segments(v_segments.COUNT-1) :=
                   &&INSTALL_SCHEMA..T_Segment(
-                    p_element_id    => v_rec.line.element_id,
-                    p_subelement_id => v_rec.line.subelement_id,
-                    p_Segment_id    => v_rec.line.segment_id,
-                    p_startCoord    => v_rec.line.startCoord,
-                    p_midCoord      => v_centre.ST_FromBearingAndDistance(v_bearing - ABS(v_arcAngle2SnapPt / 2.0),v_centre.z,SELF.projected),
-                    p_endCoord      => v_arcSnapPoint,
-                    p_sdo_gtype     => SELF.ST_sdo_gtype(),
-                    p_sdo_srid      => SELF.ST_Srid()
+                    element_id    => v_rec.line.element_id,
+                    subelement_id => v_rec.line.subelement_id,
+                    Segment_id    => v_rec.line.segment_id,
+                    startCoord    => v_rec.line.startCoord,
+                    midCoord      => v_centre.ST_FromBearingAndDistance(v_bearing - ABS(v_arcAngle2SnapPt / 2.0),v_centre.z,SELF.projected),
+                    endCoord      => v_arcSnapPoint,
+                    sdo_gtype     => SELF.ST_sdo_gtype(),
+                    sdo_srid      => SELF.ST_Srid(),
+                    projected     => SELF.projected,
+                    precisionModel=> &&INSTALL_SCHEMA..T_PrecisionModel(
+                                                 xy        => SELF.dPrecision,
+                                                 z         => NULL,
+                                                 w         => NULL,
+                                                 tolerance => SELF.tolerance )
                   );
                 v_segments(v_segments.COUNT  ) :=
                   &&INSTALL_SCHEMA..T_Segment(
-                    p_element_id    => v_rec.line.element_id,
-                    p_subelement_id => v_rec.line.subelement_id,
-                    p_Segment_id    => v_rec.line.segment_id,
-                    p_startCoord    => v_arcSnapPoint,
-                    p_midCoord      => v_rec.line.midCoord,
-                    p_endCoord      => v_rec.line.endCoord,
-                    p_sdo_gtype     => SELF.ST_sdo_gtype(),
-                    p_sdo_srid      => SELF.ST_Srid()
+                    element_id    => v_rec.line.element_id,
+                    subelement_id => v_rec.line.subelement_id,
+                    Segment_id    => v_rec.line.segment_id,
+                    startCoord    => v_arcSnapPoint,
+                    midCoord      => v_rec.line.midCoord,
+                    endCoord      => v_rec.line.endCoord,
+                    sdo_gtype     => SELF.ST_sdo_gtype(),
+                    sdo_srid      => SELF.ST_Srid(),
+                    projected     => SELF.projected,
+                    precisionModel=> &&INSTALL_SCHEMA..T_PrecisionModel(
+                                                 xy        => SELF.dPrecision,
+                                                 z         => NULL,
+                                                 w         => NULL,
+                                                 tolerance => SELF.tolerance )
                   );
               Else
                 -- DEBUG dbms_output.put_line('circular arc: length to snap point IS > length to midpoint');
@@ -7155,25 +7218,37 @@ dbms_output.put_line('Circular arc: length to snap point IS < length to midpoint
                 v_arcAngle2End := &&INSTALL_SCHEMA..COGO.ST_Degrees(v_centre.ST_SubtendedAngle(v_arcSnapPoint,v_rec.line.EndCoord));
                 v_segments(v_segments.COUNT-1) :=
                   &&INSTALL_SCHEMA..T_Segment(
-                    p_element_id    => v_rec.line.element_id,
-                    p_subelement_id => v_rec.line.subelement_id,
-                    p_Segment_id     => v_rec.line.segment_id,
-                    p_startCoord    => v_rec.line.startCoord,
-                    p_midCoord      => v_rec.line.midCoord,
-                    p_endCoord      => v_arcSnapPoint,
-                    p_sdo_gtype     => SELF.st_sdo_gtype(),
-                    p_sdo_srid      => SELF.ST_Srid()
+                    element_id    => v_rec.line.element_id,
+                    subelement_id => v_rec.line.subelement_id,
+                    Segment_id     => v_rec.line.segment_id,
+                    startCoord    => v_rec.line.startCoord,
+                    midCoord      => v_rec.line.midCoord,
+                    endCoord      => v_arcSnapPoint,
+                    sdo_gtype     => SELF.st_sdo_gtype(),
+                    sdo_srid      => SELF.ST_Srid(),
+                    projected     => SELF.projected,
+                    precisionModel=> &&INSTALL_SCHEMA..T_PrecisionModel(
+                                                 xy        => SELF.dPrecision,
+                                                 z         => NULL,
+                                                 w         => NULL,
+                                                 tolerance => SELF.tolerance )
                   );
                 v_segments(v_segments.COUNT) :=
                   &&INSTALL_SCHEMA..T_Segment(
-                    p_element_id    => v_rec.line.element_id,
-                    p_subelement_id => v_rec.line.subelement_id,
-                    p_Segment_id    => v_rec.line.segment_id,
-                    p_startCoord    => v_arcSnapPoint,
-                    p_midCoord      => v_centre.ST_FromBearingAndDistance(v_bearing + ABS(v_arcAngle2End / 2.0),v_centre.z,SELF.projected),
-                    p_endCoord      => v_rec.line.endCoord,
-                    p_sdo_gtype     => SELF.st_sdo_gtype(),
-                    p_sdo_srid      => SELF.ST_Srid()
+                    element_id    => v_rec.line.element_id,
+                    subelement_id => v_rec.line.subelement_id,
+                    Segment_id    => v_rec.line.segment_id,
+                    startCoord    => v_arcSnapPoint,
+                    midCoord      => v_centre.ST_FromBearingAndDistance(v_bearing + ABS(v_arcAngle2End / 2.0),v_centre.z,SELF.projected),
+                    endCoord      => v_rec.line.endCoord,
+                    sdo_gtype     => SELF.st_sdo_gtype(),
+                    sdo_srid      => SELF.ST_Srid(),
+                    projected     => SELF.projected,
+                    precisionModel=> &&INSTALL_SCHEMA..T_PrecisionModel(
+                                                 xy        => SELF.dPrecision,
+                                                 z         => NULL,
+                                                 w         => NULL,
+                                                 tolerance => SELF.tolerance )
                   );
               End If;
            Else
@@ -7181,7 +7256,7 @@ dbms_output.put_line('Circular arc: length to snap point IS < length to midpoint
              v_ratio := /* distance start to drop point / total length of segment */
                       SQRT(POWER(v_rec.startDist,2) -
                            POWER(v_rec.lineDist,2)) /
-                      v_rec.line.ST_Length(p_tolerance=>SELF.tolerance,p_unit=>p_unit);
+                      v_rec.line.ST_Length(p_unit=>p_unit);
              -- DEBUG dbms_output.put_line('distance start to drop point: ' || SQRT(POWER(v_rec.startDist,2)-POWER(v_rec.lineDist,2)));
              -- DEBUG dbms_output.put_line('total length of segment: ' || v_rec.line.ST_Length(SELF.tolerance,p_unit));
              -- DEBUG dbms_output.put_line('V_Ratio is: ' || v_ratio);
@@ -7208,7 +7283,10 @@ dbms_output.put_line('Circular arc: length to snap point IS < length to midpoint
                  p_startCoord    => v_rec.line.startCoord,
                  p_endCoord      => v_vertex,
                  p_sdo_gtype     => SELF.st_sdo_gtype(),
-                 p_sdo_srid      => SELF.ST_Srid()
+                 p_sdo_srid      => SELF.ST_Srid(),
+                 p_projected     => SELF.projected,
+                 p_precision     => SELF.dPrecision,
+                 p_tolerance     => SELF.tolerance 
               );
 
              -- DEBUG dbms_output.put_line('Segment(' || (v_segments.COUNT-1) || ')=' || v_segments(v_segments.COUNT-1).ST_AsText(3));
@@ -7217,10 +7295,13 @@ dbms_output.put_line('Circular arc: length to snap point IS < length to midpoint
                  p_element_id    => v_rec.line.element_id,
                  p_subelement_id => v_rec.line.subelement_id,
                  p_Segment_id    => v_rec.line.segment_id,
-                 p_startCoord    => v_vertex, -- v_segments(v_segments.COUNT-1).line.endCoord,
+                 p_startCoord    => v_vertex,
                  p_endCoord      => v_rec.line.endCoord,
                  p_sdo_gtype     => SELF.st_sdo_gtype(),
-                 p_sdo_srid      => SELF.ST_Srid()
+                 p_sdo_srid      => SELF.ST_Srid(),
+                 p_projected     => SELF.projected,
+                 p_precision     => SELF.dPrecision,
+                 p_tolerance     => SELF.tolerance 
               );
              -- DEBUG dbms_output.put_line('Segment(' || (v_segments.COUNT) || ')=' || v_segments(v_segments.COUNT).ST_AsText(3));
            End If;
@@ -7288,19 +7369,7 @@ dbms_output.put_line('Circular arc: length to snap point IS < length to midpoint
     v_segment          &&INSTALL_SCHEMA..T_Segment;
     v_element          mdsys.sdo_geometry;
     v_return_geom      &&INSTALL_SCHEMA..T_Geometry;
-    v_geometries       &&INSTALL_SCHEMA..T_Geometries :=
-                           &&INSTALL_SCHEMA..t_geometries(
-                             &&INSTALL_SCHEMA..T_GEOMETRY_ROW(0,NULL,SELF.tolerance,SELF.dPrecision,SELF.projected));
-
-    --PRAGMA INLINE (ComputeArcLength, 'YES');
-    Function ComputeArcLength(p_Radius in number,
-                              p_Angle  in number)
-    Return Number
-    IS
-    BEGIN
-      -- Replaced &&INSTALL_SCHEMA..COGO.PI() / 180 with acos(-1) / 180.0
-      Return p_Radius * p_Angle * acos(-1) / 180.0;
-    END ComputeArcLength;
+    v_geometries       &&INSTALL_SCHEMA..T_Geometries := &&INSTALL_SCHEMA..t_geometries(&&INSTALL_SCHEMA..T_GEOMETRY_ROW(0,NULL,SELF.tolerance,SELF.dPrecision,SELF.projected));
 
     -- PRAGMA INLINE (addToGeomList, 'YES');
     Procedure addToGeomList(p_geometries  in out nocopy &&INSTALL_SCHEMA..t_geometries,
@@ -7355,42 +7424,57 @@ dbms_output.put_line('Circular arc: length to snap point IS < length to midpoint
     -- Note: MultiLinestrings are handled by code, no need to extract each and process separately
     --
     <<process_nearest_Segments>>
-    FOR v_rec IN (SELECT i.line, i.startDist, i.midDist, i.endDist, i.lineDist, i.lineLen,
-                         min(i.lineDist) over (order by 1) as MinimumDist,
+    FOR v_rec IN (SELECT i.line, 
+                         i.startDist2Vertex, i.midDist2Vertex, i.endDist2Vertex, 
+                         case when i.line.ST_isCircularArc() = 1 
+                              then -1 /* Compute in code */
+                              else i.startDist2Vertex + i.endDist2Vertex  
+                              end as computedLength, /* If same as i.segmentLength then the segment is the intersecting segment */
+                         i.lineDist2Vertex, i.segmentLength,
+                         min(i.lineDist2Vertex) over (order by 1) as MinimumDist,
                          case when i.line.element_id <>
                                    lag(i.line.element_id,1) over (order by i.line.element_id, i.line.segment_id)
-                              then 1 else 0 end as lastSegment
+                              then 1 
+                              else 0 
+                          end as lastSegment
                     FROM (SELECT seg.ST_Self() as line,
                                  &&INSTALL_SCHEMA..T_Segment(
                                    p_Segment_id => 0,
                                    p_startCoord => seg.startCoord,
                                    p_endCoord   => p_vertex,
                                    p_sdo_gtype  => SELF.ST_sdo_gtype(),
-                                   p_sdo_srid   => SELF.ST_Srid()
-                                 ).ST_Length(SELF.tolerance,p_unit) as startDist,
+                                   p_sdo_srid   => SELF.ST_Srid(),
+                                   p_projected  => seg.projected,
+                                   p_precision  => seg.PrecisionModel.xy,
+                                   p_tolerance  => seg.PrecisionModel.tolerance
+                                 ).ST_Length(p_unit) as startDist2Vertex,
                                  case when seg.midCoord.x is not null
                                       then &&INSTALL_SCHEMA..T_Segment(
                                              p_Segment_id => 0,
                                              p_startCoord => seg.midCoord,
                                              p_endCoord   => p_vertex,
                                              p_sdo_gtype  => SELF.st_sdo_gtype(),
-                                             p_sdo_srid   => SELF.ST_Srid()
-                                            ).ST_Length(SELF.tolerance,p_unit)
+                                             p_sdo_srid   => SELF.ST_Srid(),
+                                             p_projected  => seg.projected,
+                                             p_precision  => seg.PrecisionModel.xy,
+                                             p_tolerance  => seg.PrecisionModel.tolerance
+                                            ).ST_Length(p_unit)
                                        else CAST(NULL as number)
-                                   end as midDist,
+                                   end as midDist2Vertex,
                                   &&INSTALL_SCHEMA..T_Segment(
                                       p_Segment_id => 0,
                                       p_startCoord => seg.endCoord,
                                       p_endCoord   => p_vertex,
                                       p_sdo_gtype  => SELF.st_sdo_gtype(),
-                                      p_sdo_srid   => SELF.ST_Srid()
-                                   ).ST_Length(SELF.tolerance,p_unit) as endDist,
+                                      p_sdo_srid   => SELF.ST_Srid(),
+                                      p_projected  => seg.projected,
+                                      p_precision  => seg.PrecisionModel.xy,
+                                      p_tolerance  => seg.PrecisionModel.tolerance
+                                  ).ST_Length(p_unit) as endDist2Vertex,
                                   seg.ST_Distance(p_vertex    => p_vertex,
-                                                  p_tolerance => SELF.tolerance,
-                                                  p_dPrecision=> SELF.dPrecision,
                                                   p_unit      => p_unit)
-                                      as linedist,  -- will be slope dist if > 11gr2 and Spatial else planar
-                                  seg.ST_Length(p_tolerance=>SELF.tolerance,p_unit=>p_unit) as lineLen
+                                      as linedist2Vertex,
+                                  seg.ST_Length(p_unit=>p_unit) as segmentLength
                             FROM TABLE(SELF.ST_Segmentize(p_filter=>'ALL')) seg
                          ) i
             )
@@ -7436,9 +7520,8 @@ dbms_output.put_line('Circular arc: length to snap point IS < length to midpoint
 
         -- Need to actually to split the returned segment...
         --
-        if ( ( ROUND(v_rec.startDist,SELF.dPrecision) = 0 ) OR
-             ( ROUND(v_rec.startDist,SELF.dPrecision) = ROUND(v_rec.lineDist,SELF.dPrecision) ) ) then
-
+        if ( ( ROUND(v_rec.startDist2Vertex,SELF.dPrecision) = 0 ) OR
+             ( ROUND(v_rec.startDist2Vertex,SELF.dPrecision) = ROUND(v_rec.lineDist2Vertex,SELF.dPrecision) ) ) then
            -- DEBUG dbms_output.put_line('Point splits line at the start of the segment');
            If ( v_return_geom is not null) Then -- Return current return_geom....
               v_geometries.EXTEND(1);
@@ -7446,9 +7529,8 @@ dbms_output.put_line('Circular arc: length to snap point IS < length to midpoint
            End If;
            -- Create new return geom based on current segment as is start of a new line
            v_return_geom := &&INSTALL_SCHEMA..T_Geometry(v_rec.line.ST_SdoGeometry(SELF.ST_Dims()),SELF.tolerance,SELF.dPrecision,SELF.projected);
-
-        elsif ( ROUND(v_rec.midDist,SELF.dPrecision) = 0 ) OR
-              ( ROUND(v_rec.midDist,SELF.dPrecision) = ROUND(v_rec.lineDist,SELF.dPrecision) ) Then
+        elsif ( ROUND(v_rec.midDist2Vertex,SELF.dPrecision) = 0 ) OR
+              ( ROUND(v_rec.midDist2Vertex,SELF.dPrecision) = ROUND(v_rec.lineDist2Vertex,SELF.dPrecision) ) Then
            -- DEBUG dbms_output.put_line('Point Splits line at the mid point of the circular arc.');
            -- DEBUG dbms_output.put_line('Create circular arc to hold from start to split point (mid)');
            v_segment := &&INSTALL_SCHEMA..T_Segment(
@@ -7486,10 +7568,8 @@ dbms_output.put_line('Circular arc: length to snap point IS < length to midpoint
                              p_sdo_gtype     => SELF.geom.sdo_gtype,
                              p_sdo_srid      => SELF.ST_Srid());
            v_return_geom := &&INSTALL_SCHEMA..T_Geometry(v_segment.ST_SdoGeometry(SELF.ST_Dims()),SELF.tolerance,SELF.dPrecision,SELF.projected);
-
-        elsif ( ROUND(v_rec.endDist,SELF.dPrecision) = 0 ) OR
-              ( ROUND(v_rec.endDist,SELF.dPrecision) = ROUND(v_rec.lineDist,SELF.dPrecision) ) then
-
+        elsif ( ROUND(v_rec.endDist2Vertex,SELF.dPrecision) = 0 ) OR
+              ( ROUND(v_rec.endDist2Vertex,SELF.dPrecision) = ROUND(v_rec.lineDist2Vertex,SELF.dPrecision) ) then
            -- DEBUG dbms_output.put_line('Point splits line at the end of the segment');
 
            If ( v_return_geom is null) Then -- Start of new line
@@ -7504,26 +7584,20 @@ dbms_output.put_line('Circular arc: length to snap point IS < length to midpoint
            v_geometries(v_geometries.COUNT) := &&INSTALL_SCHEMA..T_GEOMETRY_ROW(v_geometries.COUNT,v_return_geom.geom,SELF.tolerance,SELF.dPrecision,SELF.projected);
            -- We have no segment to add on to any new geometry so null it out
            v_return_geom := null;
-
-        elsif ( ROUND(v_rec.lineDist,SELF.dPrecision) = 0 ) Then
-
+        elsif ( ROUND(v_rec.lineDist2Vertex,SELF.dPrecision) = 0 ) Then
            -- DEBUG dbms_output.put_line('Point is on line or circular arc between start and end of segment');
 
            if ( v_rec.line.midCoord is not null ) Then
-             -- DEBUG
-dbms_output.put_line('Circular Arc: Point is ON circular arc between start and end of segment');
+             -- DEBUG dbms_output.put_line('Circular Arc: Point is ON circular arc between start and end of segment');
              -- is length to point < length to midpoint?
              v_arcAngle2SnapPt  := &&INSTALL_SCHEMA..COGO.ST_Degrees(v_centre.ST_SubtendedAngle(v_rec.line.startCoord,v_arcSnapPoint));
-             v_arcLength2SnapPt := ROUND(ComputeArcLength(v_centre.z /*Radius*/,v_arcAngle2SnapPt),SELF.dPrecision);
+             v_arcLength2SnapPt := ROUND(&&INSTALL_SCHEMA..COGO.ComputeArcLength(v_centre.z ,v_arcAngle2SnapPt),SELF.dPrecision);
              v_arcAngle2Mid     := &&INSTALL_SCHEMA..COGO.ST_Degrees(v_centre.ST_SubtendedAngle(v_rec.line.startCoord,v_rec.line.midCoord));
-             v_arcLength2Mid    := ROUND(ComputeArcLength(v_centre.z /*Radius*/,v_arcAngle2Mid),SELF.dPrecision);
-              -- DEBUG
-dbms_output.put_line('&&INSTALL_SCHEMA..COGO.ST_Degrees(v_arcAngle2SnapPt)=' || v_arcAngle2SnapPt || ' v_arcLength2SnapPt= ' || v_arcLength2SnapPt);
-              -- DEBUG
-dbms_output.put_line('&&INSTALL_SCHEMA..COGO.ST_Degrees(v_arcAngle2Mid)   =' || v_arcAngle2Mid    || ' v_arcLength2Mid   = ' || v_arcLength2Mid );
+             v_arcLength2Mid    := ROUND(&&INSTALL_SCHEMA..COGO.ComputeArcLength(v_centre.z ,v_arcAngle2Mid),SELF.dPrecision);
+             -- DEBUG dbms_output.put_line('&&INSTALL_SCHEMA..COGO.ST_Degrees(v_arcAngle2SnapPt)=' || v_arcAngle2SnapPt || ' v_arcLength2SnapPt= ' || v_arcLength2SnapPt);
+             -- DEBUG dbms_output.put_line('&&INSTALL_SCHEMA..COGO.ST_Degrees(v_arcAngle2Mid)   =' || v_arcAngle2Mid    || ' v_arcLength2Mid   = ' || v_arcLength2Mid );
               if (ABS(v_arcLength2SnapPt) < ABS(v_arcLength2Mid) ) Then
-                -- DEBUG
-dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
+                -- DEBUG dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
                 -- Vertices that define:
                 -- First circular arc are Start/New/Mid
                 -- Second circular arc are Snap/Mid/End
@@ -7633,7 +7707,7 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
            Else
                -- DEBUG dbms_output.put_line('Ordinary linestring: Point is ON segment between start and end point');
                -- Even if p_vertex has measure z/w it can't be assumed to be same as linestring so we recompute base on distances
-               v_ratio := v_rec.startDist / (v_rec.startDist+v_rec.endDist);
+               v_ratio := v_rec.startDist2Vertex / (v_rec.startDist2Vertex+v_rec.endDist2Vertex);
                -- DEBUG dbms_output.put_line('V_Ratio is: ' || v_ratio); dbms_output.put_line('    v_rec.line: ' || v_rec.line.ST_AsText(SELF.dPrecision));
                v_vertex.x := ROUND(v_rec.line.startCoord.x+((v_rec.line.endCoord.x-v_rec.line.startCoord.x)*v_ratio),SELF.dPrecision);
                -- DEBUG dbms_output.put_line('New X Point is: ' || v_vertex.x);
@@ -7675,9 +7749,9 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
              -- DEBUG dbms_output.put_line('Circular arc: Point is off of a circular arc line');
              -- is length to point < length to midpoint?
              v_arcAngle2SnapPt  := &&INSTALL_SCHEMA..COGO.ST_Degrees(v_centre.ST_SubtendedAngle(v_rec.line.startCoord,v_arcSnapPoint));
-             v_arcLength2SnapPt := ROUND(ComputeArcLength(v_centre.z /*Radius*/,v_arcAngle2SnapPt),SELF.dPrecision);
+             v_arcLength2SnapPt := ROUND(&&INSTALL_SCHEMA..COGO.ComputeArcLength(v_centre.z ,v_arcAngle2SnapPt),SELF.dPrecision);
              v_arcAngle2Mid     := &&INSTALL_SCHEMA..COGO.ST_Degrees(v_centre.ST_SubtendedAngle(v_rec.line.startCoord,v_rec.line.midCoord));
-             v_arcLength2Mid    := ROUND(ComputeArcLength(v_centre.z /*Radius*/,v_arcAngle2Mid),SELF.dPrecision);
+             v_arcLength2Mid    := ROUND(&&INSTALL_SCHEMA..COGO.ComputeArcLength(v_centre.z ,v_arcAngle2Mid),SELF.dPrecision);
              -- DEBUG dbms_output.put_line('&&INSTALL_SCHEMA..COGO.ST_Degrees(v_arcAngle2SnapPt)=' || v_arcAngle2SnapPt || ' v_arcLength2SnapPt= ' || v_arcLength2SnapPt );
              -- DEBUG dbms_output.put_line('&&INSTALL_SCHEMA..COGO.ST_Degrees(v_arcAngle2Mid)   =' || v_arcAngle2Mid    || ' v_arcLength2Mid   = ' || v_arcLength2Mid );
              if (ABS(ROUND(v_arcLength2SnapPt,SELF.dPrecision)) < ABS(ROUND(v_arcLength2Mid,SELF.dPrecision)) ) Then
@@ -7745,9 +7819,9 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
            Else
              -- DEBUG dbms_output.put_line('Ordinary linestring: point is off a straight line but between first and last vertex so split point is ratio of start/end distances');
              v_ratio := /* distance start to drop point / total length of segment */
-                      SQRT(POWER(v_rec.startDist,2) -
-                           POWER(v_rec.lineDist,2)) /
-                      v_rec.line.ST_Length(p_tolerance=>SELF.tolerance,p_unit=>p_unit);
+                      SQRT(POWER(v_rec.startDist2Vertex,2) -
+                           POWER(v_rec.lineDist2Vertex,2)) /
+                      v_rec.line.ST_Length(p_unit=>p_unit);
              -- DEBUG dbms_output.put_line('distance start to drop point: ' || SQRT(POWER(v_rec.startDist,2)-POWER(v_rec.lineDist,2)));
              -- DEBUG dbms_output.put_line('total length of segment: ' || v_rec.line.ST_Length(SELF.tolerance,p_unit));
              -- DEBUG dbms_output.put_line('V_Ratio is: ' || v_ratio);
@@ -7756,7 +7830,7 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
              v_vertex.y := ROUND(v_rec.line.startCoord.y+((v_rec.line.endCoord.y-v_rec.line.startCoord.y)*v_ratio),SELF.dPrecision);
              if (SELF.ST_Lrs_Dim()<>0) Then
                 -- Even if p_vertex has measure z/w it can't be assumed to be same as linestring so we recompute base on distances
-                v_ratio := v_rec.startDist / (v_rec.startDist+v_rec.endDist);
+                v_ratio := v_rec.startDist2Vertex / (v_rec.startDist2Vertex+v_rec.endDist2Vertex);
                 If (SELF.ST_Lrs_Dim()=3) Then
                    v_vertex.z := v_rec.line.startCoord.z+(v_rec.line.endCoord.z-v_rec.line.startCoord.z)*v_ratio;
                 Else
@@ -7851,24 +7925,38 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
     c_s_null_measure CONSTANT VARCHAR2(100) := 'Measure must not be null';
     v_vertex         &&INSTALL_SCHEMA..t_Vertex;
     v_geom           mdsys.sdo_geometry;
+    v_geometries     &&INSTALL_SCHEMA..T_Geometries := &&INSTALL_SCHEMA..T_Geometries(&&INSTALL_SCHEMA..T_GEOMETRY_ROW(0,NULL,SELF.tolerance,SELF.dPrecision,SELF.projected));
   Begin
     if ( p_measure is null ) Then
        raise_application_error(c_i_null_measure,
                                c_s_null_measure,TRUE);
     End If;
-    If ( p_measure not between SELF.ST_LRS_Start_Measure() and SELF.ST_LRS_End_Measure(p_unit) ) Then
+    If ( p_measure not between SELF.ST_LRS_Start_Measure() 
+                           and SELF.ST_LRS_End_Measure(p_unit) ) Then
        Return null;
     End If;
-    v_vertex := &&INSTALL_SCHEMA..T_VERTEX(
-                  p_point => SELF.ST_LRS_Locate_Measure(p_measure => p_measure,
-                                                        p_offset  => 0,
-                                                        p_unit  => p_unit).geom
-                );
-    IF ( v_vertex is null ) Then
-       Return null;
-    End If;
-    Return SELF.ST_SPLIT(P_Vertex => v_vertex,
-                         p_unit   => p_unit);
+    v_geometries.DELETE;
+    v_geometries.EXTEND(2);
+    v_geometries(1) := &&INSTALL_SCHEMA..T_GEOMETRY_ROW(
+                         1,
+                         SELF.ST_LRS_Locate_Measures(
+                             p_start_measure => 0.0,
+                             p_end_measure   => p_measure,
+                             p_offset        => 0.0,
+                             p_unit          => p_unit).geom,
+                         SELF.tolerance,SELF.dPrecision,SELF.projected
+                       );
+    v_geometries(2) := &&INSTALL_SCHEMA..T_GEOMETRY_ROW(
+                         2,
+                         SELF.ST_LRS_Locate_Measures(
+                             p_start_measure => p_measure,
+                             p_end_measure   => SELF.ST_LRS_End_Measure(p_unit),
+                             p_offset        => 0.0,
+                             p_unit          => p_unit).geom,
+                         SELF.tolerance,SELF.dPrecision,SELF.projected
+                       );
+                             
+   return v_geometries;
   End ST_Split;
 
   Member Function ST_Snap(p_point in mdsys.sdo_geometry,
@@ -7933,18 +8021,14 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
         FOR rec in 1 .. v_segments.COUNT LOOP
           -- DEBUG dbms_output.put_line('  v_segment(rec)= ' || v_segments(rec).ST_AsText());
           v_snap_vertex := v_segments(rec)
-                            .ST_Closest(p_vertex    => v_Vertex,
-                                        p_tolerance => SELF.tolerance,
+                            .ST_ProjectPoint(p_vertex => v_Vertex,
                                         p_unit      => p_unit );
-          -- DEBUG dbms_output.put_line('  v_snap_vertex(ST_Closest)= ' || v_snap_vertex.ST_AsText(3));
-          IF ( SELF.ST_LRS_IsMeasured()=1 ) Then
-            -- Find Measure
-            v_snap_vertex :=
-              v_snap_vertex
-                 .ST_LRS_Set_Measure(v_segments(rec)
-                                      .ST_LRS_Compute_Measure(p_vertex    => v_snap_vertex,
-                                                              p_tolerance => SELF.tolerance,
-                                                              p_unit      => p_unit));
+          -- Project Point sets measure.
+          IF ( SELF.ST_Dims() = 2 ) Then
+            v_snap_vertex := v_snap_vertex.ST_To2D(); -- remove it
+          ElsIf ( SELF.ST_LRS_IsMeasured()=0 ) Then
+            v_snap_vertex := v_snap_vertex.ST_To3D(p_keep_measure => 0, 
+                                                   p_default_z    => NULL);
           END IF;
           v_geometries.EXTEND(1);
           v_geometries(v_geometries.count) := &&INSTALL_SCHEMA..T_GEOMETRY_ROW(rec,v_snap_vertex.ST_SdoGeometry(),self.tolerance,SELF.dPrecision,SELF.projected);
@@ -7970,8 +8054,6 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
                                           end as midDist,
                                          seg.EndCoord.ST_Distance(p_vertex=>v_point,p_tolerance=>SELF.tolerance,p_unit=>p_unit)as endDist,
                                          seg.ST_Distance(p_vertex    => &&INSTALL_SCHEMA..T_Vertex(p_point),
-                                                         p_dPrecision => SELF.dPrecision,
-                                                         p_tolerance => SELF.tolerance,
                                                          p_unit      => p_unit)
                                            as linedist
                                    FROM TABLE(SELF.ST_Segmentize(p_filter=>'ALL')) seg
@@ -8085,7 +8167,7 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
            v_ratio := /* distance start to drop point / total length of segment */
                       SQRT(POWER(v_rec.startDist,2) -
                            POWER(v_rec.lineDist,2)) /
-                      v_rec.line.ST_Length(p_tolerance=>SELF.tolerance,p_unit=>p_unit);
+                      v_rec.line.ST_Length(p_unit=>p_unit);
            -- DEBUG dbms_output.put_line('distance start to drop point: ' || SQRT(POWER(v_rec.startDist,2)+POWER(v_rec.lineDist,2)));
            -- DEBUG dbms_output.put_line('total length of segment: ' || v_rec.line.ST_Length(SELF.tolerance,p_unit));
            -- DEBUG dbms_output.put_line('V_Ratio is: ' || v_ratio);
@@ -8421,7 +8503,8 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
          V_3d_Geom.Sdo_Ordinates (V_J + 2) := v_Start_Z;
       Else
          v_cum_length := v_cum_length +
-               ROUND(&&INSTALL_SCHEMA..T_Segment(p_Segment_id  => 0,
+               ROUND(&&INSTALL_SCHEMA..T_Segment(
+                             p_Segment_id  => 0,
                                    p_startCoord => &&INSTALL_SCHEMA..T_Vertex(
                                                         p_vertex    => v_coords(i-1),
                                                         p_id        => i,
@@ -8433,8 +8516,12 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
                                                         p_sdo_gtype => SELF.ST_Sdo_GType(),
                                                         p_sdo_srid  => SELF.ST_SRID()),
                                    p_sdo_gtype  => 2002,
-                                   p_sdo_srid   => SELF.ST_SRID())
-                         .ST_Length(SELF.tolerance,p_unit),
+                             p_sdo_srid   => SELF.ST_SRID(),
+                             p_projected  => SELF.projected,
+                             p_precision  => SELF.dPrecision,
+                             p_tolerance  => SELF.tolerance
+                    )
+                    .ST_Length(p_unit),
                      SELF.dPrecision);
          v_3D_geom.sdo_ordinates (v_j + 2) :=
                case when v_end_z is null
@@ -8759,11 +8846,10 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
   End ST_Reverse_Geometry;
 
   Member Function ST_AsTText(p_linefeed     in integer  default 1,
-                             p_format_model in varchar2 default 'FM999999999999990D0')
-
+                             p_format_model in varchar2 default 'TM9')
            Return CLOB
   As
-    v_ord_format varchar2(100) := NVL(p_format_model,'FM999999999999990D0');
+    v_ord_format varchar2(100) := NVL(p_format_model,'TM9');
     v_text       Clob;
     v_linefeed   char(1) := case when NVL(p_linefeed,1) = 0 then '' else CHR(10) end;
   Begin
@@ -9529,7 +9615,7 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
       -- DEBUG dbms_output.put_line('v_segments.COUNT=' || v_segments.COUNT);
       FOR v_i in v_segments.FIRST..v_segments.LAST LOOP
         -- DEBUG dbms_output.put_line('PIPE ROW ' || v_segments(v_segment).ST_AsText());
-        v_segment_length := v_segments(v_i).ST_Length(p_tolerance=>SELF.tolerance,p_unit=>p_unit);
+        v_segment_length := v_segments(v_i).ST_Length(p_unit=>p_unit);
         IF (v_i = v_segments.FIRST) Then
           v_previous_measure := p_start_measure + ( v_measure_range * ( v_segment_Length / v_line_length ) );
           IF (SELF.ST_Lrs_Dim() = 3) THEN
@@ -9655,7 +9741,7 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
               v_ordinates(v_ord) := SELF.geom.sdo_ordinates(v_ord); v_ord := v_ord + 1;
            End If;
         ElsIf ( SELF.ST_Lrs_Dim() = 4 ) Then
-           v_ordinates(v_ord) := SELF.geom.sdo_ordinates(v_ord); v_ord := v_ord + 1;  -- 3
+           v_ordinates(v_ord) := SELF.geom.sdo_ordinates(v_ord); v_ord := v_ord + 1;
            v_ordinates(v_ord) := p_start_measure + v_shift_measure + v_sum_new_measure; v_ord := v_ord + 1;
         end if;
     END LOOP;
@@ -9712,7 +9798,7 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
     END IF;
 
     v_new_geometry := SELF.ST_Concat_Line(p_lrs_segment);
-    /* SGG
+    /* SGG Removed Measure Update
     IF ( SELF.ST_LRS_Start_Measure() = v_new_geometry.ST_LRS_Start_Measure() ) THEN
       -- p_lrs_segment was appended to SELF
       RETURN v_new_geometry.ST_LRS_Update_Measures(p_start_measure => SELF.ST_LRS_Start_Measure(),
@@ -9786,16 +9872,12 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
       IF ( v_segments IS NOT NULL and v_segments.COUNT > 0 ) THEN
         -- Find minimum
         v_offset := v_segments(1).ST_Distance(p_vertex    => v_vertex,
-                                              p_tolerance => SELF.projected,
-                                              p_dPrecision=> SELF.dPrecision,
                                               p_unit      => p_unit);
         v_offset := SIGN(v_segments(1).startCoord.ST_SubtendedAngle(v_vertex,v_segments(1).endCoord)) * v_offset;
         IF ( v_segments.COUNT > 1 ) THEN
           FOR rec in 1 .. v_segments.COUNT LOOP
             v_lineDist :=
               v_segments(rec).ST_Distance(p_vertex    => v_vertex,
-                                          p_tolerance => SELF.projected,
-                                          p_dPrecision=> SELF.dPrecision,
                                           p_unit      => p_unit);
             v_offset := LEAST(SIGN(v_segments(rec).startCoord.ST_SubtendedAngle(v_vertex,v_segments(rec).endCoord)) * v_lineDist);
           END LOOP;
@@ -9809,9 +9891,7 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
       FROM (SELECT f.line,f.lineDist,min(f.lineDist) over (order by 1) as minDist
               FROM (SELECT seg.ST_Self() as line,
                            seg.ST_Distance(p_vertex    => &&INSTALL_SCHEMA..T_Vertex(p_point),
-                                           p_tolerance => SELF.tolerance,
-                                           p_dPrecision=> SELF.dPrecision,
-                                           p_unit      => p_unit) as linedist  -- will be slope dist if > 11gr2 and Spatial else planar
+                                           p_unit      => p_unit) as linedist
                      FROM TABLE(SELF.ST_Segmentize(p_filter=>'ALL')) seg
                   ) f
            ) g
@@ -10010,26 +10090,6 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
                                          '*GTYPE1*',SELF.ST_GeometryType()),
                                          '*GTYPE2*','Linestring'),TRUE);
     End If;
-/*
-    -- Constructor can be used to validate input
-    v_geom := &&INSTALL_SCHEMA..T_GEOMETRY(P_Point,SELF.tolerance,SELF.dPrecision,SELF.projected);
-    BEGIN
-       v_point := &&INSTALL_SCHEMA..T_Vertex(p_point => p_point).ST_SdoGeometry();
-       EXCEPTION
-          WHEN OTHERS THEN
-             -- DEBUG dbms_output.put_line('getVertices for geometry of sdo_gtype (' || NVL(P_Point.sdo_gtype,-1) ||') returned ' || SQLCODE);
-             if (P_Point.get_gtype()=1 And P_Point.sdo_point is not null) Then
-                 -- DEBUG dbms_output.put_line('P_Point.sdo_point is not null => ' || NVL(P_Point.sdo_point.x,-99999999) ||',' || NVL(P_Point.sdo_point.y,-9999999) || ','||NVL(P_Point.sdo_point.z,-99999999));
-                 v_point := &&INSTALL_SCHEMA..T_Vertex(p_point     => p_point.sdo_point,
-                                          p_sdo_gtype => p_point.sdo_gtype,
-                                          p_sdo_srid  => p_point.sdo_srid).ST_SdoGeometry();
-                 -- DEBUG dbms_output.put_line('v_point has been created');
-                 if ( v_point is null ) Then
-                    return null;
-                 End If;
-             End If;
-    END;
-*/
     v_geometries := SELF.ST_Snap(p_point,p_unit);
     if ( v_geometries is null or v_geometries.COUNT=0 ) Then
        Return null;
@@ -10096,7 +10156,7 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
             -- DEBUG dbms_output.put_line('v_segment(' || i || ')=' || v_segments(i).ST_AsText());
             if (  v_measure_ord = 0 ) Then
                v_start_measure := v_cum_measure;
-               v_segment_length := v_segments(i).ST_Length(p_tolerance=>SELF.tolerance,p_unit=>p_unit);
+               v_segment_length := v_segments(i).ST_Length(p_unit=>p_unit);
                v_cum_measure   := v_cum_measure + v_segment_length;
                v_end_measure   := v_cum_measure;
                if ( v_segments(i).midCoord is not null ) Then
@@ -10124,9 +10184,7 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
                     -- DEBUG dbms_output.put_line('Falls on starting vertex of whole linestring');
                     v_vertex := v_segments(i).ST_OffsetPoint(p_ratio     => v_ratio_along_line,
                                                              p_offset    => p_offset,
-                                                             p_tolerance => SELF.tolerance,
-                                                             p_unit      => p_unit,
-                                                             p_projected => SELF.projected);
+                                                             p_unit   => p_unit);
                     if ( v_measure_ord=0 ) Then
                        If ( v_coord_dimension=2 ) Then
                            v_vertex.z := p_measure;
@@ -10148,10 +10206,7 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
                         -- DEBUG dbms_output.put_line('Calculating ST_OffsetBetween');
                         v_offset := v_segments(i-1).ST_OffsetBetween(v_segments(i),
                                                                      p_offset,
-                                                                     SELF.tolerance,
-                                                                     p_unit,
-                                                                     SELF.projected);
-                        -- DEBUG dbms_output.put_line('BISECTOR v_offset=' || v_offset.ST_AsText());
+                                                                     p_unit);
                         return &&INSTALL_SCHEMA..T_GEOMETRY(v_offset.ST_SdoGeometry(),SELF.Tolerance,SELF.dPrecision,SELF.Projected);
                      Else -- no offset just return point
                         return &&INSTALL_SCHEMA..T_GEOMETRY(v_segments(i).startCoord.ST_SdoGeometry(),SELF.Tolerance,SELF.dPrecision,SELF.Projected);
@@ -10167,9 +10222,8 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
                 v_ratio_along_line := (v_mid_measure - v_start_measure) / (v_end_measure - v_start_measure);
                 v_vertex := v_segments(i).ST_OffsetPoint(v_ratio_along_line,
                                                          p_offset,
-                                                         SELF.tolerance,
-                                                         p_unit,
-                                                         SELF.projected);
+                                                         p_unit
+                                           );
                 if ( v_measure_ord=0 ) Then
                    If ( v_coord_dimension=2 ) Then
                        v_vertex.z := p_measure;
@@ -10201,9 +10255,8 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
                     -- DEBUG dbms_output.put_line('BEFORE ST_OffsetPoint - v_vertex=' || v_vertex.ST_AsText());
                     v_vertex := v_segments(i).ST_OffsetPoint(v_ratio_along_line,
                                                              p_offset,
-                                                             SELF.tolerance,
-                                                             p_unit,
-                                                             SELF.projected);
+                                                             p_unit
+                                              );
                     if ( v_measure_ord=0 ) Then
                        If ( v_coord_dimension=2 ) Then
                            v_vertex.z := p_measure;
@@ -10230,9 +10283,7 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
                 -- DEBUG dbms_output.put_line('BEFORE ST_OffsetPoint - v_vertex=' || case when v_vertex is null then 'NULL' else v_vertex.ST_AsText() end);
                 v_vertex := v_segments(i).ST_OffsetPoint(v_ratio_along_line,
                                                          p_offset,
-                                                         SELF.tolerance,
-                                                         p_unit,
-                                                         SELF.projected);
+                                                         p_unit);
                 IF ( v_vertex is null ) Then
                   -- DEBUG  dbms_output.put_line('AFTER ST_OffsetPoint - v_vertex IS NULL');
                   CONTINUE;
@@ -10307,8 +10358,18 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
     v_numSegments             pls_integer;
     v_ord                     pls_integer;
     v_segments                &&INSTALL_SCHEMA..T_Segments;
-    v_segment                 &&INSTALL_SCHEMA..T_Segment := &&INSTALL_SCHEMA..T_Segment(p_sdo_gtype => SELF.ST_sdo_gtype(),p_sdo_srid  => SELF.ST_SRID());
-    v_prev_segment            &&INSTALL_SCHEMA..T_Segment := &&INSTALL_SCHEMA..T_Segment(p_sdo_gtype => SELF.ST_sdo_gtype(),p_sdo_srid  => SELF.ST_SRID());
+    v_segment                 &&INSTALL_SCHEMA..T_Segment := &&INSTALL_SCHEMA..T_Segment(
+                                      p_sdo_gtype => SELF.ST_sdo_gtype(),
+                                      p_sdo_srid  => SELF.ST_SRID(),
+                                      p_projected => SELF.projected,
+                                      p_precision => SELF.dPrecision,
+                                      p_tolerance => SELF.tolerance );
+    v_prev_segment            &&INSTALL_SCHEMA..T_Segment := &&INSTALL_SCHEMA..T_Segment(
+                                      p_sdo_gtype => SELF.ST_sdo_gtype(),
+                                      p_sdo_srid  => SELF.ST_SRID(),
+                                      p_projected => SELF.projected,
+                                      p_precision => SELF.dPrecision,
+                                      p_tolerance => SELF.tolerance );
     v_return_geom             &&INSTALL_SCHEMA..T_geometry;
     v_tgeometry               &&INSTALL_SCHEMA..T_geometry;
     v_extract_geom            mdsys.sdo_geometry;
@@ -10380,7 +10441,7 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
             FROM (SELECT v.line,
                          case when v.isM = 1
                               then &&INSTALL_SCHEMA..T_GEOMETRY(v.line.ST_SdoGeometry(),v_tolerance).ST_LRS_Start_Measure()
-                              else cumLength - v.line.ST_Length(p_tolerance=>v_tolerance,p_unit=>p_unit)
+                              else cumLength - v.line.ST_Length(p_unit=>p_unit)
                           end as start_m,
                          case when v.isM = 1
                               then &&INSTALL_SCHEMA..T_GEOMETRY(v.line.ST_SdoGeometry(),v_tolerance).ST_LRS_End_Measure(p_unit)
@@ -10388,7 +10449,7 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
                           end as end_m
                     FROM (SELECT v_tgeometry.ST_LRS_isMeasured() isM,
                                  seg.ST_Self() as line,
-                                 SUM(seg.ST_Length(p_tolerance=>v_tolerance,p_unit=>p_unit))
+                                 SUM(seg.ST_Length(p_unit=>p_unit))
                                     Over (partition by 1 order by seg.segment_Id) as cumLength
                             FROM TABLE( v_tgeometry.ST_Segmentize(p_filter=>'ALL') ) seg
                           ) v
@@ -10416,10 +10477,10 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
             -- DEBUG dbms_output.put_line('  v_segments(' || i || ').ST_AsText(4)='||v_segments(i).ST_AsText(3));
             -- DEBUG If ( v_prev_segment.ST_isEmpty() = 0 ) Then dbms_output.put_line('        v_prev_segment.ST_AsText(3)='||v_prev_segment.ST_AsText(3)); End If;
             if ( SELF.ST_Lrs_Dim() = 0 ) Then  -- Length based
-               v_start_measure := v_cum_measure;
-               v_segment_length := v_segments(i).ST_Length(p_tolerance=>v_tolerance,p_unit=>p_unit);
-               v_cum_measure   := v_cum_measure + v_segment_length;
-               v_end_measure   := v_cum_measure;
+               v_start_measure  := v_cum_measure;
+               v_segment_length := v_segments(i).ST_Length(p_unit=>p_unit);
+               v_cum_measure    := v_cum_measure + v_segment_length;
+               v_end_measure    := v_cum_measure;
                if ( v_segments(i).midCoord is not null ) Then
                   v_ratio_along_line := v_segment_length *
                                        (&&INSTALL_SCHEMA..COGO.ST_Degrees(v_centre.ST_SubtendedAngle(v_segments(i).startCoord,v_segments(i).midCoord)) /
@@ -10451,9 +10512,7 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
                  v_segment.startCoord := v_segments(i)
                                          .ST_OffsetPoint(0.0,
                                                          p_offset,
-                                                         v_tolerance,
-                                                         p_unit,
-                                                         SELF.projected)
+                                                         p_unit)
                                          .ST_Round(v_precision);
                Else
                   -- A previous segment is split by the start measure so adopt its last endCoord
@@ -10466,9 +10525,7 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
                v_segment.startCoord := v_segments(i)
                                        .ST_OffsetPoint(v_start_ratio_along_line,
                                                        p_offset,
-                                                       v_tolerance,
-                                                       p_unit,
-                                                       SELF.projected)
+                                                       p_unit)
                                        .ST_Round(v_precision);
                -- DEBUG dbms_output.put_line('  v_start_ratio_along_line('||v_start_ratio_along_line||') < 1.0 =>');
             ElsIf ( v_start_ratio_along_line = 1.0 ) Then
@@ -10478,18 +10535,14 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
                    v_segment.startCoord := v_segments(i)
                                            .ST_OffsetPoint(1.0,
                                                            p_offset,
-                                                           v_tolerance,
-                                                           p_unit,
-                                                           SELF.projected)
+                                                           p_unit)
                                            .ST_Round(v_precision);
               Else
                  -- There is a next segment so compute new endCoord that can be used by next segment
                  v_segment.endCoord := v_segments(i)
                                        .ST_OffsetBetween(v_segments(i+1),
                                                          p_offset,
-                                                         v_tolerance,
-                                                         p_unit,
-                                                         SELF.projected)
+                                                         p_unit)
                                       .ST_Round(v_precision);
                  -- start coord of this segment becomes same as endCoord reducing it to a single point
                  v_segment.startCoord := v_segment.endCoord;
@@ -10506,9 +10559,7 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
                  v_segment.midCoord := v_segments(i)
                                        .ST_OffsetPoint((v_mid_measure - v_start_measure) / (v_end_measure - v_start_measure),
                                                        p_offset,
-                                                       v_tolerance,
-                                                       p_unit,
-                                                       SELF.projected)
+                                                       p_unit)
                                        .ST_Round(v_precision);
                End If;
               -- DEBUG dbms_output.put_line('  v_segment After MidCoord Processing='||v_segment.midCoord.ST_AsText());
@@ -10527,9 +10578,7 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
                v_segment.endCoord := v_segments(i)
                                      .ST_OffsetPoint(v_end_ratio_along_line,
                                                      p_offset,
-                                                     v_tolerance,
-                                                     p_unit,
-                                                     SELF.projected)
+                                                     p_unit)
                                      .ST_Round(v_precision);
                -- DEBUG dbms_output.put_line('  v_end_ratio_along_line('||v_end_ratio_along_line||') < 1.0');
             ElsIf ( v_end_ratio_along_line >= 1.0 ) Then
@@ -10540,9 +10589,7 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
                   v_segment.endCoord := v_segments(i)
                                         .ST_OffsetPoint(1.0,
                                                         p_offset,
-                                                        v_tolerance,
-                                                        p_unit,
-                                                        SELF.projected)
+                                                        p_unit)
                                        .ST_Round(v_precision);
                Else
                    -- Compute new end position based on offset
@@ -10554,9 +10601,7 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
                       v_segment.endCoord := v_segments(i)
                                             .ST_OffsetBetween(v_segments(i+1),
                                                               p_offset,
-                                                              v_tolerance,
-                                                              p_unit,
-                                                              SELF.projected)
+                                                              p_unit)
                                             .ST_Round(v_precision);
                   End If;
                End If;
@@ -10568,7 +10613,7 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
             -- DEBUG dbms_output.put_line(' Add segment to return geometry');
             --
             if (v_return_geom is null) Then
-               v_return_geom := &&INSTALL_SCHEMA..T_GEOMETRY(v_segment,SELF.ST_Srid(),v_tolerance,v_precision,SELF.projected);
+               v_return_geom := &&INSTALL_SCHEMA..T_GEOMETRY(v_segment);
                -- DEBUG dbms_output.put_line('  v_return_geom was null and now is ='||v_return_geom.ST_AsEWKT());
                v_return_geom.geom.sdo_gtype := SELF.geom.sdo_gtype;
             Else
@@ -10626,8 +10671,18 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
     v_start_measure    number;
     v_end_measure      number;
     v_range_measure    NUMBER := 0;
-    v_segment          &&INSTALL_SCHEMA..T_Segment := &&INSTALL_SCHEMA..T_Segment(p_sdo_gtype=>SELF.ST_sdo_gtype(),p_sdo_srid=>SELF.ST_SRID());
-    v_prev_segment     &&INSTALL_SCHEMA..T_Segment := &&INSTALL_SCHEMA..T_Segment(p_sdo_gtype=>SELF.ST_sdo_gtype(),p_sdo_srid=>SELF.ST_SRID());
+    v_segment          &&INSTALL_SCHEMA..T_Segment := &&INSTALL_SCHEMA..T_Segment(
+                                      p_sdo_gtype => SELF.ST_sdo_gtype(),
+                                      p_sdo_srid  => SELF.ST_SRID(),
+                                      p_projected => SELF.projected,
+                                      p_precision => SELF.dPrecision,
+                                      p_tolerance => SELF.tolerance );
+    v_prev_segment     &&INSTALL_SCHEMA..T_Segment := &&INSTALL_SCHEMA..T_Segment(
+                                      p_sdo_gtype => SELF.ST_sdo_gtype(),
+                                      p_sdo_srid  => SELF.ST_SRID(),
+                                      p_projected => SELF.projected,
+                                      p_precision => SELF.dPrecision,
+                                      p_tolerance => SELF.tolerance );
     v_centre           &&INSTALL_SCHEMA..T_Vertex  := &&INSTALL_SCHEMA..T_Vertex(p_id=>0,p_sdo_gtype=>SELF.ST_sdo_gtype(),p_sdo_srid=>SELF.ST_SRID());
     v_geom_length      NUMBER := 0;
     v_length           NUMBER := 0;
@@ -10637,17 +10692,6 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
     v_return_geom      &&INSTALL_SCHEMA..T_geometry;
     v_geom             mdsys.sdo_geometry;
     v_segment_geom     &&INSTALL_SCHEMA..T_geometry;
-
-    --PRAGMA INLINE (ComputeArcLength, 'YES');
-    Function ComputeArcLength(p_Radius in number,
-                              p_Angle  in number)
-    Return Number
-    IS
-    BEGIN
-      -- Replaced &&INSTALL_SCHEMA..COGO.PI() / 180 with acos(-1) / 180.0
-      Return p_Radius * p_Angle * acos(-1) / 180.0;
-    END ComputeArcLength;
-
   Begin
     -- Only makes sense to snap a point to a linestring
     If ( SELF.ST_Dimension() <> 1 ) Then
@@ -10708,8 +10752,7 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
            -- Mid and End Coords.
            v_centre         := v_segment.ST_FindCircle(); -- z holds radius
            v_arc_Angle2Mid  := &&INSTALL_SCHEMA..COGO.ST_Degrees(v_centre.ST_SubtendedAngle(v_segment.startCoord,v_segment.midCoord));
-           v_arc_Length2Mid := ROUND(ComputeArcLength(v_centre.z /*Radius*/,v_arc_Angle2Mid),SELF.dPrecision);
-
+           v_arc_Length2Mid := ROUND(&&INSTALL_SCHEMA..COGO.ComputeArcLength(v_centre.z,v_arc_Angle2Mid),SELF.dPrecision);
            if ( v_measure_ord = 3 ) Then
               v_segment.midCoord.z := v_segment.startCoord.z + (v_range_measure * (v_arc_length2mid/v_length));
               v_segment.endCoord.z := v_length;
@@ -10933,8 +10976,9 @@ dbms_output.put_line('Circular Arc: length to point IS < length to midpoint?');
     End If;
     -- Compare values
     For i in 1..SELF.geom.sdo_ordinates.COUNT Loop
-      IF ( SELF.geom.sdo_ordinates(i) <> p_ordinates(i) ) THEN
-dbms_output.put_line('SELF.geom.sdo_ordinates('||i||')=' || SELF.geom.sdo_ordinates(i) || ' <> p_ordinates('||i||')='|| p_ordinates(i));
+      IF ( ROUND(SELF.geom.sdo_ordinates(i),SELF.dPrecision) <> 
+           ROUND(p_ordinates(i),            SELF.dPrecision) ) THEN
+        --DEBUG dbms_output.put_line('SELF.geom.sdo_ordinates('||i||')=' || SELF.geom.sdo_ordinates(i) || ' <> p_ordinates('||i||')='|| p_ordinates(i));
         Return -1;
       END IF;
     End Loop;

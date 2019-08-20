@@ -206,7 +206,7 @@ AS OBJECT (
   -- @returntype: Number
   -- @history   : SGG May 2005 - Original Coding
   --
-  Member Function Compare( p_other In &&INSTALL_SCHEMA..T_MBR )
+  Member Function Compare( p_other In spdba.T_MBR )
            Return Integer Deterministic,
 
   -- @function  : Overlap
@@ -226,7 +226,24 @@ AS OBJECT (
   -- @param    : p2 another extremal point of the envelope
   -- @param    : q the point to test for intersection
   -- @return   : true if q intersects the envelope p1-p2
-  Static Member Function Intersects(p1 in &&INSTALL_SCHEMA..T_Vertex, p2 in &&INSTALL_SCHEMA..T_Vertex, q in &&INSTALL_SCHEMA..T_Vertex)
+  Static Function Intersects(p1 in spdba.T_Vertex, p2 in spdba.T_Vertex, q in spdba.T_Vertex)
+           Return boolean Deterministic,
+           
+
+  /**
+   * Tests whether the envelope defined by p1-p2
+   * and the envelope defined by q1-q2
+   * intersect.
+   * 
+   * @param p1 one extremal point of the envelope P
+   * @param p2 another extremal point of the envelope P
+   * @param q1 one extremal point of the envelope Q
+   * @param q2 another extremal point of the envelope Q
+   * @return <code>true</code> if Q intersects P
+   */
+  Static Function Intersects (
+                      p1 in spdba.t_vertex, p2 in spdba.T_Vertex, 
+                      q1 in spdba.t_vertex, q2 in spdba.t_vertex)
                   Return boolean Deterministic,
   /*******/
 

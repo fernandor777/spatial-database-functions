@@ -151,11 +151,7 @@ AS OBJECT (
                 Return Self As Result,
 
   Constructor Function T_GEOMETRY(SELF        IN OUT NOCOPY T_GEOMETRY,
-                                  p_segment   in &&INSTALL_SCHEMA..T_SEGMENT,
-                                  p_srid      in integer,
-                                  p_tolerance in number default 0.005,
-                                  p_dPrecision in integer default 2,
-                                  p_projected in varchar2 default 'PLANAR')
+                                  p_segment   in &&INSTALL_SCHEMA..T_SEGMENT)
                 Return Self As Result,
   /*******/
 
@@ -490,7 +486,7 @@ AS OBJECT (
   *    ST_AsWKT -- Exports mdsys.sdo_geometry object to its Well Known Text (WKT) representation by executing, and returning, result of mdsys.sdo_geometry method get_wkt().
   *  SYNOPSIS
   *    Member Function ST_AsWKT
-  *             Return Integer Deterministic,
+  *             Return clob Deterministic,
   *  DESCRIPTION
   *    Is a wrapper over the mdsys.sdo_geometry method SELF.GEOM.GET_WKT().
   *    Returns Well Known Text representation of underlying mdsys.sdo_geometry.
@@ -591,7 +587,7 @@ AS OBJECT (
   *  NAME
   *    ST_AsEWKT -- Exports 3/4D mdsys.sdo_geometry object to an Extended Well Known Text (WKT) format.
   *  SYNOPSIS
-  *    Member Function ST_AsEWKT(p_format_model in varchar2 default 'FM999999999999990D0')
+  *    Member Function ST_AsEWKT(p_format_model in varchar2 default 'TM9')
   *             Return Integer Deterministic,
   *  DESCRIPTION
   *    If underlying geometry is 2D, ST_AsWKT() is called.
@@ -599,7 +595,7 @@ AS OBJECT (
   *    This function allows the formatting of the ordinates in the EWKT string to be user defined.
   *  ARGUMENTS
   *    p_format_model (varchar2) -- Oracle Number Format Model (see documentation)
-  *                                 default 'FM999999999999990D0')
+  *                                 default 'TM9')
   *  RESULT
   *    WKT (CLOB) -- Extended Well Known Text.
   *  EXAMPLE
@@ -668,7 +664,7 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-  Member Function ST_AsEWKT(p_format_model in varchar2 default 'FM999999999999990D0')
+  Member Function ST_AsEWKT(p_format_model in varchar2 default 'TM9')
            Return Clob Deterministic,
 
   /****m* T_GEOMETRY/ST_AsText
@@ -956,7 +952,7 @@ AS OBJECT (
   *    ST_AsTText -- Returns text Description of T_GEOMETRY
   *  SYNOPSIS
   *    Member Function ST_AsTText(p_linefeed     in integer default 1,
-  *                               p_format_model in varchar2 default 'FM999999999999990D0')
+  *                               p_format_model in varchar2 default 'TM9')
   *             Return CLOB Deterministic,
   *  DESCRIPTION
   *    Returns textual description of T_GEOMETRY.
@@ -964,7 +960,7 @@ AS OBJECT (
   *  ARGUMENTS
   *    p_linefeed (integer) - 1 if apply linefeed to coordinates
   *    p_format_model (varchar2) -- Oracle Number Format Model (see documentation)
-  *                                 default 'FM999999999999990D0')
+  *                                 default 'TM9')
   *  RESULT
   *    textual description (string)
   *  EXAMPLE
@@ -1005,7 +1001,7 @@ AS OBJECT (
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
   Member Function ST_AsTText(p_linefeed     in integer default 1,
-                             p_format_model in varchar2 default 'FM999999999999990D0')
+                             p_format_model in varchar2 default 'TM9')
            Return Clob Deterministic,
 
   /****m* T_GEOMETRY/ST_CoordDimension
@@ -6411,7 +6407,7 @@ AS OBJECT (
   *    Member Function ST_LineShift(p_distance in number)
   *             Return &&INSTALL_SCHEMA..T_GEOMETRY deterministic
   *  DESCRIPTION
-  *    Function that extracts the first and last vertex of a linestring, compute a snigle fofset at right angles to an
+  *    Function that extracts the first and last vertex of a linestring, compute a single offset at right angles to an
   *    imaginary line from first to last vertex, then apply offset to all vertices in the linestring.
   *    Is a "simple" version of the more complex ST_Parallel.
   *  ARGUMENTS
