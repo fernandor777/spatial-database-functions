@@ -54,7 +54,7 @@ IS
    PROCEDURE ST_offsetpoint;
    --%test
    PROCEDURE ST_offsetbetween;
-   --%test
+   --%test(T_SEGMENT.ST_PointAlong)
    PROCEDURE ST_pointalong;
    --%test
    PROCEDURE ST_pointalongoffset;
@@ -108,7 +108,11 @@ IS
    PROCEDURE ST_isPointOnSegment;
    --%test
    PROCEDURE ST_ProjectPoint;
-   
+   --%test (T_SEGMENT.ST_IntersectCircularArc)
+   PROCEDURE ST_IntersectCircularArc;
+   --%test (T_SEGMENT.ST_Intersect2CircularArcs)
+   PROCEDURE ST_Intersect2CircularArcs;
+
 END test_t_segment;
 /
 show errors
@@ -699,13 +703,26 @@ RETURN;
                     .ST_AsEWKT();
       l_expected := 'SRID=90000006;POINT (562013.13 1013098.431)';
       ut.expect(l_actual).to_equal(l_expected);
+      
+      l_actual := spdba.T_Segment(mdsys.sdo_geometry(2002,null,null,sdo_elem_info_array(1,2,2),sdo_ordinate_array(0,0,10,10,20,0)))
+                       .ST_PointAlong(p_segmentLengthFraction=>0.5)
+                       .ST_AsEWKT();
+      l_expected := 'POINT (10 10)';
+      ut.expect(l_actual).to_equal(l_expected);
+
+      l_actual := spdba.T_Segment(mdsys.sdo_geometry(2002,null,null,sdo_elem_info_array(1,2,2),sdo_ordinate_array(0,0,10,10,20,0)))
+                       .ST_PointAlong(p_segmentLengthFraction=>0.9)
+                       .ST_Round(3)
+                       .ST_AsEWKT();
+      l_expected := 'POINT (19.511 3.09)';
+      ut.expect(l_actual).to_equal(l_expected);
 
       -- 2D+Z CircularArc 
       l_actual := T_Segment(SDO_GEOMETRY(3002,28355,NULL,SDO_ELEM_INFO_ARRAY(1,2,2),SDO_ORDINATE_ARRAY(252230.478,5526918.373,1.0, 252400.08,5526918.373,1.0, 252230.478,5527000.0,1.0)))
                        .ST_PointAlong(p_segmentLengthFraction => 0.50)
                     .ST_Round(3)
                     .ST_AsEWKT();
-      l_expected := 'SRID=28355;POINTZ (252409.39 5527006.242 1)';
+      l_expected := 'SRID=28355;POINTZ (252409.39 5526959.187 1)';
       ut.expect(l_actual).to_equal(l_expected);
 
       -- 2D+M CircularArc 
@@ -715,6 +732,7 @@ RETURN;
                     .ST_AsEWKT();
       l_expected := 'SRID=90000006;POINTM (562013.13 1013098.431 38.55)';
       ut.expect(l_actual).to_equal(l_expected);
+      
    END ST_PointAlong;
 
    --
@@ -2029,6 +2047,36 @@ RETURN;
 
    END ST_ProjectPoint;
 
+   PROCEDURE ST_IntersectCircularArc
+   IS
+      l_actual   varchar2(1000);
+      l_expected varchar2(1000);
+   BEGIN
+      l_actual := spdba.t_segment(mdsys.sdo_geometry(2002,null,null,sdo_elem_info_array(1,2,2),sdo_ordinate_array(0,0,10,10,20,0)))
+            .ST_IntersectCircularArc(
+                p_segment => spdba.t_segment(mdsys.sdo_geometry(2002,null,null,sdo_elem_info_array(1,2,1),SDO_ORDINATE_ARRAY(10,0,10,12))),
+                p_unit    => null)
+            .ST_Round(3)
+            .ST_AsText();
+       l_expected := 'T_Segment(p_element_id=>NULL,p_subelement_id=>NULL,p_segment_id=>1,p_startCoord=>T_Vertex(p_x=>10,p_y=>-10,p_z=>NULL,p_w=>NULL,p_id=>1,p_sdo_gtype=>2001,p_sdo_srid=>NULL),p_midCoord=>T_Vertex(p_x=>0,p_y=>0,p_z=>NULL,p_w=>NULL,p_id=>1,p_sdo_gtype=>2001,p_sdo_srid=>NULL),p_endCoord=>T_Vertex(p_x=>NULL,p_y=>NULL,p_z=>NULL,p_w=>NULL,p_id=>3,p_sdo_gtype=>2001,p_sdo_srid=>NULL),p_sdo_gtype=>2002,p_sdo_srid=>NULL)';
+     ut.expect(l_actual).to_equal(l_expected);
+   END ST_IntersectCircularArc;
+   
+   PROCEDURE ST_Intersect2CircularArcs
+   IS 
+      l_actual   varchar2(1000);
+      l_expected varchar2(1000);
+   BEGIN
+     l_actual := spdba.t_segment(mdsys.sdo_geometry(2002,null,null,sdo_elem_info_array(1,2,2),sdo_ordinate_array(0,0,10,10,20,0)))
+                      .ST_Intersect2CircularArcs(
+                          p_segment => spdba.t_segment(mdsys.sdo_geometry(2002,null,null,sdo_elem_info_array(1,2,2),SDO_ORDINATE_ARRAY(9.959,-0.004, 14.719,5.245, 8.133,13.623))),
+                          p_unit    => null)
+                      .ST_Round(3)
+                      .ST_AsText();
+     l_expected := 'T_Segment(p_element_id=>NULL,p_subelement_id=>NULL,p_segment_id=>1,p_startCoord=>T_Vertex(p_x=>14.477,p_y=>8.942,p_z=>NULL,p_w=>NULL,p_id=>1,p_sdo_gtype=>2001,p_sdo_srid=>NULL),p_midCoord=>NULL,p_endCoord=>T_Vertex(p_x=>1.189,p_y=>4.729,p_z=>NULL,p_w=>NULL,p_id=>3,p_sdo_gtype=>2001,p_sdo_srid=>NULL),p_sdo_gtype=>2002,p_sdo_srid=>NULL)';
+     ut.expect(l_actual).to_equal(l_expected);
+   END ST_Intersect2CircularArcs;
+   
 END test_t_segment;
 /
 show errors
@@ -2036,6 +2084,6 @@ show errors
 SET SERVEROUTPUT ON SIZE UNLIMITED
 EXECUTE ut.run('SPDBA.TEST_T_SEGMENT');
 
--- SGG: compare ST_Closest and ST_PointToeggment for planar
+-- SGG: compare ST_Closest and ST_PointToSegment for planar
 -- SGG Check ST_CLosest for > 2D circular arcs
 -- Check ST_Closest for 
