@@ -814,3 +814,10 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
 
 END test_t_vertex;
 /
+show errors
+
+set serveroutput on size unlimited
+set long 800
+set linesize 800
+begin ut.run('test_t_vertex'); end;
+

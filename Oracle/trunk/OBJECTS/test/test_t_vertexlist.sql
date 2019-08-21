@@ -328,3 +328,8 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertexlist IS
 END test_t_vertexlist;
 /
 
+set serveroutput on size unlimited
+set long 800
+set linesize 800
+begin ut.run('test_t_vertexlist'); end;
+
