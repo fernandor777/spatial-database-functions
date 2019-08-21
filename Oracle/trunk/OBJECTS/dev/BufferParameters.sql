@@ -1,11 +1,8 @@
---------------------------------------------------------
---  File created - Wednesday-July-24-2019   
---------------------------------------------------------
---------------------------------------------------------
---  DDL for Type BUFFERPARAMETERS
---------------------------------------------------------
+DEFINE INSTALL_SCHEMA='&1'
 
-  CREATE OR REPLACE EDITIONABLE TYPE "SPDBA"."BUFFERPARAMETERS" 
+SET VERIFY OFF;
+
+CREATE OR REPLACE EDITIONABLE TYPE &&INSTALL_SCHEMA..BUFFERPARAMETERS 
 AUTHID CURRENT_USER
 AS Object (
 
@@ -213,19 +210,21 @@ AS Object (
 
 );
 /
-CREATE OR REPLACE EDITIONABLE TYPE BODY "SPDBA"."BUFFERPARAMETERS" 
+show errors
+
+CREATE OR REPLACE EDITIONABLE TYPE BODY &&INSTALL_SCHEMA..BUFFERPARAMETERS 
 AS 
 
   Constructor Function BufferParameters(SELF IN OUT NOCOPY BufferParameters) 
                 Return Self As Result
   As
   Begin
-    SELF.quadrantSegments := spdba.BufferParameterConstants.DEFAULT_QUADRANT_SEGMENTS;
-    SELF.endCapStyle      := spdba.BufferParameterConstants.CAP_ROUND;
-    SELF.joinStyle        := spdba.BufferParameterConstants.JOIN_ROUND;
-    SELF.mitreLimit       := spdba.BufferParameterConstants.DEFAULT_MITRE_LIMIT;
+    SELF.quadrantSegments := &&INSTALL_SCHEMA..BufferParameterConstants.DEFAULT_QUADRANT_SEGMENTS;
+    SELF.endCapStyle      := &&INSTALL_SCHEMA..BufferParameterConstants.CAP_ROUND;
+    SELF.joinStyle        := &&INSTALL_SCHEMA..BufferParameterConstants.JOIN_ROUND;
+    SELF.mitreLimit       := &&INSTALL_SCHEMA..BufferParameterConstants.DEFAULT_MITRE_LIMIT;
     SELF.bIsSingleSided   := 0 /*false*/;
-    SELF.simplifyFactor   := spdba.BufferParameterConstants.DEFAULT_SIMPLIFY_FACTOR;
+    SELF.simplifyFactor   := &&INSTALL_SCHEMA..BufferParameterConstants.DEFAULT_SIMPLIFY_FACTOR;
     RETURN;
   End BufferParameters;
 
@@ -324,10 +323,10 @@ AS
      * mitreLimit = |qs|
      */
     if (SELF.quadrantSegments = 0) Then
-      SELF.joinStyle := spdba.BufferParameterConstants.JOIN_BEVEL;
+      SELF.joinStyle := &&INSTALL_SCHEMA..BufferParameterConstants.JOIN_BEVEL;
     End If;
     if (SELF.quadrantSegments < 0) then
-      SELF.joinStyle  := spdba.BufferParameterConstants.JOIN_MITRE;
+      SELF.joinStyle  := &&INSTALL_SCHEMA..BufferParameterConstants.JOIN_MITRE;
       SELF.mitreLimit := ABS(SELF.quadrantSegments);
     end if;
 
@@ -339,8 +338,8 @@ AS
      * If join style was set by the quadSegs value,
      * use the default for the actual quadrantSegments value.
      */
-    if (joinStyle != spdba.BufferParameterConstants.JOIN_ROUND) then
-      SELF.quadrantSegments := spdba.BufferParameterConstants.DEFAULT_QUADRANT_SEGMENTS;
+    if (joinStyle != &&INSTALL_SCHEMA..BufferParameterConstants.JOIN_ROUND) then
+      SELF.quadrantSegments := &&INSTALL_SCHEMA..BufferParameterConstants.DEFAULT_QUADRANT_SEGMENTS;
     end If;
   End setQuadrantSegments;
 
@@ -356,7 +355,7 @@ AS
   As
     alpha number;
   Begin
-     alpha := spdba.COGO.PI() / 2.0 / quadSegs;
+     alpha := &&INSTALL_SCHEMA..COGO.PI() / 2.0 / quadSegs;
     return 1.0 - COS(alpha / 2.0);
   End bufferDistanceError;
 
@@ -511,5 +510,6 @@ AS
   End setSimplifyFactor;
 
 END;
-
 /
+SHOW ERRORS
+

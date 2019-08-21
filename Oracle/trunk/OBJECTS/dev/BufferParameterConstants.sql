@@ -1,11 +1,8 @@
---------------------------------------------------------
---  File created - Wednesday-July-24-2019   
---------------------------------------------------------
---------------------------------------------------------
---  DDL for Package BUFFERPARAMETERCONSTANTS
---------------------------------------------------------
+DEFINE INSTALL_SCHEMA='&1'
 
-  CREATE OR REPLACE EDITIONABLE PACKAGE "SPDBA"."BUFFERPARAMETERCONSTANTS" 
+SET VERIFY OFF;
+
+CREATE OR REPLACE EDITIONABLE PACKAGE &&INSTALL_SCHEMA..BUFFERPARAMETERCONSTANTS 
 AUTHID CURRENT_USER
 As
   /**
@@ -54,5 +51,6 @@ As
    */
   DEFAULT_SIMPLIFY_FACTOR Constant Number := 0.01;
 end;
-
 /
+SHOW ERRORS
+

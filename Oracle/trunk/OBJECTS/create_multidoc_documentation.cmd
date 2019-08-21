@@ -1,7 +1,8 @@
-@ECHO OFF
-SETLOCAL 
+@ECHO ON
+SETLOCAL ENABLEDELAYEDEXPANSION
+
 F:\Projects\database\code\robodoc-win32-4.99.36\robodoc ^
-      --src export ^
+      --src src ^
       --doc documentation\MULTI ^
       --multidoc ^
       --toc ^
@@ -12,26 +13,46 @@ F:\Projects\database\code\robodoc-win32-4.99.36\robodoc ^
       --no_subdirectories ^
       --documenttitle "SPDBA Object Types and Methods Documentation" 
 
-Echo Now modifying HEAD part of html
-del html
-rmdir /S /Q html
-mkdir html
-copy head_favicon.sed html
+Echo Remove any html directory not deleted by previous processing.
+mkdir html 
+REM >nul 2>&1
+ECHO Copy head_favicon.sed to html directory ...
+copy /S head_favicon.sed html
+ECHO Change to html directory ...
 cd html
+ECHO Delete any files that might be in the html directory.
+DEL /Q .\* 
 
 SET PATH=%PATH%;"C:\Program Files (x86)\GnuWin32\bin"
 
+ECHO Rename documentation files to remove _sql in name...
+ECHO And modify HEAD of files.
 SET fname=_
-FOR %%a IN ( ..\documentation\MULTI\*.html ) DO (
-  ECHO Copying %%a to create c_%%~nxa ...
-  copy %%a c_%%~nxa
-  IF EXIST c_%%~nxa (
-    sed -r -f head_favicon.sed c_%%~nxa > %%~nxa
-    IF EXIST %%~nxa (
-      copy %%~nxa ..\documentation\Oracle\MULTI
+FOR %%a IN ( ..\documentation\MULTI\T_*.html ) DO CALL :BODY %%a
+GOTO :EOF
+
+:BODY
+  ECHO BODY....
+  SET fName=%~n1
+  ECHO ... old file name is %fName% ...
+  SET newFName=%fname:_sql=%
+  ECHO ... new file name is %newFName% ...
+  ECHO .........Copying %fName% to create %newFName%
+  COPY ..\documentation\MULTI\%fName%.html c_%newFName%.html
+  IF EXIST %newFName%.html (
+    sed -r -f head_favicon.sed c_%newFName%.html > %fName%.html
+    IF EXIST %fName%.html (
+      copy %fileName%.html ..\documentation\Oracle\MULTI
+      del  %fileName%.html 
     ) 
   )
-)
+GOTO :EOF
+
+:EOF
 cd ..
-rmdir /S /Q html
+rmdir html 
+
 ENDLOCAL
+pause
+exit
+

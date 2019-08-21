@@ -2,7 +2,12 @@ DEFINE INSTALL_SCHEMA='&1'
 
 SET VERIFY OFF;
 
-CREATE OR REPLACE EDITIONABLE TYPE BODY &&INSTALL_SCHEMA..T_SEGMENT 
+-- Always aim for a clean compile
+ALTER SESSION SET PLSQL_WARNINGS='ERROR:ALL';
+-- Enable optimizations
+ALTER SESSION SET plsql_optimize_level=2;
+
+CREATE OR REPLACE TYPE BODY &&INSTALL_SCHEMA..T_SEGMENT
 AS
 
   Constructor Function T_Segment(SELF IN OUT NOCOPY T_Segment)
@@ -3957,5 +3962,37 @@ AS
   END orderBy;
 
 END;
-
 /
+SHOW ERRORS
+
+set serveroutput on size unlimited
+WHENEVER SQLERROR EXIT FAILURE;
+DECLARE
+   v_OK       boolean := FALSE;
+   v_obj_name varchar2(30) := 'T_SEGMENT';
+BEGIN
+   FOR rec IN (select object_name,object_Type, status
+                 from user_objects
+                where object_name = v_obj_name
+                  and object_type = 'TYPE BODY'
+               order by object_type 
+              ) 
+   LOOP
+      IF ( rec.status = 'VALID' ) Then
+         dbms_output.put_line(rec.object_type || ' ' || USER || '.' || rec.object_name || ' is valid.');
+         v_ok := TRUE;
+      ELSE
+         dbms_output.put_line(rec.object_type || ' ' || USER || '.' || rec.object_name || ' is invalid.');
+      END IF;
+   END LOOP;
+   IF ( NOT v_OK ) THEN
+      RAISE_APPLICATION_ERROR(-20000,v_obj_name || ' failed to install.');
+   END IF;
+END;
+/
+SHOW ERRORS
+
+WHENEVER SQLERROR CONTINUE;
+
+EXIT SUCCESS;
+

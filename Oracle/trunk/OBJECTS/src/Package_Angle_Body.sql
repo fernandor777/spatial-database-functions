@@ -1,11 +1,14 @@
---------------------------------------------------------
---  File created - Wednesday-July-31-2019   
---------------------------------------------------------
---------------------------------------------------------
---  DDL for Package Body ANGLE
---------------------------------------------------------
+DEFINE INSTALL_SCHEMA='&1'
 
-  CREATE OR REPLACE EDITIONABLE PACKAGE BODY "SPDBA"."ANGLE" 
+SET VERIFY OFF;
+SET SERVEROUTPUT ON
+
+-- Always aim for a clean compile
+ALTER SESSION SET PLSQL_WARNINGS='ERROR:ALL';
+-- Enable optimizations
+-- ALTER SESSION SET plsql_optimize_level=2;
+
+CREATE OR REPLACE EDITIONABLE PACKAGE BODY &&INSTALL_SCHEMA..ANGLE
 AS
 
   /**
@@ -13,9 +16,9 @@ AS
    * Unless otherwise noted, methods in this class express angles in radians.
   */
 
-  PI_TIMES_2 CONSTANT NUMBER := SPDBA.COGO.PI() * 2.0;
-  PI_OVER_2  CONSTANT NUMBER := SPDBA.COGO.PI() / 2.0;
-  PI_OVER_4  CONSTANT NUMBER := SPDBA.COGO.PI() / 4.0;
+  PI_TIMES_2 CONSTANT NUMBER := &&INSTALL_SCHEMA..COGO.PI() * 2.0;
+  PI_OVER_2  CONSTANT NUMBER := &&INSTALL_SCHEMA..COGO.PI() / 2.0;
+  PI_OVER_4  CONSTANT NUMBER := &&INSTALL_SCHEMA..COGO.PI() / 4.0;
 
   /**
    * A value that indicates an orientation of clockwise, or a right turn.
@@ -54,7 +57,7 @@ AS
   Return Number
   As
   Begin
-    return (radians * 180.0) / (SPDBA.COGO.PI());
+    return (radians * 180.0) / (&&INSTALL_SCHEMA..COGO.PI());
   End toDegrees;
 
   /**
@@ -67,7 +70,7 @@ AS
   Return Number
   As
   Begin
-    return (angleDegrees * SPDBA.COGO.PI()) / 180.0;
+    return (angleDegrees * &&INSTALL_SCHEMA..COGO.PI()) / 180.0;
   End toRadians;
 
   /**
@@ -203,10 +206,10 @@ AS
     a2     := angle(tail, tip2);
     angDel := a2 - a1;
     -- normalize, maintaining orientation
-    if (angDel <= -SPDBA.COGO.PI()) then
+    if (angDel <= -&&INSTALL_SCHEMA..COGO.PI()) then
        return angDel + PI_TIMES_2;
     end if;
-    if (angDel > SPDBA.COGO.PI()) then
+    if (angDel > &&INSTALL_SCHEMA..COGO.PI()) then
        return angDel - PI_TIMES_2;
     end if;
     return angDel;
@@ -273,10 +276,10 @@ AS
     v_angle Number;
   Begin
     v_angle := p_angle;
-    while (v_angle > SPDBA.COGO.PI()) loop
+    while (v_angle > &&INSTALL_SCHEMA..COGO.PI()) loop
       v_angle := v_angle - PI_TIMES_2;
     end loop; 
-    while (v_angle <= 0 - SPDBA.COGO.PI()) loop
+    while (v_angle <= 0 - &&INSTALL_SCHEMA..COGO.PI()) loop
       v_angle := v_angle + PI_TIMES_2;
     end loop;
     return v_angle;
@@ -346,8 +349,8 @@ AS
     else 
       delAngle := ang1 - ang2;
     end if;
-    if (delAngle > SPDBA.COGO.PI()) then
-      delAngle := (2.0 * SPDBA.COGO.PI()) - delAngle;
+    if (delAngle > &&INSTALL_SCHEMA..COGO.PI()) then
+      delAngle := (2.0 * &&INSTALL_SCHEMA..COGO.PI()) - delAngle;
     end if;
     return delAngle;
   End diff;

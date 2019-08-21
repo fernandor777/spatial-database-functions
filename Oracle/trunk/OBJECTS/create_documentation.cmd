@@ -1,5 +1,5 @@
 F:\Projects\database\code\robodoc-win32-4.99.36\robodoc ^
-        --src export\t_bearing_distance.sql  ^
+        --src src\t_bearing_distance.sql  ^
         --doc documentation\t_bearing_distance ^
         --singlefile ^
         --index ^
@@ -11,7 +11,7 @@ F:\Projects\database\code\robodoc-win32-4.99.36\robodoc ^
         --documenttitle "SPDBA Bearing And Distance Object Types and Methods" 
 
 F:\Projects\database\code\robodoc-win32-4.99.36\robodoc ^
-        --src export\t_vertex.sql  ^
+        --src src\t_vertex.sql  ^
         --doc documentation\t_vertex   ^
         --singlefile ^
         --index ^
@@ -23,7 +23,7 @@ F:\Projects\database\code\robodoc-win32-4.99.36\robodoc ^
         --documenttitle "SPDBA T_Vertex Object Types and Methods" 
 
 F:\Projects\database\code\robodoc-win32-4.99.36\robodoc ^
-        --src export\t_segment.sql  ^
+        --src src\t_segment.sql  ^
         --doc documentation\t_segment  ^
         --singlefile ^
         --index ^
@@ -35,7 +35,7 @@ F:\Projects\database\code\robodoc-win32-4.99.36\robodoc ^
         --documenttitle "SPDBA T_Segment Object Types and Methods" 
 
 F:\Projects\database\code\robodoc-win32-4.99.36\robodoc ^
-        --src export\t_grid.sql     ^
+        --src src\t_grid.sql     ^
         --doc documentation\t_grid     ^
         --singlefile ^
         --index ^
@@ -47,7 +47,7 @@ F:\Projects\database\code\robodoc-win32-4.99.36\robodoc ^
         --documenttitle "SPDBA T_Grid Object Types and Methods" 
 
 F:\Projects\database\code\robodoc-win32-4.99.36\robodoc ^
-        --src export\t_eleminfo.sql ^
+        --src src\t_eleminfo.sql ^
         --doc documentation\t_eleminfo ^
         --singlefile ^
         --index ^
@@ -59,7 +59,7 @@ F:\Projects\database\code\robodoc-win32-4.99.36\robodoc ^
         --documenttitle "SPDBA T_ElemInfo Object Types and Methods" 
 
 F:\Projects\database\code\robodoc-win32-4.99.36\robodoc ^
-        --src export\t_geometry.sql ^
+        --src src\t_geometry.sql ^
         --doc documentation\t_geometry ^
         --singlefile ^
         --index ^
@@ -72,7 +72,7 @@ F:\Projects\database\code\robodoc-win32-4.99.36\robodoc ^
 
 
 F:\Projects\database\code\robodoc-win32-4.99.36\robodoc ^
-        --src export\t_vector3D.sql ^
+        --src src\t_vector3D.sql ^
         --doc documentation\t_vector3D ^
         --singlefile ^
         --index ^
@@ -84,7 +84,7 @@ F:\Projects\database\code\robodoc-win32-4.99.36\robodoc ^
         --documenttitle "SPDBA T_Vector3D Object Types and Methods" 
 
 F:\Projects\database\code\robodoc-win32-4.99.36\robodoc ^
-        --src export\T_MBR.sql ^
+        --src src\T_MBR.sql ^
         --doc documentation\T_MBR ^
         --singlefile ^
         --index ^
@@ -96,7 +96,7 @@ F:\Projects\database\code\robodoc-win32-4.99.36\robodoc ^
         --documenttitle "SPDBA T_MBR Object Types and Methods" 
 
 F:\Projects\database\code\robodoc-win32-4.99.36\robodoc ^
-        --src export\COGO.sql ^
+        --src src\COGO.sql ^
         --doc documentation\COGO ^
         --singlefile ^
         --index ^
@@ -108,7 +108,7 @@ F:\Projects\database\code\robodoc-win32-4.99.36\robodoc ^
         --documenttitle "SPDBA COGO Package" 
 
 F:\Projects\database\code\robodoc-win32-4.99.36\robodoc ^
-        --src export\T_VERTEXLIST
+        --src src\T_VERTEXLIST
         --doc documentation\T_VERTEXLIST ^
         --singlefile ^
         --index ^

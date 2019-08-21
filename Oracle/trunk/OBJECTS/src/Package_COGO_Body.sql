@@ -3,7 +3,12 @@ DEFINE INSTALL_SCHEMA='&1'
 SET VERIFY OFF;
 SET SERVEROUTPUT ON
 
-create or replace PACKAGE BODY COGO
+-- Always aim for a clean compile
+ALTER SESSION SET PLSQL_WARNINGS='ERROR:ALL';
+-- Enable optimizations
+-- ALTER SESSION SET plsql_optimize_level=2;
+
+CREATE OR REPLACE PACKAGE BODY &&INSTALL_SCHEMA..COGO
 AS
   Function PI
   Return Number

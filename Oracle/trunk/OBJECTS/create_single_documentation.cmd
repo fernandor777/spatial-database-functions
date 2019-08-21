@@ -1,5 +1,5 @@
 F:\Projects\database\code\robodoc-win32-4.99.36\robodoc ^
-      --src export ^
+      --src src ^
       --doc documentation\OracleObjects ^
       --singledoc ^
       --toc ^

@@ -2,7 +2,12 @@ DEFINE INSTALL_SCHEMA='&1'
 
 SET VERIFY OFF;
 
-CREATE OR REPLACE EDITIONABLE TYPE BODY &&INSTALL_SCHEMA..T_GEOMETRY 
+-- Always aim for a clean compile
+ALTER SESSION SET PLSQL_WARNINGS='ERROR:ALL';
+-- Enable optimizations
+-- ALTER SESSION SET plsql_optimize_level=2;
+
+CREATE OR REPLACE TYPE BODY &&INSTALL_SCHEMA..T_GEOMETRY
 AS
   Constructor Function T_GEOMETRY(SELF IN OUT NOCOPY T_GEOMETRY)
                 Return Self As Result
@@ -14,7 +19,6 @@ AS
     SELF.projected  := NULL;
     RETURN;
   End T_GEOMETRY;
-
   Constructor Function T_GEOMETRY(SELF   IN OUT NOCOPY T_GEOMETRY,
                                   p_geom IN mdsys.sdo_geometry)
                 Return Self As Result
@@ -26,7 +30,6 @@ AS
     SELF.projected := 1;
     RETURN;
   End T_GEOMETRY;
-
   Constructor Function T_GEOMETRY(SELF        IN OUT NOCOPY T_GEOMETRY,
                                   p_geom      in mdsys.sdo_geometry,
                                   p_tolerance in number)
@@ -43,7 +46,6 @@ AS
     END IF;
     RETURN;
   End T_GEOMETRY;
-
   Constructor Function T_GEOMETRY(SELF        IN OUT NOCOPY T_GEOMETRY,
                                   p_geom      in mdsys.sdo_geometry,
                                   p_tolerance in number,
@@ -61,7 +63,6 @@ AS
     END IF;
     RETURN;
   End T_GEOMETRY;
-
   Constructor Function T_GEOMETRY(SELF        IN OUT NOCOPY T_GEOMETRY,
                                   p_geom      in mdsys.sdo_geometry,
                                   p_tolerance in number,
@@ -90,7 +91,6 @@ AS
                         end;
     RETURN;
   End T_GEOMETRY;
-
   Constructor Function T_GEOMETRY(SELF        IN OUT NOCOPY T_GEOMETRY,
                                   p_vertex    in mdsys.vertex_type,
                                   p_srid      in integer,
@@ -117,7 +117,6 @@ AS
     END IF;
     RETURN;
   End T_GEOMETRY;
-
   Constructor Function T_GEOMETRY(SELF      IN OUT NOCOPY T_GEOMETRY,
                                   p_Segment in &&INSTALL_SCHEMA..T_Segment)
                 Return Self As Result
@@ -140,7 +139,6 @@ AS
                             end);
     RETURN;
   End T_GEOMETRY;
-
   Constructor Function T_GEOMETRY(SELF    IN OUT NOCOPY T_GEOMETRY,
                                   p_geoms IN mdsys.sdo_geometry_array)
                 Return Self As Result
@@ -229,7 +227,6 @@ AS
     SELF.geom := v_geom;
     RETURN;
   End T_GEOMETRY;
-
   Constructor Function T_GEOMETRY(SELF   IN OUT NOCOPY T_GEOMETRY,
                                   p_ewkt IN CLOB )
                 Return Self As Result
@@ -393,14 +390,12 @@ AS
   BEGIN
     RETURN '5.0.0 Database(11.2,12.1,12,2) Documentation(RoboDoc 1.6.0)';
   END ST_Release;
-
   Member Function ST_AsGeometryRow(p_gid in integer default 1)
            Return &&INSTALL_SCHEMA..T_Geometry_Row
   As
   Begin
     RETURN &&INSTALL_SCHEMA..T_GEOMETRY_ROW(NVL(p_gid,1),SELF.geom,SELF.tolerance,SELF.dPrecision,SELF.projected);
   End ST_AsGeometryRow;
-
   Member Procedure ST_SetProjection(SELF IN OUT NOCOPY T_GEOMETRY)
   As
     c_i_invalid_srid CONSTANT INTEGER       := -20120;
@@ -434,7 +429,6 @@ AS
      SELF.tolerance  := NVL(SELF.tolerance, case when SELF.projected = 'GEOGRAPHIC' then 0.05 else 0.0005 end);
      SELF.dPrecision := NVL(SELF.dPrecision,case when SELF.projected = 'GEOGRAPHIC' then 8    else (ROUND(log(10,(1/SELF.tolerance)/2))+1) end);
   END ST_SetProjection;
-
   Member Function ST_SetSdoGtype (p_sdo_gtype in integer)
            Return &&INSTALL_SCHEMA..T_Geometry
   As
@@ -447,7 +441,6 @@ AS
                                  SELF.geom.sdo_ordinates),
               SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   End ST_SetSdoGtype;
-
   Member Function ST_SetSRID(p_srid in integer)
            Return &&INSTALL_SCHEMA..T_Geometry
   As
@@ -459,63 +452,54 @@ AS
                                                SELF.geom.sdo_ordinates),
                             SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   End ST_SetSRID;
-
   Member Function ST_SetPrecision(p_dPrecision in integer default 3)
            Return &&INSTALL_SCHEMA..T_Geometry
   As
   Begin
      return &&INSTALL_SCHEMA..T_Geometry(SELF.geom,SELF.tolerance,NVL(p_dPrecision,3),SELF.projected);
   End ST_SetPrecision;
-
   Member Function ST_SetTolerance(p_tolerance in number default 0.005)
            Return &&INSTALL_SCHEMA..T_Geometry
   As
   Begin
      return &&INSTALL_SCHEMA..T_Geometry(SELF.geom,NVL(p_tolerance,0.005),SELF.dPrecision,SELF.projected);
   End ST_SetTolerance;
-
   Member Function ST_Gtype
            Return Integer
   As
   Begin
      return case when SELF.geom is not null then SELF.GEOM.Get_Gtype() else null end;
   End ST_Gtype;
-
   Member Function ST_Dims
            Return Integer
   As
   Begin
      return case when SELF.geom is not null then SELF.GEOM.Get_Dims() else null end;
   End ST_Dims;
-
   Member Function ST_SDO_GType
            Return Integer
   As
   Begin
      return case when SELF.geom is not null then SELF.geom.sdo_gtype else null end;
   End ST_SDO_GType;
-
   Member Function ST_Srid
            Return Integer
   As
   Begin
      return case when SELF.geom is not null then SELF.GEOM.sdo_srid Else null end;
   End ST_Srid;
-
   Member Function ST_AsWkb
            Return Blob
   As
   Begin
      return case when SELF.geom is not null then SELF.GEOM.Get_Wkb() else null end;
   End ST_AsWkb ;
-
   Member Function ST_AsWKT
            Return CLOB
   As
   Begin
      return case when SELF.geom is not null then SELF.GEOM.Get_Wkt() else null end;
   End ST_AsWkt;
-
   Member Function ST_AsText
            Return CLOB
   As
@@ -529,7 +513,6 @@ AS
   Begin
     Return &&INSTALL_SCHEMA..T_GEOMETRY (sdo_geometry(p_wkt,p_srid));
   End ST_FromText;
-
   Member Function ST_AsEWKT (p_format_model varchar2 default 'TM9')
            Return Clob
   As
@@ -613,14 +596,12 @@ AS
   Begin
     Return &&INSTALL_SCHEMA..T_GEOMETRY(p_ewkt);
   End ST_FromEWKT;
-
   Member Function ST_CoordDimension
            Return Smallint
   As
   Begin
      return case when SELF.geom is not null then SELF.GEOM.ST_CoordDim() else null end;
   End ST_CoordDimension;
-
   Member Function ST_isValid
            Return Integer
   As
@@ -630,7 +611,6 @@ AS
                  else SELF.GEOM.ST_isValid()
              end;
   End ST_isValid;
-
   Member Function ST_Validate(p_context in integer default 0)
            Return varchar2
   As
@@ -640,14 +620,12 @@ AS
                  else mdsys.sdo_geom.validate_geometry_with_context(SELF.geom,SELF.tolerance)
             end;
   End ST_Validate;
-
   Member Function ST_isValidContext
            Return varchar2
   As
   Begin
      Return mdsys.sdo_geom.validate_geometry_with_context(SELF.geom,SELF.tolerance);
   End ST_isValidContext;
-
   Member Function ST_isEmpty
            Return integer
   Is
@@ -662,7 +640,6 @@ AS
     End If;
     Return 0;
   End ST_isEmpty;
-
   Member Function ST_isClosed
            Return integer
   As
@@ -676,14 +653,12 @@ AS
     v_endVertex   := SELF.ST_VertexN(-1);
     Return v_startVertex.ST_Equals(v_endVertex);
   END ST_isClosed;
-
   Member Function ST_isSimple
          Return integer
   Is
   Begin
     Return mdsys.ST_Geometry(SELF.GEOM).ST_isSimple();
   End ST_isSimple;
-
   Member Function ST_GeometryType
            Return VarChar2
   Is
@@ -698,7 +673,6 @@ AS
         WHEN uninitialized_collection THEN
           RETURN NULL;
   End ST_GeometryType;
-
   Member Function ST_NumVertices
            Return Integer
   Is
@@ -713,7 +687,6 @@ AS
         WHEN uninitialized_collection THEN
           RETURN NULL;
   End ST_NumVertices;
-
   Member Function ST_NumPoints
            Return Integer
   Is
@@ -728,7 +701,6 @@ AS
         WHEN uninitialized_collection THEN
           RETURN NULL;
   End ST_NumPoints;
-
   Member Function ST_NumGeometries
            Return Integer
   Is
@@ -743,7 +715,6 @@ AS
         WHEN uninitialized_collection THEN
           RETURN NULL;
   End ST_NumGeometries;
-
   Member Function ST_NumElements
            Return Integer
   Is
@@ -758,7 +729,6 @@ AS
         WHEN uninitialized_collection THEN
           RETURN NULL;
   End ST_NumElements;
-
   Member Function ST_NumElementInfo
            Return Integer
   Is
@@ -773,7 +743,6 @@ AS
         WHEN uninitialized_collection THEN
           RETURN NULL;
   End ST_NumElementInfo;
-
   Member Function ST_NumSegments
            Return Integer
   Is
@@ -786,7 +755,6 @@ AS
                 else 0
             end;
   End ST_NumSegments;
-
   Member Function ST_Dimension
            Return Integer
   Is
@@ -805,7 +773,6 @@ AS
                  ELSE -1
               END;
   End ST_Dimension;
-
   Member Function ST_hasDimension(p_dim in integer default 2)
            Return Integer
   As
@@ -970,7 +937,7 @@ AS
                           Then MDSYS.SDO_GEOM.sdo_length(SELF.geom,v_tolerance,P_UNIT)
                           Else MDSYS.SDO_GEOM.sdo_length(SELF.geom,v_tolerance)
                       End;
-         dbms_output.put_line('spatial sdo_geom.sdo_length; p_unit=' || NVL(p_unit,'null'));
+         -- DEBUG dbms_output.put_line('spatial sdo_geom.sdo_length; p_unit=' || NVL(p_unit,'null'));
       ELSE
         If ( SELF.ST_hasCircularArcs() = 1 ) then
           v_geom := MDSYS.SDO_GEOM.sdo_arc_densify(
@@ -1045,7 +1012,6 @@ AS
     END IF;
     RETURN 'FALSE';
   End ST_Relate;
-
   Member Function ST_SetPoint(p_point in mdsys.sdo_point_type)
            Return &&INSTALL_SCHEMA..T_GEOMETRY
   As
@@ -1057,7 +1023,6 @@ AS
                                     SELF.geom.sdo_ordinates),
                                     SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   End ST_SetPoint;
-
   Member Function ST_SwapOrdinates(p_pair in varchar2 default 'XY'  )
            Return &&INSTALL_SCHEMA..T_GEOMETRY
   Is
@@ -1141,7 +1106,6 @@ AS
       End If;
       Return &&INSTALL_SCHEMA..T_GEOMETRY(v_geom,SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   End ST_SwapOrdinates;
-
   Member Function ST_hasCircularArcs
            Return Integer
   Is
@@ -1169,7 +1133,6 @@ AS
     end loop element_extraction;
     return 0;
   End ST_hasCircularArcs;
-
   Member Function ST_NumRectangles
            Return integer
   Is
@@ -1193,14 +1156,12 @@ AS
     END LOOP element_extraction;
     Return v_rectangle_count;
   End ST_NumRectangles;
-
   Member Function ST_HasRectangles
            Return integer
   Is
   Begin
    Return case when SELF.ST_numRectangles() > 0 then 1 else 0 end;
   End ST_HasRectangles;
-
   Member Function ST_isOrientedPoint
            Return integer
   is
@@ -1239,7 +1200,6 @@ AS
     End Loop;
     Return 0;
   End ST_isOrientedPoint;
-
   Member Function ST_ElementTypeAt (p_element in integer)
            Return integer
   Is
@@ -1262,7 +1222,6 @@ AS
     end loop element_extraction;
     Return NULL;
   End ST_ElementTypeAt;
-
   Member Function ST_Round(p_dec_places_x In integer Default 8,
                            p_dec_places_y In integer Default null,
                            p_dec_places_z In integer Default 3,
@@ -1312,7 +1271,6 @@ AS
     End If;
     Return &&INSTALL_SCHEMA..T_GEOMETRY(v_geom,SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   End ST_Round;
-
   Member Function ST_NumRings(p_ring_type in integer default 0
                                 )
            Return Integer
@@ -1341,7 +1299,6 @@ AS
     END LOOP element_extraction;
     Return v_ring_count;
   End ST_NumRings;
-
   Member Function ST_ElemInfo
            Return &&INSTALL_SCHEMA..T_ElemInfoSet pipelined
   Is
@@ -1357,7 +1314,6 @@ AS
     End Loop element_extraction;
     Return;
   End ST_ElemInfo;
-
   Member Function ST_NumSubElements(p_subArcs in integer default 0)
            Return Integer
   Is
@@ -1408,14 +1364,12 @@ AS
     END LOOP element_extraction;
     Return v_sub_elem_count;
   End ST_NumSubElements;
-
   Member Function ST_NumInteriorRing
          Return Integer
   Is
   Begin
     Return SELF.ST_NumRings(p_ring_type => 2);
   End ST_NumInteriorRing;
-
   Member Function ST_Dump( p_subElements IN integer default 0 )
            Return &&INSTALL_SCHEMA..T_Geometries Pipelined
   IS
@@ -1532,7 +1486,6 @@ AS
     END IF;
     RETURN;
   END ST_Dump;
-
   Member Function ST_Extract(p_geomType IN VARCHAR2)
            Return &&INSTALL_SCHEMA..T_Geometry
   IS
@@ -1592,7 +1545,6 @@ AS
     End If;
     RETURN;
   END ST_Extract;
-
   Member Function ST_FilterRings(p_area in number,
                                  p_unit in varchar2 default null)
            Return &&INSTALL_SCHEMA..T_GEOMETRY
@@ -1658,7 +1610,6 @@ AS
     END LOOP process_all_elements;
     RETURN &&INSTALL_SCHEMA..T_GEOMETRY(v_return_tgeom.geom,SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   END ST_FilterRings;
-
   Member Function ST_RemoveInnerRings
            Return &&INSTALL_SCHEMA..T_GEOMETRY
   Is
@@ -1691,7 +1642,6 @@ AS
     END LOOP all_elements;
     Return &&INSTALL_SCHEMA..T_GEOMETRY(v_geom,SELF.tolerance,SELF.dPrecision,SELF.projected);
   End ST_RemoveInnerRings;
-
   Member Function ST_ExtractRings
           Return &&INSTALL_SCHEMA..T_GEOMETRIES PIPELINED
   IS
@@ -1718,7 +1668,6 @@ AS
     END LOOP process_all_elements;
     RETURN;
   END ST_ExtractRings;
-
   Member Function ST_ExteriorRing
            Return &&INSTALL_SCHEMA..T_GEOMETRY
   IS
@@ -1742,7 +1691,6 @@ AS
     End If;
     RETURN &&INSTALL_SCHEMA..T_GEOMETRY(v_eRing,SELF.tolerance,SELF.dPrecision,SELF.projected);
   END ST_ExteriorRing;
-
   Member Function ST_Boundary
            Return &&INSTALL_SCHEMA..T_GEOMETRY
   IS
@@ -2854,41 +2802,6 @@ AS
     RETURN &&INSTALL_SCHEMA..T_GEOMETRY(MDSYS.SDO_GEOM.sdo_mbr(SELF.geom));
   End ST_MBR;
   
-  Member Function ST_toMultiPoint
-           Return &&INSTALL_SCHEMA..T_GEOMETRY
-  As
-  Begin
-    IF ( SELF.geom.sdo_point     is null   or
-         SELF.geom.sdo_point.X   is null   or
-         SELF.geom.sdo_ordinates is null   or
-         SELF.geom.sdo_ordinates.COUNT = 0 or
-         SELF.geom.sdo_ordinates(1) is null ) Then
-      Return NULL;
-    END IF;
-    Return &&INSTALL_SCHEMA..T_GEOMETRY (
-               sdo_geometry((SELF.ST_Dims() * 1000) + 5,
-                           SELF.ST_Srid(),
-                           SELF.geom.sdo_point,
-                           MDSYS.SDO_ELEM_INFO_ARRAY(1,1,SELF.ST_NumPoints()),
-                           CASE WHEN SELF.ST_GType()=1 AND SELF.geom.sdo_point is not null
-                                THEN CASE WHEN SELF.geom.sdo_point.Z is null
-                                          THEN mdsys.sdo_ordinate_array(
-                                                  SELF.geom.sdo_point.X,
-                                                  SELF.geom.sdo_point.Y
-                                               )
-                                          ELSE mdsys.sdo_ordinate_array (
-                                                  SELF.geom.sdo_point.X,
-                                                  SELF.geom.sdo_point.Y,
-                                                  SELF.geom.sdo_point.Z
-                                               )
-                                      END
-                                ELSE SELF.geom.sdo_ordinates
-                             END),
-              SELF.tolerance,
-              SELF.dPrecision,
-              SELF.projected);
-  End ST_toMultiPoint;
-  
   Member Function ST_Envelope
            Return &&INSTALL_SCHEMA..T_GEOMETRY
   As
@@ -3910,7 +3823,6 @@ AS
     End If;
     Return SELF;
   End ST_Cogo2Polygon;
-
   Member Function ST_TravellingSalesman(p_start_gid   in integer,
                                         p_start_point in mdsys.sdo_point_type default NULL,
                                         p_geo_fence   in mdsys.sdo_geometry   default NULL,
@@ -4542,7 +4454,6 @@ AS
                       v_ordinates
     ),SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   End ST_Affine;
-
   Member Function ST_Compress (p_delta_factor in number default 1,
                                p_origin       in &&INSTALL_SCHEMA..T_Vertex default null )
            Return &&INSTALL_SCHEMA..T_GEOMETRY
@@ -4579,7 +4490,6 @@ AS
     END LOOP;
     RETURN &&INSTALL_SCHEMA..T_GEOMETRY(v_geometry,SELF.tolerance,SELF.dPrecision,SELF.projected);
   End ST_Compress;
-
   Member Function ST_Decompress(p_delta_factor in number default 1,
                                 p_origin       in &&INSTALL_SCHEMA..T_Vertex default null )
            Return &&INSTALL_SCHEMA..T_Geometry
@@ -4612,7 +4522,6 @@ AS
     END LOOP;
     RETURN &&INSTALL_SCHEMA..T_GEOMETRY(v_geometry,SELF.tolerance,SELF.dPrecision,SELF.projected);
   End ST_Decompress;
-
   Member Function ST_Centroid_P
            Return &&INSTALL_SCHEMA..T_GEOMETRY
   Is
@@ -4652,7 +4561,7 @@ AS
               SELF.dPrecision,
               SELF.projected);
   End ST_Centroid_P;
-
+  
   Member Function ST_Centroid_L(p_option in varchar2 := 'LARGEST',
                                 p_unit   in varchar2 default null)
            Return &&INSTALL_SCHEMA..T_GEOMETRY
@@ -4682,7 +4591,11 @@ AS
                                         SELF.tolerance,SELF.dPrecision,SELF.projected);
       v_current_meas := v_egeom.ST_LRS_Measure_Range(p_unit);
       if ( SELF.ST_NumElements() = 1 ) Then
-         Return v_egeom.ST_LRS_Locate_Measure(v_current_meas / 2,0,p_unit);
+         Return v_egeom.ST_LRS_Locate_Measure(
+                           p_measure => v_current_meas / 2,
+                           p_offset  => 0,
+                           p_unit    => p_unit
+                );
       End If;
       if ( v_elem = 1 ) Then
           if ( v_option_value = 'LARGEST' ) Then
@@ -4693,24 +4606,41 @@ AS
       End If;
       If ( v_option_value = 'MULTI' ) Then
           if ( v_centroid is null ) then
-             v_centroid := v_egeom.ST_LRS_Locate_Measure(v_egeom.ST_LRS_Start_Measure()+(v_current_meas/2),0,p_unit).geom;
+             v_centroid := v_egeom.ST_LRS_Locate_Measure(
+                                      p_measure => v_egeom.ST_LRS_Start_Measure()+(v_current_meas/2),
+                                      p_offset  => 0,
+                                      p_unit    => p_unit).geom;
           Else
-             v_centroid := mdsys.sdo_util.append(v_centroid,
-                                                 v_egeom.ST_LRS_Locate_Measure(v_egeom.ST_LRS_Start_Measure()+(v_current_meas/2),0,p_unit).geom);
+             v_centroid := mdsys.sdo_util
+                                .append(v_centroid,
+                                        v_egeom.ST_LRS_Locate_Measure(
+                                                   p_measure => v_egeom.ST_LRS_Start_Measure()+(v_current_meas/2),
+                                                   p_offset  => 0,
+                                                   p_unit    => p_unit).geom
+                                 );
           End If;
       Else
+          -- SGG These are the same but should be different?
           if ( v_option_value = 'LARGEST' and v_current_meas > v_centroid_len_meas ) Then
-             v_centroid := v_egeom.ST_LRS_Locate_Measure(v_egeom.ST_LRS_Start_Measure()+(v_current_meas/2),0,p_unit).geom;
+             v_centroid := v_egeom.ST_LRS_Locate_Measure(
+                                      p_measure => v_egeom.ST_LRS_Start_Measure()+(v_current_meas/2),
+                                      p_offset  => 0,
+                                      p_unit    => p_unit
+                                  ).geom;
              v_centroid_len_meas := v_current_meas;
           ElsIf ( v_option_value = 'SMALLEST' and v_current_meas < v_centroid_len_meas ) Then
-             v_centroid := v_egeom.ST_LRS_Locate_Measure(v_egeom.ST_LRS_Start_Measure()+(v_current_meas/2),0,p_unit).geom;
+             v_centroid := v_egeom.ST_LRS_Locate_Measure(
+                                      p_measure => v_egeom.ST_LRS_Start_Measure()+(v_current_meas/2),
+                                      p_offset  => 0,
+                                      p_unit    => p_unit
+                                  ).geom;
              v_centroid_len_meas := v_current_meas;
           End If;
       End If;
     END LOOP for_all_linestrings_in_multi;
     RETURN &&INSTALL_SCHEMA..T_GEOMETRY(v_centroid,SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   End ST_Centroid_L;
-
+  
   Member Function ST_Centroid_A(
                      P_method     In Integer Default 1,
                      P_Seed_Value In Number  Default Null,
@@ -4979,7 +4909,6 @@ AS
                            SELF.dPrecision,
                            SELF.projected);
   End ST_Centroid_A;
-
   Member Function ST_Multi_Centroid(
                     p_method IN integer  := 1,
                     p_unit   IN varchar2 := NULL
@@ -5036,7 +4965,6 @@ AS
                     SELF.dPrecision,
                     self.projected);
   END ST_Multi_Centroid;
-
   Member Function ST_FixOrdinates   (p_x_formula in varchar2,
                                      p_y_formula in varchar2,
                                      p_z_formula in varchar2 := null,
@@ -5621,105 +5549,6 @@ SELECT CASE A.rin
      End Loop;
      Return &&INSTALL_SCHEMA..T_GEOMETRY(v_return_geom,SELF.Tolerance,SELF.dPrecision,SELF.Projected).ST_Round(p_dec_places_x=>SELF.dPrecision);
   END ST_Parallel;
-  
-  Member Function ST_GetOffsetCurve(p_offset    in number,
-                                    p_bufParams in &&INSTALL_SCHEMA..BufferParameters)
-           Return &&INSTALL_SCHEMA..T_GEOMETRY 
-  As
-    isRightSide boolean;
-    posDistance Number;
-    curvePts    &&INSTALL_SCHEMA..T_Vertices;
-    inputPts    &&INSTALL_SCHEMA..T_Vertices;
-       
-  /**
-   * Computes the distance tolerance to use during input
-   * line simplification.
-   * 
-   * @param distance the buffer distance
-   * @return the simplification tolerance
-   */
-    Function simplifyTolerance(bufDistance in number)
-    return number
-    as
-    begin
-      return bufDistance * p_bufParams.getSimplifyFactor();
-    end simplifyTolerance;
-  
-    /** From OffsetCurveBuilder.java **/
-    Procedure computeOffsetCurve(inputPts in &&INSTALL_SCHEMA..T_Vertices, 
-                                 isRightSide in boolean)
-    As
-      distTol number;
-      n1      number;
-      n2      number;
-      simp1   &&INSTALL_SCHEMA..t_vertices;  -- or &&INSTALL_SCHEMA..T_VertexList
-      simp2   &&INSTALL_SCHEMA..t_vertices;
-    Begin
-      distTol := simplifyTolerance(p_offset);
-    
-    if (isRightSide) then
-      ------------ compute points for right side of line
-      -- Simplify the appropriate side of the line before generating
--- SGG       simp2 := BufferInputLineSimplifier.simplify(inputPts, -distTol);
-      -- MD - used for testing only (to eliminate simplification)
-      n2 := simp2.COUNT;
-      -- since we are traversing line in opposite order, offset position is still LEFT
-      OffsetSegmentGenerator.initSideSegments(simp2(n2), simp2(n2 - 1), Position.LEFT);
-      OffsetSegmentGenerator.addFirstSegment();
-      -- SGG n2 - 2 or n2 ?
-      for i in reverse (n2-2)..1 loop
-        OffsetSegmentGenerator.addNextSegment(simp2(i), true);
-      end loop;
-    else
-      ----------- compute points for left side of line
-      -- Simplify the appropriate side of the line before generating
--- SGG       simp1 := BufferInputLineSimplifier.simplify(inputPts, distTol);
-      -- MD - used for testing only (to eliminate simplification)
-      
-      n1 := simp1.COUNT;
-      OffsetSegmentGenerator.initSideSegments(simp1(0), simp1(1), Position.LEFT);
-      OffsetSegmentGenerator.addFirstSegment();
-      -- SGG 
-      for i in 1..n1 loop
-        OffsetSegmentGenerator.addNextSegment(simp1(i), true);
-      end loop;
-    end if;
-    OffsetSegmentGenerator.addLastSegment();
-  end computeOffsetCurve;
-
-  Begin
-    IF ( SELF.ST_Gtype() not in (2,6) ) THEN
-      RETURN SELF;
-    END IF;
-    
-    -- OffsetCurveBuilder
-    -- public Coordinate[] getOffsetCurve(Coordinate[] inputPts, double distance)
-    
-    -- a zero width offset curve is empty
-    if (p_offset = 0.0) then
-      return null;
-    end if;
-
-    isRightSide := p_offset < 0.0;
-    posDistance := ABS(p_offset);
-    OffsetSegmentGenerator.init(SELF.dPrecision, p_bufParams, posDistance);
-    select v.ST_Self() as vertex
-    bulk collect into inputPts
-      from TABLE(CAST(SELF.ST_Vertices() as &&INSTALL_SCHEMA..T_Vertices)) v;
-    computeOffsetCurve(inputPts, isRightSide);
-    curvePts := offsetSegmentGenerator.getCoordinates();
-    -- for right side line is traversed in reverse direction, so have to reverse generated line
-    -- create geometry
-    /*
-    if (isRightSide) then
-      CoordinateArrays.reverse(curvePts);
-       SELF.ST_Reverse_Linestring();
-    end if;
-    return curvePts;
-    */
-    return null;
-  End ST_GetOffsetCurve;
-
   Member Function ST_Rectangle(p_length in number,
                                p_width  in number)
            Return &&INSTALL_SCHEMA..T_GEOMETRY
@@ -5906,7 +5735,6 @@ SELECT CASE A.rin
        End Loop row_iterator;
      End Loop col_iterator;
    End ST_Tile;
-
   Member Function ST_SmoothTile
            Return &&INSTALL_SCHEMA..T_GEOMETRY Deterministic
   As
@@ -6012,7 +5840,6 @@ SELECT CASE A.rin
                                 v_ordinate_array),
                     SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   End ST_SmoothTile;
-
   Member Function ST_RemoveCollinearPoints
            Return &&INSTALL_SCHEMA..T_GEOMETRY
   Is
@@ -7287,15 +7114,54 @@ SELECT CASE A.rin
         vOrdinates(3) := SELF.geom.Sdo_Point.Z;
       End If;
       vSdoGtype := 2001 + (case when SELF.ST_LRS_isMeasured()=1 then 1301 else 0 end);
-      vGeometry := mdsys.sdo_geometry(SELF.ST_Sdo_Gtype(),SELF.ST_Srid(),NULL,
-                                      mdsys.sdo_elem_info_array(1,1,1),
-                                      vOrdinates);
+      vGeometry := mdsys.sdo_geometry(
+                             vSdoGtype,
+                             SELF.ST_Srid(),
+                             NULL,
+                             mdsys.sdo_elem_info_array(1,1,1),
+                             vOrdinates);
     ELSE
       vGeometry := SELF.geom;
     END IF;
     RETURN &&INSTALL_SCHEMA..T_GEOMETRY(vGeometry,SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   END ST_SdoPoint2Ord;
 
+  Member Function ST_toMultiPoint
+           Return &&INSTALL_SCHEMA..T_GEOMETRY
+  As
+    v_ordinates  mdsys.sdo_ordinate_array;
+    v_ord        pls_integer;
+    v_num_points pls_integer;
+  Begin
+    IF ( SELF.geom.sdo_point     is null   or
+         SELF.geom.sdo_point.X   is null ) THEN
+      RETURN SELF;
+    ELSIF (SELF.geom.sdo_ordinates is null   or
+           SELF.geom.sdo_ordinates.COUNT = 0 or
+         SELF.geom.sdo_ordinates(1) is null ) Then
+      Return SELF.ST_SdoPoint2Ord();
+    END IF;
+    v_Ordinates := SELF.geom.sdo_ordinates;
+    v_ord       := SELF.geom.sdo_ordinates.COUNT;
+    v_Ordinates.EXTEND(SELF.ST_Dims());
+    v_Ordinates(v_ord + 1) := SELF.geom.Sdo_Point.X;
+    v_Ordinates(v_ord + 2) := SELF.geom.Sdo_Point.Y;
+    IF ( SELF.ST_Dims() >= 3 ) THEN
+      v_Ordinates(v_ord + 3) := SELF.geom.Sdo_Point.Z;
+    End If;
+    v_num_points := v_ordinates.COUNT / SELF.ST_Dims();
+    Return &&INSTALL_SCHEMA..T_GEOMETRY (
+                   sdo_geometry((SELF.ST_Dims() * 1000) + 5,
+                               SELF.ST_Srid(),
+                               NULL,
+                               MDSYS.SDO_ELEM_INFO_ARRAY(1,1,v_num_points),
+                               v_ordinates
+                  ),
+                  SELF.tolerance,
+                  SELF.dPrecision,
+                  SELF.projected);
+  End ST_toMultiPoint;
+  
   Member Function ST_To2D
            Return &&INSTALL_SCHEMA..T_GEOMETRY
   Is
@@ -7409,7 +7275,6 @@ SELECT CASE A.rin
     End Loop;
     RETURN &&INSTALL_SCHEMA..T_GEOMETRY(v_3d_geom,SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   End ST_To3D;
-
   Member Function ST_To3D(p_start_z IN NUMBER,
                           p_end_z   IN NUMBER,
                           p_unit    IN VARCHAR2 DEFAULT NULL)
@@ -7633,7 +7498,6 @@ SELECT CASE A.rin
                            SELF.dPrecision,
                            SELF.projected);
   End ST_Add_Segment;
-
   Member Function ST_Reverse_Linestring
            Return &&INSTALL_SCHEMA..T_GEOMETRY
   As
@@ -7699,7 +7563,6 @@ SELECT CASE A.rin
     v_return_tgeom.geom.sdo_gtype := SELF.geom.sdo_gtype;
     Return v_return_tgeom;
   End ST_Reverse_Linestring;
-
   Member Function ST_Reverse_Geometry
            Return &&INSTALL_SCHEMA..T_GEOMETRY
   Is
@@ -7743,7 +7606,6 @@ SELECT CASE A.rin
              SELF.dPrecision,
              SELF.projected);
   End ST_Reverse_Geometry;
-
   Member Function ST_AsTText(p_linefeed     in integer  default 1,
                              p_format_model in varchar2 default 'TM9')
            Return CLOB
@@ -7814,7 +7676,6 @@ SELECT CASE A.rin
                        );
     Return v_text;
   End ST_AsTText;
-
   Member Function ST_Intersection(p_geometry in mdsys.sdo_geometry,
                                   p_order    in varchar2 Default 'FIRST')
            Return &&INSTALL_SCHEMA..T_GEOMETRY
@@ -7841,7 +7702,6 @@ SELECT CASE A.rin
     END IF;
     RETURN &&INSTALL_SCHEMA..T_GEOMETRY(v_result_geom,SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   End ST_Intersection;
-
   Member Function ST_Difference(p_geometry in mdsys.sdo_geometry,
                                 p_order    in varchar2 Default 'FIRST')
            Return &&INSTALL_SCHEMA..T_GEOMETRY
@@ -7868,7 +7728,6 @@ SELECT CASE A.rin
     END IF;
     RETURN &&INSTALL_SCHEMA..T_GEOMETRY(v_result_geom,SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   End ST_Difference;
-
   Member Function ST_Buffer(p_distance in number,
                             p_unit     in varchar2 default null)
            Return &&INSTALL_SCHEMA..T_GEOMETRY
@@ -7893,7 +7752,6 @@ SELECT CASE A.rin
     END IF;
     RETURN &&INSTALL_SCHEMA..T_GEOMETRY(v_result_geom,SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   End ST_Buffer;
-
   Member Function ST_SquareBuffer(p_distance in number,
                                   p_curved   in number default 0,
                                   p_unit     in varchar2 default null)
@@ -8003,7 +7861,6 @@ SELECT CASE A.rin
     END LOOP for_all_linestrings_in_multi;
     Return &&INSTALL_SCHEMA..T_GEOMETRY(v_rgeom,SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   End ST_SquareBuffer;
-
   Member Function ST_OneSidedBuffer(p_distance in number,
                                     p_curved   in number default 0,
                                     p_unit     in varchar2 default null)
@@ -8069,14 +7926,12 @@ SELECT CASE A.rin
     END LOOP for_all_linestrings_in_multi;
     Return &&INSTALL_SCHEMA..T_GEOMETRY(v_rgeom,SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   End ST_OneSidedBuffer;
-
   Member Function ST_Lrs_Dim
            Return Integer
   As
   Begin
      return case when SELF.geom is not null then SELF.GEOM.Get_LRS_Dim() else null end;
   End ST_Lrs_Dim;
-
   Member Function ST_LRS_isMeasured
            Return Integer
   Is
@@ -8089,7 +7944,6 @@ SELECT CASE A.rin
             else null
         end;
   End ST_LRS_isMeasured;
-
   Member Function ST_LRS_Start_Measure
            Return Number
   As
@@ -8114,7 +7968,6 @@ SELECT CASE A.rin
     End If;
     return SELF.geom.sdo_ordinates(SELF.ST_Lrs_Dim());
   End ST_LRS_Start_Measure;
-
   Member Function ST_LRS_End_Measure(p_unit in varchar2 default null)
            Return Number
   As
@@ -8139,7 +7992,6 @@ SELECT CASE A.rin
     End If;
     return SELF.geom.sdo_ordinates(SELF.geom.sdo_ordinates.COUNT-(SELF.ST_Dims()-SELF.ST_Lrs_Dim()));
   End ST_LRS_End_Measure;
-
   Member Function ST_LRS_Measure_Range(p_unit in varchar2 default null)
            Return Number
   As
@@ -8177,7 +8029,6 @@ SELECT CASE A.rin
                    end;
     Return ( v_e_measure - v_s_measure);
   End ST_LRS_Measure_Range;
-
   Member Function ST_LRS_Measure_To_Percentage(p_measure IN NUMBER   DEFAULT 0,
                                                p_unit    in varchar2 default null)
            Return Number
@@ -8217,7 +8068,6 @@ SELECT CASE A.rin
     return ( ( NVL(p_measure,0) - v_s_measure )
            / (      v_e_measure - v_s_measure  ) ) * 100.0;
   End ST_LRS_Measure_To_Percentage;
-
   Member Function ST_LRS_Percentage_To_Measure(p_percentage IN NUMBER DEFAULT 0,
                                                p_unit       in varchar2 default null)
            Return Number
@@ -8225,7 +8075,6 @@ SELECT CASE A.rin
   Begin
     Return SELF.ST_LRS_Start_Measure() + ( (p_percentage / 100.0 ) * SELF.ST_LRS_Measure_Range(p_unit) );
   End ST_LRS_Percentage_To_Measure;
-
   Member Function ST_LRS_Is_Measure_Increasing
            Return varchar2
   As
@@ -8265,7 +8114,6 @@ SELECT CASE A.rin
     END LOOP;
     RETURN 'TRUE';
   End ST_LRS_Is_Measure_Increasing;
-
   Member Function ST_LRS_Is_Measure_Decreasing
            Return varchar2
   As
@@ -8275,7 +8123,6 @@ SELECT CASE A.rin
                 else 'TRUE'
             end;
   End ST_LRS_Is_Measure_Decreasing ;
-
   Member Function ST_LRS_Is_Shape_Pt_Measure(p_measure IN NUMBER)
            Return Varchar2
   As
@@ -8323,7 +8170,6 @@ SELECT CASE A.rin
     END LOOP;
     RETURN 'FALSE';
   End ST_LRS_Is_Shape_Pt_Measure;
-
   Member Function ST_LRS_Reverse_Measure
            Return &&INSTALL_SCHEMA..T_GEOMETRY
   As
@@ -8352,7 +8198,6 @@ SELECT CASE A.rin
     RETURN SELF.ST_LRS_Scale_Measures(SELF.ST_LRS_End_Measure(),
                                       SELF.ST_LRS_Start_Measure());
   End ST_LRS_Reverse_Measure;
-
   Member Function ST_LRS_Reset_Measure
            Return &&INSTALL_SCHEMA..T_GEOMETRY
   As
@@ -8411,7 +8256,6 @@ SELECT CASE A.rin
                                          V_Ordinates),
                       SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   End ST_LRS_Reset_Measure;
-
   Member Function ST_LRS_Update_Measures(p_start_measure IN NUMBER,
                                          p_end_measure   IN NUMBER,
                                          p_unit          IN VARCHAR2 DEFAULT NULL)
@@ -8493,7 +8337,6 @@ SELECT CASE A.rin
     End If;
     RETURN &&INSTALL_SCHEMA..T_GEOMETRY(v_return_geom.geom,SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   End ST_LRS_Update_Measures;
-
   Member Function ST_LRS_Scale_Measures(p_start_measure IN NUMBER,
                                         p_end_measure   IN NUMBER ,
                                         p_shift_measure IN NUMBER DEFAULT 0.0 )
@@ -8585,7 +8428,6 @@ SELECT CASE A.rin
                                          V_Ordinates),
                       SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   End ST_LRS_Scale_Measures;
-
   Member Function ST_LRS_Concatenate(p_lrs_segment IN mdsys.sdo_geometry,
                                      p_unit        in varchar2 default null)
            Return &&INSTALL_SCHEMA..T_GEOMETRY
@@ -8640,7 +8482,6 @@ SELECT CASE A.rin
     */
     RETURN &&INSTALL_SCHEMA..T_GEOMETRY(v_new_geometry.geom,SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   End ST_LRS_Concatenate;
-
   Member Function ST_LRS_Find_Offset(p_point in mdsys.sdo_geometry,
                                      p_unit  in varchar2 default null)
           Return Number
@@ -8729,7 +8570,6 @@ SELECT CASE A.rin
     End If;
     Return v_offset;
   End ST_LRS_Find_Offset;
-
   Member Function ST_LRS_Find_Measure(p_geom     in mdsys.sdo_geometry,
                                       p_measureN in integer  default 1,
                                       p_unit     in varchar2 default null)
@@ -8807,7 +8647,6 @@ SELECT CASE A.rin
     END LOOP;
     Return v_measures;
   End ST_LRS_Find_Measure;
-
   Member Function ST_LRS_Find_MeasureN(p_geom     in mdsys.sdo_geometry,
                                        p_measureN in integer  default 1,
                                        p_unit     in varchar2 default null)
@@ -8822,7 +8661,6 @@ SELECT CASE A.rin
      where rownum < 2;
     Return v_measure;
   End ST_LRS_Find_MeasureN;
-
   Member Function ST_LRS_Get_Measure
            Return number
   As
@@ -9427,7 +9265,6 @@ SELECT CASE A.rin
        -- DEBUG dbms_output.put_line('</ST_LRS_Add_Measure>=' || v_return_geom.ST_AsEWKT());
       return v_return_geom;
   End ST_LRS_Add_Measure;
-
   Member Function ST_LRS_Valid_Measure(p_measure in number)
              Return varchar2
   As
@@ -9439,7 +9276,6 @@ SELECT CASE A.rin
                  else 'FALSE'
             end;
   End ST_LRS_Valid_Measure;
-
   Member Function ST_LRS_Valid_Point(p_diminfo in mdsys.sdo_dim_array)
            Return varchar2
   As
@@ -9479,7 +9315,6 @@ SELECT CASE A.rin
                       END
             END;
   End ST_LRS_Valid_Segment;
-
   Member Function ST_LRS_Valid_Geometry(p_diminfo in mdsys.sdo_dim_array)
              Return varchar2
   As
@@ -9493,7 +9328,6 @@ SELECT CASE A.rin
                  else 'FALSE'
              end;
   End ST_LRS_Valid_Geometry;
-
   Member Function ST_LRS_Intersection(p_geom In Mdsys.Sdo_Geometry,
                                       p_unit in varchar2 default null)
            Return &&INSTALL_SCHEMA..T_GEOMETRY
@@ -9531,7 +9365,6 @@ SELECT CASE A.rin
     END IF;
     RETURN &&INSTALL_SCHEMA..T_Geometry(SELF.geom,SELF.tolerance,SELF.dPrecision,SELF.projected);
   End ST_LRS_Intersection;
-
   Member Function ST_Sdo_Point_Equal(p_sdo_point   in mdsys.sdo_point_type,
                                      p_z_precision in integer default 2)
            Return Integer
@@ -9554,7 +9387,6 @@ SELECT CASE A.rin
            ELSE -1
         END;
   End ST_Sdo_Point_Equal;
-
   Member Function ST_Elem_Info_Equal(p_elem_info in mdsys.sdo_elem_info_array)
            Return integer
   As
@@ -9575,7 +9407,6 @@ SELECT CASE A.rin
     End Loop;
     Return 1;
   End ST_Elem_Info_Equal;
-
   Member Function ST_Ordinates_Equal(p_ordinates   in mdsys.sdo_ordinate_array,
                                      p_z_precision in integer default 2,
                                      p_m_precision in integer default 3)
@@ -9602,7 +9433,6 @@ SELECT CASE A.rin
     End Loop;
     Return 1;
   End ST_Ordinates_Equal;
-
   Member Function ST_Equals(p_geometry    in mdsys.sdo_Geometry,
                             p_z_precision in integer default 2,
                             p_m_precision in integer default 3)
@@ -9660,7 +9490,6 @@ SELECT CASE A.rin
     End If;
     RETURN 'EQUAL';
   End ST_Equals;
-
   Order Member Function orderBy(p_compare_geom in &&INSTALL_SCHEMA..T_GEOMETRY)
                  Return number
   Is
@@ -9695,6 +9524,106 @@ SELECT CASE A.rin
      Else                                         Return  2;
      End If;
   End orderBy;
+  
+  /* SGG: Under Development */  
+  Member Function ST_GetOffsetCurve(p_offset    in number,
+                                    p_bufParams in &&INSTALL_SCHEMA..BufferParameters)
+           Return &&INSTALL_SCHEMA..T_GEOMETRY 
+  As
+    isRightSide boolean;
+    posDistance Number;
+    curvePts    &&INSTALL_SCHEMA..T_Vertices;
+    inputPts    &&INSTALL_SCHEMA..T_Vertices;
+       
+  /**
+   * Computes the distance tolerance to use during input
+   * line simplification.
+   * 
+   * @param distance the buffer distance
+   * @return the simplification tolerance
+   */
+    Function simplifyTolerance(bufDistance in number)
+    return number
+    as
+    begin
+      return bufDistance * p_bufParams.getSimplifyFactor();
+    end simplifyTolerance;
+  
+    /** From OffsetCurveBuilder.java **/
+    Procedure computeOffsetCurve(inputPts in &&INSTALL_SCHEMA..T_Vertices, 
+                                 isRightSide in boolean)
+    As
+      distTol number;
+      n1      number;
+      n2      number;
+      simp1   &&INSTALL_SCHEMA..t_vertices;  -- or &&INSTALL_SCHEMA..T_VertexList
+      simp2   &&INSTALL_SCHEMA..t_vertices;
+    Begin
+      distTol := simplifyTolerance(p_offset);
+    
+    if (isRightSide) then
+      ------------ compute points for right side of line
+      -- Simplify the appropriate side of the line before generating
+-- SGG       simp2 := BufferInputLineSimplifier.simplify(inputPts, -distTol);
+      -- MD - used for testing only (to eliminate simplification)
+      n2 := simp2.COUNT;
+      -- since we are traversing line in opposite order, offset position is still LEFT
+      OffsetSegmentGenerator.initSideSegments(simp2(n2), simp2(n2 - 1), Position.LEFT);
+      OffsetSegmentGenerator.addFirstSegment();
+      -- SGG n2 - 2 or n2 ?
+      for i in reverse (n2-2)..1 loop
+        OffsetSegmentGenerator.addNextSegment(simp2(i), true);
+      end loop;
+    else
+      ----------- compute points for left side of line
+      -- Simplify the appropriate side of the line before generating
+      -- SGG simp1 := BufferInputLineSimplifier.simplify(inputPts, distTol);
+      -- MD - used for testing only (to eliminate simplification)
+      
+      n1 := simp1.COUNT;
+      OffsetSegmentGenerator.initSideSegments(simp1(0), simp1(1), Position.LEFT);
+      OffsetSegmentGenerator.addFirstSegment();
+      -- SGG 
+      for i in 1..n1 loop
+        OffsetSegmentGenerator.addNextSegment(simp1(i), true);
+      end loop;
+    end if;
+    OffsetSegmentGenerator.addLastSegment();
+  end computeOffsetCurve;
+
+  Begin
+    IF ( SELF.ST_Gtype() not in (2,6) ) THEN
+      RETURN SELF;
+    END IF;
+    
+    -- OffsetCurveBuilder
+    -- public Coordinate[] getOffsetCurve(Coordinate[] inputPts, double distance)
+    
+    -- a zero width offset curve is empty
+    if (p_offset = 0.0) then
+      return null;
+    end if;
+
+    isRightSide := p_offset < 0.0;
+    posDistance := ABS(p_offset);
+    OffsetSegmentGenerator.init(SELF.dPrecision, p_bufParams, posDistance);
+    select v.ST_Self() as vertex
+    bulk collect into inputPts
+      from TABLE(CAST(SELF.ST_Vertices() as &&INSTALL_SCHEMA..T_Vertices)) v;
+    computeOffsetCurve(inputPts, isRightSide);
+    curvePts := offsetSegmentGenerator.getCoordinates();
+    -- for right side line is traversed in reverse direction, so have to reverse generated line
+    -- create geometry
+    /*
+    if (isRightSide) then
+      CoordinateArrays.reverse(curvePts);
+       SELF.ST_Reverse_Linestring();
+    end if;
+    return curvePts;
+    */
+    return null;
+  End ST_GetOffsetCurve;
+
 END;
 /
 show errors

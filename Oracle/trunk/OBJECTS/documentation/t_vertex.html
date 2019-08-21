@@ -7,7 +7,7 @@
 <meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
 <link rel="stylesheet" href="./t_vertex.css" type="text/css" />
 <title>./documentation/t_vertex</title>
-<!-- Source: ./export/ -->
+<!-- Source: ./src/ -->
 <!-- Generated with ROBODoc Version 4.99.36 (Mar 13 2008) -->
 </head>
 <body>
@@ -38,11 +38,12 @@
 <li>1.18. <a href="#robo18">T_VERTEX/ST_SdoGeometry</a></li>
 <li>1.19. <a href="#robo19">T_VERTEX/ST_SdoPointType</a></li>
 <li>1.20. <a href="#robo20">T_VERTEX/ST_Self</a></li>
-<li>1.21. <a href="#robo21">T_VERTEX/ST_SubtendedAngle</a></li>
-<li>1.22. <a href="#robo22">T_VERTEX/ST_To2D</a></li>
-<li>1.23. <a href="#robo23">T_VERTEX/ST_To3D</a></li>
-<li>1.24. <a href="#robo24">T_VERTEX/ST_VertexType</a></li>
-<li>1.25. <a href="#robo25">T_VERTEX/ST_WithinTolerance</a></li>
+<li>1.21. <a href="#robo21">T_VERTEX/ST_SetCoordinate</a></li>
+<li>1.22. <a href="#robo22">T_VERTEX/ST_SubtendedAngle</a></li>
+<li>1.23. <a href="#robo23">T_VERTEX/ST_To2D</a></li>
+<li>1.24. <a href="#robo24">T_VERTEX/ST_To3D</a></li>
+<li>1.25. <a href="#robo25">T_VERTEX/ST_VertexType</a></li>
+<li>1.26. <a href="#robo26">T_VERTEX/ST_WithinTolerance</a></li>
 </ul>
 </ul>
 <a name="robo0"></a>
@@ -105,7 +106,7 @@
        Return Self As Result<span class="sign">,</span>
 
   Constructor Function T_Vertex<span class="sign">(</span> SELF    IN OUT NOCOPY T_Vertex<span class="sign">,</span>
-                                 p_vertex In SPDBA<span class="sign">.</span>T_vertex <span class="sign">)</span>
+                                 p_vertex In <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span>T_vertex <span class="sign">)</span>
        Return Self As Result<span class="sign">,</span>
 
   Constructor Function T_Vertex<span class="sign">(</span> SELF    IN OUT NOCOPY T_Vertex<span class="sign">,</span>
@@ -250,7 +251,7 @@
 <pre>    <strong>OrderBy</strong> -- Implements ordering function that can be used to sort a collection of T_Vertex objects.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Order Member Function <strong>OrderBy</strong>(p_vertex in SPDBA.T_Vertex)
+<pre>    Order Member Function <strong>OrderBy</strong>(p_vertex in &amp;&amp;INSTALL_SCHEMA..T_Vertex)
                    Return Number deterministic
 </pre>
 <p class="item_name">DESCRIPTION</p>
@@ -403,7 +404,7 @@
 <pre>    <strong>ST_Bearing</strong> -- Returns bearing from SELF to supplied T_Vertex.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Member Function <strong>ST_Bearing</strong>(p_vertex    in SPDBA.T_Vertex,
+<pre>    Member Function <strong>ST_Bearing</strong>(p_vertex    in &amp;&amp;INSTALL_SCHEMA..T_Vertex,
                                p_projected in integer default 1,
                                p_normalize in integer default 1 )
              Return Number Deterministic
@@ -527,7 +528,7 @@
 <pre>    <strong>ST_Distance</strong> -- Returns distance from current vertex (SELF) to supplied T_Vertex.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Member Function <strong>ST_Distance</strong>(p_vertex    in SPDBA.T_Vertex,
+<pre>    Member Function <strong>ST_Distance</strong>(p_vertex    in &amp;&amp;INSTALL_SCHEMA..T_Vertex,
                                 p_tolerance in number   default 0.05,
                                 p_unit      in varchar2 default NULL)
              Return Number Deterministic
@@ -601,7 +602,7 @@
 <pre>    <strong>ST_Equals</strong> -- Compares current object (SELF) with supplied vertex.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Member Function <strong>ST_Equals</strong>(p_vertex    in SPDBA.T_Vertex,
+<pre>    Member Function <strong>ST_Equals</strong>(p_vertex    in &amp;&amp;INSTALL_SCHEMA..T_Vertex,
                               p_dPrecision in number default 3)
              Return Integer deterministic
 </pre>
@@ -1252,15 +1253,72 @@
 <pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 </pre>
 <a name="robo21"></a>
+<a name="T5fVERTEX2fST5fSetCoordinate"></a>
+<h2>1.21.  T_VERTEX/ST_SetCoordinate [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_VERTEX</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>ST_SetCoordinate</strong> -- Is a procedure that sets a vertex's X,Y,Z and W(M) ordinates to passed in values
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Member Procedure <strong>ST_SetCoordinate</strong>(
+                        SELF  IN OUT NOCOPY T_Vertex,
+                        p_x in number default 8,
+                        p_y in number default NULL,
+                        p_z in number default 3,
+                        p_w in number default 3)
+             Return T_Vertex Deterministic,
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Assigns supplied values to t_vertex's x,y,z,w ordinates.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>      SELF.x := ROUND(SELF.x,p_dec_places_x);
+</pre>
+<p class="item_name">PARAMETERS</p>
+<pre>    p_x (number) - value assigned to x Ordinate.
+    p_y (number) - value assigned to y Ordinate.
+    p_z (number) - value assigned to z Ordinate.
+    p_w (number) - value assigned to w Ordinate.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    set serveroutput on size unlimited
+    declare
+      v_vertex &amp;&amp;INSTALL_SCHEMA..t_vertex;
+    begin
+      v_vertex := &amp;&amp;INSTALL_SCHEMA..T_Vertex(
+                   p_x        =&gt; 147.5489578,
+                   p_y        =&gt; -42.53625,
+                   p_id       =&gt; 1,
+                   p_sdo_gtype=&gt; 2001,
+                   p_sdo_srid =&gt; 4283
+                 );
+      v_vertex.<strong>ST_SetCoordinate</strong>(p_x =&gt; 148, p_y =&gt; -43);
+      dbms_output.put_line(v_vertex.ST_AsEWKT());
+    END;
+    /
+    
+    SRID=4283;POINT (148 -43)
+    PL/SQL procedure successfully completed.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - Jan 2013 - Original coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo22"></a>
 <a name="T5fVERTEX2fST5fSubtendedAngle"></a>
-<h2>1.21.  T_VERTEX/ST_SubtendedAngle [ Methods ]  </h2>
+<h2>1.22.  T_VERTEX/ST_SubtendedAngle [ Methods ]  </h2>
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_VERTEX</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_SubtendedAngle</strong> -- Returns angle subtended by p_start_vertex/SELF/p_end_vertex
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Member Function <strong>ST_SubtendedAngle</strong>(p_start_vertex in SPDBA.T_Vertex,
-                                      p_end_vertex   in SPDBA.T_Vertex)
+<pre>    Member Function <strong>ST_SubtendedAngle</strong>(p_start_vertex in &amp;&amp;INSTALL_SCHEMA..T_Vertex,
+                                      p_end_vertex   in &amp;&amp;INSTALL_SCHEMA..T_Vertex)
              Return Number deterministic
 </pre>
 <p class="item_name">DESCRIPTION</p>
@@ -1354,9 +1412,9 @@
 <p class="item_name">COPYRIGHT</p>
 <pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 </pre>
-<a name="robo22"></a>
+<a name="robo23"></a>
 <a name="T5fVERTEX2fST5fTo2D"></a>
-<h2>1.22.  T_VERTEX/ST_To2D [ Methods ]  </h2>
+<h2>1.23.  T_VERTEX/ST_To2D [ Methods ]  </h2>
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_VERTEX</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_To2D</strong> -- Removes and Z or measured attributes, adjusts sdo_gtype.
@@ -1401,9 +1459,9 @@
 <p class="item_name">COPYRIGHT</p>
 <pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 </pre>
-<a name="robo23"></a>
+<a name="robo24"></a>
 <a name="T5fVERTEX2fST5fTo3D"></a>
-<h2>1.23.  T_VERTEX/ST_To3D [ Methods ]  </h2>
+<h2>1.24.  T_VERTEX/ST_To3D [ Methods ]  </h2>
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_VERTEX</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_To3D</strong> -- Adds Z attribute, adjusts sdo_gtype.
@@ -1463,9 +1521,9 @@
 <p class="item_name">COPYRIGHT</p>
 <pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 </pre>
-<a name="robo24"></a>
+<a name="robo25"></a>
 <a name="T5fVERTEX2fST5fVertexType"></a>
-<h2>1.24.  T_VERTEX/ST_VertexType [ Methods ]  </h2>
+<h2>1.25.  T_VERTEX/ST_VertexType [ Methods ]  </h2>
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_VERTEX</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_VertexType</strong> -- Returns vertex ordinates as a MDSYS.VERTEX_TYPE object.
@@ -1506,15 +1564,15 @@
 <p class="item_name">COPYRIGHT</p>
 <pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 </pre>
-<a name="robo25"></a>
+<a name="robo26"></a>
 <a name="T5fVERTEX2fST5fWithinTolerance"></a>
-<h2>1.25.  T_VERTEX/ST_WithinTolerance [ Methods ]  </h2>
+<h2>1.26.  T_VERTEX/ST_WithinTolerance [ Methods ]  </h2>
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_VERTEX</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_WithinTolerance</strong> -- Discovers whether supplied vertex is within tolerance of current object vertex (SELF).
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Member Function <strong>ST_WithinTolerance</strong>(p_vertex    in SPDBA.T_Vertex,
+<pre>    Member Function <strong>ST_WithinTolerance</strong>(p_vertex    in &amp;&amp;INSTALL_SCHEMA..T_Vertex,
                                        p_tolerance in number default 0.005)
              Return Integer deterministic
 </pre>
@@ -1582,7 +1640,7 @@
 <pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 </pre>
 <div id="footer">
-<p>Generated from ./export/ with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.36 on Sat Aug 17 2019 13:38:45
+<p>Generated from ./src/ with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.36 on Wed Aug 21 2019 17:38:44
 </p>
 </div> <!-- footer -->
 </body>

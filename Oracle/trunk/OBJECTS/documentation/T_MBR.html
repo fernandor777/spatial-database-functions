@@ -7,7 +7,7 @@
 <meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
 <link rel="stylesheet" href="./T_MBR.css" type="text/css" />
 <title>./documentation/T_MBR</title>
-<!-- Source: ./export/ -->
+<!-- Source: ./src/ -->
 <!-- Generated with ROBODoc Version 4.99.36 (Mar 13 2008) -->
 </head>
 <body>
@@ -77,7 +77,7 @@
                    Return SELF as Result<span class="sign">,</span>
 
    Constructor Function <a href="#robo0">T_MBR</a><span class="sign">(</span>SELF IN OUT NOCOPY <a href="#robo0">T_MBR</a><span class="sign">,</span>
-                              p_mbr in spdba<span class="sign">.</span><a href="#robo0">T_MBR</a><span class="sign">)</span>
+                              p_mbr in <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><a href="#robo0">T_MBR</a><span class="sign">)</span>
                    Return SELF as Result<span class="sign">,</span>
 
    Constructor Function <a href="#robo0">T_MBR</a><span class="sign">(</span> SELF        IN OUT NOCOPY <a href="#robo0">T_MBR</a><span class="sign">,</span>
@@ -91,7 +91,7 @@
                    Return SELF as Result<span class="sign">,</span>
 
    Constructor Function <a href="#robo0">T_MBR</a><span class="sign">(</span> SELF      IN OUT NOCOPY <a href="#robo0">T_MBR</a><span class="sign">,</span>
-                               p_Vertex  In spdba<span class="sign">.</span>T_Vertex<span class="sign">,</span>
+                               p_Vertex  In <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span>T_Vertex<span class="sign">,</span>
                                p_dExtent In Number<span class="sign">)</span>
                    Return SELF as Result<span class="sign">,</span>
 
@@ -154,7 +154,7 @@
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>returntype<span class="sign">:</span> T_Vertex
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history   <span class="sign">:</span> SGG August 2006 <span class="sign">-</span> Original Coding
   Member Function Centre
-           Return spdba<span class="sign">.</span>T_Vertex Deterministic<span class="sign">,</span>
+           Return <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span>T_Vertex Deterministic<span class="sign">,</span>
 
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>property  <span class="sign">:</span> Center
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>version   <span class="sign">:</span> 1<span class="sign">.</span>0
@@ -163,7 +163,7 @@
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>returntype<span class="sign">:</span> T_Vertex
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history   <span class="sign">:</span> SGG August 2006 <span class="sign">-</span> Original Coding
   Member Function Center
-           Return spdba<span class="sign">.</span>T_Vertex Deterministic<span class="sign">,</span>
+           Return <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span>T_Vertex Deterministic<span class="sign">,</span>
 
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>function  <span class="sign">:</span> AsDimArray
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>version   <span class="sign">:</span> 1<span class="sign">.</span>0
@@ -236,7 +236,7 @@
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>copyright  <span class="sign">:</span> GPL <span class="sign">-</span> Free for public use
   Member Function SetToPart<span class="sign">(</span>p_geometry in mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span> 
                             p_which    in integer <span class="comment">/* 0 smallest, 1 largest */</span> <span class="sign">)</span>
-           Return spdba<span class="sign">.</span><a href="#robo0">T_MBR</a> Deterministic<span class="sign">,</span>
+           Return <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><a href="#robo0">T_MBR</a> Deterministic<span class="sign">,</span>
 
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span>
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>procedure  <span class="sign">:</span> SetSmallestPart
@@ -253,7 +253,7 @@
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history    <span class="sign">:</span> Simon Greener <span class="sign">-</span> Feb 2012 <span class="sign">-</span> Original coding<span class="sign">.</span>
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>copyright  <span class="sign">:</span> GPL <span class="sign">-</span> Free for public use
   Member Function SetSmallestPart<span class="sign">(</span>p_geometry IN MDSYS<span class="sign">.</span>SDO_GEOMETRY <span class="sign">)</span>
-           Return spdba<span class="sign">.</span><a href="#robo0">T_MBR</a> Deterministic<span class="sign">,</span>
+           Return <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><a href="#robo0">T_MBR</a> Deterministic<span class="sign">,</span>
 
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span>
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>procedure  <span class="sign">:</span> SetLargestPart
@@ -270,13 +270,13 @@
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history    <span class="sign">:</span> Simon Greener <span class="sign">-</span> Apr 2003 <span class="sign">-</span> Original coding<span class="sign">.</span>
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>copyright  <span class="sign">:</span> GPL <span class="sign">-</span> Free for public use
   Member Function SetLargestPart<span class="sign">(</span>p_geometry IN MDSYS<span class="sign">.</span>SDO_GEOMETRY <span class="sign">)</span>
-           Return spdba<span class="sign">.</span><a href="#robo0">T_MBR</a> Deterministic<span class="sign">,</span>
+           Return <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><a href="#robo0">T_MBR</a> Deterministic<span class="sign">,</span>
 
-  Member Function Intersection<span class="sign">(</span>p_other In spdba<span class="sign">.</span><a href="#robo0">T_MBR</a> <span class="sign">)</span>
-           Return spdba<span class="sign">.</span><a href="#robo0">T_MBR</a> Deterministic<span class="sign">,</span>
-
-  Member Function Expand<span class="sign">(</span>p_Vertex IN spdba<span class="sign">.</span>T_Vertex<span class="sign">)</span>
-           Return spdba<span class="sign">.</span><a href="#robo0">T_MBR</a> Deterministic<span class="sign">,</span>
+  Member Function Intersection<span class="sign">(</span>p_other In <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><a href="#robo0">T_MBR</a> <span class="sign">)</span>
+           Return <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><a href="#robo0">T_MBR</a> Deterministic<span class="sign">,</span>
+  
+  Member Function Expand<span class="sign">(</span>p_Vertex IN <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span>T_Vertex<span class="sign">)</span>
+           Return <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><a href="#robo0">T_MBR</a> Deterministic<span class="sign">,</span>
 
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>function  <span class="sign">:</span> Expand
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>version   <span class="sign">:</span> 1<span class="sign">.</span>0
@@ -289,7 +289,7 @@
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history   <span class="sign">:</span> SGG November 2004 <span class="sign">-</span> Original Coding
   Member Function Expand<span class="sign">(</span>p_dX IN NUMBER<span class="sign">,</span>
                          p_dY IN NUMBER<span class="sign">)</span>
-           Return spdba<span class="sign">.</span><a href="#robo0">T_MBR</a> Deterministic<span class="sign">,</span>
+           Return <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><a href="#robo0">T_MBR</a> Deterministic<span class="sign">,</span>
 
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>procedure <span class="sign">:</span> Expand
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>version   <span class="sign">:</span> 1<span class="sign">.</span>0
@@ -298,8 +298,8 @@
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>param     <span class="sign">:</span> p_other <span class="sign">-</span> MBR to merge with
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>paramType <span class="sign">:</span> <a href="#robo0">T_MBR</a>
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history   <span class="sign">:</span> SGG November 2004 <span class="sign">-</span> Original Coding
-  Member Function Expand<span class="sign">(</span>p_other IN spdba<span class="sign">.</span><a href="#robo0">T_MBR</a><span class="sign">)</span>
-           Return spdba<span class="sign">.</span><a href="#robo0">T_MBR</a> Deterministic<span class="sign">,</span>
+  Member Function Expand<span class="sign">(</span>p_other IN <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><a href="#robo0">T_MBR</a><span class="sign">)</span>
+           Return <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><a href="#robo0">T_MBR</a> Deterministic<span class="sign">,</span>
 
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>function  <span class="sign">:</span> Normalize<span class="sign">(</span>ratio<span class="sign">)</span>
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>version   <span class="sign">:</span> 1<span class="sign">.</span>0
@@ -308,7 +308,7 @@
   --              If &lt; 0 then the MBR'</span>s height is changed to width <span class="sign">*</span> ratio<span class="sign">.</span>
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history   <span class="sign">:</span> SGG August 2006 <span class="sign">-</span> Original Coding
   Member Function Normalize<span class="sign">(</span>p_dRatio In Number<span class="sign">)</span>
-           Return spdba<span class="sign">.</span><a href="#robo0">T_MBR</a> Deterministic<span class="sign">,</span>
+           Return <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><a href="#robo0">T_MBR</a> Deterministic<span class="sign">,</span>
 </pre>
 <a name="robo5"></a>
 <a name="T5fMBR2fSorting28T5fMBR29"></a>
@@ -321,7 +321,7 @@
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>return    <span class="sign">:</span> True if p_other is equal to Current else false
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>returntype<span class="sign">:</span> Boolean
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history   <span class="sign">:</span> SGG November 2004 <span class="sign">-</span> Original Coding
-  Member Function Equals<span class="sign">(</span>   p_other In spdba<span class="sign">.</span><a href="#robo0">T_MBR</a> <span class="sign">)</span>
+  Member Function Equals<span class="sign">(</span>   p_other In <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><a href="#robo0">T_MBR</a> <span class="sign">)</span>
            Return Boolean Deterministic<span class="sign">,</span>
 
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>function  <span class="sign">:</span> Evaluate
@@ -331,7 +331,7 @@
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>returntype<span class="sign">:</span> Number
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history   <span class="sign">:</span> SGG August 2006 <span class="sign">-</span> Original Coding
   Order 
-  Member Function Evaluate<span class="sign">(</span>p_other In spdba<span class="sign">.</span><a href="#robo0">T_MBR</a><span class="sign">)</span>
+  Member Function Evaluate<span class="sign">(</span>p_other In <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><a href="#robo0">T_MBR</a><span class="sign">)</span>
            Return Integer
 </pre>
 <a name="robo6"></a>
@@ -349,7 +349,7 @@
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>return    <span class="sign">:</span> True or False
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>returntype<span class="sign">:</span> Boolean
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history   <span class="sign">:</span> SGG November 2004 <span class="sign">-</span> Original Coding
-  Member Function Contains<span class="sign">(</span> p_other In spdba<span class="sign">.</span><a href="#robo0">T_MBR</a> <span class="sign">)</span>
+  Member Function Contains<span class="sign">(</span> p_other In <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><a href="#robo0">T_MBR</a> <span class="sign">)</span>
            Return Boolean Deterministic<span class="sign">,</span>
 
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>function  <span class="sign">:</span> Contains
@@ -365,7 +365,7 @@
   Member Function Contains<span class="sign">(</span> p_vertex In mdsys<span class="sign">.</span>vertex_type <span class="sign">)</span>
            Return Boolean Deterministic<span class="sign">,</span>
 
-  Member Function Contains<span class="sign">(</span> p_vertex In spdba<span class="sign">.</span>T_Vertex <span class="sign">)</span> 
+  Member Function Contains<span class="sign">(</span> p_vertex In <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span>T_Vertex <span class="sign">)</span> 
            Return Boolean Deterministic<span class="sign">,</span>
 
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>function  <span class="sign">:</span> Compare
@@ -385,7 +385,7 @@
   -- @return    : True or False
   -- @returntype: Boolean
   -- @history   : SGG November 2004 - Original Coding
-  Member Function Overlap( p_other in spdba.<a href="#robo0">T_MBR</a> )
+  Member Function Overlap( p_other in &amp;&amp;INSTALL_SCHEMA..<a href="#robo0">T_MBR</a> )
            Return Boolean Deterministic,
 
   -- @function : Intersects
@@ -413,10 +413,10 @@
   Static Function Intersects (
                       p1 in spdba.t_vertex, p2 in spdba.T_Vertex, 
                       q1 in spdba.t_vertex, q2 in spdba.t_vertex)
-           return boolean deterministic,
+                  Return boolean Deterministic,
 </pre>
 <div id="footer">
-<p>Generated from ./export/ with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.36 on Sat Aug 17 2019 13:38:45
+<p>Generated from ./src/ with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.36 on Wed Aug 21 2019 17:38:44
 </p>
 </div> <!-- footer -->
 </body>

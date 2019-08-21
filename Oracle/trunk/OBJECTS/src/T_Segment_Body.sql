@@ -5,7 +5,7 @@ SET VERIFY OFF;
 -- Always aim for a clean compile
 ALTER SESSION SET PLSQL_WARNINGS='ERROR:ALL';
 -- Enable optimizations
-ALTER SESSION SET plsql_optimize_level=2;
+-- ALTER SESSION SET plsql_optimize_level=2;
 
 CREATE OR REPLACE TYPE BODY &&INSTALL_SCHEMA..T_SEGMENT
 AS

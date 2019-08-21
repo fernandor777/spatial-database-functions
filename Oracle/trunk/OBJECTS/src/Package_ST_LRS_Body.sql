@@ -5,9 +5,9 @@ SET VERIFY OFF;
 -- Always aim for a clean compile
 ALTER SESSION SET PLSQL_WARNINGS='ERROR:ALL';
 -- Enable optimizations
-ALTER SESSION SET plsql_optimize_level=2;
+-- ALTER SESSION SET plsql_optimize_level=2;
 
-CREATE OR REPLACE PACKAGE BODY ST_LRS 
+CREATE OR REPLACE PACKAGE BODY &&INSTALL_SCHEMA..ST_LRS 
 As
 
    FUNCTION Find_Lrs_Dim_Pos(lrs_geometry IN mdsys.sdo_geometry,

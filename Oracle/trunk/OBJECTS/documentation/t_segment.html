@@ -7,7 +7,7 @@
 <meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
 <link rel="stylesheet" href="./t_segment.css" type="text/css" />
 <title>./documentation/t_segment</title>
-<!-- Source: ./export/ -->
+<!-- Source: ./src/ -->
 <!-- Generated with ROBODoc Version 4.99.36 (Mar 13 2008) -->
 </head>
 <body>
@@ -16,66 +16,105 @@
 </div> <!-- logo -->
 <h3>TABLE OF CONTENTS</h3>
 <ul>
-<li>1. <a href="#robo0">OBJECT TYPE/T_SEGMENT</a></li>
+<li>1. <a href="#robo0">OBJECT TYPE ARRAY/T_SEGMENTS</a></li>
+<li>2. <a href="#robo1">OBJECT TYPE/T_SEGMENT</a></li>
 <ul>
-<li>1.1. <a href="#robo3">T_SEGMENT/ATTRIBUTES(T_SEGMENT)</a></li>
-<li>1.2. <a href="#robo4">T_SEGMENT/CONSTRUCTORS(T_SEGMENT)</a></li>
-<li>1.3. <a href="#robo5">T_SEGMENT/OrderBy</a></li>
-<li>1.4. <a href="#robo6">T_SEGMENT/ST_AddCurveBetweenSegments</a></li>
-<li>1.5. <a href="#robo7">T_SEGMENT/ST_Angle</a></li>
-<li>1.6. <a href="#robo8">T_SEGMENT/ST_AsText</a></li>
-<li>1.7. <a href="#robo9">T_SEGMENT/ST_Bearing</a></li>
-<li>1.8. <a href="#robo10">T_SEGMENT/ST_CheckZ</a></li>
-<li>1.9. <a href="#robo11">T_SEGMENT/ST_Closest(p_geometry p_unit)</a></li>
-<li>1.10. <a href="#robo12">T_SEGMENT/ST_ComputeDeflectionAngle</a></li>
-<li>1.11. <a href="#robo13">T_SEGMENT/ST_ComputeTangentLine</a></li>
-<li>1.12. <a href="#robo14">T_SEGMENT/ST_ComputeTangentPoint</a></li>
-<li>1.13. <a href="#robo15">T_SEGMENT/ST_Densify</a></li>
-<li>1.14. <a href="#robo16">T_SEGMENT/ST_Dims</a></li>
-<li>1.15. <a href="#robo17">T_SEGMENT/ST_Distance(p_segment p_unit)</a></li>
-<li>1.16. <a href="#robo18">T_SEGMENT/ST_Distance(p_vertex p_unit)</a></li>
-<li>1.17. <a href="#robo19">T_SEGMENT/ST_Equals</a></li>
-<li>1.18. <a href="#robo20">T_SEGMENT/ST_FindCircle</a></li>
-<li>1.19. <a href="#robo21">T_SEGMENT/ST_GetProjected</a></li>
-<li>1.20. <a href="#robo22">T_SEGMENT/ST_hasM</a></li>
-<li>1.21. <a href="#robo23">T_SEGMENT/ST_hasZ</a></li>
-<li>1.22. <a href="#robo24">T_SEGMENT/ST_Intersect</a></li>
-<li>1.23. <a href="#robo25">T_SEGMENT/ST_IntersectDescription</a></li>
-<li>1.24. <a href="#robo26">T_SEGMENT/ST_IntersectDetail</a></li>
-<li>1.25. <a href="#robo27">T_SEGMENT/ST_isCircularArc</a></li>
-<li>1.26. <a href="#robo28">T_SEGMENT/ST_isCollinear</a></li>
-<li>1.27. <a href="#robo29">T_SEGMENT/ST_isEmpty</a></li>
-<li>1.28. <a href="#robo30">T_SEGMENT/ST_isReversed</a></li>
-<li>1.29. <a href="#robo31">T_SEGMENT/ST_Length</a></li>
-<li>1.30. <a href="#robo32">T_SEGMENT/ST_LineSubstring</a></li>
-<li>1.31. <a href="#robo33">T_SEGMENT/ST_LRS_Add_Measure</a></li>
-<li>1.32. <a href="#robo34">T_SEGMENT/ST_LRS_Compute_Measure</a></li>
-<li>1.33. <a href="#robo35">T_SEGMENT/ST_LRS_Dim</a></li>
-<li>1.34. <a href="#robo36">T_SEGMENT/ST_LRS_isMeasured</a></li>
-<li>1.35. <a href="#robo37">T_SEGMENT/ST_LRS_Measure_Length</a></li>
-<li>1.36. <a href="#robo38">T_SEGMENT/ST_Merge</a></li>
-<li>1.37. <a href="#robo39">T_SEGMENT/ST_OffsetBetween</a></li>
-<li>1.38. <a href="#robo40">T_SEGMENT/ST_OffsetPoint</a></li>
-<li>1.39. <a href="#robo41">T_SEGMENT/ST_Parallel</a></li>
-<li>1.40. <a href="#robo42">T_SEGMENT/ST_ProjectPoint</a></li>
-<li>1.41. <a href="#robo43">T_SEGMENT/ST_Reverse</a></li>
-<li>1.42. <a href="#robo44">T_SEGMENT/ST_Round</a></li>
-<li>1.43. <a href="#robo45">T_SEGMENT/ST_Round</a></li>
-<li>1.44. <a href="#robo46">T_SEGMENT/ST_SdoGeometry</a></li>
-<li>1.45. <a href="#robo47">T_SEGMENT/ST_Self</a></li>
-<li>1.46. <a href="#robo48">T_SEGMENT/ST_SetPrecisionModel</a></li>
-<li>1.47. <a href="#robo49">T_SEGMENT/ST_SRID</a></li>
-<li>1.48. <a href="#robo50">T_SEGMENT/ST_To2D</a></li>
-<li>1.49. <a href="#robo51">T_SEGMENT/ST_To3D</a></li>
-<li>1.50. <a href="#robo52">T_SEGMENT/STPointToCircularArc</a></li>
-<li>1.51. <a href="#robo53">T_SEGMENT/STPointToLineString</a></li>
+<li>2.1. <a href="#robo2">T_SEGMENT/ATTRIBUTES(T_SEGMENT)</a></li>
+<li>2.2. <a href="#robo3">T_SEGMENT/CONSTRUCTORS(T_SEGMENT)</a></li>
+<li>2.3. <a href="#robo4">T_SEGMENT/OrderBy</a></li>
+<li>2.4. <a href="#robo5">T_SEGMENT/ST_AddCurveBetweenSegments</a></li>
+<li>2.5. <a href="#robo6">T_SEGMENT/ST_Angle</a></li>
+<li>2.6. <a href="#robo7">T_SEGMENT/ST_AsText</a></li>
+<li>2.7. <a href="#robo8">T_SEGMENT/ST_AsWKT</a></li>
+<li>2.8. <a href="#robo9">T_SEGMENT/ST_Bearing</a></li>
+<li>2.9. <a href="#robo10">T_SEGMENT/ST_CheckZ</a></li>
+<li>2.10. <a href="#robo11">T_SEGMENT/ST_Closest(p_geometry p_unit)</a></li>
+<li>2.11. <a href="#robo12">T_SEGMENT/ST_ComputeDeflectionAngle</a></li>
+<li>2.12. <a href="#robo13">T_SEGMENT/ST_ComputeTangentLine</a></li>
+<li>2.13. <a href="#robo14">T_SEGMENT/ST_ComputeTangentPoint</a></li>
+<li>2.14. <a href="#robo15">T_SEGMENT/ST_Densify</a></li>
+<li>2.15. <a href="#robo16">T_SEGMENT/ST_Dims</a></li>
+<li>2.16. <a href="#robo17">T_SEGMENT/ST_Distance(p_segment p_unit)</a></li>
+<li>2.17. <a href="#robo18">T_SEGMENT/ST_Distance(p_vertex p_unit)</a></li>
+<li>2.18. <a href="#robo19">T_SEGMENT/ST_Equals</a></li>
+<li>2.19. <a href="#robo20">T_SEGMENT/ST_FindCircle</a></li>
+<li>2.20. <a href="#robo21">T_SEGMENT/ST_GetProjected</a></li>
+<li>2.21. <a href="#robo22">T_SEGMENT/ST_hasM</a></li>
+<li>2.22. <a href="#robo23">T_SEGMENT/ST_hasZ</a></li>
+<li>2.23. <a href="#robo24">T_SEGMENT/ST_Intersect</a></li>
+<li>2.24. <a href="#robo25">T_SEGMENT/ST_Intersect2CircularArcs</a></li>
+<li>2.25. <a href="#robo26">T_SEGMENT/ST_IntersectCircularArc</a></li>
+<li>2.26. <a href="#robo27">T_SEGMENT/ST_IntersectDescription</a></li>
+<li>2.27. <a href="#robo28">T_SEGMENT/ST_IntersectDetail</a></li>
+<li>2.28. <a href="#robo29">T_SEGMENT/ST_isCircularArc</a></li>
+<li>2.29. <a href="#robo30">T_SEGMENT/ST_isCollinear</a></li>
+<li>2.30. <a href="#robo31">T_SEGMENT/ST_isEmpty</a></li>
+<li>2.31. <a href="#robo32">T_SEGMENT/ST_isHorizontal</a></li>
+<li>2.32. <a href="#robo33">T_SEGMENT/ST_isPointOnSegment</a></li>
+<li>2.33. <a href="#robo34">T_SEGMENT/ST_isReversed</a></li>
+<li>2.34. <a href="#robo35">T_SEGMENT/ST_isVertical</a></li>
+<li>2.35. <a href="#robo36">T_SEGMENT/ST_Length</a></li>
+<li>2.36. <a href="#robo37">T_SEGMENT/ST_LineSubstring</a></li>
+<li>2.37. <a href="#robo38">T_SEGMENT/ST_LRS_Add_Measure</a></li>
+<li>2.38. <a href="#robo39">T_SEGMENT/ST_LRS_Compute_Measure</a></li>
+<li>2.39. <a href="#robo40">T_SEGMENT/ST_LRS_Dim</a></li>
+<li>2.40. <a href="#robo41">T_SEGMENT/ST_LRS_isMeasured</a></li>
+<li>2.41. <a href="#robo42">T_SEGMENT/ST_LRS_Measure_Length</a></li>
+<li>2.42. <a href="#robo43">T_SEGMENT/ST_MaxX</a></li>
+<li>2.43. <a href="#robo44">T_SEGMENT/ST_MaxY</a></li>
+<li>2.44. <a href="#robo45">T_SEGMENT/ST_MBR</a></li>
+<li>2.45. <a href="#robo46">T_SEGMENT/ST_Merge</a></li>
+<li>2.46. <a href="#robo47">T_SEGMENT/ST_MidPoint</a></li>
+<li>2.47. <a href="#robo48">T_SEGMENT/ST_MinX</a></li>
+<li>2.48. <a href="#robo49">T_SEGMENT/ST_MinY</a></li>
+<li>2.49. <a href="#robo50">T_SEGMENT/ST_OffsetBetween</a></li>
+<li>2.50. <a href="#robo51">T_SEGMENT/ST_OffsetPoint</a></li>
+<li>2.51. <a href="#robo52">T_SEGMENT/ST_Parallel</a></li>
+<li>2.52. <a href="#robo53">T_SEGMENT/ST_PointAlong</a></li>
+<li>2.53. <a href="#robo54">T_SEGMENT/ST_PointAlongOffset</a></li>
+<li>2.54. <a href="#robo55">T_SEGMENT/ST_ProjectPoint</a></li>
+<li>2.55. <a href="#robo56">T_SEGMENT/ST_Reverse</a></li>
+<li>2.56. <a href="#robo57">T_SEGMENT/ST_Round</a></li>
+<li>2.57. <a href="#robo58">T_SEGMENT/ST_Round(x y z m)</a></li>
+<li>2.58. <a href="#robo59">T_SEGMENT/ST_SdoGeometry</a></li>
+<li>2.59. <a href="#robo60">T_SEGMENT/ST_Self</a></li>
+<li>2.60. <a href="#robo61">T_SEGMENT/ST_SetCoordinates(vertex vertex vertex)</a></li>
+<li>2.61. <a href="#robo62">T_SEGMENT/ST_SetCoordinates(vertex vertex)</a></li>
+<li>2.62. <a href="#robo63">T_SEGMENT/ST_SetPrecisionModel</a></li>
+<li>2.63. <a href="#robo64">T_SEGMENT/ST_SRID</a></li>
+<li>2.64. <a href="#robo65">T_SEGMENT/ST_To2D</a></li>
+<li>2.65. <a href="#robo66">T_SEGMENT/ST_To3D</a></li>
+<li>2.66. <a href="#robo67">T_SEGMENT/ST_UpdateCoordinate(p_vertex)</a></li>
+<li>2.67. <a href="#robo68">T_SEGMENT/STPointToCircularArc</a></li>
+<li>2.68. <a href="#robo69">T_SEGMENT/STPointToLineString</a></li>
 </ul>
-<li>2. <a href="#robo1">T_GEOMETRY/ST_AsWKT</a></li>
-<li>3. <a href="#robo2">T_GEOMETRY/ST_UpdateCoordinate(p_vertex)</a></li>
 </ul>
 <a name="robo0"></a>
+<a name="OBJECT20TYPE20ARRAY2fT5fSEGMENTS"></a>
+<h1>1.  OBJECT TYPE ARRAY/T_SEGMENTS [ Structures ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Structures ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>T_SEGMENTS</strong> -- An array (collection/table) of <a href="#robo1">T_SEGMENT</a> type.
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    An array of <a href="#robo1">T_SEGMENT</a> that a PIPELINED function can use to return <a href="#robo1">T_SEGMENT</a> objects.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - Jan 2013 - Original coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<p class="item_name">SOURCE</p>
+<pre class="source">CREATE OR REPLACE TYPE <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><strong>T_SEGMENTS</strong>
+           AS TABLE OF <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><a href="#robo1">T_SEGMENT</a>
+</pre>
+<a name="robo1"></a>
 <a name="OBJECT20TYPE2fT5fSEGMENT"></a>
-<h1>1.  OBJECT TYPE/T_SEGMENT [ Types ]  </h1>
+<h1>2.  OBJECT TYPE/T_SEGMENT [ Types ]  </h1>
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ Types ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>T_SEGMENT</strong> -- Object type representing a single 2-point linestring or single 3 point circular arc.
@@ -95,21 +134,21 @@
 <p class="item_name">COPYRIGHT</p>
 <pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 </pre>
-<a name="robo3"></a>
+<a name="robo2"></a>
 <a name="T5fSEGMENT2fATTRIBUTES28T5fSEGMENT29"></a>
-<h2>1.1.  T_SEGMENT/ATTRIBUTES(T_SEGMENT) [ Variables ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Variables ]</p>
+<h2>2.1.  T_SEGMENT/ATTRIBUTES(T_SEGMENT) [ Variables ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Variables ]</p>
 <p class="item_name">ATTRIBUTES</p>
-<pre>    element_id     -- Top level part identifier of multi-part geometry
-                      eg multi-linestring composed of two lines generates element_ids 1 and 2.
-    subelement_id  -- Part id of any sub-elements of a single geometry part
-                      eg inner ring of a single polygon; circular curve of single linestring.
-    segment_id     -- Id of segments in sequential order appears in original geometry
-    startCoord     -- Ordinates of start point
-    midCoord       -- Ordinates of mid point of circular arc
-    endCoord       -- Ordinates of end point
-    sdo_gtype      -- Geometry Type of segment
-    sdo_srid       -- Spatial Reference ID of segment
+<pre>    element_id    -- Top level part identifier of multi-part geometry
+                     eg multi-linestring composed of two lines generates element_ids 1 and 2.
+    subelement_id -- Part id of any sub-elements of a single geometry part
+                     eg inner ring of a single polygon; circular curve of single linestring.
+    segment_id    -- Id of segments in sequential order appears in original geometry
+    startCoord    -- Ordinates of start point
+    midCoord      -- Ordinates of mid point of circular arc
+    endCoord      -- Ordinates of end point
+    sdo_gtype     -- Geometry Type of segment
+    sdo_srid      -- Spatial Reference ID of segment
     projected      -- If planar then 1 else 0 
     precisionModel -- Holds precision information for object
 </pre>
@@ -117,31 +156,31 @@
 <pre class="source">  element_id     integer<span class="sign">,</span>
   subelement_id  integer<span class="sign">,</span>
   segment_Id     Integer<span class="sign">,</span>
-  startCoord     SPDBA<span class="sign">.</span>T_Vertex<span class="sign">,</span>
-  midCoord       SPDBA<span class="sign">.</span>T_Vertex<span class="sign">,</span> <span class="comment">/* If circular arc */</span>
-  endCoord       SPDBA<span class="sign">.</span>T_Vertex<span class="sign">,</span>
+  startCoord     <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span>T_Vertex<span class="sign">,</span>
+  midCoord       <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span>T_Vertex<span class="sign">,</span> <span class="comment">/* If circular arc */</span>
+  endCoord       <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span>T_Vertex<span class="sign">,</span>
   sdo_gtype      integer<span class="sign">,</span>
   sdo_srid       integer<span class="sign">,</span>
   projected      integer<span class="sign">,</span>
-  PrecisionModel spdba<span class="sign">.</span>T_PrecisionModel<span class="sign">,</span>  <span class="comment">/* Holds XYZM ordinate scale/precision values */</span>
+  PrecisionModel <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span>T_PrecisionModel<span class="sign">,</span>  <span class="comment">/* Holds XYZM ordinate scale/precision values */</span>
 </pre>
-<a name="robo4"></a>
+<a name="robo3"></a>
 <a name="T5fSEGMENT2fCONSTRUCTORS28T5fSEGMENT29"></a>
-<h2>1.2.  T_SEGMENT/CONSTRUCTORS(T_SEGMENT) [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.2.  T_SEGMENT/CONSTRUCTORS(T_SEGMENT) [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
-<pre>    A collection of <a href="#robo0">T_SEGMENT</a> Constructors.
+<pre>    A collection of <a href="#robo1">T_SEGMENT</a> Constructors.
 </pre>
 <p class="item_name">SOURCE</p>
 <pre class="source">  <span class="sign">-</span><span class="sign">-</span> Useful as an <span class="quote">"Empty"</span> constructor<span class="sign">.</span>
-  Constructor Function <a href="#robo0">T_SEGMENT</a><span class="sign">(</span>SELF IN OUT NOCOPY <a href="#robo0">T_SEGMENT</a><span class="sign">)</span>
+  Constructor Function <a href="#robo1">T_SEGMENT</a><span class="sign">(</span>SELF IN OUT NOCOPY <a href="#robo1">T_SEGMENT</a><span class="sign">)</span>
                 Return Self As Result<span class="sign">,</span>
 
-  Constructor Function <a href="#robo0">T_SEGMENT</a><span class="sign">(</span>SELF     IN OUT NOCOPY <a href="#robo0">T_SEGMENT</a><span class="sign">,</span>
-                                 p_segment in SPDBA<span class="sign">.</span><a href="#robo0">T_SEGMENT</a><span class="sign">)</span>
+  Constructor Function <a href="#robo1">T_SEGMENT</a><span class="sign">(</span>SELF     IN OUT NOCOPY <a href="#robo1">T_SEGMENT</a><span class="sign">,</span>
+                                 p_segment in <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><a href="#robo1">T_SEGMENT</a><span class="sign">)</span>
                 Return Self As Result<span class="sign">,</span>
 
-  Constructor Function <a href="#robo0">T_SEGMENT</a><span class="sign">(</span>SELF         IN OUT NOCOPY <a href="#robo0">T_SEGMENT</a><span class="sign">,</span>
+  Constructor Function <a href="#robo1">T_SEGMENT</a><span class="sign">(</span>SELF         IN OUT NOCOPY <a href="#robo1">T_SEGMENT</a><span class="sign">,</span>
                                  p_line       in mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
                                  p_segment_id in integer default 0<span class="sign">,</span>
                                  p_precision  in integer default 3<span class="sign">,</span>
@@ -149,7 +188,7 @@
                        <span class="sign">)</span>
                 Return Self As Result<span class="sign">,</span>
 
-  Constructor Function <a href="#robo0">T_SEGMENT</a><span class="sign">(</span>SELF        IN OUT NOCOPY <a href="#robo0">T_SEGMENT</a><span class="sign">,</span>
+  Constructor Function <a href="#robo1">T_SEGMENT</a><span class="sign">(</span>SELF        IN OUT NOCOPY <a href="#robo1">T_SEGMENT</a><span class="sign">,</span>
                                  p_sdo_gtype In Integer<span class="sign">,</span>
                                  p_sdo_srid  In Integer<span class="sign">,</span>
                                  p_projected in integer default 1<span class="sign">,</span>
@@ -158,10 +197,10 @@
                 Return Self As Result<span class="sign">,</span>
 
   <span class="sign">-</span><span class="sign">-</span> T_VERTEX Constructors
-  Constructor Function <a href="#robo0">T_SEGMENT</a><span class="sign">(</span>SELF         IN OUT NOCOPY <a href="#robo0">T_SEGMENT</a><span class="sign">,</span>
+  Constructor Function <a href="#robo1">T_SEGMENT</a><span class="sign">(</span>SELF         IN OUT NOCOPY <a href="#robo1">T_SEGMENT</a><span class="sign">,</span>
                                  p_segment_id In Integer<span class="sign">,</span>
-                                 p_startCoord In SPDBA<span class="sign">.</span>T_Vertex<span class="sign">,</span>
-                                 p_endCoord   In SPDBA<span class="sign">.</span>T_Vertex<span class="sign">,</span>
+                                 p_startCoord In <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span>T_Vertex<span class="sign">,</span>
+                                 p_endCoord   In <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span>T_Vertex<span class="sign">,</span>
                                  p_sdo_gtype  In Integer default null<span class="sign">,</span>
                                  p_sdo_srid   In Integer default null<span class="sign">,</span>
                                  p_projected  in integer default 1<span class="sign">,</span>
@@ -169,11 +208,11 @@
                                  p_tolerance  in number  default 0<span class="sign">.</span>005<span class="sign">)</span>
                 Return Self As Result<span class="sign">,</span>
 
-  Constructor Function <a href="#robo0">T_SEGMENT</a><span class="sign">(</span>SELF         IN OUT NOCOPY <a href="#robo0">T_SEGMENT</a><span class="sign">,</span>
+  Constructor Function <a href="#robo1">T_SEGMENT</a><span class="sign">(</span>SELF         IN OUT NOCOPY <a href="#robo1">T_SEGMENT</a><span class="sign">,</span>
                                  p_segment_id In Integer<span class="sign">,</span>
-                                 p_startCoord In SPDBA<span class="sign">.</span>T_Vertex<span class="sign">,</span>
-                                 p_midCoord   In SPDBA<span class="sign">.</span>T_Vertex<span class="sign">,</span>
-                                 p_endCoord   In SPDBA<span class="sign">.</span>T_Vertex<span class="sign">,</span>
+                                 p_startCoord In <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span>T_Vertex<span class="sign">,</span>
+                                 p_midCoord   In <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span>T_Vertex<span class="sign">,</span>
+                                 p_endCoord   In <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span>T_Vertex<span class="sign">,</span>
                                  p_sdo_gtype  In Integer default null<span class="sign">,</span>
                                  p_sdo_srid   In Integer default null<span class="sign">,</span>
                                  p_projected  in integer default 1<span class="sign">,</span>
@@ -181,12 +220,12 @@
                                  p_tolerance  in number  default 0<span class="sign">.</span>005 <span class="sign">)</span>
                 Return Self As Result<span class="sign">,</span>
 
-  Constructor Function <a href="#robo0">T_SEGMENT</a><span class="sign">(</span>SELF            IN OUT NOCOPY <a href="#robo0">T_SEGMENT</a><span class="sign">,</span>
+  Constructor Function <a href="#robo1">T_SEGMENT</a><span class="sign">(</span>SELF            IN OUT NOCOPY <a href="#robo1">T_SEGMENT</a><span class="sign">,</span>
                                  p_element_id    In Integer<span class="sign">,</span>
                                  p_subelement_id In Integer<span class="sign">,</span>
                                  p_segment_id    In Integer<span class="sign">,</span>
-                                 p_startCoord    In SPDBA<span class="sign">.</span>T_Vertex<span class="sign">,</span>
-                                 p_endCoord      In SPDBA<span class="sign">.</span>T_Vertex<span class="sign">,</span>
+                                 p_startCoord    In <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span>T_Vertex<span class="sign">,</span>
+                                 p_endCoord      In <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span>T_Vertex<span class="sign">,</span>
                                  p_sdo_gtype     In Integer default null<span class="sign">,</span>
                                  p_sdo_srid      In Integer default null<span class="sign">,</span>
                                  p_projected     in integer default 1<span class="sign">,</span>
@@ -194,13 +233,13 @@
                                  p_tolerance     in number default 0<span class="sign">.</span>005<span class="sign">)</span>
                 Return Self As Result<span class="sign">,</span>
 
-  Constructor Function <a href="#robo0">T_SEGMENT</a><span class="sign">(</span>SELF            IN OUT NOCOPY <a href="#robo0">T_SEGMENT</a><span class="sign">,</span>
+  Constructor Function <a href="#robo1">T_SEGMENT</a><span class="sign">(</span>SELF            IN OUT NOCOPY <a href="#robo1">T_SEGMENT</a><span class="sign">,</span>
                                  p_element_id    In Integer<span class="sign">,</span>
                                  p_subelement_id In Integer<span class="sign">,</span>
                                  p_segment_id    In Integer<span class="sign">,</span>
-                                 p_startCoord    In SPDBA<span class="sign">.</span>T_Vertex<span class="sign">,</span>
-                                 p_midCoord      In SPDBA<span class="sign">.</span>T_Vertex<span class="sign">,</span>
-                                 p_endCoord      In SPDBA<span class="sign">.</span>T_Vertex<span class="sign">,</span>
+                                 p_startCoord    In <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span>T_Vertex<span class="sign">,</span>
+                                 p_midCoord      In <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span>T_Vertex<span class="sign">,</span>
+                                 p_endCoord      In <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span>T_Vertex<span class="sign">,</span>
                                  p_sdo_gtype     In Integer default null<span class="sign">,</span>
                                  p_sdo_srid      In Integer default null<span class="sign">,</span>
                                  p_projected     in integer default 1<span class="sign">,</span>
@@ -209,7 +248,7 @@
                 Return Self As Result<span class="sign">,</span>
 
   <span class="sign">-</span><span class="sign">-</span> MDSYS<span class="sign">.</span>VERTEX_TYPE Constructors
-  Constructor Function <a href="#robo0">T_SEGMENT</a><span class="sign">(</span>SELF         IN OUT NOCOPY <a href="#robo0">T_SEGMENT</a><span class="sign">,</span>
+  Constructor Function <a href="#robo1">T_SEGMENT</a><span class="sign">(</span>SELF         IN OUT NOCOPY <a href="#robo1">T_SEGMENT</a><span class="sign">,</span>
                                  p_segment_id In Integer<span class="sign">,</span>
                                  p_startCoord In mdsys<span class="sign">.</span>vertex_type<span class="sign">,</span>
                                  p_endCoord   In mdsys<span class="sign">.</span>vertex_type<span class="sign">,</span>
@@ -221,7 +260,7 @@
                         <span class="sign">)</span>
                 Return Self As Result<span class="sign">,</span>
 
-  Constructor Function <a href="#robo0">T_SEGMENT</a><span class="sign">(</span>SELF         IN OUT NOCOPY <a href="#robo0">T_SEGMENT</a><span class="sign">,</span>
+  Constructor Function <a href="#robo1">T_SEGMENT</a><span class="sign">(</span>SELF         IN OUT NOCOPY <a href="#robo1">T_SEGMENT</a><span class="sign">,</span>
                                  p_segment_id In Integer<span class="sign">,</span>
                                  p_startCoord In mdsys<span class="sign">.</span>vertex_type<span class="sign">,</span>
                                  p_midCoord   In mdsys<span class="sign">.</span>vertex_type<span class="sign">,</span>
@@ -233,19 +272,19 @@
                                  p_tolerance  in number  default 0<span class="sign">.</span>005<span class="sign">)</span>
                 Return Self As Result<span class="sign">,</span>
 </pre>
-<a name="robo5"></a>
+<a name="robo4"></a>
 <a name="T5fSEGMENT2fOrderBy"></a>
-<h2>1.3.  T_SEGMENT/OrderBy [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.3.  T_SEGMENT/OrderBy [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>OrderBy</strong> -- Implements ordering function that can be used to sort a collection of T_Vertex objects.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Order Function <strong>OrderBy</strong>(p_segment in SPDBA.<a href="#robo0">T_SEGMENT</a>)
+<pre>    Order Function <strong>OrderBy</strong>(p_segment in &amp;&amp;INSTALL_SCHEMA..<a href="#robo1">T_SEGMENT</a>)
             Return Number deterministic
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre>    p_segment (<a href="#robo0">T_SEGMENT</a>) - Order pair
+<pre>    p_segment (<a href="#robo1">T_SEGMENT</a>) - Order pair
 </pre>
 <p class="item_name">DESCRIPTION</p>
 <pre>    This order by function allows a collection of T_Vertex objects to be sorted.
@@ -255,7 +294,7 @@
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre>    With segments as (
-      select <a href="#robo0">T_SEGMENT</a>(p_segment_id=&gt; LEVEL,
+      select <a href="#robo1">T_SEGMENT</a>(p_segment_id=&gt; LEVEL,
                        p_startCoord=&gt;T_Vertex(p_x=&gt;dbms_random.value(0,level),
                                               p_y=&gt;dbms_random.value(0,level),
                                               p_id=&gt;1,
@@ -297,17 +336,17 @@
 <p class="item_name">COPYRIGHT</p>
 <pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 </pre>
-<a name="robo6"></a>
+<a name="robo5"></a>
 <a name="T5fSEGMENT2fST5fAddCurveBetweenSegments"></a>
-<h2>1.4.  T_SEGMENT/ST_AddCurveBetweenSegments [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.4.  T_SEGMENT/ST_AddCurveBetweenSegments [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_AddCurveBetweenSegments</strong> -- Adds Circular Curve between two segments
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre>    Member Function <strong>ST_AddCurveBetweenSegments</strong>(
-                         p_segment   In SPDBA.T_Segment,
-                         p_iVertex   in SPDBA.T_Verex default NULL,
+                         p_segment   In &amp;&amp;INSTALL_SCHEMA..T_Segment,
+                         p_iVertex   in &amp;&amp;INSTALL_SCHEMA..T_Verex default NULL,
                          p_radius    In number        default null,
                          p_unit      In varchar2      default NULL)
                Return mdsys.sdo_Geometry Deterministic,
@@ -318,7 +357,7 @@
     How the circular cuve is added depends on the parameters.
     1. If SELF and p_segment do not meet, and the intersectoin point between 
        SELF.endCoord and p_segment.startCoord is not provided, the intersection point
-       is computed using <a href="#robo26">ST_IntersectDetail</a>.
+       is computed using <a href="#robo28">ST_IntersectDetail</a>.
     2. If p_radius is provided a circular curve is fitted between end/mid/start of radius p_radius.
     3. If p_iVertex, p_radius are not provided, the best circular arc is fittd.
     The implementation honours 3D and 4D shapes and averages these dimension values
@@ -346,10 +385,10 @@
 <p class="item_name">COPYRIGHT</p>
 <pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 </pre>
-<a name="robo7"></a>
+<a name="robo6"></a>
 <a name="T5fSEGMENT2fST5fAngle"></a>
-<h2>1.5.  T_SEGMENT/ST_Angle [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.5.  T_SEGMENT/ST_Angle [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_Angle</strong> -- Computes the angle that the vector defined by this segment makes with the X-axis.
 </pre>
@@ -379,7 +418,7 @@
           .785
 </pre>
 <p class="item_name">SEE ALSO</p>
-<pre>    <a href="#robo0">T_SEGMENT</a>.<a href="#robo9">ST_Bearing</a>
+<pre>    <a href="#robo1">T_SEGMENT</a>.<a href="#robo9">ST_Bearing</a>
     COGO.ST_Degrees
 </pre>
 <p class="item_name">AUTHOR</p>
@@ -391,10 +430,10 @@
 <p class="item_name">COPYRIGHT</p>
 <pre>    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
 </pre>
-<a name="robo8"></a>
+<a name="robo7"></a>
 <a name="T5fSEGMENT2fST5fAsText"></a>
-<h2>1.6.  T_SEGMENT/ST_AsText [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.6.  T_SEGMENT/ST_AsText [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_AsText</strong> -- Returns text Description of underlying segment
 </pre>
@@ -406,7 +445,7 @@
 <pre>    Returns textual description of segment.
 </pre>
 <p class="item_name">RESULT</p>
-<pre>    String - <a href="#robo0">T_SEGMENT</a> in text format.
+<pre>    String - <a href="#robo1">T_SEGMENT</a> in text format.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre>    with data as (
@@ -440,10 +479,92 @@
 <p class="item_name">COPYRIGHT</p>
 <pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 </pre>
+<a name="robo8"></a>
+<a name="T5fSEGMENT2fST5fAsWKT"></a>
+<h2>2.7.  T_SEGMENT/ST_AsWKT [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>ST_AsWKT</strong> -- Exports <a href="#robo1">T_SEGMENT</a> object to its Extended Well Known Text (EWKT).
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Member Function <strong>ST_AsWKT</strong>
+             Return varchar2 Deterministic,
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Returns Extended Well Known Text representation of underlying T_GEOEMTRY.
+    Supports 2D/3D/4D t_segments.
+    Formatting of ordinates supported by supplied p_format_model eg TM9 or FM999999999999990D0
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    WKT (CLOB) -- eg Well Known Text encoding of mdsys.sdo_geometry object.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    With data as (
+     select t_segment(sdo_geometry(2002,28355,NULL,
+                                  sdo_elem_info_array(1,2,2),
+                                  sdo_ordinate_array(252230.4743434348,5526918.37343433, 252400.034348,5526918.33434333473,252230.4434343378,5527000.433445660))) as segment
+     from dual union all
+     select t_segment(SDO_GEOMETRY(3002,28355,NULL,
+                                  sdo_elem_info_array(1,2,2),
+                                  sdo_ordinate_array(252230.478,5526918.373,1.5, 252400.08,5526918.373,1.5, 252230.478,5527000.0,1.5))) as segment
+     from dual union all
+     select t_segment(SDO_GEOMETRY(3302,28355,NULL,
+                                  sdo_elem_info_array(1,2,2),
+                                  sdo_ordinate_array(252230.478,5526918.373,0.0, 252400.08,5526918.373,417.4, 252230.478,5527000.0,506.88))) as segment
+     from dual union all
+     select t_segment(SDO_GEOMETRY(4402,28355,NULL,
+                                  sdo_elem_info_array(1,2,2),
+                                  sdo_ordinate_array(252230.478,5526918.373,1.5,0.0, 252400.08,5526918.373,1.5,417.4, 252230.478,5527000.0,1.5,506.88))) as segment
+     from dual union all
+     select t_segment(sdo_geometry(2002,NULL,NULL,
+                                   sdo_elem_info_array(1,2,1),
+                                   sdo_ordinate_array(100,100,900,900.0))) as segment
+     from dual union all
+     select t_segment(sdo_geometry(3002,NULL,NULL,
+                                   sdo_elem_info_array(1,2,1),
+                                   sdo_ordinate_array(0,0,1, 10,0,2))) as segment
+     from dual union all
+     select t_segment(sdo_geometry(3302,NULL,NULL,
+                                   sdo_elem_info_array(1,2,1),
+                                   sdo_ordinate_array(0,0,1.5, 10,0,1.5, 10,5,1.5 ))) as segment
+     from dual union all
+     select t_segment(sdo_geometry(4402,4283,null,
+                                   sdo_elem_info_array(1,2,1),
+                                   sdo_ordinate_array(147.5,-42.5,849.9,102.0, 147.6,-42.5,1923.0,2100.0))) as segment
+     From Dual
+    )
+    select a.segment.sdo_gtype as gtype,
+         a.segment
+          .<a href="#robo57">ST_Round</a>(3)
+          .ST_AsEWKT('TM9') as ewkt
+    from data a;
+    
+    GTYPE EWKT
+    ----- ------------------------------------------------------------------------------------------------------------------------
+     2002 SRID=28355;CIRCULARSTRING (252230.474 5526918.373,252400.034 5526918.334,252230.443 5527000.433)
+     3002 SRID=28355;CIRCULARSTRINGZ (252230.478 5526918.373 1.5,252400.08 5526918.373 1.5,252230.478 5527000 1.5)
+     3302 SRID=28355;CIRCULARSTRINGM (252230.478 5526918.373 0,252400.08 5526918.373 417.4,252230.478 5527000 506.88)
+     4402 SRID=28355;CIRCULARSTRINGZM (252230.478 5526918.373 1.5 0,252400.08 5526918.373 1.5 417.4,252230.478 5527000 1.5 506.88)
+     2002 LINESTRING (100 100,900 900)
+     3002 LINESTRINGZ (0 0 1,10 0 2)
+     3302 LINESTRINGM (0 0 1.5,10 0 1.5)
+     4402 SRID=4283;LINESTRINGZM (147.5 -42.5 849.9 102,147.6 -42.5 1923 2100)
+    
+     8 rows selected
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - July 2019 - Original coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
+</pre>
 <a name="robo9"></a>
 <a name="T5fSEGMENT2fST5fBearing"></a>
-<h2>1.7.  T_SEGMENT/ST_Bearing [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.8.  T_SEGMENT/ST_Bearing [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_Bearing</strong> -- Returns Bearing, in degrees, from start to end (possibly normalized to 0..360 degree range.
 </pre>
@@ -501,8 +622,8 @@
 </pre>
 <a name="robo10"></a>
 <a name="T5fSEGMENT2fST5fCheckZ"></a>
-<h2>1.8.  T_SEGMENT/ST_CheckZ [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.9.  T_SEGMENT/ST_CheckZ [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_CheckZ</strong> -- Checks Z values on linString or CircularArc
 </pre>
@@ -556,8 +677,8 @@
 </pre>
 <a name="robo11"></a>
 <a name="T5fSEGMENT2fST5fClosest28p5fgeometry20p5funit29"></a>
-<h2>1.9.  T_SEGMENT/ST_Closest(p_geometry p_unit) [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.10.  T_SEGMENT/ST_Closest(p_geometry p_unit) [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    ST_Closest -- Finds nearest point on line where supplied geometry comes closest (snap to).
 </pre>
@@ -565,7 +686,7 @@
 <pre>    Member Function ST_Closest(p_geometry  in mdys.sdo_geometry,
                                p_unit      In varchar2 DEFAULT NULL
                               )
-             Return SPDBA.T_Vertex Deterministic
+             Return &amp;&amp;INSTALL_SCHEMA..T_Vertex Deterministic
 </pre>
 <p class="item_name">DESCRIPTION</p>
 <pre>    Finds nearest point on segment where supplied geometry comes closest (snap).
@@ -575,10 +696,10 @@
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre>    p_geometry (sdo_geometry) - Any sdo_geometry object.
-    p_unit         (Varchar2) - Oracle Unit of Measure eg unit=M.
+    p_unit    (Varchar2) - Oracle Unit of Measure eg unit=M.
 </pre>
 <p class="item_name">RESULT</p>
-<pre>    vertex         (T_Vertex) -- Nearest point on line supplied vertex is nearest to.
+<pre>    vertex    (T_Vertex) -- Nearest point on line supplied vertex is nearest to.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre>    -- Planar
@@ -612,8 +733,8 @@
                p_geometry  =&gt; a.geometry,
                p_unit      =&gt; 'unit=M'
             )
-            .<a href="#robo45">ST_Round</a>(3)
-            .<a href="#robo8">ST_AsText</a>() as closestPoint
+            .<a href="#robo57">ST_Round</a>(3)
+            .<a href="#robo7">ST_AsText</a>() as closestPoint
       from tGeom a,
             table(a.lrs_tgeom.ST_Segmentize(p_filter=&gt;'DISTANCE',
                                             p_vertex=&gt;SELF.T_Vertex(a.geometry)) t;
@@ -634,8 +755,8 @@
                p_vertex    =&gt; T_Vertex(a.point),
                p_unit      =&gt; 'unit=M'
             )
-           .<a href="#robo45">ST_Round</a>(8)
-           .<a href="#robo8">ST_AsText</a>() as closestPoint
+           .<a href="#robo57">ST_Round</a>(8)
+           .<a href="#robo7">ST_AsText</a>() as closestPoint
       from data a;
 
     CLOSESTPOINT
@@ -653,8 +774,8 @@
 </pre>
 <a name="robo12"></a>
 <a name="T5fSEGMENT2fST5fComputeDeflectionAngle"></a>
-<h2>1.10.  T_SEGMENT/ST_ComputeDeflectionAngle [ Functions ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Functions ]</p>
+<h2>2.11.  T_SEGMENT/ST_ComputeDeflectionAngle [ Functions ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Functions ]</p>
 <p class="item_name">NAME</p>
 <pre>   <strong>ST_ComputeDeflectionAngle</strong> - Computes deflection angle between two segments.
 </pre>
@@ -688,8 +809,8 @@
 </pre>
 <a name="robo13"></a>
 <a name="T5fSEGMENT2fST5fComputeTangentLine"></a>
-<h2>1.11.  T_SEGMENT/ST_ComputeTangentLine [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.12.  T_SEGMENT/ST_ComputeTangentLine [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_ComputeTangentLine</strong> -- Computes point that would define a tangential line at the nominated position on the circular arc
 </pre>
@@ -719,7 +840,7 @@
              ) as circular_string
         from dual
     )
-    select a.circular_string.<a href="#robo46">ST_SdoGeometry</a>() as geom
+    select a.circular_string.<a href="#robo59">ST_SdoGeometry</a>() as geom
       from data a
      union all
     select b.circular_string
@@ -729,7 +850,7 @@
                             when 2 then 'MID'
                             when 3 then 'END'
                             end
-            ).<a href="#robo46">ST_SdoGeometry</a>() as geom
+            ).<a href="#robo59">ST_SdoGeometry</a>() as geom
       from data b,
            table(tools.generate_series(1,3,1)) t;
 
@@ -748,7 +869,7 @@
         from dual
     )
     select CAST(NULL AS Number) as fraction,
-           a.circular_string.<a href="#robo46">ST_SdoGeometry</a>() as geom
+           a.circular_string.<a href="#robo59">ST_SdoGeometry</a>() as geom
       from data a
      union all
     select CAST(t.IntValue as number) / 10.0 as fraction,
@@ -757,8 +878,8 @@
                 p_position  =&gt;'FRACTION',
                 p_fraction  =&gt; CAST(t.IntValue as number) / 10.0,
                 p_unit      =&gt; 'unit=M' )
-           .<a href="#robo45">ST_Round</a>(3)
-           .<a href="#robo46">ST_SdoGeometry</a>() as tangentLine
+           .<a href="#robo57">ST_Round</a>(3)
+           .<a href="#robo59">ST_SdoGeometry</a>() as tangentLine
       from data b,
            table(tools.generate_series(0,10,1)) t;
 
@@ -793,8 +914,8 @@
 </pre>
 <a name="robo14"></a>
 <a name="T5fSEGMENT2fST5fComputeTangentPoint"></a>
-<h2>1.12.  T_SEGMENT/ST_ComputeTangentPoint [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.13.  T_SEGMENT/ST_ComputeTangentPoint [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_ComputeTangentPoint</strong> -- Computes point that would define a tandential line at the start, mid or end point of a circular arc
 </pre>
@@ -846,7 +967,7 @@
              p_sdo_srid   =&gt; NULL
            )
            .<strong>ST_ComputeTangentPoint</strong>(p_position =&gt;'START')
-           .<a href="#robo8">ST_AsText</a>() as tangentPoint
+           .<a href="#robo7">ST_AsText</a>() as tangentPoint
       from dual;
 
     TANGENTPOINT
@@ -860,7 +981,7 @@
              ) as circular_string
         from dual
     )
-    select a.circular_string.<a href="#robo46">ST_SdoGeometry</a>() as geom
+    select a.circular_string.<a href="#robo59">ST_SdoGeometry</a>() as geom
       from data a
      union all
     select b.circular_string
@@ -870,7 +991,7 @@
                                   when 2 then 'MID'
                                   when 3 then 'END'
                                   end as varchar(5))
-            ).<a href="#robo46">ST_SdoGeometry</a>() as geom
+            ).<a href="#robo59">ST_SdoGeometry</a>() as geom
       from data b,
            table(tools.generate_series(1,3,1)) t;
 
@@ -911,8 +1032,8 @@
            )
            .<strong>ST_ComputeTangentPoint</strong>(p_position  =&gt;'FRACTION',
                                    p_fraction  =&gt; CAST(t.IntValue as number) / 10.0)
-           .<a href="#robo45">ST_Round</a>(3)
-           .<a href="#robo46">ST_SdoGeometry</a>() as tangentPoint
+           .<a href="#robo57">ST_Round</a>(3)
+           .<a href="#robo59">ST_SdoGeometry</a>() as tangentPoint
       from table(tools.generate_series(0,10,1)) t;
 
       FRACTION TANGENTPOINT
@@ -945,8 +1066,8 @@
 </pre>
 <a name="robo15"></a>
 <a name="T5fSEGMENT2fST5fDensify"></a>
-<h2>1.13.  T_SEGMENT/ST_Densify [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.14.  T_SEGMENT/ST_Densify [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_Densify</strong> -- Implements a basic geometry densification algorithm.
 </pre>
@@ -990,8 +1111,8 @@
 </pre>
 <a name="robo16"></a>
 <a name="T5fSEGMENT2fST5fDims"></a>
-<h2>1.14.  T_SEGMENT/ST_Dims [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.15.  T_SEGMENT/ST_Dims [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_Dims</strong> -- Returns number of ordinate dimensions
 </pre>
@@ -1031,23 +1152,23 @@
 </pre>
 <a name="robo17"></a>
 <a name="T5fSEGMENT2fST5fDistance28p5fsegment20p5funit29"></a>
-<h2>1.15.  T_SEGMENT/ST_Distance(p_segment p_unit) [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.16.  T_SEGMENT/ST_Distance(p_segment p_unit) [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    ST_Distance -- Returns Distance from segment to the supplied segment (T_Segment)
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Member Function ST_Distance(p_segment    in SPDBA.T_Segment,
+<pre>    Member Function ST_Distance(p_segment    in &amp;&amp;INSTALL_SCHEMA..T_Segment,
                                 p_unit       in varchar2 DEFAULT NULL)
              Return Number Deterministic
 </pre>
 <p class="item_name">DESCRIPTION</p>
 <pre>    (Wrapper over sdo_geometry ST_Distance method).
-    This function computes a distance from the input T_Segment object to the underlying <a href="#robo0">T_SEGMENT</a>.
+    This function computes a distance from the input T_Segment object to the underlying <a href="#robo1">T_SEGMENT</a>.
     Result is in the distance units of the SDO_SRID, or in p_units where supplied.
 </pre>
 <p class="item_name">ARGUMENTS</p>
-<pre>    p_segment  (<a href="#robo0">T_SEGMENT</a>) - A single T_Segment from which a distance to the segment is calculated.
+<pre>    p_segment  (<a href="#robo1">T_SEGMENT</a>) - A single T_Segment from which a distance to the segment is calculated.
     p_unit      (VARCHAR2) - Oracle Unit of Measure eg unit=M.
 </pre>
 <p class="item_name">RESULT</p>
@@ -1095,19 +1216,19 @@
 </pre>
 <a name="robo18"></a>
 <a name="T5fSEGMENT2fST5fDistance28p5fvertex20p5funit29"></a>
-<h2>1.16.  T_SEGMENT/ST_Distance(p_vertex p_unit) [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.17.  T_SEGMENT/ST_Distance(p_vertex p_unit) [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    ST_Distance -- Returns Distance from segment supplied T_Vertex (Wrapper)
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Member Function ST_Distance(p_vertex     in SPDBA.T_Vertex,
+<pre>    Member Function ST_Distance(p_vertex     in &amp;&amp;INSTALL_SCHEMA..T_Vertex,
                                 p_unit       in varchar2 DEFAULT NULL)
              Return Number Deterministic
 </pre>
 <p class="item_name">DESCRIPTION</p>
 <pre>    (Wrapper over sdo_geometry ST_Distance method).
-    This function computes a distance from the input T_Vertex object to the underlying <a href="#robo0">T_SEGMENT</a>.
+    This function computes a distance from the input T_Vertex object to the underlying <a href="#robo1">T_SEGMENT</a>.
     Result is in the distance units of the SDO_SRID, or in p_units where supplied.
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -1159,13 +1280,13 @@
 </pre>
 <a name="robo19"></a>
 <a name="T5fSEGMENT2fST5fEquals"></a>
-<h2>1.17.  T_SEGMENT/ST_Equals [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.18.  T_SEGMENT/ST_Equals [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_Equals</strong> -- Compares current object (SELF) with supplied segment.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Member Function <strong>ST_Equals</strong>(p_segment    in SPDBA.<a href="#robo0">T_SEGMENT</a>,
+<pre>    Member Function <strong>ST_Equals</strong>(p_segment    in &amp;&amp;INSTALL_SCHEMA..<a href="#robo1">T_SEGMENT</a>,
                               p_coords     In Integer default 1)
              Return Integer deterministic
 </pre>
@@ -1175,7 +1296,7 @@
     SDO_GTYPE, SDO_SRID and ID are not compared uinless p_coords = 0
 </pre>
 <p class="item_name">NOTES</p>
-<pre>    To compare all 4 ordinates, use <a href="#robo45">ST_Round</a> on both segments before calling <strong>ST_Equals</strong>
+<pre>    To compare all 4 ordinates, use <a href="#robo57">ST_Round</a> on both segments before calling <strong>ST_Equals</strong>
 </pre>
 <p class="item_name">ARGUMENTS</p>
 <pre>    p_segment  (T_Segment) -- Segment that is to be compared to current object (SELF).
@@ -1243,8 +1364,8 @@
 </pre>
 <a name="robo20"></a>
 <a name="T5fSEGMENT2fST5fFindCircle"></a>
-<h2>1.18.  T_SEGMENT/ST_FindCircle [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.19.  T_SEGMENT/ST_FindCircle [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_FindCircle</strong> -- Finds a centre X and Y and Radius from three points of underlying circular arc.
 </pre>
@@ -1263,7 +1384,7 @@
 <pre>    Circle Properties (T_Vertex) : X ordinate of centre of circle.
                                    Y ordinate of centre of circle.
                                    Z ordinate contains radius of circle.
-                                   SRID as underlying <a href="#robo0">T_SEGMENT</a>.
+                                   SRID as underlying <a href="#robo1">T_SEGMENT</a>.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre>    -- Compute measure of point
@@ -1281,7 +1402,7 @@
     select a.test,
            T_Segment(a.geom)
              .<strong>ST_FindCircle</strong>()
-             .<a href="#robo8">ST_AsText</a>() as circle_params
+             .<a href="#robo7">ST_AsText</a>() as circle_params
       from data a;
 
     TEST           CIRCLE_PARAMS
@@ -1300,8 +1421,8 @@
 </pre>
 <a name="robo21"></a>
 <a name="T5fSEGMENT2fST5fGetProjected"></a>
-<h2>1.19.  T_SEGMENT/ST_GetProjected [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.20.  T_SEGMENT/ST_GetProjected [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    ST_getProjected -- Rerturns whether underlying segment is planar/projected (1) or geographic/geodetic (0).
 </pre>
@@ -1323,8 +1444,8 @@
 </pre>
 <a name="robo22"></a>
 <a name="T5fSEGMENT2fST5fhasM"></a>
-<h2>1.20.  T_SEGMENT/ST_hasM [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.21.  T_SEGMENT/ST_hasM [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_hasM</strong> -- Tests segment to see if coordinates include a measure.
 </pre>
@@ -1358,8 +1479,8 @@
 </pre>
 <a name="robo23"></a>
 <a name="T5fSEGMENT2fST5fhasZ"></a>
-<h2>1.21.  T_SEGMENT/ST_hasZ [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.22.  T_SEGMENT/ST_hasZ [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_hasZ</strong> -- Tests segment to see if coordinates include a Z ordinate.
 </pre>
@@ -1397,13 +1518,13 @@
 </pre>
 <a name="robo24"></a>
 <a name="T5fSEGMENT2fST5fIntersect"></a>
-<h2>1.22.  T_SEGMENT/ST_Intersect [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.23.  T_SEGMENT/ST_Intersect [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_Intersect</strong> -- Computes intersection point between two 2D or 3D segments, returning a single intersection vertex.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Member Function <strong>ST_Intersect</strong>(p_segment   IN <a href="#robo0">T_SEGMENT</a>,
+<pre>    Member Function <strong>ST_Intersect</strong>(p_segment   IN <a href="#robo1">T_SEGMENT</a>,
                                  p_unit      IN varchar2 default NULL)
              Return T_Vertex Deterministic,
 </pre>
@@ -1442,7 +1563,7 @@
              p_sdo_srid   =&gt; NULL
            )
            .<strong>ST_Intersect</strong>(p_segment =&gt;
-           .<a href="#robo8">ST_AsText</a>() as Intersection3D
+           .<a href="#robo7">ST_AsText</a>() as Intersection3D
       from dual;
 
     INTERSECTION3D
@@ -1456,12 +1577,12 @@
       FROM Dual
     )
     select t_geometry(SDO_GEOM.SDO_Intersection(cString,lString,0.005),0.005,3,1)
-             .<a href="#robo45">ST_Round</a>(3,3,1)
+             .<a href="#robo57">ST_Round</a>(3,3,1)
              .geom as iGeom,
            T_Segment(lString)
              .<strong>ST_Intersect</strong>(T_Segment(cString),3)
-             .<a href="#robo45">ST_Round</a>(3)
-             .<a href="#robo46">ST_SdoGeometry</a>() as iPoint
+             .<a href="#robo57">ST_Round</a>(3)
+             .<a href="#robo59">ST_SdoGeometry</a>() as iPoint
       from data a;
 
     IGEOM
@@ -1478,7 +1599,7 @@
      )
      select f.intersection.ST_IsNull() as intersectAlwaysNull,
             f.intersection.id          as intersectMarker,
-            f.intersection.<a href="#robo8">ST_AsText</a>() as IntersectCoordValues
+            f.intersection.<a href="#robo7">ST_AsText</a>() as IntersectCoordValues
        from (select T_Segment(line1)
                       .<strong>ST_Intersect</strong>(
                           T_Segment(line2)
@@ -1503,8 +1624,8 @@
             .<strong>ST_Intersect</strong>(
                 T_Segment(line2)
             )
-            .<a href="#robo45">ST_Round</a>(3,3)
-            .<a href="#robo46">ST_SdoGeometry</a>(3) as int3D
+            .<a href="#robo57">ST_Round</a>(3,3)
+            .<a href="#robo59">ST_SdoGeometry</a>(3) as int3D
        from data a;
 
      GEOM
@@ -1530,14 +1651,122 @@
 <pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 </pre>
 <a name="robo25"></a>
+<a name="T5fSEGMENT2fST5fIntersect2CircularArcs"></a>
+<h2>2.24.  T_SEGMENT/ST_Intersect2CircularArcs [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>ST_Intersect2CircularArcs</strong> -- Computes intersecton point between two 2D CircularArc segments.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Member Function <strong>ST_Intersect2CircularArcs</strong>(
+                       p_segment   in &amp;&amp;INSTALL_SCHEMA..T_Segment,
+                       p_unit      in varchar2 default NULL)
+             Return &amp;&amp;INSTALL_SCHEMA..T_Segment Deterministic(
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    This function computes the intersection point between the underlying circularArc segment and the provided circularArc segment.
+    If one of the segments is a LineString, <a href="#robo24">ST_Intersect</a> is called.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre>    p_segment  (T_Segment) -- CircularArc Segment that is to be intersected with the current CircularArc object (SELF).
+    p_unit      (varchar2) -- Oracle Unit of Measure for functions such as SDO_DISTANCE.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    intersection (T_Vertex) -- The intersection point.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    select &amp;&amp;INSTALL_SCHEMA..t_segment(mdsys.sdo_geometry(2002,null,null,sdo_elem_info_array(1,2,2),sdo_ordinate_array(0,0,10,10,20,0)))
+                .<strong>ST_Intersect2CircularArcs</strong>(
+                    p_segment =&gt; &amp;&amp;INSTALL_SCHEMA..t_segment(mdsys.sdo_geometry(2002,null,null,sdo_elem_info_array(1,2,2),SDO_ORDINATE_ARRAY(9.959,-0.004, 14.719,5.245, 8.133,13.623))),
+                    p_unit    =&gt; null)
+                .<a href="#robo57">ST_Round</a>(3) as intersection
+      from dual;
+
+    INTERSECTION
+    ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    &amp;&amp;INSTALL_SCHEMA..<a href="#robo1">T_SEGMENT</a>(NULL,NULL,1,&amp;&amp;INSTALL_SCHEMA..T_VERTEX(14.477,8.942,NULL,NULL,1,2001,NULL,0),NULL,&amp;&amp;INSTALL_SCHEMA..T_VERTEX(1.189,4.729,NULL,NULL,3,2001,NULL,0),2002,NULL,1,&amp;&amp;INSTALL_SCHEMA..T_PRECISIONMODEL(3,3,3,0.005))
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    Two intersections are returned for the two possible points where two circles defined by CircularArcs intersect.
+    Calculations are always planar.
+</pre>
+<p class="item_name">TODO</p>
+<pre>    Enable calculation of intersection between geodetic/geographic segments.
+    Return only the actual intersections.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>   Simon Greener - 2011 - Original Coding nuary 2018\
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo26"></a>
+<a name="T5fSEGMENT2fST5fIntersectCircularArc"></a>
+<h2>2.25.  T_SEGMENT/ST_IntersectCircularArc [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>ST_IntersectCircularArc</strong> -- Computes intersecton point between a CircularArc and a LineString segment.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Member Function <strong>ST_IntersectCircularArc</strong>(
+                       p_segment   in &amp;&amp;INSTALL_SCHEMA..T_Segment,
+                       p_unit      in varchar2 default NULL)
+             Return &amp;&amp;INSTALL_SCHEMA..T_Segment Deterministic(
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    This function computes the intersection point between a CircularArc and a LineString.
+    If both of the segments is a LineString, <a href="#robo24">ST_Intersect</a> is called.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre>    p_segment  (T_Segment) -- CircularArc Segment that is to be intersected with the current CircularArc object (SELF).
+    p_unit      (varchar2) -- Oracle Unit of Measure for functions such as SDO_DISTANCE.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    intersection (T_Vertex) -- The intersection point.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    select &amp;&amp;INSTALL_SCHEMA..t_segment(mdsys.sdo_geometry(2002,null,null,sdo_elem_info_array(1,2,2),sdo_ordinate_array(0,0,10,10,20,0)))
+                .<strong>ST_IntersectCircularArc</strong>(
+                    p_segment =&gt; &amp;&amp;INSTALL_SCHEMA..t_segment(mdsys.sdo_geometry(2002,null,null,sdo_elem_info_array(1,2,1),SDO_ORDINATE_ARRAY(10,0,10,12))),
+                    p_unit    =&gt; null)
+                .<a href="#robo57">ST_Round</a>(3)
+                .<a href="#robo59">ST_SdoGeometry</a>() as intersection
+      from dual;
+    
+    INTERSECTION
+    -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    MDSYS.SDO_GEOMETRY(2002,NULL,NULL,MDSYS.SDO_ELEM_INFO_ARRAY(1,2,1),MDSYS.SDO_ORDINATE_ARRAY(10,-10,0,0))
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    Two intersections are returned for the two possible points where two circles defined by CircularArcs intersect.
+    Calculations are always planar.
+</pre>
+<p class="item_name">TODO</p>
+<pre>    Fix as result is incorrect.
+    Enable calculation of intersection between geodetic/geographic segments.
+    Return only the actual intersections.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>   Simon Greener - 2011 - Original Coding nuary 2018\
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo27"></a>
 <a name="T5fSEGMENT2fST5fIntersectDescription"></a>
-<h2>1.23.  T_SEGMENT/ST_IntersectDescription [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.26.  T_SEGMENT/ST_IntersectDescription [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_IntersectDescription</strong> -- Interprets intersection that results from a call to STIntersectionDetail with same parameter values.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Member Function <strong>ST_IntersectDescription</strong>(p_segment    in <a href="#robo0">T_SEGMENT</a>,
+<pre>    Member Function <strong>ST_IntersectDescription</strong>(p_segment    in <a href="#robo1">T_SEGMENT</a>,
                                             p_unit       in varchar2 default NULL)
              Return T_Vertex Deterministic,
 </pre>
@@ -1590,7 +1819,7 @@
              p_sdo_srid   =&gt; NULL
            )
            .<strong>ST_IntersectDescription</strong>(p_segment =&gt;
-           .<a href="#robo8">ST_AsText</a>() as Intersection
+           .<a href="#robo7">ST_AsText</a>() as Intersection
       from dual;
 
     INTERSECTION
@@ -1603,7 +1832,7 @@
                 T_Segment(
                   sdo_geometry('LINESTRING(0 10,10 0)',null)
                 )
-            ).<a href="#robo8">ST_AsText</a>() as iPoint
+            ).<a href="#robo7">ST_AsText</a>() as iPoint
       from dual;
 
     IPOINT
@@ -1621,7 +1850,7 @@
                 T_Segment(
                   sdo_geometry('LINESTRING(-5 10,-2 7)',null)
                 )
-            ).<a href="#robo8">ST_AsText</a>() as iPoint
+            ).<a href="#robo7">ST_AsText</a>() as iPoint
       from dual;
 
     IPOINT
@@ -1639,7 +1868,7 @@
                 T_Segment(
                   sdo_geometry('LINESTRING(-10 10,-5 5)',null)
                 )
-            ).<a href="#robo8">ST_AsText</a>() as iPoint
+            ).<a href="#robo7">ST_AsText</a>() as iPoint
       from dual;
 
     IPOINT
@@ -1657,7 +1886,7 @@
                 T_Segment(
                   sdo_geometry('LINESTRING(-10 5,-5 5)',null)
                 )
-            ).<a href="#robo8">ST_AsText</a>() as iPoint
+            ).<a href="#robo7">ST_AsText</a>() as iPoint
       from dual;
 
     IPOINT
@@ -1681,15 +1910,15 @@
 <p class="item_name">COPYRIGHT</p>
 <pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 </pre>
-<a name="robo26"></a>
+<a name="robo28"></a>
 <a name="T5fSEGMENT2fST5fIntersectDetail"></a>
-<h2>1.24.  T_SEGMENT/ST_IntersectDetail [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.27.  T_SEGMENT/ST_IntersectDetail [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_IntersectDetail</strong> -- Computes intersecton point between two 2D segments.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Member Function <strong>ST_IntersectDetail</strong>(p_segment   in <a href="#robo0">T_SEGMENT</a>,
+<pre>    Member Function <strong>ST_IntersectDetail</strong>(p_segment   in <a href="#robo1">T_SEGMENT</a>,
                                        p_unit      in varchar2 default NULL)
              Return T_Vertex Deterministic,
 </pre>
@@ -1732,7 +1961,7 @@
              p_sdo_srid   =&gt; NULL
            )
            .<strong>ST_IntersectDetail</strong>(p_segment =&gt;
-           .<a href="#robo8">ST_AsText</a>() as Intersection
+           .<a href="#robo7">ST_AsText</a>() as Intersection
       from dual;
 
     INTERSECTION
@@ -1745,7 +1974,7 @@
                 T_Segment(
                   sdo_geometry('LINESTRING(0 10,10 0)',null)
                 )
-            ).<a href="#robo8">ST_AsText</a>() as iPoint
+            ).<a href="#robo7">ST_AsText</a>() as iPoint
       from dual;
 
     IPOINT
@@ -1763,7 +1992,7 @@
                 T_Segment(
                   sdo_geometry('LINESTRING(-5 10,-2 7)',null)
                 )
-            ).<a href="#robo8">ST_AsText</a>() as iPoint
+            ).<a href="#robo7">ST_AsText</a>() as iPoint
       from dual;
 
     IPOINT
@@ -1781,7 +2010,7 @@
                 T_Segment(
                   sdo_geometry('LINESTRING(-10 10,-5 5)',null)
                 )
-            ).<a href="#robo8">ST_AsText</a>() as iPoint
+            ).<a href="#robo7">ST_AsText</a>() as iPoint
       from dual;
 
     IPOINT
@@ -1799,7 +2028,7 @@
                 T_Segment(
                   sdo_geometry('LINESTRING(-10 5,-5 5)',null)
                 )
-            ).<a href="#robo8">ST_AsText</a>() as iPoint
+            ).<a href="#robo7">ST_AsText</a>() as iPoint
       from dual;
 
     IPOINT
@@ -1826,10 +2055,10 @@
 <p class="item_name">COPYRIGHT</p>
 <pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 </pre>
-<a name="robo27"></a>
+<a name="robo29"></a>
 <a name="T5fSEGMENT2fST5fisCircularArc"></a>
-<h2>1.25.  T_SEGMENT/ST_isCircularArc [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.28.  T_SEGMENT/ST_isCircularArc [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_isCircularArc</strong> -- Checks if segment is a CircularArc
 </pre>
@@ -1866,15 +2095,15 @@
 <p class="item_name">COPYRIGHT</p>
 <pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 </pre>
-<a name="robo28"></a>
+<a name="robo30"></a>
 <a name="T5fSEGMENT2fST5fisCollinear"></a>
-<h2>1.26.  T_SEGMENT/ST_isCollinear [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.29.  T_SEGMENT/ST_isCollinear [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_isCollinear</strong> -- Checks if two segments' coordinates are collinar.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Member Function <strong>ST_isCollinear</strong>(p_segment in SPDBA.<a href="#robo0">T_SEGMENT</a>)
+<pre>    Member Function <strong>ST_isCollinear</strong>(p_segment in &amp;&amp;INSTALL_SCHEMA..<a href="#robo1">T_SEGMENT</a>)
              Return Integer Deterministic
 </pre>
 <p class="item_name">DESCRIPTION</p>
@@ -1921,10 +2150,10 @@
 <p class="item_name">COPYRIGHT</p>
 <pre>    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
 </pre>
-<a name="robo29"></a>
+<a name="robo31"></a>
 <a name="T5fSEGMENT2fST5fisEmpty"></a>
-<h2>1.27.  T_SEGMENT/ST_isEmpty [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.30.  T_SEGMENT/ST_isEmpty [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_isEmpty</strong> -- Checks if segment has any valid data.
 </pre>
@@ -1940,7 +2169,7 @@
 <pre>    BOOLEAN (INTEGER) -- 1 if segment has no non null values; 0 if has values
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre>    select T_Segment().<a href="#robo8">ST_AsText</a>()  as TSegment,
+<pre>    select T_Segment().<a href="#robo7">ST_AsText</a>()  as TSegment,
            T_Segment().<strong>ST_isEmpty</strong>() as isEmpty
       from dual;
 
@@ -1957,19 +2186,113 @@
 <p class="item_name">COPYRIGHT</p>
 <pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 </pre>
-<a name="robo30"></a>
+<a name="robo32"></a>
+<a name="T5fSEGMENT2fST5fisHorizontal"></a>
+<h2>2.31.  T_SEGMENT/ST_isHorizontal [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>ST_isHorizontal</strong> - Returns true if the segment is horizonal or parallel to X axis.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Member Function <strong>ST_isHorizontal</strong>
+             Return integer Determinsitic
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Supplied with a non-NULL segment, this function checks if segment is horizontal or parallel to X axis
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    true/false (integer) -- 1 is horizontal 0 otherwise
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    select T_Segment(sdo_geometry('LINESTRING(0 0,10 0)',NULL)).<strong>ST_isHorizontal</strong>() as isHorizontal
+      from dual;
+
+    ISHORIZONTAL
+    ------------
+               1
+    
+    select T_Segment(sdo_geometry('LINESTRING(0 0,10 10)',NULL)).<strong>ST_isHorizontal</strong>() as isHorizontal
+      from dual;
+      
+    ISHORIZONTAL
+    ------------
+               0
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - July 2019 - Original coding
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo33"></a>
+<a name="T5fSEGMENT2fST5fisPointOnSegment"></a>
+<h2>2.32.  T_SEGMENT/ST_isPointOnSegment [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>ST_isPointOnSegment</strong> -- Checks if supplied point falls on the underlying segment.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    <strong>ST_isPointOnSegment</strong>(p_vertex in &amp;&amp;INSTALL_SCHEMA..T_Vertex,
+                        p_unit   in varchar2)
+     Return integer deterministic
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    This function checks if the supplied point falls on the underlying segment.
+    
+    Computes for LineString or CircularString.
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    Geodetic/geographic CircularArc segments treated as planar
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    p_vertex (t_vertex) - Point on to linestring or CircularString.
+    p_unit   (varchar2) - Unit of measure for SRID.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    booelan (integer) -- 1 if point on segment; 0 otherwise
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    select T_Segment(MDSYS.SDO_GEOMETRY(3302,8307,NULL,MDSYS.SDO_ELEM_INFO_ARRAY(1,2,1),MDSYS.SDO_ORDINATE_ARRAY(147.41,-43.132,100, 147.5,-43.387,30000)))
+             .<strong>ST_isPointOnSegment</strong> (
+                t_vertex(SDO_GEOMETRY(3301,8307,SDO_POINT_TYPE(147.44551945,-43.23290209,11930.116),NULL,NULL))
+           ) as is_on 
+      from dual union all
+    select T_Segment(MDSYS.SDO_GEOMETRY(3302,8307,NULL,MDSYS.SDO_ELEM_INFO_ARRAY(1,2,1),MDSYS.SDO_ORDINATE_ARRAY(147.41,-43.132,100, 147.5,-43.387,30000)))
+             .<strong>ST_isPointOnSegment</strong> (
+                t_vertex(SDO_GEOMETRY(3301,8307,SDO_POINT_TYPE(147.445,-43.232,11930.116),NULL,NULL))
+           ) as is_on 
+      from dual;
+
+          IS_ON
+    ----------
+             1
+             0
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - August 2019 - Original coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2019 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo34"></a>
 <a name="T5fSEGMENT2fST5fisReversed"></a>
-<h2>1.28.  T_SEGMENT/ST_isReversed [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.33.  T_SEGMENT/ST_isReversed [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_isReversed</strong> -- Returns 1 (true) if the underlying segment has its start/end coordinates reversed to supplied segment.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Member Function <strong>ST_isReversed</strong>(p_other IN SPDBA.<a href="#robo0">T_SEGMENT</a>)
+<pre>    Member Function <strong>ST_isReversed</strong>(p_other     IN &amp;&amp;INSTALL_SCHEMA..<a href="#robo1">T_SEGMENT</a>)
              Return Integer Deterministic,
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre>    Compares underlying <a href="#robo0">T_SEGMENT</a>'s start and end coordinates against those of the supplied segment parameter.
+<pre>    Compares underlying <a href="#robo1">T_SEGMENT</a>'s start and end coordinates against those of the supplied segment parameter.
     If self.start = p_other.end and self.end = p_other.start, the function returns 1 (True) otherwise 0 (False).
     If SDO_GTYPE is null, examines coordinates to see if W ordinate is not null.
 </pre>
@@ -1998,10 +2321,51 @@
 <p class="item_name">COPYRIGHT</p>
 <pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 </pre>
-<a name="robo31"></a>
+<a name="robo35"></a>
+<a name="T5fSEGMENT2fST5fisVertical"></a>
+<h2>2.34.  T_SEGMENT/ST_isVertical [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>ST_isVertical</strong> - Returns true if the segment is Vertical or parallel to Y axis.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Member Function <strong>ST_isVertical</strong>
+             Return integer Determinsitic
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Supplied with a non-NULL segment, this function checks if segment is vertical or parallel to Y axis
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    true/false (integer) -- 1 is Vertical 0 otherwise
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    select T_Segment(sdo_geometry('LINESTRING(0 0,0 10)',NULL)).<strong>ST_isVertical</strong>() as isVertical
+      from dual;
+
+    ISVERTICAL
+    ----------
+             1
+    
+    select T_Segment(sdo_geometry('LINESTRING(0 0,10 10)',NULL)).<strong>ST_isVertical</strong>() as isVertical
+      from dual;
+      
+    ISVERTICAL
+    ----------
+             0
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - July 2019 - Original coding
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo36"></a>
 <a name="T5fSEGMENT2fST5fLength"></a>
-<h2>1.29.  T_SEGMENT/ST_Length [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.35.  T_SEGMENT/ST_Length [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_Length</strong> -- Returns Length of the segment
 </pre>
@@ -2010,7 +2374,7 @@
              Return Number Deterministic
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre>    This function computes a length from the underlying <a href="#robo0">T_SEGMENT</a>.
+<pre>    This function computes a length from the underlying <a href="#robo1">T_SEGMENT</a>.
     Result is in the distance units of the SDO_SRID, or in p_units where supplied.
 </pre>
 <p class="item_name">ARGUMENTS</p>
@@ -2055,10 +2419,10 @@
 <p class="item_name">COPYRIGHT</p>
 <pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 </pre>
-<a name="robo32"></a>
+<a name="robo37"></a>
 <a name="T5fSEGMENT2fST5fLineSubstring"></a>
-<h2>1.30.  T_SEGMENT/ST_LineSubstring [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.36.  T_SEGMENT/ST_LineSubstring [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_LineSubstring</strong> -- Creates a new segment by cutting out the line defined by p_start_fraction and p_end_fraction.
 </pre>
@@ -2066,7 +2430,7 @@
 <pre>    Member Function <strong>ST_LineSubstring</strong>(p_start_fraction In Number   Default 0.0,
                                      p_end_fraction   In Number   Default 1.0,
                                      p_unit           In Varchar2 Default NULL)
-             Return SPDBA.T_Segment Deterministic
+             Return &amp;&amp;INSTALL_SCHEMA..T_Segment Deterministic
 </pre>
 <p class="item_name">DESCRIPTION</p>
 <pre>    Supplied with two ratio values between (0.0 -&gt; 1.0), this function uses those values to find the
@@ -2102,8 +2466,8 @@
                                p_end_fraction   =&gt; 0.75,
                                p_unit           =&gt; 'unit=M'
               )
-             .<a href="#robo45">ST_Round</a>(3)
-             .<a href="#robo46">ST_SdoGeometry</a>() as substring
+             .<a href="#robo57">ST_Round</a>(3)
+             .<a href="#robo59">ST_SdoGeometry</a>() as substring
       from data a;
 
     SUBSTRING
@@ -2121,8 +2485,8 @@
                                p_end_fraction   =&gt; 0.5,
                                p_unit           =&gt; 'unit=M'
               )
-             .<a href="#robo45">ST_Round</a>(3)
-             .<a href="#robo46">ST_SdoGeometry</a>() as substring
+             .<a href="#robo57">ST_Round</a>(3)
+             .<a href="#robo59">ST_SdoGeometry</a>() as substring
       from data a;
 
     SUBSTRING
@@ -2145,8 +2509,8 @@
                                p_end_fraction   =&gt; 0.9,
                                p_unit           =&gt; 'unit=M'
               )
-             .<a href="#robo45">ST_Round</a>(8)
-             .<a href="#robo46">ST_SdoGeometry</a>() as substring
+             .<a href="#robo57">ST_Round</a>(8)
+             .<a href="#robo59">ST_SdoGeometry</a>() as substring
       from data a;
 
     SUBSTRING
@@ -2167,8 +2531,8 @@
                                p_end_fraction   =&gt; 0.75,
                                p_unit           =&gt; 'unit=M'
               )
-             .<a href="#robo45">ST_Round</a>(3)
-             .<a href="#robo46">ST_SdoGeometry</a>() as substring
+             .<a href="#robo57">ST_Round</a>(3)
+             .<a href="#robo59">ST_SdoGeometry</a>() as substring
       from data a;
 
     SUBSTRING
@@ -2184,10 +2548,10 @@
 <p class="item_name">COPYRIGHT</p>
 <pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 </pre>
-<a name="robo33"></a>
+<a name="robo38"></a>
 <a name="T5fSEGMENT2fST5fLRS5fAdd5fMeasure"></a>
-<h2>1.31.  T_SEGMENT/ST_LRS_Add_Measure [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.37.  T_SEGMENT/ST_LRS_Add_Measure [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_LRS_Add_Measure</strong> -- Adds measures to 2D segment linestring/circularString
 </pre>
@@ -2195,7 +2559,7 @@
 <pre>    Member Function <strong>ST_LRS_Add_Measure</strong>(p_start_measure IN Number Default NULL,
                                        p_end_measure   IN Number Default NULL,
                                        p_unit          IN VarChar2 Default NULL)
-             Return SPDBA.T_Segment deterministic,
+             Return &amp;&amp;INSTALL_SCHEMA..T_Segment deterministic,
 </pre>
 <p class="item_name">DESCRIPTION</p>
 <pre>    Takes a 2D geometry and assigns supplied measures to the start/end vertices
@@ -2220,7 +2584,7 @@
                     576238.453,324521.56, 576251.509,321048.626, 575259.242,322615.364, 574306.144,321296.693)),
                     0.0005,3,1)
              .ST_LRS_ADD_Measure(110.0)
-             .<a href="#robo45">ST_Round</a>(3,3,1,2)
+             .<a href="#robo57">ST_Round</a>(3,3,1,2)
              .geom as mGeom
       from dual;
 
@@ -2243,15 +2607,15 @@
 <p class="item_name">COPYRIGHT</p>
 <pre>    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
 </pre>
-<a name="robo34"></a>
+<a name="robo39"></a>
 <a name="T5fSEGMENT2fST5fLRS5fCompute5fMeasure"></a>
-<h2>1.32.  T_SEGMENT/ST_LRS_Compute_Measure [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.38.  T_SEGMENT/ST_LRS_Compute_Measure [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
-<pre>    <strong>ST_LRS_Compute_Measure</strong> -- Computes measure for supplied p_vertex against underlying LRS measured <a href="#robo0">T_SEGMENT</a>.
+<pre>    <strong>ST_LRS_Compute_Measure</strong> -- Computes measure for supplied p_vertex against underlying LRS measured <a href="#robo1">T_SEGMENT</a>.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Member Function <strong>ST_LRS_Compute_Measure</strong>(p_vertex    In SPDBA.T_Vertex,
+<pre>    Member Function <strong>ST_LRS_Compute_Measure</strong>(p_vertex    In &amp;&amp;INSTALL_SCHEMA..T_Vertex,
                                            p_unit      IN varchar2 Default null)
              Return Number Deterministic
 </pre>
@@ -2298,10 +2662,10 @@
 <p class="item_name">COPYRIGHT</p>
 <pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 </pre>
-<a name="robo35"></a>
+<a name="robo40"></a>
 <a name="T5fSEGMENT2fST5fLRS5fDim"></a>
-<h2>1.33.  T_SEGMENT/ST_LRS_Dim [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.39.  T_SEGMENT/ST_LRS_Dim [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_LRS_Dim</strong> -- Tests segment to see if coordinates include a measure ordinate and returns measure ordinate's position.
 </pre>
@@ -2333,10 +2697,10 @@
 <p class="item_name">COPYRIGHT</p>
 <pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 </pre>
-<a name="robo36"></a>
+<a name="robo41"></a>
 <a name="T5fSEGMENT2fST5fLRS5fisMeasured"></a>
-<h2>1.34.  T_SEGMENT/ST_LRS_isMeasured [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.40.  T_SEGMENT/ST_LRS_isMeasured [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_LRS_isMeasured</strong> -- Tests to see if segment is measured.
 </pre>
@@ -2359,7 +2723,7 @@
             2 ST_LINESTRING         3          1
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre>    Examines SDO_GTYPE (<a href="#robo35">ST_LRS_Dim</a>) to see if sdo_gtype has measure ordinate eg 3302 not 3002.
+<pre>    Examines SDO_GTYPE (<a href="#robo40">ST_LRS_Dim</a>) to see if sdo_gtype has measure ordinate eg 3302 not 3002.
 </pre>
 <p class="item_name">RESULT</p>
 <pre>    BOOLEAN (Integer) -- 1 is measure ordinate exists, 0 otherwise.
@@ -2373,10 +2737,10 @@
 <p class="item_name">COPYRIGHT</p>
 <pre>    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
 </pre>
-<a name="robo37"></a>
+<a name="robo42"></a>
 <a name="T5fSEGMENT2fST5fLRS5fMeasure5fLength"></a>
-<h2>1.35.  T_SEGMENT/ST_LRS_Measure_Length [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.41.  T_SEGMENT/ST_LRS_Measure_Length [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_LRS_Measure_Length</strong> -- Returns difference between end measure and start measure of segment.
 </pre>
@@ -2420,15 +2784,126 @@
 <p class="item_name">COPYRIGHT</p>
 <pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 </pre>
-<a name="robo38"></a>
+<a name="robo43"></a>
+<a name="T5fSEGMENT2fST5fMaxX"></a>
+<h2>2.42.  T_SEGMENT/ST_MaxX [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>ST_MaxX</strong> - Returns the largest X ordinate value from the underlying segments minimum bounding rectangle (MBR).
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Member Function <strong>ST_MaxX</strong>
+             Return SDO_GEOMETRY Determinsitic
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Supplied with a non-NULL segment, this function returns the largest X ordinate value held by the startCoord,midCoord or endCoord vertices.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    ordinate (number) -- Largest x ordinate value
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    select T_Segment(sdo_geometry('LINESTRING(0 0,0.8 0.8)',NULL)).<strong>ST_MaxX</strong>() as maxX
+      from dual;
+
+    MAXX
+    ----
+     0.8
+</pre>
+<p class="item_name">SEE ALSO</p>
+<pre>    T_MBR object.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - July 2011 - Original coding
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo44"></a>
+<a name="T5fSEGMENT2fST5fMaxY"></a>
+<h2>2.43.  T_SEGMENT/ST_MaxY [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>ST_MaxY</strong> - Returns the largest Y ordinate value from the underlying segments minimum bounding rectangle (MBR).
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Member Function <strong>ST_MaxY</strong>
+             Return SDO_GEOMETRY Determinsitic
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Supplied with a non-NULL segment, this function returns the largest Y ordinate value held by the startCoord,midCoord or endCoord vertices.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    ordinate (number) -- Largest x ordinate value
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    select T_Segment(sdo_geometry('LINESTRING(0 0,0.8 0.8)',NULL)).<strong>ST_MaxY</strong>() as maxX
+      from dual;
+
+    MAXX
+    ----
+     0.8
+</pre>
+<p class="item_name">SEE ALSO</p>
+<pre>    T_MBR object.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - July 2011 - Original coding
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo45"></a>
+<a name="T5fSEGMENT2fST5fMBR"></a>
+<h2>2.44.  T_SEGMENT/ST_MBR [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>ST_MBR</strong> - Returns optimized rectangle sdo_geometry representnig the underlying segment's minimum bounding rectangle (MBR).
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Member Function <strong>ST_MBR</strong>
+             Return SDO_GEOMETRY Determinsitic
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    select T_Segment(sdo_geometry('LINESTRING(0 0,0.8 0.8)',NULL)).<strong>ST_MBR</strong>() as mbrGeom
+      from dual;
+
+    MBRGEOM
+    --------------------------------------------------------------------------------------
+    SDO_GEOMETRY(2003,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,1003,3),SDO_ORDINATE_ARRAY(0,0,0.8,0.8))
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Supplied with a non-NULL segment, this function returns the envelope or minimum bounding rectangle as a polygon geometry with one optimized rectangle exterior ring.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    MBR Geometry (sdo_geometry) -- Single Polygon with Optimized Rectangle Exterior Ring.
+</pre>
+<p class="item_name">SEE ALSO</p>
+<pre>    T_MBR object.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - July 2011 - Converted to T_GEOMETRY from GEOM package.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo46"></a>
 <a name="T5fSEGMENT2fST5fMerge"></a>
-<h2>1.36.  T_SEGMENT/ST_Merge [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.45.  T_SEGMENT/ST_Merge [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_Merge</strong> -- Merge two straight line segments - does not support circular arc segments
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Member Function <strong>ST_Merge</strong>(p_segment in SPDBA.<a href="#robo0">T_SEGMENT</a>)
+<pre>    Member Function <strong>ST_Merge</strong>(p_segment in &amp;&amp;INSTALL_SCHEMA..<a href="#robo1">T_SEGMENT</a>)
              Return t_segment Deterministic
 </pre>
 <p class="item_name">DESCRIPTION</p>
@@ -2479,12 +2954,12 @@
       from dual
     )
     select 2 as dims,
-           T_Segment( a.first_line,  1 ).<a href="#robo50">ST_To2D</a>()
-           .<strong>ST_Merge</strong>( T_Segment( a.second_line, 2 ).<a href="#robo50">ST_To2D</a>() ).<a href="#robo8">ST_AsText</a>() as mergedSegment
+           T_Segment( a.first_line,  1 ).<a href="#robo65">ST_To2D</a>()
+           .<strong>ST_Merge</strong>( T_Segment( a.second_line, 2 ).<a href="#robo65">ST_To2D</a>() ).<a href="#robo7">ST_AsText</a>() as mergedSegment
       from data a
      union all
     select 3 as dims,
-           T_Segment( a.first_line, 1 ).<strong>ST_Merge</strong>( T_Segment( a.second_line, 2 ) ).<a href="#robo8">ST_AsText</a>() as mergedSegment
+           T_Segment( a.first_line, 1 ).<strong>ST_Merge</strong>( T_Segment( a.second_line, 2 ) ).<a href="#robo7">ST_AsText</a>() as mergedSegment
       from data a;
 
     DIMS MERGEDSEGMENT
@@ -2499,12 +2974,12 @@
       from dual
     )
     select 2 as dims,
-                      T_Segment( a.first_line, 1 ).<a href="#robo50">ST_To2D</a>()
-           .<strong>ST_Merge</strong>( T_Segment( a.second_line, 2 ).<a href="#robo50">ST_To2D</a>() ).<a href="#robo8">ST_AsText</a>() as mergedSegment
+                      T_Segment( a.first_line, 1 ).<a href="#robo65">ST_To2D</a>()
+           .<strong>ST_Merge</strong>( T_Segment( a.second_line, 2 ).<a href="#robo65">ST_To2D</a>() ).<a href="#robo7">ST_AsText</a>() as mergedSegment
       from data a
      union all
     select 3 as dims,
-           T_Segment( a.first_line ).<strong>ST_Merge</strong>( T_Segment( a.second_line, 2 ) ).<a href="#robo8">ST_AsText</a>() as mergedSegment
+           T_Segment( a.first_line ).<strong>ST_Merge</strong>( T_Segment( a.second_line, 2 ) ).<a href="#robo7">ST_AsText</a>() as mergedSegment
       from data a;
 
     DIMS MERGEDSEGMENT
@@ -2519,12 +2994,12 @@
       from dual
     )
     select 2 as dims,
-                      T_Segment( a.first_line,  1 ).<a href="#robo50">ST_To2D</a>()
-           .<strong>ST_Merge</strong>( T_Segment( a.second_line, 2 ).<a href="#robo50">ST_To2D</a>() ).<a href="#robo8">ST_AsText</a>() as mergedSegment
+                      T_Segment( a.first_line,  1 ).<a href="#robo65">ST_To2D</a>()
+           .<strong>ST_Merge</strong>( T_Segment( a.second_line, 2 ).<a href="#robo65">ST_To2D</a>() ).<a href="#robo7">ST_AsText</a>() as mergedSegment
       from data a
      union all
     select 3 as dims,
-           T_Segment( a.first_line, 1 ).<strong>ST_Merge</strong>( T_Segment( a.second_line, 2 ) ).<a href="#robo8">ST_AsText</a>() as mergedSegment
+           T_Segment( a.first_line, 1 ).<strong>ST_Merge</strong>( T_Segment( a.second_line, 2 ) ).<a href="#robo7">ST_AsText</a>() as mergedSegment
       from data a;
 
     DIMS MERGEDSEGMENT
@@ -2539,12 +3014,12 @@
       from dual
     )
     select 2 as dims,
-                      T_Segment( a.first_line, 1 ).<a href="#robo50">ST_To2D</a>()
-           .<strong>ST_Merge</strong>( T_Segment( a.second_line, 2 ).<a href="#robo50">ST_To2D</a>() ).<a href="#robo8">ST_AsText</a>() as mergedSegment
+                      T_Segment( a.first_line, 1 ).<a href="#robo65">ST_To2D</a>()
+           .<strong>ST_Merge</strong>( T_Segment( a.second_line, 2 ).<a href="#robo65">ST_To2D</a>() ).<a href="#robo7">ST_AsText</a>() as mergedSegment
       from data a
      union all
     select 3 as dims,
-           T_Segment( a.first_line, 1 ).<strong>ST_Merge</strong>( T_Segment( a.second_line, 2 ) ).<a href="#robo8">ST_AsText</a>() as mergedSegment
+           T_Segment( a.first_line, 1 ).<strong>ST_Merge</strong>( T_Segment( a.second_line, 2 ) ).<a href="#robo7">ST_AsText</a>() as mergedSegment
       from data a;
 
     DIMS MERGEDSEGMENT
@@ -2559,12 +3034,12 @@
       from dual
     )
     select 2 as dims,
-                      T_Segment( a.first_line,  1 ).<a href="#robo50">ST_To2D</a>()
-           .<strong>ST_Merge</strong>( T_Segment( a.second_line, 2 ).<a href="#robo50">ST_To2D</a>() ).<a href="#robo8">ST_AsText</a>() as mergedSegment
+                      T_Segment( a.first_line,  1 ).<a href="#robo65">ST_To2D</a>()
+           .<strong>ST_Merge</strong>( T_Segment( a.second_line, 2 ).<a href="#robo65">ST_To2D</a>() ).<a href="#robo7">ST_AsText</a>() as mergedSegment
       from data a
      union all
     select 3 as dims,
-           T_Segment( a.first_line, 1 ).<strong>ST_Merge</strong>( T_Segment( a.second_line, 2 ) ).<a href="#robo8">ST_AsText</a>() as mergedSegment
+           T_Segment( a.first_line, 1 ).<strong>ST_Merge</strong>( T_Segment( a.second_line, 2 ) ).<a href="#robo7">ST_AsText</a>() as mergedSegment
       from data a;
 
     DIMS MERGEDSEGMENT
@@ -2579,12 +3054,12 @@
       from dual
     )
     select 2 as dims,
-                      T_Segment( a.first_line,  1 ).<a href="#robo50">ST_To2D</a>()
-           .<strong>ST_Merge</strong>( T_Segment( a.second_line, 2 ).<a href="#robo50">ST_To2D</a>() ).<a href="#robo8">ST_AsText</a>() as mergedSegment
+                      T_Segment( a.first_line,  1 ).<a href="#robo65">ST_To2D</a>()
+           .<strong>ST_Merge</strong>( T_Segment( a.second_line, 2 ).<a href="#robo65">ST_To2D</a>() ).<a href="#robo7">ST_AsText</a>() as mergedSegment
       from data a
      union all
     select 3 as dims,
-           T_Segment( a.first_line, 1 ).<strong>ST_Merge</strong>( T_Segment( a.second_line, 2 ) ).<a href="#robo8">ST_AsText</a>() as mergedSegment
+           T_Segment( a.first_line, 1 ).<strong>ST_Merge</strong>( T_Segment( a.second_line, 2 ) ).<a href="#robo7">ST_AsText</a>() as mergedSegment
       from data a;
 
     DIMS MERGEDSEGMENT
@@ -2602,10 +3077,132 @@
 <p class="item_name">COPYRIGHT</p>
 <pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 </pre>
-<a name="robo39"></a>
+<a name="robo47"></a>
+<a name="T5fSEGMENT2fST5fMidPoint"></a>
+<h2>2.46.  T_SEGMENT/ST_MidPoint [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>ST_MidPoint</strong> - Computes, and returns, the midpoint of the segment
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Member Function <strong>ST_MidPoint</strong>
+             Return t_vertex Determinsitic
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Supplied with a non-NULL segment, this function computes and returns its mid Point.
+    If CircularArc, mid point is point at mid length distance from start.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    point (t_vertex) -- The midpoint of the segment
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    select &amp;&amp;INSTALL_SCHEMA..T_Segment(mdsys.sdo_geometry(2002,null,null,sdo_elem_info_array(1,2,1),sdo_ordinate_array(0,0,1,1)))
+                .ST_midPoint() 
+                .<a href="#robo59">ST_SdoGeometry</a>() as mPoint
+      from dual;
+               
+    
+    MPOINT
+    --------------------------------------------------------------------
+    SDO_GEOMETRY(2001, NULL, SDO_POINT_TYPE(0.5, 0.5, NULL), NULL, NULL)
+    
+    
+    select &amp;&amp;INSTALL_SCHEMA..T_Segment(mdsys.sdo_geometry(2002,null,null,sdo_elem_info_array(1,2,2),sdo_ordinate_array(0,0,10,10,20,0)))
+                .ST_midPoint()
+                .<a href="#robo59">ST_SdoGeometry</a>() as mPoint
+      from dual;
+    
+    MPOINT
+    ------------------------------------------------------------------
+    SDO_GEOMETRY(2001, NULL, SDO_POINT_TYPE(10, 10, NULL), NULL, NULL)
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - July 2019 - Original coding
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo48"></a>
+<a name="T5fSEGMENT2fST5fMinX"></a>
+<h2>2.47.  T_SEGMENT/ST_MinX [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>ST_MinX</strong> - Returns the smallest X ordinate value from the underlying segments minimum bounding rectangle (MBR).
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Member Function <strong>ST_MinX</strong>
+             Return SDO_GEOMETRY Determinsitic
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Supplied with a non-NULL segment, this function returns the smallest X ordinate value held by the startCoord,midCoord or endCoord vertices.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    ordinate (number) -- Smallest
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    select T_Segment(sdo_geometry('LINESTRING(0 0,0.8 0.8)',NULL)).<strong>ST_MinX</strong>() as minX
+      from dual;
+
+    MINX
+    ----
+       0
+</pre>
+<p class="item_name">SEE ALSO</p>
+<pre>    T_MBR object.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - July 2011 - Original coding
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo49"></a>
+<a name="T5fSEGMENT2fST5fMinY"></a>
+<h2>2.48.  T_SEGMENT/ST_MinY [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>ST_MinY</strong> - Returns the smallest Y ordinate value from the underlying segments minimum bounding rectangle (MBR).
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Member Function <strong>ST_MinY</strong>
+             Return SDO_GEOMETRY Determinsitic
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Supplied with a non-NULL segment, this function returns the smallest Y ordinate value held by the startCoord,midCoord or endCoord vertices.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    ordinate (number) -- Smallest
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    select T_Segment(sdo_geometry('LINESTRING(0 0,0.8 0.8)',NULL)).<strong>ST_MinY</strong>() as minX
+      from dual;
+
+    MINY
+    ----
+       0
+</pre>
+<p class="item_name">SEE ALSO</p>
+<pre>    T_MBR object.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - July 2011 - Original coding
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo50"></a>
 <a name="T5fSEGMENT2fST5fOffsetBetween"></a>
-<h2>1.37.  T_SEGMENT/ST_OffsetBetween [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.49.  T_SEGMENT/ST_OffsetBetween [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_OffsetBetween</strong> - Computes offset point on the bisector between two vertices.
 </pre>
@@ -2613,7 +3210,7 @@
 <pre>    Member Function <strong>ST_OffsetBetween</strong>(p_segment   in number,
                                      p_offset    in number,
                                      p_unit      In Integer Default NULL)
-             Return SPDBA.T_Vertex Deterministic
+             Return &amp;&amp;INSTALL_SCHEMA..T_Vertex Deterministic
 </pre>
 <p class="item_name">DESCRIPTION</p>
 <pre>    Supplied with a second segment (p_segment), this function computes the bisector
@@ -2666,8 +3263,8 @@
                  p_segment =&gt; T_Segment(a.nGeom),
                  p_offset       =&gt; t.IntValue,
                  p_unit         =&gt; 'unit=M')
-           .<a href="#robo45">ST_Round</a>(3)
-           .<a href="#robo46">ST_SdoGeometry</a>() as OffsetBetween
+           .<a href="#robo57">ST_Round</a>(3)
+           .<a href="#robo59">ST_SdoGeometry</a>() as OffsetBetween
       from data a,
           table(tools.generate_series(-5,5,5)) t;
 
@@ -2708,8 +3305,8 @@
                  p_segment =&gt; T_Segment(a.nGeom),
                  p_offset       =&gt; t.IntValue,
                  p_unit         =&gt; 'unit=M') -- if 3D geodetic, compute as planar otherwise Oracle error
-           .<a href="#robo45">ST_Round</a>(8)
-           .<a href="#robo46">ST_SdoGeometry</a>() as OffsetBetween
+           .<a href="#robo57">ST_Round</a>(8)
+           .<a href="#robo59">ST_SdoGeometry</a>() as OffsetBetween
       from data a,
           table(tools.generate_series(-5,5,5)) t;
 
@@ -2730,10 +3327,10 @@
 <p class="item_name">COPYRIGHT</p>
 <pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 </pre>
-<a name="robo40"></a>
+<a name="robo51"></a>
 <a name="T5fSEGMENT2fST5fOffsetPoint"></a>
-<h2>1.38.  T_SEGMENT/ST_OffsetPoint [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.50.  T_SEGMENT/ST_OffsetPoint [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_OffsetPoint</strong> -- Creates a point described by a ratio along the
                       segment and with a perpendicular offset.
@@ -2742,7 +3339,7 @@
 <pre>    Member Function <strong>ST_OffsetPoint</strong>(p_ratio     in Number,
                                    p_offset    in Number,
                                    p_unit      In Integer Default NULL)
-             Return SPDBA.T_Vertex Deterministic
+             Return &amp;&amp;INSTALL_SCHEMA..T_Vertex Deterministic
 </pre>
 <p class="item_name">DESCRIPTION</p>
 <pre>    Supplied with a ratio value (0.0 -&gt; 1.0), this function uses that value to find the
@@ -2779,8 +3376,8 @@
              .<strong>ST_OffsetPoint</strong>(p_ratio     =&gt; 0.25,
                              p_offset    =&gt; t.IntValue,
                              p_unit      =&gt; 'unit=M')
-           .<a href="#robo45">ST_Round</a>(8)
-           .<a href="#robo46">ST_SdoGeometry</a>() as offsetPoint
+           .<a href="#robo57">ST_Round</a>(8)
+           .<a href="#robo59">ST_SdoGeometry</a>() as offsetPoint
       from data a,
           table(tools.generate_series(-5,5,5)) t;
 
@@ -2804,8 +3401,8 @@
              .<strong>ST_OffsetPoint</strong>(p_ratio     =&gt; 0.25,
                              p_offset    =&gt; t.IntValue,
                              p_unit      =&gt; 'unit=M')
-           .<a href="#robo45">ST_Round</a>(3)
-           .<a href="#robo46">ST_SdoGeometry</a>() as offsetPoint
+           .<a href="#robo57">ST_Round</a>(3)
+           .<a href="#robo59">ST_SdoGeometry</a>() as offsetPoint
       from data a,
           table(tools.generate_series(-5,5,5)) t;
 
@@ -2824,16 +3421,16 @@
 <p class="item_name">COPYRIGHT</p>
 <pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 </pre>
-<a name="robo41"></a>
+<a name="robo52"></a>
 <a name="T5fSEGMENT2fST5fParallel"></a>
-<h2>1.39.  T_SEGMENT/ST_Parallel [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.51.  T_SEGMENT/ST_Parallel [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_Parallel</strong> -- Moves segment parallel the provided p_offset distance.
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre>    Member Function <strong>ST_Parallel</strong>(p_offset in Number)
-             Return SPDBA.<a href="#robo0">T_SEGMENT</a> Deterministic,
+             Return &amp;&amp;INSTALL_SCHEMA..<a href="#robo1">T_SEGMENT</a> Deterministic,
 </pre>
 <p class="item_name">DESCRIPTION</p>
 <pre>    Computes parallel offset, left or right of underlying geometry.
@@ -2843,7 +3440,7 @@
 <pre>    p_offset     (Number) -- Value +/- numeric value.
 </pre>
 <p class="item_name">RESULT</p>
-<pre>    New segment (<a href="#robo0">T_SEGMENT</a>) -- Input segment moved parallel by p_offset units
+<pre>    New segment (<a href="#robo1">T_SEGMENT</a>) -- Input segment moved parallel by p_offset units
 </pre>
 <p class="item_name">TODO</p>
 <pre>    Check Circular Arc Calculations
@@ -2865,8 +3462,8 @@
     select a.test,
            T_Segment(a.geom)
              .<strong>ST_Parallel</strong>(p_offset=&gt;a.offset)
-             .<a href="#robo45">ST_Round</a>(3,3,2,1)
-             .<a href="#robo46">ST_SdoGeometry</a>() as pGeom
+             .<a href="#robo57">ST_Round</a>(3,3,2,1)
+             .<a href="#robo59">ST_SdoGeometry</a>() as pGeom
       from data a;
 
     TEST                  PGEOM
@@ -2880,22 +3477,127 @@
 <p class="item_name">HISTORY</p>
 <pre>    Simon Greener - December 2008 - Original coding in GEOM package.
     Simon Greener - January 2013  - Port/Rewrite to T_GEOMETRY object function member.
-    Simon Greener - January 2014  - Port/Rewrite to <a href="#robo0">T_SEGMENT</a> object function member.
+    Simon Greener - January 2014  - Port/Rewrite to <a href="#robo1">T_SEGMENT</a> object function member.
 </pre>
 <p class="item_name">COPYRIGHT</p>
 <pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 </pre>
-<a name="robo42"></a>
+<a name="robo53"></a>
+<a name="T5fSEGMENT2fST5fPointAlong"></a>
+<h2>2.52.  T_SEGMENT/ST_PointAlong [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>ST_PointAlong</strong> -- Computes the vertex that lies a given fraction along the line defined by this segment.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Member Function ST_pointAlong(segmentLengthFraction in Number)
+             Return &amp;&amp;INSTALL_SCHEMA..T_Vertex deterministic
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    A fraction of &lt;code&gt;0.0&lt;/code&gt; returns the start point of the segment;
+    a fraction of &lt;code&gt;1.0&lt;/code&gt; returns the end point of the segment.
+    If the fraction is null; 0.0 or null; 1.0 the point returned
+    will lie before the start or beyond the end of the segment. 
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    p_segmentLengthFraction (number) -- The fraction of the segment length along the line
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    Returns the vertex at that distance along the segment
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    select &amp;&amp;INSTALL_SCHEMA..T_Segment(mdsys.sdo_geometry(2002,null,null,sdo_elem_info_array(1,2,1),sdo_ordinate_array(0,0,1,1)))
+                .<strong>ST_PointAlong</strong>(p_segmentLengthFraction=&gt;0.5)
+                .<a href="#robo59">ST_SdoGeometry</a>() as mPoint
+      from dual;
+               
+    MPOINT
+    --------------------------------------------------------------------
+    SDO_GEOMETRY(2001, NULL, SDO_POINT_TYPE(0.5, 0.5, NULL), NULL, NULL)
+    
+    select &amp;&amp;INSTALL_SCHEMA..T_Segment(mdsys.sdo_geometry(2002,null,null,sdo_elem_info_array(1,2,1),sdo_ordinate_array(0,0,1,1)))
+                .<strong>ST_PointAlong</strong>(p_segmentLengthFraction=&gt;0.9)
+                .<a href="#robo59">ST_SdoGeometry</a>() as mPoint
+      from dual;
+               
+    MPOINT
+    --------------------------------------------------------------------
+    SDO_GEOMETRY(2001, NULL, SDO_POINT_TYPE(0.9, 0.9, NULL), NULL, NULL)
+    
+    select &amp;&amp;INSTALL_SCHEMA..T_Segment(mdsys.sdo_geometry(2002,null,null,sdo_elem_info_array(1,2,2),sdo_ordinate_array(0,0,10,10,20,0)))
+                .<strong>ST_PointAlong</strong>(p_segmentLengthFraction=&gt;0.5)
+                .<a href="#robo59">ST_SdoGeometry</a>() as mPoint
+      from dual;
+    
+    MPOINT
+    ------------------------------------------------------------------
+    SDO_GEOMETRY(2001, NULL, SDO_POINT_TYPE(10, 10, NULL), NULL, NULL)
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    From JTS LineSegment.java
+    2D only; no circular arcs.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - January 2013 - Original coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo54"></a>
+<a name="T5fSEGMENT2fST5fPointAlongOffset"></a>
+<h2>2.53.  T_SEGMENT/ST_PointAlongOffset [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>ST_PointAlongOffset</strong> -- Computes the vertex that lies a given fraction along the line defined by this segment and offset from the segment by a given distance.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Member Function ST_pointAlongOffset(
+                       p_segmentLengthFraction in Number, 
+                       p_offsetDistance in Number
+                    )
+             Return &amp;&amp;INSTALL_SCHEMA..T_Vertex deterministic
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    A fraction of 0.0 offsets from the start point of the segment;
+    a fraction of 1.0 offsets from the end point of the segment.
+    The computed point is offset to the left of the line if the offset distance is
+    positive, to the right if negative.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    p_segmentLengthFraction (number) -- The fraction of the segment length along the line
+    p_offsetDistance        (number) -- The distance the point is offset from the segment (positive is to the left, negative is to the right)
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    Returns the vertex at that distance and offset along the segment
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    From JTS LineSegment.java
+    2D only; no circular arcs.
+    Throws Exception if the segment has zero length
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - January 2013 - Original coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo55"></a>
 <a name="T5fSEGMENT2fST5fProjectPoint"></a>
-<h2>1.40.  T_SEGMENT/ST_ProjectPoint [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.54.  T_SEGMENT/ST_ProjectPoint [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_ProjectPoint</strong> -- Return a measured point by snapping provided point to the underlying LineString or circularString
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    <strong>ST_ProjectPoint</strong>(p_vertex in SPDBA.T_Vertex,
+<pre>    <strong>ST_ProjectPoint</strong>(p_vertex in &amp;&amp;INSTALL_SCHEMA..T_Vertex,
                     p_unit   in varchar2)
-     Return SPDBA.T_Vertex deterministic
+     Return &amp;&amp;INSTALL_SCHEMA..T_Vertex deterministic
 </pre>
 <p class="item_name">DESCRIPTION</p>
 <pre>    This function snaps supplied point to underlying LineString or CircularString, returning the snapped point.
@@ -2919,7 +3621,7 @@
              .<strong>ST_ProjectPoint</strong> (
                 t_vertex(SDO_GEOMETRY('POINT(0 0)',NULL)),
                 null
-           ).<a href="#robo45">ST_Round</a>(3,3,3,3).ST_AsEWKT() as project_point
+           ).<a href="#robo57">ST_Round</a>(3,3,3,3).ST_AsEWKT() as project_point
     from dual union all
     select 'Point does not have relationship with XYM LineString' as test,
            t_segment(SDO_GEOMETRY(3302,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,2,2),SDO_ORDINATE_ARRAY(3,6.325,0, 0,7,3.08, -3,6.325,6.15)))
@@ -2932,37 +3634,36 @@
              .<strong>ST_ProjectPoint</strong> (
               t_vertex(SDO_GEOMETRY('POINT(0 3.5)',NULL)),
               null
-           ).<a href="#robo45">ST_Round</a>(3,3,3,3).ST_AsEWKT() as project_point
+           ).<a href="#robo57">ST_Round</a>(3,3,3,3).ST_AsEWKT() as project_point
       from dual union all
     select 'Point has relationship with XYM LineString' as test,
            t_segment(SDO_GEOMETRY(3302,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,2,2),SDO_ORDINATE_ARRAY(3,6.325,0, 0,7,3.08, -3,6.325,6.15)))
              .<strong>ST_ProjectPoint</strong> (
                 t_vertex(SDO_GEOMETRY('POINT(2 8)',NULL))
-           ).<a href="#robo45">ST_Round</a>(3,3,3,3).ST_AsEWKT() as project_point
+           ).<a href="#robo57">ST_Round</a>(3,3,3,3).ST_AsEWKT() as project_point
     from dual union all
     select 'Point has relationship with XYZM circular arc' as test,
            t_segment(SDO_GEOMETRY(4402,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,2,2),SDO_ORDINATE_ARRAY(3,6.325,-2.1,0, 0,7,-2.1,3.08, -3,6.325,-2.1,6.15)))
              .<strong>ST_ProjectPoint</strong> (
                 t_vertex(SDO_GEOMETRY('POINT(2 8)',NULL)),
                 null
-           ).<a href="#robo45">ST_Round</a>(3).ST_AsEWKT() as project_point
+           ).<a href="#robo57">ST_Round</a>(3).ST_AsEWKT() as project_point
     from dual union all
     select 'Geodetic Point has relationship with XYZM Geodetic LineString' as test,
            T_Segment(MDSYS.SDO_GEOMETRY(3302,4326,NULL,MDSYS.SDO_ELEM_INFO_ARRAY(1,2,1),MDSYS.SDO_ORDINATE_ARRAY(147.5,-43.132,100,147.41,-43.387,30000)))
              .<strong>ST_ProjectPoint</strong> (
-                t_vertex(SDO_GEOMETRY('POINT(147.5912 -43.134)',8307))
-           ).<a href="#robo45">ST_Round</a>(3).ST_AsEWKT() as project_point
-    
+                 t_vertex(SDO_GEOMETRY(2001,8307,SDO_POINT_TYPE(147.509,-43.221,NULL),NULL,NULL))
+           ).<a href="#robo57">ST_Round</a>(3).ST_AsEWKT() as project_point
     from dual ;
     
     TEST                                                                                  PROJECT_POINT
-    ------------------------------------------------------------------------------------- -----------------------------
+    ------------------------------------------------------------------------------------- ---------------------------------
     Point is on centre of the XYZ circular arc (returns start point)                      POINTZ (3 6.325 -1)
     Point does not have relationship with XYM CircularSring                               NULL
     Point projects on to point half way along XY circular arc (returns measure as length) POINTM (0 7 3.1)
     Point has relationship with XYM CircularSring                                         POINTM (1.698 6.791 1.374)
     Point has relationship with XYZM circular arc                                         POINTZM (1.698 6.791 -2.1 1.374)
-    Geodetic Point has relationship with XYZM Geodetic LineString                         SRID=8307;POINT (147.591 -43.134)
+    Geodetic Point has relationship with XYZM Geodetic LineString                         SRID=8307;POINTM (147.44551945 -43.23290209 11930.116)
 </pre>
 <p class="item_name">AUTHOR</p>
 <pre>    Simon Greener
@@ -2973,29 +3674,29 @@
 <p class="item_name">COPYRIGHT</p>
 <pre>    (c) 2008-2019 by TheSpatialDBAdvisor/Simon Greener
 </pre>
-<a name="robo43"></a>
+<a name="robo56"></a>
 <a name="T5fSEGMENT2fST5fReverse"></a>
-<h2>1.41.  T_SEGMENT/ST_Reverse [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.55.  T_SEGMENT/ST_Reverse [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_Reverse</strong> -- Reverses underlying segment's start and end coordinates.
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre>    Member Function <strong>ST_Reverse</strong>
-             Return SPDBA.<a href="#robo0">T_SEGMENT</a> Deterministic,
+             Return &amp;&amp;INSTALL_SCHEMA..<a href="#robo1">T_SEGMENT</a> Deterministic,
 </pre>
 <p class="item_name">DESCRIPTION</p>
 <pre>    Constructs new segment by swapping start and end coordinates of underlying segment.
     If underlying segment has a middle coordinate it is left in place.
 </pre>
 <p class="item_name">RESULT</p>
-<pre>    segment (<a href="#robo0">T_SEGMENT</a>) -- segment that has reverse direction to the original segment.
+<pre>    segment (<a href="#robo1">T_SEGMENT</a>) -- segment that has reverse direction to the original segment.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre>    select T_Segment(
              sdo_geometry(2002,NULL,NULL,sdo_elem_info_array(1,2,1),sdo_ordinate_array(0,0,10,10))
            ).<strong>ST_Reverse</strong>()
-            .<a href="#robo46">ST_SdoGeometry</a>() as rSegment
+            .<a href="#robo59">ST_SdoGeometry</a>() as rSegment
       from dual;
 
     RSEGMENT
@@ -3011,16 +3712,16 @@
 <p class="item_name">COPYRIGHT</p>
 <pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 </pre>
-<a name="robo44"></a>
+<a name="robo57"></a>
 <a name="T5fSEGMENT2fST5fRound"></a>
-<h2>1.42.  T_SEGMENT/ST_Round [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.56.  T_SEGMENT/ST_Round [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_Round</strong> -- Rounds X,Y,Z and m(w) ordinates of segment's coordinates usoing object's PrecisionModel.
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre>    Member Function <strong>ST_Round</strong>
-             Return SPDBA.<a href="#robo0">T_SEGMENT</a> Deterministic,
+             Return &amp;&amp;INSTALL_SCHEMA..<a href="#robo1">T_SEGMENT</a> Deterministic,
 </pre>
 <p class="item_name">DESCRIPTION</p>
 <pre>    Applies internal object's precisionModel decimal digits of precision value to ordinates of object.
@@ -3028,7 +3729,7 @@
     If an internal PrecisionModel element is null the default values for the called <strong>ST_Round</strong> are applied.
 </pre>
 <p class="item_name">RESULT</p>
-<pre>    segment (<a href="#robo0">T_SEGMENT</a>) -- T_Segment with rounded ordinates using SELF.PrecisionModel values.
+<pre>    segment (<a href="#robo1">T_SEGMENT</a>) -- T_Segment with rounded ordinates using SELF.PrecisionModel values.
 </pre>
 <p class="item_name">NOTES</p>
 <pre>    Is wrapper over <strong>ST_Round</strong>( y, y, z, m );
@@ -3045,7 +3746,7 @@
         from dual
     )
     select T_Segment(a.geom)
-             .<strong>ST_Round</strong>().<a href="#robo46">ST_SdoGeometry</a>() as rGeom
+             .<strong>ST_Round</strong>().<a href="#robo59">ST_SdoGeometry</a>() as rGeom
      from data a;
 
     RGEOM
@@ -3063,19 +3764,19 @@
 <p class="item_name">COPYRIGHT</p>
 <pre>    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
 </pre>
-<a name="robo45"></a>
-<a name="T5fSEGMENT2fST5fRound"></a>
-<h2>1.43.  T_SEGMENT/ST_Round [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<a name="robo58"></a>
+<a name="T5fSEGMENT2fST5fRound28x20y20z20m29"></a>
+<h2>2.57.  T_SEGMENT/ST_Round(x y z m) [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
-<pre>    <strong>ST_Round</strong> -- Rounds X,Y,Z and m(w) ordinates of segment's coordinates to passed in precision.
+<pre>    <a href="#robo57">ST_Round</a> -- Rounds X,Y,Z and m(w) ordinates of segment's coordinates to passed in precision.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Member Function <strong>ST_Round</strong>(p_dec_places_x in integer,
+<pre>    Member Function <a href="#robo57">ST_Round</a>(p_dec_places_x in integer,
                              p_dec_places_y in integer default NULL,
                              p_dec_places_z in integer default 3,
                              p_dec_places_m in integer default 3)
-             Return SPDBA.<a href="#robo0">T_SEGMENT</a> Deterministic,
+             Return &amp;&amp;INSTALL_SCHEMA..<a href="#robo1">T_SEGMENT</a> Deterministic,
 </pre>
 <p class="item_name">DESCRIPTION</p>
 <pre>    Applies relevant decimal digits of precision value to ordinate.
@@ -3089,7 +3790,7 @@
     p_dec_places_m (integer) - value applied to m Ordinate.
 </pre>
 <p class="item_name">RESULT</p>
-<pre>    segment (<a href="#robo0">T_SEGMENT</a>)
+<pre>    segment (<a href="#robo1">T_SEGMENT</a>)
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre>    with data as (
@@ -3103,11 +3804,11 @@
         from dual
     )
     select T_Segment(a.geom)
-             .<strong>ST_Round</strong>(p_dec_places_x=&gt;3,
+             .<a href="#robo57">ST_Round</a>(p_dec_places_x=&gt;3,
                        p_dec_places_y=&gt;3,
                        p_dec_places_z=&gt;1,
                        p_dec_places_m=&gt;2
-              ).<a href="#robo46">ST_SdoGeometry</a>() as rGeom
+              ).<a href="#robo59">ST_SdoGeometry</a>() as rGeom
      from data a;
 
     RGEOM
@@ -3125,10 +3826,10 @@
 <p class="item_name">COPYRIGHT</p>
 <pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 </pre>
-<a name="robo46"></a>
+<a name="robo59"></a>
 <a name="T5fSEGMENT2fST5fSdoGeometry"></a>
-<h2>1.44.  T_SEGMENT/ST_SdoGeometry [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.58.  T_SEGMENT/ST_SdoGeometry [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_SdoGeometry</strong> -- Returns segment as a suitably encoded MDSYS.SDO_GEOMETRY object.
 </pre>
@@ -3185,10 +3886,10 @@
 <p class="item_name">COPYRIGHT</p>
 <pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 </pre>
-<a name="robo47"></a>
+<a name="robo60"></a>
 <a name="T5fSEGMENT2fST5fSelf"></a>
-<h2>1.45.  T_SEGMENT/ST_Self [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.59.  T_SEGMENT/ST_Self [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_Self</strong> -- Handy method for use with TABLE(T_Segments) to return element as T_Segment object.
 </pre>
@@ -3202,7 +3903,7 @@
     In a sense this method allows access similar to t.COLUMN_VALUE for atmoic datatype access from TABLE functions.
 </pre>
 <p class="item_name">RESULT</p>
-<pre>    segment (<a href="#robo0">T_SEGMENT</a>) -- A single T_Segment object.
+<pre>    segment (<a href="#robo1">T_SEGMENT</a>) -- A single T_Segment object.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre>    set serveroutput on
@@ -3215,7 +3916,7 @@
                                .ST_Segmentize('ALL')) seg
                   )
       LOOP
-        dbms_output.put_line(rec.line.<a href="#robo8">ST_AsText</a>());
+        dbms_output.put_line(rec.line.<a href="#robo7">ST_AsText</a>());
       END LOOP;
     END;
     /
@@ -3233,16 +3934,68 @@
 <p class="item_name">COPYRIGHT</p>
 <pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 </pre>
-<a name="robo48"></a>
+<a name="robo61"></a>
+<a name="T5fSEGMENT2fST5fSetCoordinates28vertex20vertex20vertex29"></a>
+<h2>2.60.  T_SEGMENT/ST_SetCoordinates(vertex vertex vertex) [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    ST_SetCoordinates -- Allows user to set a segment's start/mid/end coordinates
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Member Procedure ST_SetCoordinates(SELF IN OUT NOCOPY <a href="#robo1">T_SEGMENT</a>,
+                         p_startCoord in &amp;&amp;INSTALL_SCHEMA..T_VERTEX,
+                         p_midCoord   in &amp;&amp;INSTALL_SCHEMA..T_VERTEX,
+                         p_endCoord   in &amp;&amp;INSTALL_SCHEMA..T_VERTEX),
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    This procedure allows a user to set a segment's coordinates without creating a new segment.
+    If a NULL value is provided for the midCoord parameter its associated coordinate will be set to NULL.
+    If a NULL value is provided for the startCoord or endCoord it is ignored as it would otherwise invalidate the object.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - August 2019 - Original coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo62"></a>
+<a name="T5fSEGMENT2fST5fSetCoordinates28vertex20vertex29"></a>
+<h2>2.61.  T_SEGMENT/ST_SetCoordinates(vertex vertex) [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    ST_SetCoordinates -- Allows user to set object's start or end coordinates.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Member Procedure ST_SetCoordinates(SELF IN OUT NOCOPY <a href="#robo1">T_SEGMENT</a>,
+                         p_startCoord in &amp;&amp;INSTALL_SCHEMA..T_VERTEX,
+                         p_endCoord   in &amp;&amp;INSTALL_SCHEMA..T_VERTEX),
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    This procedure allows a user to set a segment's coordinates without creating a new segment.
+    If a NULL value is provided for a parameter it is ignored as it would otherwise invalidate the object.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - August 2019 - Original coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo63"></a>
 <a name="T5fSEGMENT2fST5fSetPrecisionModel"></a>
-<h2>1.46.  T_SEGMENT/ST_SetPrecisionModel [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.62.  T_SEGMENT/ST_SetPrecisionModel [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_SetPrecisionModel</strong> -- Allows user to set object's t_precision object.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Member Procedure <strong>ST_SetPrecisionModel</strong>(SELF IN OUT NOCOPY <a href="#robo0">T_SEGMENT</a>,
-                                          p_precision spdba.T_PrecisionModel),
+<pre>    Member Procedure <strong>ST_SetPrecisionModel</strong>(SELF IN OUT NOCOPY <a href="#robo1">T_SEGMENT</a>,
+                                          p_precision &amp;&amp;INSTALL_SCHEMA..T_PrecisionModel),
 </pre>
 <p class="item_name">DESCRIPTION</p>
 <pre>    This procedure allows a user to set the object's precision values in its t_precision object.
@@ -3257,10 +4010,10 @@
 <p class="item_name">COPYRIGHT</p>
 <pre>    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
 </pre>
-<a name="robo49"></a>
+<a name="robo64"></a>
 <a name="T5fSEGMENT2fST5fSRID"></a>
-<h2>1.47.  T_SEGMENT/ST_SRID [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.63.  T_SEGMENT/ST_SRID [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_SRID</strong> -- Returns the object's SDO_SRID attribute value.
 </pre>
@@ -3297,16 +4050,16 @@
 <p class="item_name">COPYRIGHT</p>
 <pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 </pre>
-<a name="robo50"></a>
+<a name="robo65"></a>
 <a name="T5fSEGMENT2fST5fTo2D"></a>
-<h2>1.48.  T_SEGMENT/ST_To2D [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.64.  T_SEGMENT/ST_To2D [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_To2D</strong> -- Constructs a 2D segment from the underlying segment which can have any dimension.
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre>    Member Function <strong>ST_To2D</strong>
-             Return SPDBA.<a href="#robo0">T_SEGMENT</a> Deterministic,
+             Return &amp;&amp;INSTALL_SCHEMA..<a href="#robo1">T_SEGMENT</a> Deterministic,
 </pre>
 <p class="item_name">DESCRIPTION</p>
 <pre>    Constructs new segment by discarding any z and w ordinates.
@@ -3314,12 +4067,12 @@
     If segment already 2D it is returned unchanged.
 </pre>
 <p class="item_name">RESULT</p>
-<pre>    segment (<a href="#robo0">T_SEGMENT</a>) -- 2d segment.
+<pre>    segment (<a href="#robo1">T_SEGMENT</a>) -- 2d segment.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre>    select T_Segment(sdo_geometry(3002,4283,null,sdo_elem_info_array(1,2,1),sdo_ordinate_array(147.5, -42.5,10.0, 147.6, -42.5, 10.0)))
              .<strong>ST_To2D</strong>()
-             .<a href="#robo46">ST_SdoGeometry</a>(2) as geom2D
+             .<a href="#robo59">ST_SdoGeometry</a>(2) as geom2D
       from dual;
 
     GEOM2D
@@ -3335,17 +4088,17 @@
 <p class="item_name">COPYRIGHT</p>
 <pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 </pre>
-<a name="robo51"></a>
+<a name="robo66"></a>
 <a name="T5fSEGMENT2fST5fTo3D"></a>
-<h2>1.49.  T_SEGMENT/ST_To3D [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
+<h2>2.65.  T_SEGMENT/ST_To3D [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_To3D</strong> -- Constructs a 3D segment from the underlying segment which can have any dimension.
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre>    Member Function <strong>ST_To3D</strong>(p_keep_measure in integer default 0,
                             p_default_z    in number  default null)
-             Return SPDBA.<a href="#robo0">T_SEGMENT</a> Deterministic,
+             Return &amp;&amp;INSTALL_SCHEMA..<a href="#robo1">T_SEGMENT</a> Deterministic,
 </pre>
 <p class="item_name">DESCRIPTION</p>
 <pre>    Constructs new 3D segment.
@@ -3357,14 +4110,14 @@
     being the original measure values if p_keep_measure = 1, otherwise, the Z values are set to p_default_z.
 </pre>
 <p class="item_name">RESULT</p>
-<pre>    segment (<a href="#robo0">T_SEGMENT</a>) -- 3D segment.
+<pre>    segment (<a href="#robo1">T_SEGMENT</a>) -- 3D segment.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre>    -- Convert 2D segment to 3D with constant Z value of 10.0
     select T_Segment(sdo_geometry(2002,4283,null,sdo_elem_info_array(1,2,1),sdo_ordinate_array(147.5, -42.5, 147.6,-42.5)))
              .<strong>ST_To3D</strong>(p_keep_measure =&gt; 0,
                       p_default_z    =&gt; 10.0)
-             .<a href="#robo46">ST_SdoGeometry</a>(3) as geom3D
+             .<a href="#robo59">ST_SdoGeometry</a>(3) as geom3D
       from dual;
 
     GEOM3D
@@ -3374,7 +4127,7 @@
     -- Convert measured segment (no Z) to 3D with Z
     select T_Segment(sdo_geometry(3302,4283,null,sdo_elem_info_array(1,2,1),sdo_ordinate_array(147.5, -42.5,0.0, 147.6, -42.5, 10923.0)))
              .<strong>ST_To3D</strong>(p_keep_measure =&gt; 1)
-             .<a href="#robo46">ST_SdoGeometry</a>(3) as geom3D
+             .<a href="#robo59">ST_SdoGeometry</a>(3) as geom3D
       from dual;
 
     GEOM3D
@@ -3384,7 +4137,7 @@
     -- Convert measured segment with Z to 3D with Z (throw M away)
     select T_Segment(sdo_geometry(4402,4283,null,sdo_elem_info_array(1,2,1),sdo_ordinate_array(147.5,-42.5,849.9,2000.0, 147.6,-42.5,1923.0,4000.0)))
              .<strong>ST_To3D</strong>(p_keep_measure =&gt; 0)
-             .<a href="#robo46">ST_SdoGeometry</a>(3) as geom3D
+             .<a href="#robo59">ST_SdoGeometry</a>(3) as geom3D
       from dual;
 
     GEOM3D
@@ -3394,7 +4147,7 @@
     -- Convert measured segment with Z to 3D with M becoming Z (throw Z away)
     select T_Segment(sdo_geometry(4402,4283,null,sdo_elem_info_array(1,2,1),sdo_ordinate_array(147.5,-42.5,849.9,2000.0, 147.6,-42.5,1923.0,4000.0)))
              .<strong>ST_To3D</strong>(p_keep_measure =&gt; 1)
-             .<a href="#robo46">ST_SdoGeometry</a>(3) as geom3D
+             .<a href="#robo59">ST_SdoGeometry</a>(3) as geom3D
       from dual;
 
     GEOM3D
@@ -3410,259 +4163,17 @@
 <p class="item_name">COPYRIGHT</p>
 <pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 </pre>
-<a name="robo52"></a>
-<a name="T5fSEGMENT2fSTPointToCircularArc"></a>
-<h2>1.50.  T_SEGMENT/STPointToCircularArc [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
-<p class="item_name">NAME</p>
-<pre>    ST_PointToCircularArc -- Return a measured point by snapping provided point to the provided circularstring
-</pre>
-<p class="item_name">SYNOPSIS</p>
-<pre>    ST_PointToCircularArc(p_vertex in SPDBA.T_Vertex,
-                          p_unit   in varchar2 default null)
-     Return SPDBA.T_Vertex deterministic
-</pre>
-<p class="item_name">DESCRIPTION</p>
-<pre>    This function snaps supplied point to underlying circularString, returning the snapped point.
-
-    Computes Z and M values if exist on underlying CircularString.
-
-    If input circularString is 2D, length from start of circularString to point is returned in M ordinate of snapped point.
-</pre>
-<p class="item_name">NOTES</p>
-<pre>    Supports CircularString geometries only.
-</pre>
-<p class="item_name">INPUTS</p>
-<pre>    p_vertex (t_vertex) - Point near to linestring.
-    p_unit   (varchar2) - Unit of measure (depends on SRID)
-</pre>
-<p class="item_name">RESULT</p>
-<pre>    snapped point (t_vetex) -- First point found on circularString.
-</pre>
-<p class="item_name">EXAMPLE</p>
-<pre>    select 'Point is on centre of the XYZ circular arc (returns start point)' as test,
-           t_segment(SDO_GEOMETRY(3002,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,2,2),SDO_ORDINATE_ARRAY(3,6.3246,-1, 0,7,-1, -3,6.3246,-1)))
-             .ST_PointToCircularArc (
-                t_vertex(SDO_GEOMETRY('POINT(0 0)',NULL)),
-                null
-           ).<a href="#robo45">ST_Round</a>(3,3,3,3).ST_AsEWKT() as project_point
-    from dual union all
-    select 'Point does not have relationship with XYM CircularSring' as test,
-           t_segment(SDO_GEOMETRY(3302,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,2,2),SDO_ORDINATE_ARRAY(3,6.325,0, 0,7,3.08, -3,6.325,6.15)))
-             .ST_PointToCircularArc (
-                t_vertex(SDO_GEOMETRY('POINT(8 8)',NULL))
-           ).ST_AsEWKT() as project_point
-    from dual union all
-    select 'Point projects on to point half way along XY circular arc (returns measure as length)' as test,
-           t_segment(SDO_GEOMETRY('CIRCULARSTRING (3 6.3246, 0 7, -3 6.3246)',NULL))
-             .ST_PointToCircularArc (
-              t_vertex(SDO_GEOMETRY('POINT(0 3.5)',NULL)),
-              null
-           ).<a href="#robo45">ST_Round</a>(3,3,3,3).ST_AsEWKT() as project_point
-      from dual union all
-    select 'Point has relationship with XYM CircularSring' as test,
-           t_segment(SDO_GEOMETRY(3302,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,2,2),SDO_ORDINATE_ARRAY(3,6.325,0, 0,7,3.08, -3,6.325,6.15)))
-             .ST_PointToCircularArc (
-                t_vertex(SDO_GEOMETRY('POINT(2 8)',NULL))
-           ).<a href="#robo45">ST_Round</a>(3,3,3,3).ST_AsEWKT() as project_point
-    from dual union all
-    select 'Point has relationship with XYZM circular arc' as test,
-           t_segment(SDO_GEOMETRY(4402,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,2,2),SDO_ORDINATE_ARRAY(3,6.325,-2.1,0, 0,7,-2.1,3.08, -3,6.325,-2.1,6.15)))
-             .ST_PointToCircularArc (
-                t_vertex(SDO_GEOMETRY('POINT(2 8)',NULL)),
-                null
-           ).<a href="#robo45">ST_Round</a>(3).ST_AsEWKT() as project_point
-    from dual ;
-    
-    TEST                                                                                  PROJECT_POINT
-    ------------------------------------------------------------------------------------- -----------------------------
-    Point is on centre of the XYZ circular arc (returns start point)                      POINTZ (3 6.325 -1)
-    Point does not have relationship with XYM CircularSring                               NULL
-    Point projects on to point half way along XY circular arc (returns measure as length) POINTM (0 7 3.1)
-    Point has relationship with XYM CircularSring                                         POINTM (1.698 6.791 1.374)
-    Point has relationship with XYZM circular arc                                         POINTZM (1.698 6.791 -2.1 1.374)
-</pre>
-<p class="item_name">AUTHOR</p>
-<pre>    Simon Greener
-</pre>
-<p class="item_name">HISTORY</p>
-<pre>    Simon Greener - August 2019 - Original coding.
-</pre>
-<p class="item_name">COPYRIGHT</p>
-<pre>    (c) 2008-2019 by TheSpatialDBAdvisor/Simon Greener
-</pre>
-<a name="robo53"></a>
-<a name="T5fSEGMENT2fSTPointToLineString"></a>
-<h2>1.51.  T_SEGMENT/STPointToLineString [ Methods ]  </h2>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo0">T_SEGMENT</a> ] [ Methods ]</p>
-<p class="item_name">NAME</p>
-<pre>    ST_PointToLineString -- Return a measured point by snapping provided point to the underlying LineString
-</pre>
-<p class="item_name">SYNOPSIS</p>
-<pre>    ST_PointToLineString(p_vertex in SPDBA.T_Vertex)
-     Return SPDBA.T_Vertex deterministic
-</pre>
-<p class="item_name">DESCRIPTION</p>
-<pre>    This function snaps supplied point to underlying LineString, returning the snapped point.
-    
-    Computes Z and M values if exist on underlying LineString.
-    
-    If input circularString is 2D, length from start of LineString to point is returned in M ordinate of snapped point.
-</pre>
-<p class="item_name">NOTES</p>
-<pre>    Supports LineString geometries only.
-</pre>
-<p class="item_name">INPUTS</p>
-<pre>    p_vertex (t_vertex) - Point near to linestring.
-</pre>
-<p class="item_name">RESULT</p>
-<pre>    snapped point (t_vetex) -- First point found on LineString.
-</pre>
-<p class="item_name">EXAMPLE</p>
-<pre>    select 'Point is on centre of the XYZ circular arc (returns start point)' as test,
-           t_segment(SDO_GEOMETRY(3002,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,2,2),SDO_ORDINATE_ARRAY(3,6.3246,-1, 0,7,-1, -3,6.3246,-1)))
-             .ST_PointToLineString (
-                t_vertex(SDO_GEOMETRY('POINT(0 0)',NULL)),
-                null
-           ).<a href="#robo45">ST_Round</a>(3,3,3,3).ST_AsEWKT() as project_point
-    from dual union all
-    select 'Point does not have relationship with XYM LineString' as test,
-           t_segment(SDO_GEOMETRY(3302,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,2,2),SDO_ORDINATE_ARRAY(3,6.325,0, 0,7,3.08, -3,6.325,6.15)))
-             .ST_PointToLineString (
-                t_vertex(SDO_GEOMETRY('POINT(8 8)',NULL))
-           ).ST_AsEWKT() as project_point
-    from dual union all
-    select 'Point projects on to point half way along XY circular arc (returns measure as length)' as test,
-           t_segment(SDO_GEOMETRY('CIRCULARSTRING (3 6.3246, 0 7, -3 6.3246)',NULL))
-             .ST_PointToLineString (
-              t_vertex(SDO_GEOMETRY('POINT(0 3.5)',NULL)),
-              null
-           ).<a href="#robo45">ST_Round</a>(3,3,3,3).ST_AsEWKT() as project_point
-      from dual union all
-    select 'Point has relationship with XYM LineString' as test,
-           t_segment(SDO_GEOMETRY(3302,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,2,2),SDO_ORDINATE_ARRAY(3,6.325,0, 0,7,3.08, -3,6.325,6.15)))
-             .ST_PointToLineString (
-                t_vertex(SDO_GEOMETRY('POINT(2 8)',NULL))
-           ).<a href="#robo45">ST_Round</a>(3,3,3,3).ST_AsEWKT() as project_point
-    from dual union all
-    select 'Point has relationship with XYZM circular arc' as test,
-           t_segment(SDO_GEOMETRY(4402,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,2,2),SDO_ORDINATE_ARRAY(3,6.325,-2.1,0, 0,7,-2.1,3.08, -3,6.325,-2.1,6.15)))
-             .ST_PointToLineString (
-                t_vertex(SDO_GEOMETRY('POINT(2 8)',NULL)),
-                null
-           ).<a href="#robo45">ST_Round</a>(3).ST_AsEWKT() as project_point
-    from dual ;
-    
-    TEST                                                                                  PROJECT_POINT
-    ------------------------------------------------------------------------------------- -----------------------------
-    Point is on centre of the XYZ circular arc (returns start point)                      POINTZ (3 6.325 -1)
-    Point does not have relationship with XYM CircularSring                               NULL
-    Point projects on to point half way along XY circular arc (returns measure as length) POINTM (0 7 3.1)
-    Point has relationship with XYM CircularSring                                         POINTM (1.698 6.791 1.374)
-    Point has relationship with XYZM circular arc                                         POINTZM (1.698 6.791 -2.1 1.374)
-</pre>
-<p class="item_name">AUTHOR</p>
-<pre>    Simon Greener
-</pre>
-<p class="item_name">HISTORY</p>
-<pre>    Simon Greener - August 2019 - Original coding.
-</pre>
-<p class="item_name">COPYRIGHT</p>
-<pre>    (c) 2008-2019 by TheSpatialDBAdvisor/Simon Greener
-</pre>
-<a name="robo1"></a>
-<a name="T5fGEOMETRY2fST5fAsWKT"></a>
-<h1>2.  T_GEOMETRY/ST_AsWKT [ Methods ]  </h1>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Methods ]</p>
-<p class="item_name">NAME</p>
-<pre>    <strong>ST_AsWKT</strong> -- Exports <a href="#robo0">T_SEGMENT</a> object to its Extended Well Known Text (EWKT).
-</pre>
-<p class="item_name">SYNOPSIS</p>
-<pre>    Member Function <strong>ST_AsWKT</strong>
-             Return varchar2 Deterministic,
-</pre>
-<p class="item_name">DESCRIPTION</p>
-<pre>    Returns Extended Well Known Text representation of underlying T_GEOEMTRY.
-    Supports 2D/3D/4D t_segments.
-    Formatting of ordinates supported by supplied p_format_model eg TM9 or FM999999999999990D0
-</pre>
-<p class="item_name">RESULT</p>
-<pre>    WKT (CLOB) -- eg Well Known Text encoding of mdsys.sdo_geometry object.
-</pre>
-<p class="item_name">EXAMPLE</p>
-<pre>    With data as (
-     select t_segment(sdo_geometry(2002,28355,NULL,
-                                  sdo_elem_info_array(1,2,2),
-                                  sdo_ordinate_array(252230.4743434348,5526918.37343433, 252400.034348,5526918.33434333473,252230.4434343378,5527000.433445660))) as segment
-     from dual union all
-     select t_segment(SDO_GEOMETRY(3002,28355,NULL,
-                                  sdo_elem_info_array(1,2,2),
-                                  sdo_ordinate_array(252230.478,5526918.373,1.5, 252400.08,5526918.373,1.5, 252230.478,5527000.0,1.5))) as segment
-     from dual union all
-     select t_segment(SDO_GEOMETRY(3302,28355,NULL,
-                                  sdo_elem_info_array(1,2,2),
-                                  sdo_ordinate_array(252230.478,5526918.373,0.0, 252400.08,5526918.373,417.4, 252230.478,5527000.0,506.88))) as segment
-     from dual union all
-     select t_segment(SDO_GEOMETRY(4402,28355,NULL,
-                                  sdo_elem_info_array(1,2,2),
-                                  sdo_ordinate_array(252230.478,5526918.373,1.5,0.0, 252400.08,5526918.373,1.5,417.4, 252230.478,5527000.0,1.5,506.88))) as segment
-     from dual union all
-     select t_segment(sdo_geometry(2002,NULL,NULL,
-                                   sdo_elem_info_array(1,2,1),
-                                   sdo_ordinate_array(100,100,900,900.0))) as segment
-     from dual union all
-     select t_segment(sdo_geometry(3002,NULL,NULL,
-                                   sdo_elem_info_array(1,2,1),
-                                   sdo_ordinate_array(0,0,1, 10,0,2))) as segment
-     from dual union all
-     select t_segment(sdo_geometry(3302,NULL,NULL,
-                                   sdo_elem_info_array(1,2,1),
-                                   sdo_ordinate_array(0,0,1.5, 10,0,1.5, 10,5,1.5 ))) as segment
-     from dual union all
-     select t_segment(sdo_geometry(4402,4283,null,
-                                   sdo_elem_info_array(1,2,1),
-                                   sdo_ordinate_array(147.5,-42.5,849.9,102.0, 147.6,-42.5,1923.0,2100.0))) as segment
-     From Dual
-    )
-    select a.segment.sdo_gtype as gtype,
-         a.segment
-          .<a href="#robo45">ST_Round</a>(3)
-          .ST_AsEWKT('TM9') as ewkt
-    from data a;
-    
-    GTYPE EWKT
-    ----- ------------------------------------------------------------------------------------------------------------------------
-     2002 SRID=28355;CIRCULARSTRING (252230.474 5526918.373,252400.034 5526918.334,252230.443 5527000.433)
-     3002 SRID=28355;CIRCULARSTRINGZ (252230.478 5526918.373 1.5,252400.08 5526918.373 1.5,252230.478 5527000 1.5)
-     3302 SRID=28355;CIRCULARSTRINGM (252230.478 5526918.373 0,252400.08 5526918.373 417.4,252230.478 5527000 506.88)
-     4402 SRID=28355;CIRCULARSTRINGZM (252230.478 5526918.373 1.5 0,252400.08 5526918.373 1.5 417.4,252230.478 5527000 1.5 506.88)
-     2002 LINESTRING (100 100,900 900)
-     3002 LINESTRINGZ (0 0 1,10 0 2)
-     3302 LINESTRINGM (0 0 1.5,10 0 1.5)
-     4402 SRID=4283;LINESTRINGZM (147.5 -42.5 849.9 102,147.6 -42.5 1923 2100)
-    
-     8 rows selected
-</pre>
-<p class="item_name">AUTHOR</p>
-<pre>    Simon Greener
-</pre>
-<p class="item_name">HISTORY</p>
-<pre>    Simon Greener - July 2019 - Original coding.
-</pre>
-<p class="item_name">COPYRIGHT</p>
-<pre>    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
-</pre>
-<a name="robo2"></a>
-<a name="T5fGEOMETRY2fST5fUpdateCoordinate28p5fvertex29"></a>
-<h1>3.  T_GEOMETRY/ST_UpdateCoordinate(p_vertex) [ Methods ]  </h1>
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Methods ]</p>
+<a name="robo67"></a>
+<a name="T5fSEGMENT2fST5fUpdateCoordinate28p5fvertex29"></a>
+<h2>2.66.  T_SEGMENT/ST_UpdateCoordinate(p_vertex) [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
 <p class="item_name">NAME</p>
 <pre>    ST_UpdateCoordinate -- Function which updates the start, mid or end coordinate depending on p_which.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Member Function ST_UpdateCoordinate(p_coordinate in SPDBA.T_Vertex,
+<pre>    Member Function ST_UpdateCoordinate(p_coordinate in &amp;&amp;INSTALL_SCHEMA..T_Vertex,
                                         p_which      in varchar2 default 'S' )
-             Return SPDBA.<a href="#robo0">T_SEGMENT</a> Deterministic,
+             Return &amp;&amp;INSTALL_SCHEMA..<a href="#robo1">T_SEGMENT</a> Deterministic,
 </pre>
 <p class="item_name">DESCRIPTION</p>
 <pre>    Function that updates start, mid or end coordinate the underlying T_Segment which value in p_coordinate depending on position identified by p_which.
@@ -3709,7 +4220,7 @@
                 p_which =&gt; 1
            )
            .startCoord
-           .<a href="#robo8">ST_AsText</a>() as updatedSegment
+           .<a href="#robo7">ST_AsText</a>() as updatedSegment
        from dual;
 
     UPDATEDSEGMENT
@@ -3745,7 +4256,7 @@
                   p_sdo_srid  =&gt; NULL),
                 p_which =&gt; '2'
            )
-           .<a href="#robo8">ST_AsText</a>() as updatedSegment
+           .<a href="#robo7">ST_AsText</a>() as updatedSegment
        from dual;
 
     UPDATEDSEGMENT
@@ -3766,8 +4277,168 @@
 <p class="item_name">COPYRIGHT</p>
 <pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 </pre>
+<a name="robo68"></a>
+<a name="T5fSEGMENT2fSTPointToCircularArc"></a>
+<h2>2.67.  T_SEGMENT/STPointToCircularArc [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    ST_PointToCircularArc -- Return a measured point by snapping provided point to the provided circularstring
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    ST_PointToCircularArc(p_vertex in &amp;&amp;INSTALL_SCHEMA..T_Vertex,
+                          p_unit   in varchar2 default null)
+     Return &amp;&amp;INSTALL_SCHEMA..T_Vertex deterministic
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    This function snaps supplied point to underlying circularString, returning the snapped point.
+
+    Computes Z and M values if exist on underlying CircularString.
+
+    If input circularString is 2D, length from start of circularString to point is returned in M ordinate of snapped point.
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    Supports CircularString geometries only.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    p_vertex (t_vertex) - Point near to linestring.
+    p_unit   (varchar2) - Unit of measure (depends on SRID)
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    snapped point (t_vetex) -- First point found on circularString.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    select 'Point is on centre of the XYZ circular arc (returns start point)' as test,
+           t_segment(SDO_GEOMETRY(3002,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,2,2),SDO_ORDINATE_ARRAY(3,6.3246,-1, 0,7,-1, -3,6.3246,-1)))
+             .ST_PointToCircularArc (
+                t_vertex(SDO_GEOMETRY('POINT(0 0)',NULL)),
+                null
+           ).<a href="#robo57">ST_Round</a>(3,3,3,3).ST_AsEWKT() as project_point
+    from dual union all
+    select 'Point does not have relationship with XYM CircularSring' as test,
+           t_segment(SDO_GEOMETRY(3302,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,2,2),SDO_ORDINATE_ARRAY(3,6.325,0, 0,7,3.08, -3,6.325,6.15)))
+             .ST_PointToCircularArc (
+                t_vertex(SDO_GEOMETRY('POINT(8 8)',NULL))
+           ).ST_AsEWKT() as project_point
+    from dual union all
+    select 'Point projects on to point half way along XY circular arc (returns measure as length)' as test,
+           t_segment(SDO_GEOMETRY('CIRCULARSTRING (3 6.3246, 0 7, -3 6.3246)',NULL))
+             .ST_PointToCircularArc (
+              t_vertex(SDO_GEOMETRY('POINT(0 3.5)',NULL)),
+              null
+           ).<a href="#robo57">ST_Round</a>(3,3,3,3).ST_AsEWKT() as project_point
+      from dual union all
+    select 'Point has relationship with XYM CircularSring' as test,
+           t_segment(SDO_GEOMETRY(3302,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,2,2),SDO_ORDINATE_ARRAY(3,6.325,0, 0,7,3.08, -3,6.325,6.15)))
+             .ST_PointToCircularArc (
+                t_vertex(SDO_GEOMETRY('POINT(2 8)',NULL))
+           ).<a href="#robo57">ST_Round</a>(3,3,3,3).ST_AsEWKT() as project_point
+    from dual union all
+    select 'Point has relationship with XYZM circular arc' as test,
+           t_segment(SDO_GEOMETRY(4402,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,2,2),SDO_ORDINATE_ARRAY(3,6.325,-2.1,0, 0,7,-2.1,3.08, -3,6.325,-2.1,6.15)))
+             .ST_PointToCircularArc (
+                t_vertex(SDO_GEOMETRY('POINT(2 8)',NULL)),
+                null
+           ).<a href="#robo57">ST_Round</a>(3).ST_AsEWKT() as project_point
+    from dual ;
+    
+    TEST                                                                                  PROJECT_POINT
+    ------------------------------------------------------------------------------------- -----------------------------
+    Point is on centre of the XYZ circular arc (returns start point)                      POINTZ (3 6.325 -1)
+    Point does not have relationship with XYM CircularSring                               NULL
+    Point projects on to point half way along XY circular arc (returns measure as length) POINTM (0 7 3.1)
+    Point has relationship with XYM CircularSring                                         POINTM (1.698 6.791 1.374)
+    Point has relationship with XYZM circular arc                                         POINTZM (1.698 6.791 -2.1 1.374)
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - August 2019 - Original coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2019 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo69"></a>
+<a name="T5fSEGMENT2fSTPointToLineString"></a>
+<h2>2.68.  T_SEGMENT/STPointToLineString [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_SEGMENT</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    ST_PointToLineString -- Return a measured point by snapping provided point to the underlying LineString
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    ST_PointToLineString(p_vertex in &amp;&amp;INSTALL_SCHEMA..T_Vertex)
+     Return &amp;&amp;INSTALL_SCHEMA..T_Vertex deterministic
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    This function snaps supplied point to underlying LineString, returning the snapped point.
+    
+    Computes Z and M values if exist on underlying LineString.
+    
+    If input circularString is 2D, length from start of LineString to point is returned in M ordinate of snapped point.
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    Supports LineString geometries only.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    p_vertex (t_vertex) - Point near to linestring.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    snapped point (t_vetex) -- First point found on LineString.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    select 'Point is on centre of the XYZ circular arc (returns start point)' as test,
+           t_segment(SDO_GEOMETRY(3002,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,2,2),SDO_ORDINATE_ARRAY(3,6.3246,-1, 0,7,-1, -3,6.3246,-1)))
+             .ST_PointToLineString (
+                t_vertex(SDO_GEOMETRY('POINT(0 0)',NULL)),
+                null
+           ).<a href="#robo57">ST_Round</a>(3,3,3,3).ST_AsEWKT() as project_point
+    from dual union all
+    select 'Point does not have relationship with XYM LineString' as test,
+           t_segment(SDO_GEOMETRY(3302,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,2,2),SDO_ORDINATE_ARRAY(3,6.325,0, 0,7,3.08, -3,6.325,6.15)))
+             .ST_PointToLineString (
+                t_vertex(SDO_GEOMETRY('POINT(8 8)',NULL))
+           ).ST_AsEWKT() as project_point
+    from dual union all
+    select 'Point projects on to point half way along XY circular arc (returns measure as length)' as test,
+           t_segment(SDO_GEOMETRY('CIRCULARSTRING (3 6.3246, 0 7, -3 6.3246)',NULL))
+             .ST_PointToLineString (
+              t_vertex(SDO_GEOMETRY('POINT(0 3.5)',NULL)),
+              null
+           ).<a href="#robo57">ST_Round</a>(3,3,3,3).ST_AsEWKT() as project_point
+      from dual union all
+    select 'Point has relationship with XYM LineString' as test,
+           t_segment(SDO_GEOMETRY(3302,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,2,2),SDO_ORDINATE_ARRAY(3,6.325,0, 0,7,3.08, -3,6.325,6.15)))
+             .ST_PointToLineString (
+                t_vertex(SDO_GEOMETRY('POINT(2 8)',NULL))
+           ).<a href="#robo57">ST_Round</a>(3,3,3,3).ST_AsEWKT() as project_point
+    from dual union all
+    select 'Point has relationship with XYZM circular arc' as test,
+           t_segment(SDO_GEOMETRY(4402,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,2,2),SDO_ORDINATE_ARRAY(3,6.325,-2.1,0, 0,7,-2.1,3.08, -3,6.325,-2.1,6.15)))
+             .ST_PointToLineString (
+                t_vertex(SDO_GEOMETRY('POINT(2 8)',NULL)),
+                null
+           ).<a href="#robo57">ST_Round</a>(3).ST_AsEWKT() as project_point
+    from dual ;
+    
+    TEST                                                                                  PROJECT_POINT
+    ------------------------------------------------------------------------------------- -----------------------------
+    Point is on centre of the XYZ circular arc (returns start point)                      POINTZ (3 6.325 -1)
+    Point does not have relationship with XYM CircularSring                               NULL
+    Point projects on to point half way along XY circular arc (returns measure as length) POINTM (0 7 3.1)
+    Point has relationship with XYM CircularSring                                         POINTM (1.698 6.791 1.374)
+    Point has relationship with XYZM circular arc                                         POINTZM (1.698 6.791 -2.1 1.374)
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - August 2019 - Original coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2019 by TheSpatialDBAdvisor/Simon Greener
+</pre>
 <div id="footer">
-<p>Generated from ./export/ with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.36 on Sat Aug 17 2019 13:38:45
+<p>Generated from ./src/ with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.36 on Wed Aug 21 2019 17:38:44
 </p>
 </div> <!-- footer -->
 </body>

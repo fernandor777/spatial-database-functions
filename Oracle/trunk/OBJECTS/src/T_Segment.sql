@@ -22,7 +22,7 @@ AS OBJECT (
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
 
-  /****v* T_SEGMENT/ATTRIBUTES(T_SEGMENT)
+  /****v* T_SEGMENT/ATTRIBUTES
   *  ATTRIBUTES
   *    element_id    -- Top level part identifier of multi-part geometry
   *                     eg multi-linestring composed of two lines generates element_ids 1 and 2.
