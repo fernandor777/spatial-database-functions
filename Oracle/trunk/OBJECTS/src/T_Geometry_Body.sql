@@ -3077,42 +3077,6 @@ AS
     RETURN &&INSTALL_SCHEMA..T_GEOMETRY(MDSYS.SDO_GEOM.sdo_mbr(SELF.geom));
   End ST_MBR;
 
-  Member Function ST_toMultiPoint
-           Return &&INSTALL_SCHEMA..T_GEOMETRY
-  As
-  Begin
-    IF ( SELF.geom.sdo_point     is null   or
-         SELF.geom.sdo_point.X   is null   or
-         SELF.geom.sdo_ordinates is null   or
-         SELF.geom.sdo_ordinates.COUNT = 0 or
-         SELF.geom.sdo_ordinates(1) is null ) Then
-      Return NULL;
-    END IF;
-
-    Return &&INSTALL_SCHEMA..T_GEOMETRY (
-               sdo_geometry((SELF.ST_Dims() * 1000) + 5,
-                           SELF.ST_Srid(),
-                           SELF.geom.sdo_point,
-                           MDSYS.SDO_ELEM_INFO_ARRAY(1,1,SELF.ST_NumPoints()),
-                           CASE WHEN SELF.ST_GType()=1 AND SELF.geom.sdo_point is not null
-                                THEN CASE WHEN SELF.geom.sdo_point.Z is null
-                                          THEN mdsys.sdo_ordinate_array(
-                                                  SELF.geom.sdo_point.X,
-                                                  SELF.geom.sdo_point.Y
-                                               )
-                                          ELSE mdsys.sdo_ordinate_array (
-                                                  SELF.geom.sdo_point.X,
-                                                  SELF.geom.sdo_point.Y,
-                                                  SELF.geom.sdo_point.Z
-                                               )
-                                      END
-                                ELSE SELF.geom.sdo_ordinates
-                             END),
-              SELF.tolerance,
-              SELF.dPrecision,
-              SELF.projected);
-  End ST_toMultiPoint;
-
   Member Function ST_Envelope
            Return &&INSTALL_SCHEMA..T_GEOMETRY
   As
@@ -8296,7 +8260,10 @@ SELECT CASE A.rin
         vOrdinates(3) := SELF.geom.Sdo_Point.Z;
       End If;
       vSdoGtype := 2001 + (case when SELF.ST_LRS_isMeasured()=1 then 1301 else 0 end);
-      vGeometry := mdsys.sdo_geometry(SELF.ST_Sdo_Gtype(),SELF.ST_Srid(),NULL,
+      vGeometry := mdsys.sdo_geometry(
+                             vSdoGtype,
+                             SELF.ST_Srid(),
+                             NULL,
                                       mdsys.sdo_elem_info_array(1,1,1),
                                       vOrdinates);
     ELSE
@@ -8305,7 +8272,42 @@ SELECT CASE A.rin
     RETURN &&INSTALL_SCHEMA..T_GEOMETRY(vGeometry,SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   END ST_SdoPoint2Ord;
 
-  /* Dimensional Adjustment */
+  Member Function ST_toMultiPoint
+           Return &&INSTALL_SCHEMA..T_GEOMETRY
+  As
+    v_ordinates  mdsys.sdo_ordinate_array;
+    v_ord        pls_integer;
+    v_num_points pls_integer;
+  Begin
+    IF ( SELF.geom.sdo_point     is null   or
+         SELF.geom.sdo_point.X   is null ) THEN
+      RETURN SELF;
+    ELSIF (SELF.geom.sdo_ordinates is null   or
+           SELF.geom.sdo_ordinates.COUNT = 0 or
+         SELF.geom.sdo_ordinates(1) is null ) Then
+      Return SELF.ST_SdoPoint2Ord();
+    END IF;
+    v_Ordinates := SELF.geom.sdo_ordinates;
+    v_ord       := SELF.geom.sdo_ordinates.COUNT;
+    v_Ordinates.EXTEND(SELF.ST_Dims());
+    v_Ordinates(v_ord + 1) := SELF.geom.Sdo_Point.X;
+    v_Ordinates(v_ord + 2) := SELF.geom.Sdo_Point.Y;
+    IF ( SELF.ST_Dims() >= 3 ) THEN
+      v_Ordinates(v_ord + 3) := SELF.geom.Sdo_Point.Z;
+    End If;
+    v_num_points := v_ordinates.COUNT / SELF.ST_Dims();
+    Return &&INSTALL_SCHEMA..T_GEOMETRY (
+                   sdo_geometry((SELF.ST_Dims() * 1000) + 5,
+                               SELF.ST_Srid(),
+                               NULL,
+                               MDSYS.SDO_ELEM_INFO_ARRAY(1,1,v_num_points),
+                               v_ordinates
+                  ),
+                  SELF.tolerance,
+                  SELF.dPrecision,
+                  SELF.projected);
+  End ST_toMultiPoint;
+  
   Member Function ST_To2D
            Return &&INSTALL_SCHEMA..T_GEOMETRY
   Is

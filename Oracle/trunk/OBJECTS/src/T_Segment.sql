@@ -195,31 +195,296 @@ AS OBJECT (
   Member Procedure ST_SetPrecisionModel(SELF IN OUT NOCOPY T_SEGMENT,
                                         p_PrecisionModel in &&INSTALL_SCHEMA..T_PrecisionModel),
 
+ /****m* T_SEGMENT/ST_MBR
+  *  NAME
+  *    ST_MBR - Returns optimized rectangle sdo_geometry representnig the underlying segment's minimum bounding rectangle (MBR).
+  *  SYNOPSIS
+  *    Member Function ST_MBR
+  *             Return SDO_GEOMETRY Determinsitic
+  *  EXAMPLE
+  *    select T_Segment(sdo_geometry('LINESTRING(0 0,0.8 0.8)',NULL)).ST_MBR() as mbrGeom
+  *      from dual;
+  *
+  *    MBRGEOM
+  *    --------------------------------------------------------------------------------------
+  *    SDO_GEOMETRY(2003,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,1003,3),SDO_ORDINATE_ARRAY(0,0,0.8,0.8))
+  *  DESCRIPTION
+  *    Supplied with a non-NULL segment, this function returns the envelope or minimum bounding rectangle as a polygon geometry with one optimized rectangle exterior ring.
+  *  RESULT
+  *    MBR Geometry (sdo_geometry) -- Single Polygon with Optimized Rectangle Exterior Ring.
+  *  SEE ALSO
+  *    T_MBR object.
+  *  AUTHOR
+  *    Simon Greener
+  *  HISTORY
+  *    Simon Greener - July 2011 - Converted to T_GEOMETRY from GEOM package.
+  *  COPYRIGHT
+  *    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
+ ******/
   Member Function ST_MBR  return mdsys.sdo_geometry deterministic,
+
+ /****m* T_SEGMENT/ST_MinX
+  *  NAME
+  *    ST_MinX - Returns the smallest X ordinate value from the underlying segments minimum bounding rectangle (MBR).
+  *  SYNOPSIS
+  *    Member Function ST_MinX
+  *             Return SDO_GEOMETRY Determinsitic
+  *  DESCRIPTION
+  *    Supplied with a non-NULL segment, this function returns the smallest X ordinate value held by the startCoord,midCoord or endCoord vertices.
+  *  RESULT
+  *    ordinate (number) -- Smallest
+  *  EXAMPLE
+  *    select T_Segment(sdo_geometry('LINESTRING(0 0,0.8 0.8)',NULL)).ST_MinX() as minX
+  *      from dual;
+  *
+  *    MINX
+  *    ----
+  *       0
+  *  SEE ALSO
+  *    T_MBR object.
+  *  AUTHOR
+  *    Simon Greener
+  *  HISTORY
+  *    Simon Greener - July 2011 - Original coding
+  *  COPYRIGHT
+  *    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
+ ******/
   Member Function ST_MinX return Number deterministic,
+
+ /****m* T_SEGMENT/ST_MaxX
+  *  NAME
+  *    ST_MaxX - Returns the largest X ordinate value from the underlying segments minimum bounding rectangle (MBR).
+  *  SYNOPSIS
+  *    Member Function ST_MaxX
+  *             Return SDO_GEOMETRY Determinsitic
+  *  DESCRIPTION
+  *    Supplied with a non-NULL segment, this function returns the largest X ordinate value held by the startCoord,midCoord or endCoord vertices.
+  *  RESULT
+  *    ordinate (number) -- Largest x ordinate value
+  *  EXAMPLE
+  *    select T_Segment(sdo_geometry('LINESTRING(0 0,0.8 0.8)',NULL)).ST_MaxX() as maxX
+  *      from dual;
+  *
+  *    MAXX
+  *    ----
+  *     0.8
+  *  SEE ALSO
+  *    T_MBR object.
+  *  AUTHOR
+  *    Simon Greener
+  *  HISTORY
+  *    Simon Greener - July 2011 - Original coding
+  *  COPYRIGHT
+  *    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
+ ******/
   Member Function ST_MaxX return Number deterministic,
+
+ /****m* T_SEGMENT/ST_MinY
+  *  NAME
+  *    ST_MinY - Returns the smallest Y ordinate value from the underlying segments minimum bounding rectangle (MBR).
+  *  SYNOPSIS
+  *    Member Function ST_MinY
+  *             Return SDO_GEOMETRY Determinsitic
+  *  DESCRIPTION
+  *    Supplied with a non-NULL segment, this function returns the smallest Y ordinate value held by the startCoord,midCoord or endCoord vertices.
+  *  RESULT
+  *    ordinate (number) -- Smallest
+  *  EXAMPLE
+  *    select T_Segment(sdo_geometry('LINESTRING(0 0,0.8 0.8)',NULL)).ST_MinY() as minX
+  *      from dual;
+  *
+  *    MINY
+  *    ----
+  *       0
+  *  SEE ALSO
+  *    T_MBR object.
+  *  AUTHOR
+  *    Simon Greener
+  *  HISTORY
+  *    Simon Greener - July 2011 - Original coding
+  *  COPYRIGHT
+  *    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
+ ******/
   Member Function ST_MinY return Number deterministic,
+
+ /****m* T_SEGMENT/ST_MaxY
+  *  NAME
+  *    ST_MaxY - Returns the largest Y ordinate value from the underlying segments minimum bounding rectangle (MBR).
+  *  SYNOPSIS
+  *    Member Function ST_MaxY
+  *             Return SDO_GEOMETRY Determinsitic
+  *  DESCRIPTION
+  *    Supplied with a non-NULL segment, this function returns the largest Y ordinate value held by the startCoord,midCoord or endCoord vertices.
+  *  RESULT
+  *    ordinate (number) -- Largest x ordinate value
+  *  EXAMPLE
+  *    select T_Segment(sdo_geometry('LINESTRING(0 0,0.8 0.8)',NULL)).ST_MaxY() as maxX
+  *      from dual;
+  *
+  *    MAXX
+  *    ----
+  *     0.8
+  *  SEE ALSO
+  *    T_MBR object.
+  *  AUTHOR
+  *    Simon Greener
+  *  HISTORY
+  *    Simon Greener - July 2011 - Original coding
+  *  COPYRIGHT
+  *    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
+ ******/
   Member Function ST_MaxY return Number deterministic,
 
+ /****m* T_SEGMENT/ST_isHorizontal
+  *  NAME
+  *    ST_isHorizontal - Returns true if the segment is horizonal or parallel to X axis.
+  *  SYNOPSIS
+  *    Member Function ST_isHorizontal
+  *             Return integer Determinsitic
+  *  DESCRIPTION
+  *    Supplied with a non-NULL segment, this function checks if segment is horizontal or parallel to X axis
+  *  RESULT
+  *    true/false (integer) -- 1 is horizontal 0 otherwise
+  *  EXAMPLE
+  *    select T_Segment(sdo_geometry('LINESTRING(0 0,10 0)',NULL)).ST_isHorizontal() as isHorizontal
+  *      from dual;
+  *
+  *    ISHORIZONTAL
+  *    ------------
+  *               1
+  *    
+  *    select T_Segment(sdo_geometry('LINESTRING(0 0,10 10)',NULL)).ST_isHorizontal() as isHorizontal
+  *      from dual;
+  *      
+  *    ISHORIZONTAL
+  *    ------------
+  *               0
+  *  AUTHOR
+  *    Simon Greener
+  *  HISTORY
+  *    Simon Greener - July 2019 - Original coding
+  *  COPYRIGHT
+  *    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
+ ******/
   Member Function ST_isHorizontal
            return integer deterministic,
            
+ /****m* T_SEGMENT/ST_isVertical
+  *  NAME
+  *    ST_isVertical - Returns true if the segment is Vertical or parallel to Y axis.
+  *  SYNOPSIS
+  *    Member Function ST_isVertical
+  *             Return integer Determinsitic
+  *  DESCRIPTION
+  *    Supplied with a non-NULL segment, this function checks if segment is vertical or parallel to Y axis
+  *  RESULT
+  *    true/false (integer) -- 1 is Vertical 0 otherwise
+  *  EXAMPLE
+  *    select T_Segment(sdo_geometry('LINESTRING(0 0,0 10)',NULL)).ST_isVertical() as isVertical
+  *      from dual;
+  *
+  *    ISVERTICAL
+  *    ----------
+  *             1
+  *    
+  *    select T_Segment(sdo_geometry('LINESTRING(0 0,10 10)',NULL)).ST_isVertical() as isVertical
+  *      from dual;
+  *      
+  *    ISVERTICAL
+  *    ----------
+  *             0
+  *  AUTHOR
+  *    Simon Greener
+  *  HISTORY
+  *    Simon Greener - July 2019 - Original coding
+  *  COPYRIGHT
+  *    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
+ ******/
   Member Function ST_isVertical
            return integer deterministic,
 
-  /**
-   * Computes the midpoint of the segment
-   *
-   * @return the midpoint of the segment
-   */
-  Member Function ST_midPoint
+ /****m* T_SEGMENT/ST_MidPoint
+  *  NAME
+  *    ST_MidPoint - Computes, and returns, the midpoint of the segment
+  *  SYNOPSIS
+  *    Member Function ST_MidPoint
+  *             Return t_vertex Determinsitic
+  *  DESCRIPTION
+  *    Supplied with a non-NULL segment, this function computes and returns its mid Point.
+  *    If CircularArc, mid point is point at mid length distance from start.
+  *  RESULT
+  *    point (t_vertex) -- The midpoint of the segment
+  *  EXAMPLE
+  *    select &&INSTALL_SCHEMA..T_Segment(mdsys.sdo_geometry(2002,null,null,sdo_elem_info_array(1,2,1),sdo_ordinate_array(0,0,1,1)))
+  *                .ST_midPoint() 
+  *                .ST_SdoGeometry() as mPoint
+  *      from dual;
+  *               
+  *    
+  *    MPOINT
+  *    --------------------------------------------------------------------
+  *    SDO_GEOMETRY(2001, NULL, SDO_POINT_TYPE(0.5, 0.5, NULL), NULL, NULL)
+  *    
+  *    
+  *    select &&INSTALL_SCHEMA..T_Segment(mdsys.sdo_geometry(2002,null,null,sdo_elem_info_array(1,2,2),sdo_ordinate_array(0,0,10,10,20,0)))
+  *                .ST_midPoint()
+  *                .ST_SdoGeometry() as mPoint
+  *      from dual;
+  *    
+  *    MPOINT
+  *    ------------------------------------------------------------------
+  *    SDO_GEOMETRY(2001, NULL, SDO_POINT_TYPE(10, 10, NULL), NULL, NULL)
+  *  AUTHOR
+  *    Simon Greener
+  *  HISTORY
+  *    Simon Greener - July 2019 - Original coding
+  *  COPYRIGHT
+  *    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
+ ******/
+  Member Function ST_MidPoint
            Return &&INSTALL_SCHEMA..T_Vertex Deterministic,
 
+  /****m* T_SEGMENT/ST_SetCoordinates(vertex vertex vertex)
+  *  NAME
+  *    ST_SetCoordinates -- Allows user to set a segment's start/mid/end coordinates
+  *  SYNOPSIS
+  *    Member Procedure ST_SetCoordinates(SELF IN OUT NOCOPY T_SEGMENT,
+  *                         p_startCoord in &&INSTALL_SCHEMA..T_VERTEX,
+  *                         p_midCoord   in &&INSTALL_SCHEMA..T_VERTEX,
+  *                         p_endCoord   in &&INSTALL_SCHEMA..T_VERTEX),
+  *  DESCRIPTION
+  *    This procedure allows a user to set a segment's coordinates without creating a new segment.
+  *    If a NULL value is provided for the midCoord parameter its associated coordinate will be set to NULL.
+  *    If a NULL value is provided for the startCoord or endCoord it is ignored as it would otherwise invalidate the object.
+  *  AUTHOR
+  *    Simon Greener
+  *  HISTORY
+  *    Simon Greener - August 2019 - Original coding.
+  *  COPYRIGHT
+  *    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
+  ******/
   Member Procedure ST_SetCoordinates(SELF         IN OUT NOCOPY T_SEGMENT,
                                      p_startCoord in &&INSTALL_SCHEMA..T_VERTEX,
                                      p_midCoord   in &&INSTALL_SCHEMA..T_VERTEX,
                                      p_endCoord   in &&INSTALL_SCHEMA..T_VERTEX),
 
+  /****m* T_SEGMENT/ST_SetCoordinates(vertex vertex)
+  *  NAME
+  *    ST_SetCoordinates -- Allows user to set object's start or end coordinates.
+  *  SYNOPSIS
+  *    Member Procedure ST_SetCoordinates(SELF IN OUT NOCOPY T_SEGMENT,
+  *                         p_startCoord in &&INSTALL_SCHEMA..T_VERTEX,
+  *                         p_endCoord   in &&INSTALL_SCHEMA..T_VERTEX),
+  *  DESCRIPTION
+  *    This procedure allows a user to set a segment's coordinates without creating a new segment.
+  *    If a NULL value is provided for a parameter it is ignored as it would otherwise invalidate the object.
+  *  AUTHOR
+  *    Simon Greener
+  *  HISTORY
+  *    Simon Greener - August 2019 - Original coding.
+  *  COPYRIGHT
+  *    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
+  ******/
   Member Procedure ST_SetCoordinates(SELF         IN OUT NOCOPY T_SEGMENT,
                                      p_startCoord in &&INSTALL_SCHEMA..T_VERTEX,
                                      p_endCoord   in &&INSTALL_SCHEMA..T_VERTEX),
@@ -2130,10 +2395,43 @@ AS OBJECT (
   *    p_segmentLengthFraction (number) -- The fraction of the segment length along the line
   *  RESULT
   *    Returns the vertex at that distance along the segment
+  *  EXAMPLE
+  *    select &&INSTALL_SCHEMA..T_Segment(mdsys.sdo_geometry(2002,null,null,sdo_elem_info_array(1,2,1),sdo_ordinate_array(0,0,1,1)))
+  *                .ST_PointAlong(p_segmentLengthFraction=>0.5)
+  *                .ST_SdoGeometry() as mPoint
+  *      from dual;
+  *               
+  *    MPOINT
+  *    --------------------------------------------------------------------
+  *    SDO_GEOMETRY(2001, NULL, SDO_POINT_TYPE(0.5, 0.5, NULL), NULL, NULL)
+  *    
+  *    select &&INSTALL_SCHEMA..T_Segment(mdsys.sdo_geometry(2002,null,null,sdo_elem_info_array(1,2,1),sdo_ordinate_array(0,0,1,1)))
+  *                .ST_PointAlong(p_segmentLengthFraction=>0.9)
+  *                .ST_SdoGeometry() as mPoint
+  *      from dual;
+  *               
+  *    MPOINT
+  *    --------------------------------------------------------------------
+  *    SDO_GEOMETRY(2001, NULL, SDO_POINT_TYPE(0.9, 0.9, NULL), NULL, NULL)
+  *    
+  *    select &&INSTALL_SCHEMA..T_Segment(mdsys.sdo_geometry(2002,null,null,sdo_elem_info_array(1,2,2),sdo_ordinate_array(0,0,10,10,20,0)))
+  *                .ST_PointAlong(p_segmentLengthFraction=>0.5)
+  *                .ST_SdoGeometry() as mPoint
+  *      from dual;
+  *    
+  *    MPOINT
+  *    ------------------------------------------------------------------
+  *    SDO_GEOMETRY(2001, NULL, SDO_POINT_TYPE(10, 10, NULL), NULL, NULL)
   *  NOTES
   *    From JTS LineSegment.java
   *    2D only; no circular arcs.
-  */
+  *  AUTHOR
+  *    Simon Greener
+  *  HISTORY
+  *    Simon Greener - January 2013 - Original coding.
+  *  COPYRIGHT
+  *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
+  ******/
   Member Function ST_pointAlong(p_segmentLengthFraction in Number)
            Return &&INSTALL_SCHEMA..T_Vertex Deterministic,
 
@@ -2160,7 +2458,13 @@ AS OBJECT (
   *    From JTS LineSegment.java
   *    2D only; no circular arcs.
   *    Throws Exception if the segment has zero length
-  */
+  *  AUTHOR
+  *    Simon Greener
+  *  HISTORY
+  *    Simon Greener - January 2013 - Original coding.
+  *  COPYRIGHT
+  *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
+  ******/
   Member Function ST_PointAlongOffset(
                      p_segmentLengthFraction in Number, 
                      p_offsetDistance in Number
@@ -2438,14 +2742,221 @@ AS OBJECT (
                                         p_unit      IN varchar2 default NULL)
            Return &&INSTALL_SCHEMA..T_Segment Deterministic,
 
+  /****m* T_SEGMENT/ST_Intersect2CircularArcs
+  *  NAME
+  *    ST_Intersect2CircularArcs -- Computes intersecton point between two 2D CircularArc segments.
+  *  SYNOPSIS
+  *    Member Function ST_Intersect2CircularArcs(
+  *                       p_segment   in &&INSTALL_SCHEMA..T_Segment,
+  *                       p_unit      in varchar2 default NULL)
+  *             Return &&INSTALL_SCHEMA..T_Segment Deterministic(
+  *  DESCRIPTION
+  *    This function computes the intersection point between the underlying circularArc segment and the provided circularArc segment.
+  *    If one of the segments is a LineString, ST_Intersect is called.
+  *  ARGUMENTS
+  *    p_segment  (T_Segment) -- CircularArc Segment that is to be intersected with the current CircularArc object (SELF).
+  *    p_unit      (varchar2) -- Oracle Unit of Measure for functions such as SDO_DISTANCE.
+  *  RESULT
+  *    intersection (T_Vertex) -- The intersection point.
+  *  EXAMPLE
+  *    select &&INSTALL_SCHEMA..t_segment(mdsys.sdo_geometry(2002,null,null,sdo_elem_info_array(1,2,2),sdo_ordinate_array(0,0,10,10,20,0)))
+  *                .ST_Intersect2CircularArcs(
+  *                    p_segment => &&INSTALL_SCHEMA..t_segment(mdsys.sdo_geometry(2002,null,null,sdo_elem_info_array(1,2,2),SDO_ORDINATE_ARRAY(9.959,-0.004, 14.719,5.245, 8.133,13.623))),
+  *                    p_unit    => null)
+  *                .ST_Round(3) as intersection
+  *      from dual;
+  *
+  *    INTERSECTION
+  *    ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  *    &&INSTALL_SCHEMA..T_SEGMENT(NULL,NULL,1,&&INSTALL_SCHEMA..T_VERTEX(14.477,8.942,NULL,NULL,1,2001,NULL,0),NULL,&&INSTALL_SCHEMA..T_VERTEX(1.189,4.729,NULL,NULL,3,2001,NULL,0),2002,NULL,1,&&INSTALL_SCHEMA..T_PRECISIONMODEL(3,3,3,0.005))
+  *  NOTES
+  *    Two intersections are returned for the two possible points where two circles defined by CircularArcs intersect.
+  *    Calculations are always planar.
+  *  TODO
+  *    Enable calculation of intersection between geodetic/geographic segments.
+  *    Return only the actual intersections.
+  *  AUTHOR
+  *    Simon Greener
+  *  HISTORY
+  *   Simon Greener - 2011 - Original Coding nuary 2018\
+  *  COPYRIGHT
+  *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
+  ******/
   Member Function ST_Intersect2CircularArcs(p_segment   in &&INSTALL_SCHEMA..T_Segment,
                                             p_unit      in varchar2 default NULL)
            Return &&INSTALL_SCHEMA..T_Segment Deterministic,
 
+  /****m* T_SEGMENT/ST_IntersectCircularArc
+  *  NAME
+  *    ST_IntersectCircularArc -- Computes intersecton point between a CircularArc and a LineString segment.
+  *  SYNOPSIS
+  *    Member Function ST_IntersectCircularArc(
+  *                       p_segment   in &&INSTALL_SCHEMA..T_Segment,
+  *                       p_unit      in varchar2 default NULL)
+  *             Return &&INSTALL_SCHEMA..T_Segment Deterministic(
+  *  DESCRIPTION
+  *    This function computes the intersection point between a CircularArc and a LineString.
+  *    If both of the segments is a LineString, ST_Intersect is called.
+  *  ARGUMENTS
+  *    p_segment  (T_Segment) -- CircularArc Segment that is to be intersected with the current CircularArc object (SELF).
+  *    p_unit      (varchar2) -- Oracle Unit of Measure for functions such as SDO_DISTANCE.
+  *  RESULT
+  *    intersection (T_Vertex) -- The intersection point.
+  *  EXAMPLE
+  *    select &&INSTALL_SCHEMA..t_segment(mdsys.sdo_geometry(2002,null,null,sdo_elem_info_array(1,2,2),sdo_ordinate_array(0,0,10,10,20,0)))
+  *                .ST_IntersectCircularArc(
+  *                    p_segment => &&INSTALL_SCHEMA..t_segment(mdsys.sdo_geometry(2002,null,null,sdo_elem_info_array(1,2,1),SDO_ORDINATE_ARRAY(10,0,10,12))),
+  *                    p_unit    => null)
+  *                .ST_Round(3)
+  *                .ST_SdoGeometry() as intersection
+  *      from dual;
+  *    
+  *    INTERSECTION
+  *    -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  *    MDSYS.SDO_GEOMETRY(2002,NULL,NULL,MDSYS.SDO_ELEM_INFO_ARRAY(1,2,1),MDSYS.SDO_ORDINATE_ARRAY(10,-10,0,0))
+  *  NOTES
+  *    Two intersections are returned for the two possible points where two circles defined by CircularArcs intersect.
+  *    Calculations are always planar.
+  *  TODO
+  *    Fix as result is incorrect.
+  *    Enable calculation of intersection between geodetic/geographic segments.
+  *    Return only the actual intersections.
+  *  AUTHOR
+  *    Simon Greener
+  *  HISTORY
+  *   Simon Greener - 2011 - Original Coding nuary 2018\
+  *  COPYRIGHT
+  *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
+  ******/
   Member Function ST_IntersectCircularArc(p_segment   in &&INSTALL_SCHEMA..T_Segment,
                                           p_unit      in varchar2 default NULL)
            Return &&INSTALL_SCHEMA..T_Segment Deterministic,
-           
+
+  /****m* T_SEGMENT/ST_Intersect
+  *  NAME
+  *    ST_Intersect -- Computes intersection point between two 2D or 3D segments, returning a single intersection vertex.
+  *  SYNOPSIS
+  *    Member Function ST_Intersect(p_segment   IN T_SEGMENT,
+  *                                 p_unit      IN varchar2 default NULL)
+  *             Return T_Vertex Deterministic,
+  *  DESCRIPTION
+  *    This function computes the intersection point between the underlying 2D/3D segment and the provided 2D/3D segment.
+  *    The intersection point computed is always physical ie a physical intersection or an empty vertex is returned if no intersection is computed.
+  *    If segments are parallel an empty T_VERTEX is returned with T_VERTEX.id set to -9.
+  *    Intersection between a linestring segment and circular arc segment is supported.
+  *    However, the intersection between two circular arc segments is not yet supported.
+  *  INPUTS
+  *    p_segment (T_Segment) -- Second segment for which an intersection with current is computed.
+  *    p_unit     (varchar2) -- Oracle Unit of Measure eg unit=M.
+  *  RESULT
+  *    Intersection (T_Vertex) -- The intersection point or empty point with id = -9 for parallel segments.
+  *  EXAMPLE
+  *    select T_Segment(
+  *             p_Segment_id => 0,
+  *             p_startCoord => T_Vertex(
+  *                               p_id        =>  1,
+  *                               p_x         => 10,
+  *                               p_y         =>  0,
+  *                               p_sdo_gtype => 2001,
+  *                               p_sdo_srid  => NULL
+  *                             ),
+  *             p_endCoord   => T_Vertex(
+  *                               p_id        =>  3,
+  *                               p_x         => 20,
+  *                               p_y         =>  0,
+  *                               p_sdo_gtype => 2001,
+  *                               p_sdo_srid  => NULL
+  *                             ),
+  *             p_sdo_gtype  => 2002,
+  *             p_sdo_srid   => NULL
+  *           )
+  *           .ST_Intersect(p_segment =>
+  *           .ST_AsText() as Intersection3D
+  *      from dual;
+ *
+  *    INTERSECTION3D
+  *    ------------------------------------
+  *    T_Vertex(10,5,NULL,NULL,1,2001,NULL)
+ *
+  *    -- ST_Intersect of line segment and circular arc segment
+  *    With data As (
+  *    SELECT SDO_GEOMETRY('CIRCULARSTRING(252230.478 5526918.373, 252400.08 5526918.373, 252230.478 5527000.0)',null) as cString,
+  *           SDO_GEOMETRY('LINESTRING(252257.745 5526951.808, 252438.138 5526963.252)',null) as lString
+  *      FROM Dual
+  *    )
+  *    select t_geometry(SDO_GEOM.SDO_Intersection(cString,lString,0.005),0.005,3,1)
+  *             .ST_Round(3,3,1)
+  *             .geom as iGeom,
+  *           T_Segment(lString)
+  *             .ST_Intersect(T_Segment(cString),3)
+  *             .ST_Round(3)
+  *             .ST_SdoGeometry() as iPoint
+  *      from data a;
+ *
+  *    IGEOM
+  *    IPOINT
+  *    -------------------------------------------------------------------------------------------------------------
+  *    SDO_GEOMETRY(2001,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,1,1),SDO_ORDINATE_ARRAY(252409.364,5526961.427))
+  *    SDO_GEOMETRY(2001,NULL,                                    SDO_POINT_TYPE(252409.364,5526961.427,NULL),NULL,NULL)
+ *
+  *     -- ST_Intersect two 3D segments: No intersection in Z
+  *     with data as (
+  *     select sdo_geometry(3002,null,null,sdo_elem_info_array(1,2,1),sdo_ordinate_array(  0,0, 500, 100,100,1000)) as line1,
+  *            sdo_geometry(3002,null,null,sdo_elem_info_array(1,2,1),sdo_ordinate_array(100,0,1000,   0,100, 501)) as line2
+  *       from dual
+  *     )
+  *     select f.intersection.ST_IsNull() as intersectAlwaysNull,
+  *            f.intersection.id          as intersectMarker,
+  *            f.intersection.ST_AsText() as IntersectCoordValues
+  *       from (select T_Segment(line1)
+  *                      .ST_Intersect(
+  *                          T_Segment(line2)
+  *                      ) as intersection
+  *               from data a
+  *            ) f;
+ *
+  *     INTERSECTALWAYSNULL INTERSECTMARKER INTERSECTCOORDVALUES
+  *     ------------------- --------------- ----------------------------------------
+  *                       1             -99 T_Vertex(NULL,NULL,NULL,NULL,-99,1,NULL)
+ *
+  *     -- ST_Intersect 3D has intersection in Z
+  *     -- Compare to SDO_GEOM.SDO_Intersection
+  *     with data as (
+  *     select sdo_geometry(3002,null,null,sdo_elem_info_array(1,2,1),sdo_ordinate_array(0,  0, 0, 100,100,10)) as line1,
+  *            sdo_geometry(3002,null,null,sdo_elem_info_array(1,2,1),sdo_ordinate_array(0,100,10, 100,  0, 0)) as line2
+  *       from dual
+  *     )
+  *     select sdo_geom.sdo_intersection(line1,line2,0.005) as geom from data
+  *     union all
+  *     select T_Segment(line1)
+  *            .ST_Intersect(
+  *                T_Segment(line2)
+  *            )
+  *            .ST_Round(3,3)
+  *            .ST_SdoGeometry(3) as int3D
+  *       from data a;
+ *
+  *     GEOM
+  *     ---------------------------------------------------------------------------------------------
+  *     SDO_GEOMETRY(3001,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,1,1),SDO_ORDINATE_ARRAY(50,50,0))
+  *     SDO_GEOMETRY(3001,NULL,                                    SDO_POINT_TYPE(50,50,5),NULL,NULL)
+  *  NOTES
+  *    Calculations are always planar.
+  *    3D computations use T_Vector3D object methods.
+  *  TODO
+  *    Enable calculation of intersection between geodetic/geographic segments.
+  *    Support intersections including circular arcs
+  *  AUTHOR
+  *    Simon Greener
+  *  HISTORY
+  *   Simon Greener - June 2011 - Original Coding
+  *  COPYRIGHT
+  *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
+  ******/
+  Member Function ST_Intersect(p_segment   IN &&INSTALL_SCHEMA..T_SEGMENT,
+                               p_unit      IN varchar2 default NULL)
+           Return &&INSTALL_SCHEMA..T_Segment Deterministic,
+
   /****m* T_SEGMENT/ST_IntersectDetail
   *  NAME
   *    ST_IntersectDetail -- Computes intersecton point between two 2D segments.
@@ -2578,7 +3089,6 @@ AS OBJECT (
   *  COPYRIGHT
   *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
   ******/
-
   Member Function ST_IntersectDetail(p_segment   IN &&INSTALL_SCHEMA..T_SEGMENT,
                                      p_unit      IN VarChar2 default NULL)
            Return &&INSTALL_SCHEMA..T_Segment deterministic,
@@ -2727,130 +3237,7 @@ AS OBJECT (
                                           p_unit       IN VarChar2 Default NULL)
            Return varchar2 deterministic,
 
-  /****m* T_SEGMENT/ST_Intersect
-  *  NAME
-  *    ST_Intersect -- Computes intersection point between two 2D or 3D segments, returning a single intersection vertex.
-  *  SYNOPSIS
-  *    Member Function ST_Intersect(p_segment   IN T_SEGMENT,
-  *                                 p_unit      IN varchar2 default NULL)
-  *             Return T_Vertex Deterministic,
-  *  DESCRIPTION
-  *    This function computes the intersection point between the underlying 2D/3D segment and the provided 2D/3D segment.
-  *    The intersection point computed is always physical ie a physical intersection or an empty vertex is returned if no intersection is computed.
-  *    If segments are parallel an empty T_VERTEX is returned with T_VERTEX.id set to -9.
-  *    Intersection between a linestring segment and circular arc segment is supported.
-  *    However, the intersection between two circular arc segments is not yet supported.
-  *  INPUTS
-  *    p_segment (T_Segment) -- Second segment for which an intersection with current is computed.
-  *    p_unit     (varchar2) -- Oracle Unit of Measure eg unit=M.
-  *  RESULT
-  *    Intersection (T_Vertex) -- The intersection point or empty point with id = -9 for parallel segments.
-  *  EXAMPLE
-  *    select T_Segment(
-  *             p_Segment_id => 0,
-  *             p_startCoord => T_Vertex(
-  *                               p_id        =>  1,
-  *                               p_x         => 10,
-  *                               p_y         =>  0,
-  *                               p_sdo_gtype => 2001,
-  *                               p_sdo_srid  => NULL
-  *                             ),
-  *             p_endCoord   => T_Vertex(
-  *                               p_id        =>  3,
-  *                               p_x         => 20,
-  *                               p_y         =>  0,
-  *                               p_sdo_gtype => 2001,
-  *                               p_sdo_srid  => NULL
-  *                             ),
-  *             p_sdo_gtype  => 2002,
-  *             p_sdo_srid   => NULL
-  *           )
-  *           .ST_Intersect(p_segment =>
-  *           .ST_AsText() as Intersection3D
-  *      from dual;
- *
-  *    INTERSECTION3D
-  *    ------------------------------------
-  *    T_Vertex(10,5,NULL,NULL,1,2001,NULL)
- *
-  *    -- ST_Intersect of line segment and circular arc segment
-  *    With data As (
-  *    SELECT SDO_GEOMETRY('CIRCULARSTRING(252230.478 5526918.373, 252400.08 5526918.373, 252230.478 5527000.0)',null) as cString,
-  *           SDO_GEOMETRY('LINESTRING(252257.745 5526951.808, 252438.138 5526963.252)',null) as lString
-  *      FROM Dual
-  *    )
-  *    select t_geometry(SDO_GEOM.SDO_Intersection(cString,lString,0.005),0.005,3,1)
-  *             .ST_Round(3,3,1)
-  *             .geom as iGeom,
-  *           T_Segment(lString)
-  *             .ST_Intersect(T_Segment(cString),3)
-  *             .ST_Round(3)
-  *             .ST_SdoGeometry() as iPoint
-  *      from data a;
- *
-  *    IGEOM
-  *    IPOINT
-  *    -------------------------------------------------------------------------------------------------------------
-  *    SDO_GEOMETRY(2001,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,1,1),SDO_ORDINATE_ARRAY(252409.364,5526961.427))
-  *    SDO_GEOMETRY(2001,NULL,                                    SDO_POINT_TYPE(252409.364,5526961.427,NULL),NULL,NULL)
- *
-  *     -- ST_Intersect two 3D segments: No intersection in Z
-  *     with data as (
-  *     select sdo_geometry(3002,null,null,sdo_elem_info_array(1,2,1),sdo_ordinate_array(  0,0, 500, 100,100,1000)) as line1,
-  *            sdo_geometry(3002,null,null,sdo_elem_info_array(1,2,1),sdo_ordinate_array(100,0,1000,   0,100, 501)) as line2
-  *       from dual
-  *     )
-  *     select f.intersection.ST_IsNull() as intersectAlwaysNull,
-  *            f.intersection.id          as intersectMarker,
-  *            f.intersection.ST_AsText() as IntersectCoordValues
-  *       from (select T_Segment(line1)
-  *                      .ST_Intersect(
-  *                          T_Segment(line2)
-  *                      ) as intersection
-  *               from data a
-  *            ) f;
- *
-  *     INTERSECTALWAYSNULL INTERSECTMARKER INTERSECTCOORDVALUES
-  *     ------------------- --------------- ----------------------------------------
-  *                       1             -99 T_Vertex(NULL,NULL,NULL,NULL,-99,1,NULL)
- *
-  *     -- ST_Intersect 3D has intersection in Z
-  *     -- Compare to SDO_GEOM.SDO_Intersection
-  *     with data as (
-  *     select sdo_geometry(3002,null,null,sdo_elem_info_array(1,2,1),sdo_ordinate_array(0,  0, 0, 100,100,10)) as line1,
-  *            sdo_geometry(3002,null,null,sdo_elem_info_array(1,2,1),sdo_ordinate_array(0,100,10, 100,  0, 0)) as line2
-  *       from dual
-  *     )
-  *     select sdo_geom.sdo_intersection(line1,line2,0.005) as geom from data
-  *     union all
-  *     select T_Segment(line1)
-  *            .ST_Intersect(
-  *                T_Segment(line2)
-  *            )
-  *            .ST_Round(3,3)
-  *            .ST_SdoGeometry(3) as int3D
-  *       from data a;
- *
-  *     GEOM
-  *     ---------------------------------------------------------------------------------------------
-  *     SDO_GEOMETRY(3001,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,1,1),SDO_ORDINATE_ARRAY(50,50,0))
-  *     SDO_GEOMETRY(3001,NULL,                                    SDO_POINT_TYPE(50,50,5),NULL,NULL)
-  *  NOTES
-  *    Calculations are always planar.
-  *    3D computations use T_Vector3D object methods.
-  *  TODO
-  *    Enable calculation of intersection between geodetic/geographic segments.
-  *    Support intersections including circular arcs
-  *  AUTHOR
-  *    Simon Greener
-  *  HISTORY
-  *   Simon Greener - June 2011 - Original Coding
-  *  COPYRIGHT
-  *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
-  ******/
-  Member Function ST_Intersect(p_segment   IN &&INSTALL_SCHEMA..T_SEGMENT,
-                               p_unit      IN varchar2 default NULL)
-           Return &&INSTALL_SCHEMA..T_Segment Deterministic,
+
 
  /****m* T_SEGMENT/ST_LineSubstring
   *  NAME
@@ -2975,7 +3362,7 @@ AS OBJECT (
                                    p_unit           In Varchar2 Default NULL)
            Return &&INSTALL_SCHEMA..T_Segment Deterministic,
 
-  /****m* T_GEOMETRY/ST_UpdateCoordinate(p_vertex)
+  /****m* T_SEGMENT/ST_UpdateCoordinate(p_vertex)
   *  NAME
   *    ST_UpdateCoordinate -- Function which updates the start, mid or end coordinate depending on p_which.
   *  SYNOPSIS
@@ -3134,7 +3521,7 @@ AS OBJECT (
   Member Function ST_SdoGeometry(p_dims in integer default null)
            Return mdsys.sdo_geometry Deterministic,
 
-  /****m* T_SEGMENT/ST_Round
+  /****m* T_SEGMENT/ST_Round(x y z m)
   *  NAME
   *    ST_Round -- Rounds X,Y,Z and m(w) ordinates of segment's coordinates to passed in precision.
   *  SYNOPSIS
@@ -3276,7 +3663,7 @@ AS OBJECT (
   Member Function ST_AsText
            Return VarChar2 Deterministic,
 
-  /****m* T_GEOMETRY/ST_AsWKT
+  /****m* T_SEGMENT/ST_AsWKT
   *  NAME
   *    ST_AsWKT -- Exports T_SEGMENT object to its Extended Well Known Text (EWKT).
   *  SYNOPSIS

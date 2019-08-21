@@ -2,7 +2,7 @@ DEFINE INSTALL_SCHEMA='&1'
 
 SET VERIFY OFF;
 
-CREATE OR REPLACE TYPE &&INSTALL_SCHEMA..T_VERTEX 
+CREATE OR REPLACE TYPE &&INSTALL_SCHEMA..T_VERTEX
 AUTHID DEFINER
 AS OBJECT (
 
@@ -168,7 +168,6 @@ AS OBJECT (
        Return Self as result,
   /*******/
 
-
   /* ********************* Member Functions ********************* */
 
  /****m* T_VERTEX/INSPECTORS(T_VERTEX)
@@ -191,6 +190,7 @@ AS OBJECT (
   Member Function ST_SDO_GTYPE  Return integer Deterministic,
   Member Function ST_IsDeleted  Return integer Deterministic,
   Member Function ST_IsMeasured Return integer Deterministic,
+
   /*******/
 
   /****m* T_VERTEX/ST_Self
@@ -201,7 +201,7 @@ AS OBJECT (
   *             Return T_Vertex Deterministic,
   *  DESCRIPTION
   *    When extracting vertices from a geometry into T_Vertex objects via a TABLE function call to T_GEOMETRY.T_Vertices()
-  *    it is handy to have a method which allows access to the resulting T_VERTEX row as a single object. 
+  *    it is handy to have a method which allows access to the resulting T_VERTEX row as a single object.
   *    In a sense this method allows access similar to t.COLUMN_VALUE for atmoic datatype access from TABLE functions.
   *  RESULT
   *    vertex (T_VERTEX) -- A single T_Vertex object.
@@ -235,6 +235,52 @@ AS OBJECT (
   Member Function ST_Self
            Return &&INSTALL_SCHEMA..T_Vertex Deterministic,
 
+  /****m* T_VERTEX/ST_SetCoordinate
+  *  NAME
+  *    ST_SetCoordinate -- Is a procedure that sets a vertex's X,Y,Z and W(M) ordinates to passed in values
+  *  SYNOPSIS
+  *    Member Procedure ST_SetCoordinate(
+  *                        SELF  IN OUT NOCOPY T_Vertex,
+  *                        p_x in number default 8,
+  *                        p_y in number default NULL,
+  *                        p_z in number default 3,
+  *                        p_w in number default 3)
+  *             Return T_Vertex Deterministic,
+  *  DESCRIPTION
+  *    Assigns supplied values to t_vertex's x,y,z,w ordinates.
+  *  EXAMPLE
+  *      SELF.x := ROUND(SELF.x,p_dec_places_x);
+  *  PARAMETERS
+  *    p_x (number) - value assigned to x Ordinate.
+  *    p_y (number) - value assigned to y Ordinate.
+  *    p_z (number) - value assigned to z Ordinate.
+  *    p_w (number) - value assigned to w Ordinate.
+  *  EXAMPLE
+  *    set serveroutput on size unlimited
+  *    declare
+  *      v_vertex &&INSTALL_SCHEMA..t_vertex;
+  *    begin
+  *      v_vertex := &&INSTALL_SCHEMA..T_Vertex(
+  *                   p_x        => 147.5489578,
+  *                   p_y        => -42.53625,
+  *                   p_id       => 1,
+  *                   p_sdo_gtype=> 2001,
+  *                   p_sdo_srid => 4283
+  *                 );
+  *      v_vertex.ST_SetCoordinate(p_x => 148, p_y => -43);
+  *      dbms_output.put_line(v_vertex.ST_AsEWKT());
+  *    END;
+  *    /
+  *    
+  *    SRID=4283;POINT (148 -43)
+  *    PL/SQL procedure successfully completed.
+  *  AUTHOR
+  *    Simon Greener
+  *  HISTORY
+  *    Simon Greener - Jan 2013 - Original coding.
+  *  COPYRIGHT
+  *    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
+  ******/
   Member Procedure ST_SetCoordinate(
            SELF  IN OUT NOCOPY T_Vertex,
            p_x   in number,
@@ -267,10 +313,10 @@ AS OBJECT (
   *           )
   *           .ST_isEmpty() as vIsEmpty
   *      from dual;
-  *    
+  *
   *    ISEMPTY VISEMPTY
   *    ------- --------
-  *          1        0 
+  *          1        0
   *  AUTHOR
   *    Simon Greener
   *  HISTORY
@@ -304,10 +350,10 @@ AS OBJECT (
   *           )
   *           .ST_Dims() as dims
   *      from dual;
-  *    
+  *
   *    EDIMS DIMS
   *    ----- ----
-  *        2    3 
+  *        2    3
   *  AUTHOR
   *    Simon Greener
   *  HISTORY
@@ -353,10 +399,10 @@ AS OBJECT (
   *           )
   *           .ST_Dims() as dims3
   *      from dual;
-  *    
+  *
   *            EZ      DIMS2      DIMS3
   *    ---------- ---------- ----------
-  *             0          2          3 
+  *             0          2          3
   *  AUTHOR
   *    Simon Greener
   *  HISTORY
@@ -398,7 +444,7 @@ AS OBJECT (
   *           )
   *           .ST_hasM() as hasM3
   *      from dual;
-  *      
+  *
   *    EM HASM2 HASM3
   *    -- ----- -----
   *     0     0     1
@@ -443,10 +489,10 @@ AS OBJECT (
   *           )
   *           .ST_LRS_Dim() as lrsDim3
   *      from dual;
-  *    
+  *
   *    ELRSDIM LRSDIM2 LRSDIM3
   *    ------- ------- -------
-  *          0       0       3 
+  *          0       0       3
   *  AUTHOR
   *    Simon Greener
   *  HISTORY
@@ -496,7 +542,7 @@ AS OBJECT (
   *           .ST_LRS_Set_Measure(1.2)
   *           .ST_AsText() as new4401Vertex
   *      from dual;
-  *    
+  *
   *    NEW3301VERTEX                                         NEW4401VERTEX
   *    ----------------------------------------------------- --------------------------------------------------
   *    T_Vertex(X=0,Y=0,Z=2.1,W=NULL,ID=0,GT=3301,SRID=NULL) T_Vertex(X=0,Y=0,Z=0,W=1.2,ID=0,GT=4401,SRID=NULL)
@@ -536,7 +582,7 @@ AS OBJECT (
   *           .ST_To2D()
   *           .ST_AsText() as Vertex2D
   *      from dual;
-  *    
+  *
   *    VERTEX2D
   *    ------------------------------------------------------
   *    T_Vertex(X=1,Y=2,Z=NULL,W=NULL,ID=0,GT=2001,SRID=NULL)
@@ -591,7 +637,7 @@ AS OBJECT (
   *            .ST_LRS_Set_Measure(4.0)
   *            .ST_AsText() as vertex3
   *      from data a;
-  *    
+  *
   *    VERTEX3
   *    ------------------------------------------------
   *    T_Vertex(X=1,Y=2,Z=3,W=4,ID=0,GT=4401,SRID=NULL)
@@ -628,7 +674,7 @@ AS OBJECT (
   *               p_sdo_srid  => NULL
   *             ).ST_VertexType()  as VertexType
   *    from dual;
-  *    
+  *
   *    VERTEXTYPE
   *    ---------------------------------------------------------------
   *    MDSYS.VERTEX_TYPE(1,2,3,4,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0)
@@ -665,7 +711,7 @@ AS OBJECT (
   *               p_sdo_srid  => NULL
   *             ).ST_SdoPointType()  as sdo_point_type
   *    from dual;
-  *    
+  *
   *    SDO_POINT_TYPE
   *    ---------------------------
   *    MDSYS.SDO_POINT_TYPE(1,2,3)
@@ -715,7 +761,7 @@ AS OBJECT (
   *               p_normalize=>1
   *           ),8) as bearing
   *      from dual;
-  *    
+  *
   *    BEARING
   *    -------
   *         45
@@ -788,7 +834,7 @@ AS OBJECT (
   *    DISTANCE
   *    ----------
   *        14.142
-  *    
+  *
   *    -- Geodetic In Kilometers
   *    select Round(
   *             T_Vertex(
@@ -804,7 +850,7 @@ AS OBJECT (
   *             4
   *           ) as distance
   *      from dual;
-  *    
+  *
   *      DISTANCE
   *    ----------
   *        8.2199
@@ -853,11 +899,11 @@ AS OBJECT (
   *             .ST_Round(3)
   *             .ST_AsText() as vertex
   *      from dual;
-  *    
+  *
   *    VERTEX
   *    --------------------------------------------------------
   *    T_Vertex(X=10,Y=10,Z=NULL,W=NULL,ID=1,GT=2001,SRID=NULL)
-  *    
+  *
   *    -- Geodetic with distance in meters
   *    select T_Vertex(
   *             sdo_geometry('POINT(147.5 -42.5)',4283)
@@ -870,7 +916,7 @@ AS OBJECT (
   *           .ST_Round(6)
   *           .ST_AsText() as vertex
   *      from dual;
-  *    
+  *
   *    VERTEX
   *    -----------------------------------------------------------------
   *    T_Vertex(X=147.6,Y=-42.5,Z=NULL,W=NULL,ID=NULL,GT=2001,SRID=4283)
@@ -947,12 +993,12 @@ AS OBJECT (
   *             )
   *           ),8) as sAngle
   *      from dual;
-  *    
+  *
   *    SANGLE
   *    ------
   *        45
   *
-  *    -- Geodetic 
+  *    -- Geodetic
   *    select COGO.DD2DMS(
   *            COGO.ST_Degrees(
   *             T_Vertex(
@@ -1014,7 +1060,7 @@ AS OBJECT (
   *  RESULT
   *    BOOLEAN (INTEGER) - 1 is True; 0 is False.
   *  EXAMPLE
-  *    -- Geodetic 
+  *    -- Geodetic
   *    set serveroutput on size unlimited
   *    With Data as (
   *      select T_Vertex(
@@ -1048,8 +1094,8 @@ AS OBJECT (
   *             ) as withinTolerance
   *      from data a,
   *           table(TOOLS.generate_series(0,1,1)) t;
-  *             
-  *    
+  *
+  *
   *      DISTANCE  TOLERANCE WITHINTOLERANCE
   *    ---------- ---------- ---------------
   *    .0333585156         .5               1
@@ -1098,11 +1144,11 @@ AS OBJECT (
   *           .ST_Round(6,6)
   *           .ST_AsText() as vertex
   *     from dual;
-  *    
+  *
   *    VERTEX
   *    -----------------------------------------------------------------------
   *    T_Vertex(X=147.548958,Y=-42.53625,Z=NULL,W=NULL,ID=1,GT=2001,SRID=4283)
-  *    
+  *
   *    -- Planar
   *    select T_Vertex(
   *             p_x        => 12847447.54578,
@@ -1115,7 +1161,7 @@ AS OBJECT (
   *           .ST_Round(3,3,2)
   *           .ST_AsText() as vertex
   *     from dual;
-  *    
+  *
   *    VERTEX
   *    ---------------------------------------------------------------------------
   *    T_Vertex(X=12847447.546,Y=4374842.343,Z=3.27,W=NULL,ID=1,GT=3001,SRID=NULL)
@@ -1139,9 +1185,9 @@ AS OBJECT (
   *    Member Function ST_SdoGeometry
   *             Return MDSYS.SDO_GEOMETRY Deterministic,
   *  DESCRIPTION
-  *    The encoding of the returned SDO_GEOMETRY object depends on the dimension of the vertex 
+  *    The encoding of the returned SDO_GEOMETRY object depends on the dimension of the vertex
   *    supplied using p_dims or SELF.ST_Dims() if p_dims is null.
-  *    This can be best seen in the source code from T_Vertex Type Body at the end of this documentation. 
+  *    This can be best seen in the source code from T_Vertex Type Body at the end of this documentation.
   *  PARAMETERS
   *    p_dims in integer default null - A dimension value that will override SELF.ST_Dims() eg return 2D from a 3D vertex.
   *  RESULT
@@ -1157,11 +1203,11 @@ AS OBJECT (
   *           .ST_Round(6,6)
   *           .ST_SdoGeometry() as geom
   *     from dual;
-  *    
+  *
   *    GEOM
   *    ---------------------------------------------------------------------------
   *    SDO_GEOMETRY(2001,4283,SDO_POINT_TYPE(147.548958,-42.53625,NULL),NULL,NULL)
-  *    
+  *
   *    select T_Vertex(
   *             p_x        => 12847447.54578,
   *             p_y        => 4374842.3425,
@@ -1173,11 +1219,11 @@ AS OBJECT (
   *           .ST_Round(3,3,2)
   *           .ST_SdoGeometry() as geom
   *     from dual;
-  *    
+  *
   *    GEOM
   *    -------------------------------------------------------------------------------
   *    SDO_GEOMETRY(3001,NULL,SDO_POINT_TYPE(12847447.546,4374842.343,3.27),NULL,NULL)
-  *    
+  *
   *    select T_Vertex(
   *             p_x        => 12847447.54578,
   *             p_y        => 4374842.3425,
@@ -1190,7 +1236,7 @@ AS OBJECT (
   *           .ST_Round(3,3,2)
   *           .ST_SdoGeometry() as geom
   *     from dual;
-  *    
+  *
   *    GEOM
   *    ---------------------------------------------------------------------------------------------------------------
   *    SDO_GEOMETRY(4401,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,1,1),SDO_ORDINATE_ARRAY(12847447.546,4374842.343,3.27,0.002))
@@ -1345,12 +1391,12 @@ AS OBJECT (
   *               t.IntValue
   *           ) as vEquals
   *      from table(TOOLS.generate_series(1,3,1)) t;
-  *      
+  *
   *    PRECISION VEQUALS
   *    --------- -------
-  *            1       1 
-  *            2       1 
-  *            3       0 
+  *            1       1
+  *            2       1
+  *            3       0
   *  AUTHOR
   *    Simon Greener
   *  HISTORY
@@ -1400,8 +1446,8 @@ AS OBJECT (
   *    T_Vertex(X=3.08,Y=.63,Z=NULL,W=NULL,ID=1,GT=2001,SRID=NULL)
   *    T_Vertex(X=4.17,Y=.57,Z=NULL,W=NULL,ID=1,GT=2001,SRID=NULL)
   *    T_Vertex(X=6.55,Y=1.18,Z=NULL,W=NULL,ID=1,GT=2001,SRID=NULL)
-  *    
-  *     9 rows selected 
+  *
+  *     9 rows selected
   *  AUTHOR
   *    Simon Greener
   *  HISTORY
@@ -1415,15 +1461,16 @@ AS OBJECT (
 )
 INSTANTIABLE NOT FINAL;
 /
-SHOW ERRORS
+show errors
+
 
 set serveroutput on size unlimited
 WHENEVER SQLERROR EXIT FAILURE;
 DECLARE
-   v_OK       boolean := true;
+   v_OK       boolean := FALSE;
    v_obj_name varchar2(30) := 'T_VERTEX';
 BEGIN
-   FOR rec IN (select object_name,object_Type, status 
+   FOR rec IN (select object_name,object_Type, status
                  from user_objects
                 where object_name = v_obj_name
                   and object_type = 'TYPE'
@@ -1432,12 +1479,11 @@ BEGIN
    LOOP
       IF ( rec.status = 'VALID' ) Then
          dbms_output.put_line(rec.object_type || ' ' || USER || '.' || rec.object_name || ' is valid.');
+         v_ok := TRUE;
       ELSE
          dbms_output.put_line(rec.object_type || ' ' || USER || '.' || rec.object_name || ' is invalid.');
-         v_ok := false;
       END IF;
    END LOOP;
-   execute immediate 'GRANT EXECUTE ON &&INSTALL_SCHEMA..' || v_obj_name || ' TO public WITH GRANT OPTION';
    IF ( NOT v_OK ) THEN
       RAISE_APPLICATION_ERROR(-20000,v_obj_name || ' failed to install.');
    END IF;
@@ -1445,27 +1491,5 @@ END;
 /
 SHOW ERRORS
 
-WHENEVER SQLERROR CONTINUE;
-
-/****s* OBJECT TYPE ARRAY/T_VERTICES 
-*  NAME
-*    T_VERTICES -- Array of of T_Vertex objects.
-*  DESCRIPTION
-*    An array of T_VERTEX objects.
-*  AUTHOR
-*    Simon Greener
-*  HISTORY
-*    Simon Greener - Jan 2005 - Original coding.
-*  COPYRIGHT
-*    (c) 2012-2018 by TheSpatialDBAdvisor/Simon Greener
-*  SOURCE
-*/
-CREATE OR REPLACE TYPE &&INSTALL_SCHEMA..T_Vertices 
-           IS TABLE OF &&INSTALL_SCHEMA..T_Vertex;
-/*******/
-/
-show errors
-
-grant execute on &&INSTALL_SCHEMA..T_Vertices to public with grant option;
-
 EXIT SUCCESS;
+
