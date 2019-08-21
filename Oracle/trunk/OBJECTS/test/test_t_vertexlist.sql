@@ -45,6 +45,8 @@ IS
 
 END test_t_vertexlist;
 /
+Show Errors
+
 
 CREATE OR REPLACE PACKAGE BODY test_t_vertexlist IS
 
@@ -327,6 +329,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertexlist IS
 
 END test_t_vertexlist;
 /
+Show Errors
 
 set serveroutput on size unlimited
 set long 800

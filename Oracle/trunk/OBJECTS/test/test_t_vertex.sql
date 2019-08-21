@@ -137,7 +137,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE t_vertex IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.t_vertex;
@@ -154,7 +154,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE st_x IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_x;
@@ -171,7 +171,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE st_y IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_y;
@@ -188,7 +188,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE st_z IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_z;
@@ -205,7 +205,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE st_w IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_w;
@@ -222,7 +222,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE st_m IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_m;
@@ -239,7 +239,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE st_id IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_id;
@@ -256,7 +256,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE st_srid IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_srid;
@@ -273,7 +273,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE st_sdo_gtype IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_sdo_gtype;
@@ -290,7 +290,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE st_isdeleted IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_isdeleted;
@@ -307,7 +307,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE st_ismeasured IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_ismeasured;
@@ -324,7 +324,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE st_self IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_self;
@@ -341,7 +341,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE st_setcoordinate IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_setcoordinate;
@@ -358,7 +358,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE st_setdeleted IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_setdeleted;
@@ -375,7 +375,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE st_isempty IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_isempty;
@@ -392,7 +392,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE st_dims IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_dims;
@@ -409,7 +409,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE st_hasz IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_hasz;
@@ -426,7 +426,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE st_hasm IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_hasm;
@@ -443,7 +443,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE st_lrs_dim IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_lrs_dim;
@@ -460,7 +460,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE st_lrs_set_measure IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_lrs_set_measure;
@@ -477,7 +477,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE st_to2d IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_to2d;
@@ -494,7 +494,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE st_to3d IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_to3d;
@@ -511,7 +511,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE st_vertextype IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_vertextype;
@@ -528,7 +528,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE st_sdopointtype IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_sdopointtype;
@@ -545,7 +545,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE st_bearing IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_bearing;
@@ -562,7 +562,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE st_distance IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_distance;
@@ -579,7 +579,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE st_frombearinganddistance IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_frombearinganddistance;
@@ -596,7 +596,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE st_add IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_add;
@@ -613,7 +613,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE st_normal IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_normal;
@@ -630,7 +630,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE st_subtract IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_subtract;
@@ -647,7 +647,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE st_scale IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_scale;
@@ -664,7 +664,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE st_subtendedangle IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_subtendedangle;
@@ -681,7 +681,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE st_withintolerance IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_withintolerance;
@@ -698,7 +698,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE st_round IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_round;
@@ -715,7 +715,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE st_sdogeometry IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_sdogeometry;
@@ -732,7 +732,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE st_astext IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_astext;
@@ -749,7 +749,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE st_asewkt IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_asewkt;
@@ -766,7 +766,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE st_ascoordstring IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_ascoordstring;
@@ -783,7 +783,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE st_equals IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_equals;
@@ -800,7 +800,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    --
    PROCEDURE orderby IS
       l_actual   INTEGER := 0;
-      l_expected INTEGER := 1;
+      l_expected INTEGER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.orderby;
