@@ -127,7 +127,7 @@ TYPEHEADERS=(
   T_Bearing_Distance 
   T_Vector3D 
   T_Geometry 
-  Package_DEBUG
+  Package_PRINT
 )
 for F in "${TYPEHEADERS[@]}"; do
   echo "Installing $F.sql will create log/$F.log ...";
@@ -148,8 +148,8 @@ done
 
 echo ... "Type Bodies and Debug/ST_LRS packages ..."
 BODIES=(
-  Package_TOOLS_body 
-  Package_DEBUG_body 
+  Package_TOOLS_Body 
+  Package_PRINT_Body 
   Package_COGO_Body 
   Package_ST_LRS 
   T_Vector3D_Body 
