@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
+<link rel="stylesheet" href="./t_bearing_distance.css" type="text/css" />
+<title>./documentation/t_bearing_distance</title>
+<!-- Source: ./src/ -->
+<!-- Generated with ROBODoc Version 4.99.36 (Mar 13 2008) -->
+</head>
+<body>
+<div id="logo">
+<a name="robo_top_of_doc">SPDBA Bearing And Distance Object Types and Methods</a>
+</div> <!-- logo -->
+<h3>TABLE OF CONTENTS</h3>
+<ul>
+<li>1. <a href="#robo0">OBJECT TYPE ARRAY/T_BEARING_DISTANCES</a></li>
+<li>2. <a href="#robo1">OBJECT TYPE/T_BEARING_DISTANCE</a></li>
+<ul>
+<li>2.1. <a href="#robo2">T_BEARING_DISTANCE/ATTRIBUTES(T_BEARING_DISTANCE)</a></li>
+<li>2.2. <a href="#robo3">T_BEARING_DISTANCE/CONSTRUCTORS(T_BEARING_DISTANCE)</a></li>
+</ul>
+</ul>
+<a name="robo0"></a>
+<a name="OBJECT20TYPE20ARRAY2fT5fBEARING5fDISTANCES"></a>
+<h1>1.  OBJECT TYPE ARRAY/T_BEARING_DISTANCES [ Structures ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Structures ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>T_BEARING_DISTANCES</strong> - Array of <a href="#robo1">T_BEARING_DISTANCE</a> Objects.
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    An array of <a href="#robo1">T_BEARING_DISTANCE</a> objects used to fully describe a single polygon ring or linestring object.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - Jan 2017 - Original coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<p class="item_name">SOURCE</p>
+<pre class="source">CREATE OR REPLACE TYPE <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><strong>T_BEARING_DISTANCES</strong>
+           AS TABLE OF <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><a href="#robo1">T_BEARING_DISTANCE</a><span class="sign">;</span>
+</pre>
+<a name="robo1"></a>
+<a name="OBJECT20TYPE2fT5fBEARING5fDISTANCE"></a>
+<h1>2.  OBJECT TYPE/T_BEARING_DISTANCE [ Types ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Types ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>T_BEARING_DISTANCE</strong> - Object Type representing a single bearing and distance COGO instruction.
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    An object type that represents a set of bearing/distance instructions for building the sides of a polygon, or the segments of a linestring.
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    No methods are declared on this type.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - Jan 2017 - Original coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo2"></a>
+<a name="T5fBEARING5fDISTANCE2fATTRIBUTES28T5fBEARING5fDISTANCE29"></a>
+<h2>2.1.  T_BEARING_DISTANCE/ATTRIBUTES(T_BEARING_DISTANCE) [ Variables ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_BEARING_DISTANCE</a> ] [ Variables ]</p>
+<p class="item_name">ATTRIBUTES</p>
+<pre>    sDegMinSec varchar2(255) -- Textual description of a bearing eg 180^10'5.2" (cf Google).
+                                See also function COGO.DMS2DD.
+    nBearing   number,       -- A numeric bearing eg 180.092784
+    distance   number,       -- Length of line along line defined by bearing.
+    Z          number,       -- Z ordinate of point at end of bearing/distance (line cogo function only)
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    Normally only one or the other of the sDegMinSec or nBearing attributes are defined.
+</pre>
+<p class="item_name">SOURCE</p>
+<pre class="source">  Bearing  number<span class="sign">,</span>
+  Distance number<span class="sign">,</span>
+  Z        number<span class="sign">,</span>
+</pre>
+<a name="robo3"></a>
+<a name="T5fBEARING5fDISTANCE2fCONSTRUCTORS28T5fBEARING5fDISTANCE29"></a>
+<h2>2.2.  T_BEARING_DISTANCE/CONSTRUCTORS(T_BEARING_DISTANCE) [ Methods ]  </h2>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo1">T_BEARING_DISTANCE</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    A collection of <a href="#robo1">T_BEARING_DISTANCE</a> Constructors.
+  INPUT
+    p_sDegMinSec varchar2 -- Textual description of a bearing eg 180^10'5.2" (cf Google).
+                             Converted to internal bearing attribute via call to COGO.DMS2DEG.
+</pre>
+<p class="item_name">SOURCE</p>
+<pre class="source">  Constructor Function <a href="#robo1">T_BEARING_DISTANCE</a> <span class="sign">(</span> p_sDegMinSec in varchar2<span class="sign">,</span>
+                                            p_distance   in number <span class="sign">)</span>
+                Return Self As Result<span class="sign">,</span>
+                
+  Constructor Function <a href="#robo1">T_BEARING_DISTANCE</a> <span class="sign">(</span> p_bearing  in number<span class="sign">,</span>
+                                            p_distance in number <span class="sign">)</span>
+                Return Self As Result<span class="sign">,</span>
+
+  Constructor Function <a href="#robo1">T_BEARING_DISTANCE</a> <span class="sign">(</span> p_sDegMinSec in varchar2<span class="sign">,</span>
+                                            p_distance   in number<span class="sign">,</span>
+                                            p_z          in number <span class="sign">)</span>
+                Return Self As Result
+</pre>
+<div id="footer">
+<p>Generated from ./src/ with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.36 on Wed Aug 21 2019 17:38:44
+</p>
+</div> <!-- footer -->
+</body>
+</html>
