@@ -5,9 +5,8 @@ SET VERIFY OFF;
 -- Always aim for a clean compile
 ALTER SESSION SET PLSQL_WARNINGS='ERROR:ALL';
 
-CREATE OR REPLACE TYPE BODY &&INSTALL_SCHEMA..T_VERTEX 
+create or replace TYPE BODY T_VERTEX
 AS
-
   Constructor Function T_Vertex(SELF IN OUT NOCOPY T_Vertex)
                 Return Self As Result
   AS
@@ -97,10 +96,8 @@ AS
        RETURN;
     END IF;
     BEGIN
-      -- Convert coord string to vertex ordinates
-      -- Requirement: p_coord_string should only have ' ' or ',' separator.
-      SELECT CASE COUNT(*) 
-                  WHEN 2 THEN 2001 
+      SELECT CASE COUNT(*)
+                  WHEN 2 THEN 2001
                   WHEN 3 THEN 3001
                   WHEN 4 THEN 4401
                END as sdo_gtype,
@@ -156,7 +153,7 @@ AS
     self.deleted   := 0;
     RETURN;
   End T_Vertex;
-
+  
   Constructor Function T_Vertex(SELF        IN OUT NOCOPY T_Vertex,
                                 p_x         In number,
                                 p_y         In number,
@@ -293,18 +290,35 @@ AS
     Return;
   End T_Vertex;
 
-  /*  =================== Inspector Methods =============== */
+  -- **************************************************************************************
+  
+  Member Function ST_ID         Return Integer AS BEGIN RETURN SELF.ID;        END ST_ID;
 
-  Member Function ST_X         Return Number  AS BEGIN RETURN SELF.x;         END ST_X;
-  Member Function ST_Y         Return Number  AS BEGIN RETURN SELF.y;         END ST_Y;
-  Member Function ST_Z         Return Number  AS BEGIN RETURN SELF.z;         END ST_Z;
-  Member Function ST_W         Return Number  AS BEGIN RETURN SELF.w;         END ST_W;
-  Member Function ST_M         Return Number  AS BEGIN RETURN SELF.w;         END ST_M;
-  Member Function ST_ID        Return Integer AS BEGIN RETURN SELF.ID;        END ST_ID;
-  Member Function ST_SRID      Return integer AS BEGIN RETURN SELF.SDO_SRID;  END ST_SRID;
-  Member Function ST_SDO_GTYPE Return integer AS BEGIN RETURN SELF.SDO_GTYPE; END ST_SDO_GTYPE;
+  Member Function ST_X          Return Number  AS BEGIN RETURN SELF.x;         END ST_X;
+
+  Member Function ST_Y          Return Number  AS BEGIN RETURN SELF.y;         END ST_Y;
+
+  Member Function ST_Z          Return Number  AS BEGIN RETURN SELF.z;         END ST_Z;
+
+  Member Function ST_W          Return Number  AS BEGIN RETURN SELF.w;         END ST_W;
+
+  Member Function ST_SRID       Return integer AS BEGIN RETURN SELF.SDO_SRID;  END ST_SRID;
+
+  Member Function ST_SDO_GTYPE  Return integer AS BEGIN RETURN SELF.SDO_GTYPE; END ST_SDO_GTYPE;
 
   Member Function ST_isDeleted  Return integer AS BEGIN RETURN SELF.deleted;   END ST_isDeleted;
+
+  Member Function ST_M
+  Return Number  
+  AS 
+  BEGIN 
+    RETURN CASE MOD(TRUNC(SELF.sdo_gtype/100),10) 
+           WHEN 0 THEN SELF.w 
+           WHEN 3 THEN SELF.Z
+           WHEN 4 THEN SELF.W
+           ELSE NULL
+            END;
+  END ST_M;
 
   Member Function ST_IsMeasured Return integer 
   AS
@@ -314,6 +328,13 @@ AS
                 ELSE 1
              END;
   End ST_IsMeasured;
+
+  Member Function ST_Self
+           Return &&INSTALL_SCHEMA..T_Vertex
+  As
+  Begin
+    Return &&INSTALL_SCHEMA..T_Vertex(SELF);
+  End ST_Self;
 
   Member Procedure ST_SetCoordinate(
            SELF  IN OUT NOCOPY T_Vertex,
@@ -382,15 +403,6 @@ AS
      return case when SELF.sdo_gtype is null then 0 else trunc(mod(SELF.sdo_gtype,1000)/100) end;
   End ST_Lrs_Dim;
 
-  /*  =================== Member functions =============== */
-
-  Member Function ST_Self
-           Return &&INSTALL_SCHEMA..T_Vertex 
-  As
-  Begin
-    Return &&INSTALL_SCHEMA..T_Vertex(SELF);
-  End ST_Self;
-
   Member Function ST_LRS_Set_Measure(p_measure in number)
            Return &&INSTALL_SCHEMA..T_Vertex
   As
@@ -422,22 +434,21 @@ AS
     ELSE
       v_vertex := &&INSTALL_SCHEMA..T_VERTEX(SELF);
     END IF;
-    -- DEBUG dbms_output.put_line('T_VERTEX.ST_LRS_Set_Measure('||p_measure||')='||v_vertex.ST_AsText());
     RETURN v_vertex;
   End ST_LRS_Set_Measure;
-
+  
   Member Function ST_hasZ
   RETURN integer Deterministic
   As
   Begin
     return CASE WHEN ( ( SELF.ST_Dims() = 3
-                          AND SELF.ST_hasM()=0 /* is XYZ object */ )
-                      OR SELF.ST_Dims() = 4 /* is XYZM */ )
+                          AND SELF.ST_hasM()=0  )
+                      OR SELF.ST_Dims() = 4  )
                 THEN 1
                 ELSE 0
             END;
   End ST_hasZ;
-
+  
   Member Function ST_SdoPointType
            Return mdsys.sdo_point_type Deterministic
   AS
@@ -454,9 +465,7 @@ AS
   AS
     v_vertex mdsys.vertex_type;
   Begin
-    -- Initialse v_vertex in a version independent manner
     v_vertex := mdsys.sdo_util.getVertices(mdsys.sdo_geometry(4001,null,null,mdsys.sdo_elem_info_array(1,1,1),mdsys.sdo_ordinate_array(NULL,NULL,NULL,NULL)))(1);
-    -- Now update elements
     v_vertex.x  := self.x;
     v_vertex.y  := self.y;
     v_vertex.z  := self.z;
@@ -464,7 +473,7 @@ AS
     v_vertex.id := self.id;
     return v_vertex;
   End ST_VertexType;
-
+  
   Member Function ST_To2D
            Return &&INSTALL_SCHEMA..T_Vertex
   AS
@@ -479,13 +488,13 @@ AS
                        p_sdo_srid  =>SELF.sdo_srid)
             END;
   END ST_To2D;
-
+  
   Member Function ST_To3D(p_keep_measure in integer,
                           p_default_z    in number)
            Return &&INSTALL_SCHEMA..T_Vertex
   As
   Begin
-    RETURN case when SELF.ST_Dims() = 2   /* Upscale to 3D */
+    RETURN case when SELF.ST_Dims() = 2
                 then &&INSTALL_SCHEMA..T_VERTEX(
                        p_x         =>SELF.x,
                        p_y         =>SELF.y,
@@ -495,7 +504,7 @@ AS
                        p_sdo_gtype =>3001,
                        p_sdo_srid  =>SELF.sdo_srid
                      )
-                when SELF.ST_Dims()=3 and SELF.ST_hasZ=1  /* Nothing to do */
+                when SELF.ST_Dims()=3 and SELF.ST_hasZ=1
                 then &&INSTALL_SCHEMA..T_VERTEX(SELF)
                 when SELF.ST_Dims()=3
                 then &&INSTALL_SCHEMA..T_VERTEX(
@@ -554,7 +563,6 @@ AS
     PRAGMA EXCEPTION_INIT(geographic3D,-13364);
     c_i_geographic3D Constant Integer       := -20101;
     c_s_geographic3D Constant VarChar2(200) := 'Layer dimensionality does not match geometry dimensions: Probably trying to compute using Geographic/Geographic3D data.';
-
     v_dBearing    Number;
     v_dTilt       Number;
     v_dEast       Number;
@@ -585,7 +593,7 @@ AS
     ELSE
       v_planar_srid := case when p_projected <= 0 then 0 else 1 end;
     END IF;
-    IF (v_planar_srid = 1 /*PLANAR*/ ) Then
+    IF (v_planar_srid = 1) Then
       v_dEast  := p_vertex.x - SELF.x;
       v_dNorth := p_vertex.y - SELF.y;
       If ( v_dEast = 0 ) Then
@@ -593,46 +601,34 @@ AS
       Else
         v_dBearing := -aTan(v_dNorth / v_dEast) + &&INSTALL_SCHEMA..COGO.PI() / 2;
       End If;
-      -- Convert to (Normalised) Degrees
       Return &&INSTALL_SCHEMA..COGO.ST_Degrees(
                p_radians  => case when v_dEast<0 Then v_dBearing + &&INSTALL_SCHEMA..COGO.PI() else v_dBearing end,
                p_normalize=>1
              );
     Else
-      -- Geodetic
       v_start_point := SELF.ST_SdoGeometry();
-      -- DEBUG.printGeom(v_start_point,3,false);
       v_end_point   := p_vertex.ST_SdoGeometry();
-      -- DEBUG.printGeom(v_end_point,3,false);
-      -- Computes the bearing and tilt from a start point to an end point.
-      -- The point geometries must be based on a geodetic.
       BEGIN
-        -- The tilt is computed as the arctangent of the difference between the height values divided by the distance between the points (with height excluded from the distance calculation). 
-        -- That is: tilt = atan(height_difference/distance)
         MDSYS.SDO_UTIL.BEARING_TILT_FOR_POINTS(
           v_start_point,
           v_end_point,
-          0.05,          -- standard geodetic tolerance
+          0.05,
           v_dBearing,
           v_dTilt
         );
-        -- DEBUG dbms_output.put_line('bearing is ' || v_dbearing);
         EXCEPTION
           WHEN geographic3D THEN
           BEGIN
-            -- Recompute using 2D version.
-            v_start_point := SELF.ST_To2D().ST_SdoGeometry();
-            -- DEBUG.printGeom(v_start_point,3,false);
+            -- SRID is not 3D
+            v_start_point :=     SELF.ST_To2D().ST_SdoGeometry();
             v_end_point   := p_vertex.ST_To2D().ST_SdoGeometry();
-            -- DEBUG.printGeom(v_end_point,3,false);
             MDSYS.SDO_UTIL.BEARING_TILT_FOR_POINTS(
               v_start_point,
               v_end_point,
-              0.05,          -- standard geodetic tolerance
+              0.05,
               v_dBearing,
               v_dTilt
             );
-            -- raise_application_error(c_i_geographic3D,c_s_geographic3D,true);
           END;
       END;
       Return &&INSTALL_SCHEMA..COGO.ST_Degrees(
@@ -671,29 +667,28 @@ AS
                                                          p_vertex.ST_SdoGeometry(),
                                                          p_tolerance)
                     end;
-     -- DEBUG dbms_output.put_line('T_Vertex.ST_Distance.v_distance ' || v_distance);
      If ( SELF.ST_Dims() > 2 AND v_isLocator ) Then
         RETURN SQRT(POWER(v_distance,2) + POWER(p_vertex.z - SELF.z,2));
      Else
         RETURN v_distance;
      End If;
   End ST_Distance;
-
+  
   Member Function ST_Add(p_vertex in &&INSTALL_SCHEMA..T_Vertex)
-           Return &&INSTALL_SCHEMA..T_Vertex 
+           Return &&INSTALL_SCHEMA..T_Vertex
   As
   Begin
     Return &&INSTALL_SCHEMA..T_Vertex(
-             p_x        =>SELF.x + p_vertex.x, 
+             p_x        =>SELF.x + p_vertex.x,
              p_y        =>SELF.y + p_vertex.y,
              p_id       =>SELF.id,
              p_sdo_gtype=>2001,
              p_sdo_srid =>SELF.sdo_srid
            );
   End ST_Add;
-
+  
   Member Function ST_Normal
-           Return &&INSTALL_SCHEMA..T_Vertex 
+           Return &&INSTALL_SCHEMA..T_Vertex
   As
     v_length Number;
   Begin
@@ -706,33 +701,33 @@ AS
              p_sdo_srid =>SELF.sdo_srid
            );
   End ST_Normal;
-
+  
   Member Function ST_Subtract(p_vertex in &&INSTALL_SCHEMA..T_Vertex)
-           Return &&INSTALL_SCHEMA..T_Vertex 
+           Return &&INSTALL_SCHEMA..T_Vertex
   As
   Begin
     Return &&INSTALL_SCHEMA..T_Vertex(
-             p_x        =>SELF.x - p_vertex.x, 
+             p_x        =>SELF.x - p_vertex.x,
              p_y        =>SELF.y - p_vertex.y,
              p_id       =>SELF.id,
              p_sdo_gtype=>2001,
              p_sdo_srid =>SELF.sdo_srid
            );
   End ST_Subtract;
-
+  
   Member Function ST_Scale(p_scale in number default 1)
-           Return &&INSTALL_SCHEMA..T_Vertex 
+           Return &&INSTALL_SCHEMA..T_Vertex
   As
   Begin
     Return &&INSTALL_SCHEMA..T_Vertex(
-             p_x        =>SELF.x * NVL(p_scale,1), 
+             p_x        =>SELF.x * NVL(p_scale,1),
              p_y        =>SELF.y * NVL(p_scale,1),
              p_id       =>SELF.id,
              p_sdo_gtype=>2001,
              p_sdo_srid =>SELF.sdo_srid
            );
   End ST_Scale;
-
+  
   Member Function ST_SubtendedAngle(p_start_vertex in &&INSTALL_SCHEMA..T_Vertex,
                                     p_end_vertex   in &&INSTALL_SCHEMA..T_Vertex,
                                     p_projected    in integer default 1)
@@ -744,7 +739,6 @@ AS
     v_CrossProduct  Number;
     v_degrees       Number;
     v_planar_srid   pls_integer;
-
     Function CrossProductLength(dStartX in number,
                                 dStartY in number,
                                 dCentreX in number,
@@ -758,15 +752,12 @@ AS
         dCentreEndX Number;
         dCentreEndY Number;
     BEGIN
-        --Get the vectors' coordinates.
         dCentreStartX := dStartX - dCentreX;
         dCentreStartY := dStartY - dCentreY;
         dCentreEndX   := dEndX - dCentreX;
         dCentreEndY   := dEndY - dCentreY;
-        --Calculate the Z coordinate of the cross product.
         Return dCentreStartX * dCentreEndY - dCentreStartY * dCentreEndX;
     END CrossProductLength;
-
     Function DotProduct(dStartX  in number,
                         dStartY  in number,
                         dCentreX in number,
@@ -780,15 +771,12 @@ AS
         dCentreEndX   Number;
         dCentreEndY   Number;
     BEGIN
-        --Get the vectors' coordinates.
         dCentreStartX := dStartX - dCentreX;
         dCentreStartY := dStartY - dCentreY;
         dCentreEndX   :=   dEndX - dCentreX;
         dCentreEndY   :=   dEndY - dCentreY;
-        --Calculate the dot product.
         Return dCentreStartX * dCentreEndX + dCentreStartY * dCentreEndY;
     End DotProduct;
-
   BEGIN
     If ( SELF.ST_Dims() < 2 ) Then
       Return null;
@@ -806,11 +794,9 @@ AS
       v_planar_srid := case when p_projected <= 0 then 0 else 1 end;
     END IF;
     IF ( v_planar_srid = 1 ) Then
-      -- Get the dot product and cross product.
       v_DotProduct   :=         DotProduct(p_start_vertex.X, p_start_vertex.Y, SELF.x, SELF.Y, p_End_Vertex.X, p_End_Vertex.Y);
       v_CrossProduct := CrossProductLength(p_start_vertex.X, p_start_vertex.Y, SELF.x, SELF.Y, p_End_Vertex.X, p_End_Vertex.Y);
-      -- Calculate the angle in Radians.
-      Return ATan2(v_CrossProduct, 
+      Return ATan2(v_CrossProduct,
                    v_DotProduct);
     ELSE
       v_degrees := SELF.ST_Bearing(
@@ -829,7 +815,7 @@ AS
              );
     END IF;
   End ST_SubtendedAngle;
-
+  
   Member Function ST_FromBearingAndDistance(p_Bearing   in number,
                                             p_Distance  in number,
                                             p_projected in integer default 1)
@@ -839,7 +825,6 @@ AS
     PRAGMA EXCEPTION_INIT(geographic3D,-13364);
     c_i_geographic3D Constant Integer       := -20101;
     c_s_geographic3D Constant VarChar2(200) := 'Layer dimensionality does not match geometry dimensions: Probably trying to compute using Geographic/Geographic3D data.';
-
     dAngle1       NUMBER;
     dAngle1Rad    NUMBER;
     dDeltaN       NUMBER;
@@ -850,7 +835,6 @@ AS
     v_Bearing     Number := case when NVL(p_Bearing,0.0) > 360 then mod(p_Bearing,360) else NVL(p_Bearing,0) end;
     v_planar_srid pls_integer;
   BEGIN
-    -- DEBUG dbms_output.put_line('ST_FromBearingAndDistance: SELF=' || SELF.ST_AsText());
     If ( SELF.ST_Dims() = 0 ) Then
       Return null;
     End If;
@@ -866,9 +850,7 @@ AS
     ELSE
       v_planar_srid := case when p_projected <= 0 then 0 else 1 end;
     END IF;
-    -- DEBUG DBMS_output.put_line('Check='||&&INSTALL_SCHEMA..TOOLS.ST_GetSridType(SELF.sdo_srid));
-    If (v_planar_srid = 1 /*PLANAR*/ ) Then
-      -- First calculate dDeltaE and dDeltaN
+    If (v_planar_srid = 1  ) Then
       If v_Bearing < 90 Then
           dAngle1 := 90 - v_Bearing;
           dAngle1Rad := dAngle1 * &&INSTALL_SCHEMA..COGO.PI() / 180;
@@ -890,16 +872,14 @@ AS
           dDeltaE := Cos(dAngle1Rad) * p_distance * -1;
           dDeltaN := Sin(dAngle1Rad) * p_distance;
       End If;
-      -- Calculate the easting and northing of the end point
       dEndE := dDeltaE + SELF.x;
       dEndN := dDeltaN + SELF.y;
-      -- DEBUG dbms_output.put_line('ST_FromBearingAndDistance: RETURN=' ||&&INSTALL_SCHEMA..T_Vertex(p_x => dEndE,p_y => dEndN,p_id => 1,p_sdo_gtype => self.sdo_gtype,p_sdo_srid => self.sdo_srid).ST_AsText());
       RETURN case when SELF.ST_HasZ()=1
                   then &&INSTALL_SCHEMA..T_Vertex(
-               p_x         => dEndE,
-               p_y         => dEndN,
+                         p_x         => dEndE,
+                         p_y         => dEndN,
                          p_z         => SELF.z,
-               p_id        => 1,
+                         p_id        => 1,
                          p_sdo_gtype => 3001,
                          p_sdo_srid  => self.sdo_srid
                        )
@@ -912,23 +892,19 @@ AS
                        )
              end;
     Else
-      -- Geodetic
       BEGIN
-        -- dbms_output.put_line(v_bearing || ' - ' || p_distance);
         v_point := MDSYS.SDO_UTIL.POINT_AT_BEARING(
                          SELF.ST_SdoGeometry(),
                          &&INSTALL_SCHEMA..COGO.ST_Radians(v_bearing),
                          p_distance);
         EXCEPTION
           WHEN geographic3D THEN
-            -- Recompute using 2D
             v_point := MDSYS.SDO_UTIL.POINT_AT_BEARING(
                              SELF.ST_To2D()
                                  .ST_SdoGeometry(),
                              &&INSTALL_SCHEMA..COGO.ST_Radians(v_bearing),
-                             p_distance);  
+                             p_distance);
       END;
-      -- DEBUG.PrintGeom(p_geom  => v_point,p_round => 8, p_linefeed=>false,p_suffix_text => 'Point From B and D');
       Return &&INSTALL_SCHEMA..T_Vertex(v_point);
     End If;
   END ST_FromBearingAndDistance;
@@ -941,7 +917,7 @@ AS
     v_distance number;
   Begin
     If (p_vertex is null) Then
-       Return 0; /* False */
+       Return 0;
     End If;
     IF ( NVL(p_projected,0) = 1 ) Then
       v_distance := Sqrt(
@@ -950,14 +926,13 @@ AS
                      POWER(NVL(P_Vertex.Z, 0)-NVL(Self.Z, 0), 2)
                     );
     Else
-       -- Geodetic
        v_distance := SELF.ST_Distance(p_vertex    => p_vertex,
                                       p_tolerance => p_tolerance,
                                       p_unit      => NULL);
     End If;
-    Return Case When ( v_distance <= p_tolerance ) 
-                Then 1 /* True */ 
-                Else 0 /* False */
+    Return Case When ( v_distance <= p_tolerance )
+                Then 1
+                Else 0
             End;
   End ST_WithinTolerance;
 
@@ -971,7 +946,6 @@ AS
     ElsIf ( SELF.sdo_gtype = 2001 or v_dims = 2) Then
       Return mdsys.sdo_geometry(SELF.sdo_gtype,SELF.sdo_SRID,mdsys.sdo_point_type(self.x,self.y,NULL),null,null);
     ElsIf ( v_dims = 3 ) Then
-      -- 3001, 3301, 4001, 4301 and 4401 all stop with Z. GetVertices places M in 4401 in Z spot not W
       Return mdsys.sdo_geometry(SELF.sdo_gtype,SELF.sdo_SRID,mdsys.sdo_point_type(self.x,self.y,self.z),null,null);
     ElsIf ( v_dims = 4 ) Then
       If ( SELF.ST_Dims() = 3 ) Then
@@ -990,14 +964,14 @@ AS
     v_format_model varchar2(38)  := NVL(p_format_model,'TM9');  -- FM999999999999990D09999999999
     v_separator    varchar2(100) := SUBSTR(NVL(p_separator,' '),1,100);
   Begin
-    Return NVL(to_char(self.x,v_format_model),'NULL') || 
+    Return NVL(to_char(self.x,v_format_model),'NULL') ||
            v_separator ||
            NVL(to_char(self.y,v_format_model),'NULL') ||
-           case when SELF.ST_Dims() > 2 
-                then v_separator || 
+           case when SELF.ST_Dims() > 2
+                then v_separator ||
                      NVL(to_char(self.z,v_format_model),'NULL') ||
-                     case when SELF.ST_Dims() = 4 
-                          then v_separator || 
+                     case when SELF.ST_Dims() = 4
+                          then v_separator ||
                                NVL(to_char(self.w,v_format_model),'NULL')
                           else ''
                       end
@@ -1009,17 +983,17 @@ AS
                             p_coordinates_only in integer default 0)
            Return VarChar2
   AS
-    v_format_model varchar2(38)  := NVL(p_format_model,'TM9'); -- 'FM999999999999990D09999999999'
+    v_format_model varchar2(38)  := NVL(p_format_model,'TM9');
   Begin
     Return case when NVL(p_coordinates_only,0)=0
                 then 'T_Vertex('||
                         'p_x=>' || NVL(to_char(self.x,v_format_model), 'NULL') ||
-                   ',p_y=>' || NVL(to_char(self.y,v_format_model), 'NULL') || 
-                   ',p_z=>' || NVL(to_char(self.z,v_format_model), 'NULL') || 
-                   ',p_w=>' || NVL(to_char(self.w,v_format_model), 'NULL') || 
-                  ',p_id=>' || NVL(to_char(self.id),               'NULL') || 
-                  ',p_sdo_gtype=>' || NVL(to_char(self.sdo_gtype), 'NULL') || 
-                   ',p_sdo_srid=>' || NVL(to_char(self.sdo_srid),  'NULL') || 
+                       ',p_y=>' || NVL(to_char(self.y,v_format_model), 'NULL') ||
+                       ',p_z=>' || NVL(to_char(self.z,v_format_model), 'NULL') ||
+                       ',p_w=>' || NVL(to_char(self.w,v_format_model), 'NULL') ||
+                      ',p_id=>' || NVL(to_char(self.id),               'NULL') ||
+                      ',p_sdo_gtype=>' || NVL(to_char(self.sdo_gtype), 'NULL') ||
+                       ',p_sdo_srid=>' || NVL(to_char(self.sdo_srid),  'NULL') ||
                      ')'
                 else'T_Vertex('||
                         'p_x=>' || NVL(to_char(self.x,v_format_model), 'NULL') ||
@@ -1055,15 +1029,15 @@ AS
     v_precision integer := NVL(p_dPrecision,3);
   Begin
     If (p_vertex is null) Then
-       Return 0; /* False */
+       Return 0;
     End If;
     If ( ROUND(NVL(SELF.x,c_Min),v_precision) = ROUND(NVL(p_vertex.x,c_Min),v_precision) AND
          ROUND(NVL(SELF.y,c_Min),v_precision) = ROUND(NVL(p_vertex.y,c_Min),v_precision) AND
          ROUND(NVL(SELF.z,c_Min),v_precision) = ROUND(NVL(p_vertex.z,c_Min),v_precision) AND
          ROUND(NVL(SELF.w,c_Min),v_precision) = ROUND(NVL(p_vertex.w,c_Min),v_precision) ) Then
-       Return 1; /* True */
+       Return 1;
     Else
-       Return 0; /* False */
+       Return 0;
     END IF;
   End ST_Equals;
 
@@ -1084,7 +1058,6 @@ AS
      Else                                                       Return 0;
      End If;
   End orderBy;
-
 END;
 /
 SHOW ERRORS

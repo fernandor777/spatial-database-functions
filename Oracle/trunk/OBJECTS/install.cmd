@@ -72,7 +72,7 @@ REM IF %DROP_INSTALL%_ EQU D_ GOTO FINISHED
 :INSTALL
 ECHO Installing All Types and Packaged Functions...
 ECHO ... Packages and Type Headers ...
-FOR %%F IN (Package_TOOLS Package_COGO T_Grid T_ElemInfo T_Vector3D T_Vertex T_MBR T_Segment T_VertexList T_Bearing_Distance T_Geometry Package_DEBUG) DO (
+FOR %%F IN (Package_TOOLS Package_COGO T_Grid T_ElemInfo T_Vector3D T_Vertex T_MBR T_Segment T_VertexList T_Bearing_Distance T_Geometry Package_PRINT) DO (
   echo Processing %%F.sql will create log/%%F.log ...
   IF EXIST %%F.sql (
     sqlplus -s %ousr%/%opwd%@//%ohost%:%oport%/%osid% @%%F.sql %ousr% > log/%%F.log
@@ -88,7 +88,7 @@ FOR %%F IN (Package_TOOLS Package_COGO T_Grid T_ElemInfo T_Vector3D T_Vertex T_M
 )
 
 ECHO ... Type Bodies and Debug/ST_LRS packages ...
-FOR %%F IN (Package_TOOLS_body Package_DEBUG_body Package_COGO_Body Package_ST_LRS T_Vector3D_Body T_Vertex_Body T_MBR_Body T_Segment_Body T_VertexList_Body T_Bearing_Distance_Body T_Geometry_Body) DO (
+FOR %%F IN (Package_TOOLS_body Package_PRINT_body Package_COGO_Body Package_ST_LRS T_Vector3D_Body T_Vertex_Body T_MBR_Body T_Segment_Body T_VertexList_Body T_Bearing_Distance_Body T_Geometry_Body) DO (
   echo Processing %%F.sql will create log/%%F.log ...
   IF EXIST %%F.sql (
     sqlplus -s %ousr%/%opwd%@//%ohost%:%oport%/%osid% @%%F.sql %ousr% > log/%%F.log

@@ -8,6 +8,7 @@ ALTER SESSION SET PLSQL_WARNINGS='ERROR:ALL';
 -- ALTER SESSION SET plsql_optimize_level=2;
 
 CREATE OR REPLACE TYPE BODY &&INSTALL_SCHEMA..T_GEOMETRY
+CREATE OR REPLACE TYPE BODY &&INSTALL_SCHEMA..T_GEOMETRY
 AS
 
   Constructor Function T_GEOMETRY(SELF IN OUT NOCOPY T_GEOMETRY)
@@ -246,8 +247,8 @@ AS
         ELSE
           continue;
         END IF;
-        -- DEBUG DEBUG.printElemInfo(v_geom.sdo_elem_info,false);
-        -- DEBUG DEBUG.printOrdinates(v_geom.sdo_ordinates,v_dims,3,false);
+        -- DEBUG dbms_output.put(&&INSTALL_SCHEMA..PRINT.sdo_elem_info(v_geom.sdo_elem_info));
+        -- DEBUG dbms_output.put(&&INSTALL_SCHEMA..PRINT.sdo_ordinates(v_geom.sdo_ordinates,v_dims,SELF.dPrecision));
       END LOOP IterateOverAllGeometries;
     END IF;
     SELF.geom := v_geom;
@@ -1763,7 +1764,7 @@ AS
           v_return_tgeom.geom.sdo_ordinates(v_base_index + v_ord) := v_ring.geom.sdo_ordinates(v_ord);
         end loop for_all_ords;
       End If;
-      -- DEBUG DEBUG.printGeom(v_return_tgeom,3,FALSE,'</AddToGeometry> v_return_tgeom: ');
+      -- DEBUG dbms_output.put_line('</AddToGeometry> v_return_tgeom: ' || &&INSTALL_SCHEMA..PRINT.sdo_geometry(v_return_tgeom.geom,SELF.dPrecision));
     END AddToGeometry;
 
   BEGIN
@@ -1785,7 +1786,7 @@ AS
                If ( v_area > p_area ) Then
                   IF ( v_ring_no > 1 ) THEN -- inner ring. EXTRACT reverses 2003 to make it 1003 we want it back as 2003
                     v_ring := v_ring.ST_Reverse_Geometry();
-                    -- DEBUG.printGeom(v_ring,3,FALSE,'v_ring (Reversed): ');
+                    -- DEBUG dbms_output.put_line('v_ring (Reversed): ' || &&INSTALL_SCHEMA..PRINT.sdo_geometry(v_ring.geom,SELF.dPrecision));
                   End If;
                   -- Add Ring no matter what it is to v_return_geom.
                   AddToGeometry();
@@ -2420,7 +2421,7 @@ AS
       v_element := MDSYS.SDO_UTIL.EXTRACT(SELF.geom,v_element_no);   -- Extract element (sub-elements handled by code)
        If ( v_element is not null ) Then
          If ( v_element.get_gtype() = 3) Then -- Polygons
-           -- DEBUG DEBUG.printGeom(v_element,3,FALSE,'v_element('||v_element_no||'): ');
+           -- DEBUG dbms_output.put_line('v_element('||v_element_no||'): ' || &&INSTALL_SCHEMA..PRINT.sdo_geometry(v_element,SELF.dPrecision));
            v_num_rings := &&INSTALL_SCHEMA..T_GEOMETRY(v_element,SELF.tolerance,SELF.dPrecision,SELF.projected).ST_NumRings(0 /*0=ALL*/);
            -- DEBUG dbms_output.PUT_LINE('ST_Segmentize Polygon numRings:' || v_num_rings);
            <<Extract_All_Rings>>
@@ -2430,10 +2431,10 @@ AS
                                                     SELF.tolerance,SELF.dPrecision,SELF.projected);
              -- Extract reverses inner rings (indicated by v_ring_no > 1)
              If ( v_ring is not null ) Then
-               -- DEBUG DEBUG.printGeom(v_ring,3,FALSE,'v_ring: ');
+               -- DEBUG dbms_output.put_line('v_ring: ' || &&INSTALL_SCHEMA..PRINT.sdo_geometry(v_ring.geom,SELF.dPrecision));
                IF ( v_ring_no > 1 ) THEN
                  v_ring := v_ring.ST_Reverse_Geometry();
-                 -- DEBUG.printGeom(v_ring,3,FALSE,'v_ring (Reversed): ');
+                 -- DEBUG dbms_output.put_line('v_ring (Reversed): ' || &&INSTALL_SCHEMA..PRINT.sdo_geometry(v_ring.geom,SELF.dPrecision));
                End If;
                -- segmentize the ring
                v_segments := segmentizeElement(v_segment_id,
@@ -2872,14 +2873,14 @@ AS
           CONTINUE;
         END  IF;
         -- Extract reverses inner rings (indicated by v_ring_no > 1)
-        -- DEBUG DEBUG.printGeom(v_ring,3,FALSE,'v_ring ('|| v_ring_no || '): ');
+        -- DEBUG dbms_output.put_line('v_ring ('|| v_ring_no || '): ' || &&INSTALL_SCHEMA..PRINT.sdo_geometry(v_ring.geom,SELF.dPrecision));
         IF ( v_ring_no > 1 ) THEN
           IF ( v_ring.geom.sdo_elem_info(3) <> 3 ) THEN
             v_ring := v_ring.ST_Reverse_Geometry();
           END IF;
           -- Replace etype as Oracle extracts 2003 as 1003
           v_ring.geom.sdo_elem_info(2) := 2003;
-          -- DEBUG DEBUG.printGeom(v_ring,3,FALSE,'v_ring rev('|| v_ring_no || '): ');
+          -- DEBUG dbms_output.put_line('v_ring rev('|| v_ring_no || '): ' || &&INSTALL_SCHEMA..PRINT.sdo_geometry(v_ring.geom,SELF.dPrecision));
         END IF;
         IF ( v_ring.geom.sdo_elem_info(3) = 3 ) THEN
           Begin
@@ -2909,7 +2910,7 @@ AS
           End;
           v_ring.geom.sdo_elem_info(3) := 1;
         END IF;
-        -- DEBUG DEBUG.printGeom(v_ring,3,FALSE,'v_ring: ');
+        -- DEBUG dbms_output.put_line('v_ring: ' || &&INSTALL_SCHEMA..PRINT.sdo_geometry(v_ring.geom,SELF.dPrecision));
         IF  ( v_return_tgeom is null ) THEN
           v_return_tgeom := &&INSTALL_SCHEMA..T_GEOMETRY(v_ring.geom,SELF.tolerance,SELF.dPrecision,SELF.projected);
         ELSE
@@ -2932,7 +2933,7 @@ AS
             v_return_tgeom.geom.sdo_ordinates(v_base_index + v_ord) := v_ring.geom.sdo_ordinates(v_ord);
           end loop for_all_ords;
         End If;
-        -- DEBUG DEBUG.printGeom(v_return_tgeom,3,FALSE,'v_return_tgeom: ');
+        -- DEBUG dbms_output.put_line('v_return_tgeom: ' || &&INSTALL_SCHEMA..PRINT.sdo_geometry(v_return_tgeom.geom,v_return_tgeom.dPrecision));
       End Loop for_all_rings;
     END LOOP for_all_polygons;
     v_return_tgeom.geom.sdo_gtype := SELF.geom.sdo_gtype;
@@ -3772,7 +3773,8 @@ AS
                     w         => p_old_vertex.w,
                     id        => p_old_vertex.id,
                     sdo_gtype => SELF.ST_Sdo_GType(),
-                    sdo_srid  => SELF.ST_SRID()
+                    sdo_srid  => SELF.ST_SRID(),
+                    deleted   => p_old_vertex.deleted
                     );
     v_new_vertex := &&INSTALL_SCHEMA..T_Vertex(
                     x         => p_new_vertex.x,
@@ -3781,7 +3783,8 @@ AS
                     w         => p_new_vertex.w,
                     id        => p_new_vertex.id,
                     sdo_gtype => SELF.ST_SDO_GType(),
-                    sdo_srid  => SELF.ST_SRID()
+                    sdo_srid  => SELF.ST_SRID(),
+                    deleted   => p_new_vertex.deleted
                     );
     -- If mdsys.sdo_geometry is a single point coded in sdo_point, then update it
     If ( v_geom.sdo_point is not null ) Then
@@ -4308,13 +4311,13 @@ AS
                                            end;
 
   Begin
-    --DEBUG dbms_output.put_line('<ST_TravellingSalesman>');
+    -- DEBUG dbms_output.put_line('<ST_TravellingSalesman>');
     If ( SELF.geom.sdo_ordinates is null ) Then
       Return null;
     End If;
 
     If ( SELF.ST_GType() NOT IN (4,5) ) Then
-      dbms_output.put_line('ST_TravellingSalesman can only be run against a GeometryCollection of Points or a MultiPoint geometry');
+      -- DEBUG dbms_output.put_line('ST_TravellingSalesman can only be run against a GeometryCollection of Points or a MultiPoint geometry');
       Return null;
     End If;
 
@@ -4405,9 +4408,9 @@ AS
     v_point_id := 1;
     While ( v_point_id <= v_num_points ) Loop
     BEGIN
-      --DEBUG dbms_output.put_line('.. Processing point ' || v_point_id || ' of ' || v_num_points ||' with ' || case when v_ignore_fence=1 then 'IGNORE' else 'HONOUR' end || '('||v_ignore_fence||') Fence Mode');
-      --DEBUG dbms_output.put_line('... Current Point is ' || v_current_point.ST_AsText());
-      --DEBUG dbms_output.put('... Closest Node Found To ' || case when v_next_id=-999 then 'user supplied point ' else to_char(v_next_id) end);
+      -- DEBUG dbms_output.put_line('.. Processing point ' || v_point_id || ' of ' || v_num_points ||' with ' || case when v_ignore_fence=1 then 'IGNORE' else 'HONOUR' end || '('||v_ignore_fence||') Fence Mode');
+      -- DEBUG dbms_output.put_line('... Current Point is ' || v_current_point.ST_AsText());
+      -- DEBUG dbms_output.put('... Closest Node Found To ' || case when v_next_id=-999 then 'user supplied point ' else to_char(v_next_id) end);
 
       -- Find nearest in-memory point
       v_current_point_geom := v_current_point.ST_SdoGeometry();
@@ -4495,7 +4498,7 @@ AS
              )
          AND rownum < 2;
 
-      --DEBUG dbms_output.put_line(' @'||v_distance||'m is ' || v_next_id || ' (table) with gid ('||v_current_point.id||') ' || v_current_point.ST_AsText() || ' Relate ('||v_relate||')');
+      -- DEBUG dbms_output.put_line(' @'||v_distance||'m is ' || v_next_id || ' (table) with gid ('||v_current_point.id||') ' || v_current_point.ST_AsText() || ' Relate ('||v_relate||')');
 
       -- Add nearest point to output line
       v_line_geom.sdo_ordinates.EXTEND(v_dims);
@@ -4508,20 +4511,20 @@ AS
         END IF;
       END IF;
 
-      --DEBUG dbms_output.put_line('...... Added point ' || v_next_id || ' to v_line_geom.sdo_ordinates(count)=' || v_line_geom.sdo_ordinates.COUNT );
+      -- DEBUG dbms_output.put_line('...... Added point ' || v_next_id || ' to v_line_geom.sdo_ordinates(count)=' || v_line_geom.sdo_ordinates.COUNT );
 
       -- Delete this point from point set for next iteration
       v_point_set.DELETE(v_next_id);
       v_ignore_fence   := 0;
       v_point_id       := v_point_id + 1;
-      --DEBUG dbms_output.put_line('... Removed point ' || v_next_id || ' from point set with ' || v_point_set.COUNT || ' left to process');
+      -- DEBUG dbms_output.put_line('... Removed point ' || v_next_id || ' from point set with ' || v_point_set.COUNT || ' left to process');
 
       EXCEPTION
         WHEN NO_DATA_FOUND THEN
-           dbms_output.put_line('.... Skipping an isolated point because crosses immoveable fence.');
+           -- DEBUG dbms_output.put_line('.... Skipping an isolated point because crosses immoveable fence.');
            v_ignore_fence := 1;
         WHEN OTHERS THEN
-           dbms_output.put_line('.... Others exception.');
+           -- dbms_output.put_line('.... Others exception.');
            raise_application_error(-20101,'OTHERS: ' || SQLERRM);
     END;
     End Loop ProcessAllNavigablePoints;
@@ -5734,7 +5737,7 @@ SELECT CASE A.rin
                                p_distance  => p_distance,
                                p_unit      => p_unit
                             );
-        -- DEBUG DEBUG.printGeom(v_dense_geom,3,false,'v_dense_geom=');
+        -- DEBUG dbms_output.put_line('v_dense_geom=' || &&INSTALL_SCHEMA..PRINT.sdo_geometry(v_dense_geom,SELF.dPrecision));
         -- Add all vertices in v_dense_geom to sdo_ordinate_array except last
         v_vertices := mdsys.sdo_util.GetVertices(v_dense_geom);  -- TODO: Performance improve by removal
         FOR i IN 1..(v_vertices.COUNT-1) LOOP
@@ -5764,7 +5767,7 @@ SELECT CASE A.rin
                              v_geometry,
                              SELF.tolerance, SELF.dPrecision, SELF.projected
                            );
-      -- DEBUG DEBUG.printGeom(v_densified_tgeom.geom,3,false,'v_processed_tGeom.geom:'); dbms_output.put_line('</Densify_Segment>');
+      -- DEBUG dbms_output.put_line('v_processed_tGeom.geom:'||&&INSTALL_SCHEMA..PRINT.sdo_geometry(v_densified_tgeom.geom,SELF.dPrecision)); dbms_output.put_line('</Densify_Segment>');
     End Densify_Segment;
 
     -- For Pragma efficiency:
@@ -5804,7 +5807,7 @@ SELECT CASE A.rin
           v_return_tgeom.geom.sdo_ordinates(v_base_index + v_ord) := v_densified_tgeom.geom.sdo_ordinates(v_ord);
         end loop for_all_ords;
       End If;
-      -- DEBUG DEBUG.printGeom(v_return_tgeom,3,FALSE,'</AddToGeometry> v_return_tgeom: ');
+      -- DEBUG dbms_output.put_line('</AddToGeometry> v_return_tgeom: '||&&INSTALL_SCHEMA..PRINT.sdo_geometry(v_return_tgeom.geom,v_return_tgeom.dPrecision));
     END AddToGeometry;
 
   Begin
@@ -6709,14 +6712,14 @@ SELECT CASE A.rin
       -- ***************************
       -- Now remove collinear points
       v_processed_tGeom := RemoveCollinearPoints(v_extract_tgeom);
-      -- DEBUG DEBUG.printGeom(v_processed_tGeom.geom,3,false,'v_processed_tGeom.geom:');
+      -- DEBUG dbms_output.put_line('v_processed_tGeom.geom:' || &&INSTALL_SCHEMA..PRINT.sdo_geometry(v_processed_tGeom.geom,SELF.dPrecision));
       -- ***************************
       IF ( v_return_tgeom is null ) Then
          v_return_tgeom := &&INSTALL_SCHEMA..T_Geometry(v_processed_tgeom.geom,SELF.Tolerance,SELF.dPrecision,SELF.Projected);
       ELSE
          v_return_tgeom := v_return_tgeom.ST_Append(v_processed_tgeom.geom);
       END IF;
-      -- DEBUG DEBUG.printGeom(v_return_tgeom.geom,3,false,'v_return_tgeom.geom:');
+      -- DEBUG dbms_output.put_line('v_return_tgeom.geom:'||&&INSTALL_SCHEMA..PRINT.sdo_geometry(v_return_tgeom.geom,SELF.dPrecision));
     END LOOP;
     Return &&INSTALL_SCHEMA..T_GEOMETRY(v_return_tgeom.geom,SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   End ST_RemoveCollinearPoints;
@@ -7354,7 +7357,7 @@ SELECT CASE A.rin
         -- DEBUG dbms_output.put_line(' Write Out Geometry');
         p_geometries.EXTEND(1);
         p_geometries(p_geometries.COUNT) := &&INSTALL_SCHEMA..T_GEOMETRY_ROW(p_geometries.COUNT,p_return_geom.geom,SELF.tolerance,SELF.dPrecision,SELF.projected);
-        -- DEBUG DEBUG.printGeom(p_return_geom,3,false,'p_return_geom:');
+        -- DEBUG dbms_output.put_line('p_return_geom:'||&&INSTALL_SCHEMA..PRINT.sdo_geometry(p_return_geom.geom,p_return_geom.dPrecision));
         p_return_geom := NULL;
         -- DEBUG dbms_output.put_line('</addToGeomList>');
         Return;
@@ -7450,7 +7453,7 @@ SELECT CASE A.rin
         -- DEBUG dbms_output.put_line(' Last segment is ' || v_rec.lastSegment);
 
         -- DEBUG dbms_output.put_line(CHR(10)||'START: Check if this segment is a candidate?');
-        if ( v_rec.minimumDist <> v_rec.lineDist ) Then
+        if ( v_rec.minimumDist <> v_rec.lineDist2Vertex ) Then
           -- DEBUG dbms_output.put_line(' This segment is NOT to be split just added to return geom');
           If ( v_return_geom is null) Then -- Return current return_geom....
             v_return_geom := &&INSTALL_SCHEMA..T_Geometry(v_rec.line.ST_SdoGeometry(SELF.ST_Dims()),SELF.tolerance,SELF.dPrecision,SELF.projected);
@@ -7961,7 +7964,7 @@ SELECT CASE A.rin
     -- DEBUG dbms_output.put_line('<ST_SNAP ST_DB_Version='||TOOLS.ST_DB_Version||' ST_Lrs_Dim=' || SELF.ST_Lrs_Dim()||'>');
 
     -- Check inputs: constructor also validates
-    -- DEBUG &&INSTALL_SCHEMA..DEBUG.printGeom(p_point,3,false,' p_point: ');
+    -- DEBUG dbms_output.put_line(' p_point: ' || &&INSTALL_SCHEMA..PRINT.sdo_geometry(p_point,SELF.dPrecision));
     v_point      := &&INSTALL_SCHEMA..T_Vertex(p_point => p_point); -- sets gtype and srid from p_point
     -- DEBUG dbms_output.put_line('Point being moved is: ' || v_point.ST_AsText(3));
     v_geometries := new &&INSTALL_SCHEMA..T_GEOMETRIES(NULL);
@@ -8168,7 +8171,7 @@ SELECT CASE A.rin
            v_geometries.EXTEND(1);
            -- DEBUG dbms_output.put_line('  v_geometries.COUNT=' || v_geometries.COUNT);
            v_geometries(v_geometries.COUNT) := &&INSTALL_SCHEMA..T_GEOMETRY_ROW(v_geometries.COUNT,v_vertex.ST_SdoGeometry(SELF.ST_Dims()),SELF.tolerance,SELF.dPrecision,SELF.projected);
-           -- DEBUG DEBUG.PrintGeom(v_geometries(v_geometries.count).GEOMETRY,3,false,'v_geometries(COUNT)=');
+           -- DEBUG dbms_output.put_line('v_geometries(COUNT)='||&&INSTALL_SCHEMA..PRINT.sdo_geometry(v_geometries(v_geometries.count).GEOMETRY,SELF.dPrecision));
            v_prev_vertex := &&INSTALL_SCHEMA..T_Vertex(p_vertex => v_vertex);
         End If;
     End Loop process_nearest_Segments;
@@ -8550,7 +8553,7 @@ SELECT CASE A.rin
           End If;
           v_count := v_count + 1;
     End Loop;
-    --DEBUG.PrintOrdinates(p_ordinates=>v_3D_geom.sdo_ordinates,p_coordDim=>3,p_round=>7,p_linefeed=>FALSE);
+    -- DEBUG dbms_output.put_line(&&INSTALL_SCHEMA..PRINT.sdo_ordinates(p_ordinates=>v_3D_geom.sdo_ordinates,p_coordDim=>3,p_round=>7));
     Return &&INSTALL_SCHEMA..T_GEOMETRY(V_3d_Geom,SELF.Tolerance,SELF.dPrecision,SELF.Projected);
   End ST_To3d;
 
@@ -9977,8 +9980,7 @@ SELECT CASE A.rin
     --
     v_vertices := mdsys.sdo_util.getVertices(p_geom);
     if ( v_vertices is null or v_vertices.COUNT = 0 ) Then
-       -- DEBUG
-       dbms_output.put_line('v_vertices is null or 0');
+       -- DEBUG dbms_output.put_line('v_vertices is null or 0');
        RETURN null;
     End If;
     -- DEBUG dbms_output.put_line('v_vertices.COUNT='||v_vertices.COUNT);
@@ -10287,7 +10289,7 @@ SELECT CASE A.rin
                                                          p_offset,
                                                          p_unit);
                 IF ( v_vertex is null ) Then
-                  -- DEBUG  dbms_output.put_line('AFTER ST_OffsetPoint - v_vertex IS NULL');
+                  -- DEBUG dbms_output.put_line('AFTER ST_OffsetPoint - v_vertex IS NULL');
                   CONTINUE;
                 END IF;
                 -- DEBUG dbms_output.put_line('BETWEEN p_measure = ' || p_measure ||  ' v_start_measure=' || v_start_measure ||  ' v_end_measure=' || v_end_measure || ' v_vertex=' || v_vertex.ST_AsText());
@@ -10305,7 +10307,6 @@ SELECT CASE A.rin
                    v_vertex.w := p_measure;
                 End If;
                 -- DEBUG dbms_output.put_line('AFTER ST_OffsetPoint v_vertex=' || v_vertex.ST_AsText());
-                -- DEBUG dbms_output.put_line('Print geom=');
                 Return &&INSTALL_SCHEMA..T_GEOMETRY(v_vertex.ST_SdoGeometry(),SELF.Tolerance,SELF.dPrecision,SELF.Projected);
             End If;
         End Loop for_all_arcSegments_in_element;
@@ -10880,7 +10881,7 @@ SELECT CASE A.rin
     END IF;
     -- DEBUG dbms_output.put_line(SELF.ST_Sdo_GType() || ',' || p_geom.sdo_gtype);
     v_result_tgeom:= SELF.ST_Intersection(p_geom,'FIRST');
-    -- DEBUG DEBUG.printgeom(v_result_tgeom,2,false,' Result MDSYS.SDO_GEOM.sdo_intersection: ');
+    -- DEBUG dbms_output.put_line(' Result MDSYS.SDO_GEOM.sdo_intersection: '||&&INSTALL_SCHEMA..PRINT.sdo_geometry(v_result_tgeom.geom,v_result_tgeom.dPrecision));
     -- Test dimensionality of result.
     -- Will always be 3d even if point is 2D
     -- But SDO_Intersection returns 3D point with zero measure
@@ -10980,7 +10981,7 @@ SELECT CASE A.rin
     For i in 1..SELF.geom.sdo_ordinates.COUNT Loop
       IF ( ROUND(SELF.geom.sdo_ordinates(i),SELF.dPrecision) <> 
            ROUND(p_ordinates(i),            SELF.dPrecision) ) THEN
-        --DEBUG dbms_output.put_line('SELF.geom.sdo_ordinates('||i||')=' || SELF.geom.sdo_ordinates(i) || ' <> p_ordinates('||i||')='|| p_ordinates(i));
+        -- DEBUG dbms_output.put_line('SELF.geom.sdo_ordinates('||i||')=' || SELF.geom.sdo_ordinates(i) || ' <> p_ordinates('||i||')='|| p_ordinates(i));
         Return -1;
       END IF;
     End Loop;
@@ -11089,6 +11090,7 @@ SELECT CASE A.rin
   End orderBy;
 
 END;
+
 /
 SHOW ERRORS
 

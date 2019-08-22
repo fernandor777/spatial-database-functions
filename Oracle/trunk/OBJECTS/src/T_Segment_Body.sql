@@ -10,48 +10,48 @@ ALTER SESSION SET PLSQL_WARNINGS='ERROR:ALL';
 CREATE OR REPLACE TYPE BODY &&INSTALL_SCHEMA..T_SEGMENT
 AS
 
-  Constructor Function T_SEGMENT(SELF IN OUT NOCOPY T_SEGMENT)
+  Constructor Function T_Segment(SELF IN OUT NOCOPY T_Segment)
                 Return Self AS Result
   AS
   BEGIN
-    SELF.element_id    := NULL;
-    SELF.subelement_id := NULL;
-    SELF.segment_id    := NULL;
-    SELF.startCoord    := NULL;
-    SELF.midCoord      := NULL;
-    SELF.endCoord      := NULL;
-    SELF.SDO_GTYPE     := NULL;
-    SELF.SDO_SRID      := NULL;
+    SELF.element_id     := NULL;
+    SELF.subelement_id  := NULL;
+    SELF.segment_id     := NULL;
+    SELF.startCoord     := NULL;
+    SELF.midCoord       := NULL;
+    SELF.endCoord       := NULL;
+    SELF.SDO_GTYPE      := NULL;
+    SELF.SDO_SRID       := NULL;
     SELF.projected      := NULL;
     SELF.PrecisionModel := NULL;
     Return;
-  END T_SEGMENT;
+  END T_Segment;
 
-  Constructor Function T_SEGMENT(SELF      IN OUT NOCOPY T_SEGMENT,
-                                 p_segment IN &&INSTALL_SCHEMA..T_SEGMENT)
+  Constructor Function T_Segment(SELF      IN OUT NOCOPY T_Segment,
+                                 p_segment IN &&INSTALL_SCHEMA..T_Segment)
                 Return Self AS Result
   AS
   BEGIN
     IF ( p_segment        IS NULL ) THEN
-      SELF.element_id    := NULL;
-      SELF.subelement_id := NULL;
-      SELF.segment_id    := NULL;
-      SELF.startCoord    := &&INSTALL_SCHEMA..T_Vertex();
-      SELF.midCoord      := NULL;
-      SELF.ENDCOORD      := &&INSTALL_SCHEMA..T_VERTEX();
-      SELF.sdo_gtype     := 2002;
-      SELF.sdo_srid      := NULL;
+      SELF.element_id     := NULL;
+      SELF.subelement_id  := NULL;
+      SELF.segment_id     := NULL;
+      SELF.startCoord     := &&INSTALL_SCHEMA..T_Vertex();
+      SELF.midCoord       := NULL;
+      SELF.ENDCOORD       := &&INSTALL_SCHEMA..T_Vertex();
+      SELF.sdo_gtype      := 2002;
+      SELF.sdo_srid       := NULL;
       SELF.projected      := 1;
       SELF.PrecisionModel := &&INSTALL_SCHEMA..T_PrecisionModel(8,3,3,0.005);
     ELSE
-      SELF.element_id    := p_segment.element_id;
-      SELF.subelement_id := p_segment.subelement_id;
-      SELF.segment_id    := p_segment.segment_id;
-      SELF.startCoord    := &&INSTALL_SCHEMA..T_Vertex(p_segment.startCoord);
+      SELF.element_id     := p_segment.element_id;
+      SELF.subelement_id  := p_segment.subelement_id;
+      SELF.segment_id     := p_segment.segment_id;
+      SELF.startCoord     := &&INSTALL_SCHEMA..T_Vertex(p_segment.startCoord);
       SELF.midCoord       := CASE WHEN p_segment.midCoord IS NOT NULL THEN &&INSTALL_SCHEMA..T_Vertex(p_segment.midCoord) ELSE NULL END;
-      SELF.endCoord  := &&INSTALL_SCHEMA..T_Vertex(p_segment.endCoord);
-      SELF.sdo_gtype := TRUNC(NVL(p_segment.sdo_gtype,2002)/10)*10+2; -- Cannot be other than a line.
-      SELF.sdo_srid  := p_segment.sdo_srid;
+      SELF.endCoord       := &&INSTALL_SCHEMA..T_Vertex(p_segment.endCoord);
+      SELF.sdo_gtype      := TRUNC(NVL(p_segment.sdo_gtype,2002)/10)*10+2; -- Cannot be other than a line.
+      SELF.sdo_srid       := p_segment.sdo_srid;
       SELF.projected      := NVL(p_segment.projected,1);
       SELF.PrecisionModel := case when p_segment.PrecisionModel is null then &&INSTALL_SCHEMA..T_PrecisionModel(8,3,3,0.005) else p_segment.PrecisionModel end;
     END IF;
@@ -59,11 +59,11 @@ AS
       if ( SELF.ST_CheckZ = 0 ) then
         raise_application_error(-20214,'Circular arc segments with Z values must have equal Z value for all 3 points.');
       end If;
-    END IF;
+    end If;
     Return;
   END;
 
-  Constructor Function T_SEGMENT(SELF    IN OUT NOCOPY T_SEGMENT,
+  Constructor Function T_Segment(SELF         IN OUT NOCOPY T_Segment,
                                  p_line       in mdsys.sdo_geometry,
                                  p_segment_id in integer default 0,
                                  p_precision  in integer default 3,
@@ -81,27 +81,27 @@ AS
     If (v_vertices is null or v_vertices.COUNT = 0) Then
        Return;
     End If;
-    SELF.startCoord := &&INSTALL_SCHEMA..t_vertex(
+    SELF.startCoord := &&INSTALL_SCHEMA..T_Vertex(
                          p_vertex    => v_vertices(1),
                          p_sdo_gtype => TRUNC(NVL(p_line.sdo_gtype,2002)/10)*10+1,
                          p_sdo_srid  => p_line.sdo_srid
                        );
     v_isCircularArc := case when p_line.sdo_elem_info.COUNT = 3 then p_line.sdo_elem_info(3) = 2 else false end;
     if ( v_isCircularArc ) Then
-      SELF.midCoord := &&INSTALL_SCHEMA..t_vertex(
+      SELF.midCoord := &&INSTALL_SCHEMA..T_Vertex(
                          p_vertex    => v_vertices(2),
                          p_sdo_gtype => TRUNC(NVL(p_line.sdo_gtype,2002)/10)*10+1,
                          p_sdo_srid  => p_line.sdo_srid);
     End If;
     If (v_vertices.COUNT > 1) Then
-      SELF.endCoord := &&INSTALL_SCHEMA..t_vertex(
+      SELF.endCoord := &&INSTALL_SCHEMA..T_Vertex(
                          p_vertex    => v_vertices(case when v_isCircularArc then 3 else 2 end),
                          p_sdo_gtype => TRUNC(NVL(p_line.sdo_gtype,2002)/10)*10+1,
                          p_sdo_srid  => p_line.sdo_srid
                        );
     End If;
-    SELF.sdo_gtype  := TRUNC(NVL(p_line.sdo_gtype,2002)/10)*10+2; -- Cannot be other than a line.
-    SELF.sdo_srid   := p_line.sdo_srid;
+    SELF.sdo_gtype      := TRUNC(NVL(p_line.sdo_gtype,2002)/10)*10+2; -- Cannot be other than a line.
+    SELF.sdo_srid       := p_line.sdo_srid;
     SELF.projected      := case when SELF.sdo_srid is null then 1 else &&INSTALL_SCHEMA..t_segment.ST_GetProjected(SELF.sdo_srid) end;
     SELF.PrecisionModel := &&INSTALL_SCHEMA..T_PrecisionModel(NVL(p_precision,8),3,3,NVL(p_tolerance,0.005));
     IF ( SELF.ST_isCircularArc()=1 and SELF.ST_hasZ()=1 ) Then
@@ -112,23 +112,23 @@ AS
     Return;
   End;
 
-  Constructor Function T_SEGMENT(SELF    IN OUT NOCOPY T_SEGMENT,
+  Constructor Function T_SEGMENT(SELF        IN OUT NOCOPY T_SEGMENT,
                                  p_sdo_gtype In Integer,
                                  p_sdo_srid  In Integer,
                                  p_projected in integer default 1,
                                  p_precision in integer default 3,
                                  p_tolerance in number  default 0.005)
-  Return Self As Result
+                Return Self As Result
   As
   Begin
-    SELF.element_id    := NULL;
-    SELF.subelement_id := NULL;
-    SELF.segment_id    := NULL;
-    SELF.startCoord    := NULL;
-    SELF.midCoord      := NULL;
-    SELF.ENDCOORD      := NULL;
-    SELF.sdo_gtype     := p_sdo_gtype;
-    SELF.sdo_srid      := p_sdo_srid;
+    SELF.element_id     := NULL;
+    SELF.subelement_id  := NULL;
+    SELF.segment_id     := NULL;
+    SELF.startCoord     := NULL;
+    SELF.midCoord       := NULL;
+    SELF.endCoord       := NULL;
+    SELF.sdo_gtype      := p_sdo_gtype;
+    SELF.sdo_srid       := p_sdo_srid;
     SELF.projected      := case when NVL(p_projected,-1) = -1 
                                 then case when SELF.sdo_srid is null 
                                           then 1 
@@ -140,11 +140,11 @@ AS
     Return;
   End;
 
-  Constructor Function T_SEGMENT(SELF    IN OUT NOCOPY T_SEGMENT,
+  Constructor Function T_Segment(SELF          IN OUT NOCOPY T_Segment,
                                  p_segment_id  In Integer,
-                                 p_startCoord IN &&INSTALL_SCHEMA..T_Vertex,
-                                 p_endCoord   IN &&INSTALL_SCHEMA..T_Vertex,
-                                 p_sdo_gtype  In Integer Default NULL,
+                                 p_startCoord  IN &&INSTALL_SCHEMA..T_Vertex,
+                                 p_endCoord    IN &&INSTALL_SCHEMA..T_Vertex,
+                                 p_sdo_gtype   In Integer Default NULL,
                                  p_sdo_srid    In Integer Default NULL,
                                  p_projected   in integer default 1,
                                  p_precision   in integer default 3,
@@ -152,12 +152,12 @@ AS
   Return Self AS Result
   AS
   BEGIN
-    SELF.segment_id := p_segment_id;
-    SELF.startCoord := p_startCoord;
-    SELF.midCoord   := NULL;
-    SELF.endCoord   := p_endCoord;
-    SELF.sdo_gtype  := TRUNC(NVL(p_sdo_gtype,2002)/10)*10+2; -- Cannot be other than a line.
-    SELF.sdo_srid   := p_sdo_srid;
+    SELF.segment_id     := p_segment_id;
+    SELF.startCoord     := p_startCoord;
+    SELF.midCoord       := NULL;
+    SELF.endCoord       := p_endCoord;
+    SELF.sdo_gtype      := TRUNC(NVL(p_sdo_gtype,2002)/10)*10+2; -- Cannot be other than a line.
+    SELF.sdo_srid       := p_sdo_srid;
     SELF.projected      := case when NVL(p_projected,-1) = -1 
                                 then case when SELF.sdo_srid is null 
                                           then 1 
@@ -167,9 +167,9 @@ AS
                             end;
     SELF.PrecisionModel := &&INSTALL_SCHEMA..T_PrecisionModel(NVL(p_precision,8),3,3,NVL(p_tolerance,0.005));
     Return;
-  END T_SEGMENT;
+  END T_Segment;
 
-  Constructor Function T_SEGMENT(SELF    IN OUT NOCOPY T_SEGMENT,
+  Constructor Function T_Segment(SELF    IN OUT NOCOPY T_Segment,
                                  p_segment_id In Integer,
                                  p_startCoord IN &&INSTALL_SCHEMA..T_Vertex,
                                  p_midCoord   IN &&INSTALL_SCHEMA..T_Vertex,
@@ -182,12 +182,12 @@ AS
   Return Self AS Result
   AS
   BEGIN
-    SELF.segment_id := p_segment_id;
-    SELF.startCoord := p_startCoord;
-    SELF.midCoord   := p_midCoord;
-    SELF.endCoord   := p_endCoord;
-    SELF.sdo_gtype  := TRUNC(NVL(p_sdo_gtype,2002)/10)*10+2; -- Cannot be other than a line.
-    SELF.sdo_srid   := p_sdo_srid;
+    SELF.segment_id     := p_segment_id;
+    SELF.startCoord     := p_startCoord;
+    SELF.midCoord       := p_midCoord;
+    SELF.endCoord       := p_endCoord;
+    SELF.sdo_gtype      := TRUNC(NVL(p_sdo_gtype,2002)/10)*10+2; -- Cannot be other than a line.
+    SELF.sdo_srid       := p_sdo_srid;
     SELF.projected      := case when NVL(p_projected,-1) = -1 
                                 then case when SELF.sdo_srid is null 
                                           then 1 
@@ -202,9 +202,9 @@ AS
       end If;
     end If;
     Return;
-  END T_SEGMENT;
+  END T_Segment;
 
-  Constructor Function T_SEGMENT(SELF    IN OUT NOCOPY T_SEGMENT,
+  Constructor Function T_Segment(SELF         IN OUT NOCOPY T_Segment,
                                  p_segment_id In Integer,
                                  p_startCoord IN mdsys.vertex_type,
                                  p_endCoord   IN mdsys.vertex_type,
@@ -217,7 +217,7 @@ AS
   AS
   BEGIN
     SELF.segment_id := p_segment_id;
-    SELF.startCoord := &&INSTALL_SCHEMA..t_vertex(
+    SELF.startCoord := &&INSTALL_SCHEMA..T_Vertex(
                          p_vertex    => p_startCoord,
                          p_sdo_gtype => TRUNC(NVL(p_sdo_gtype,2002)/10)*10+1,
                          p_sdo_srid  => p_sdo_srid);
@@ -226,8 +226,8 @@ AS
                          p_vertex    => p_endCoord,
                          p_sdo_gtype => TRUNC(NVL(p_sdo_gtype,2002)/10)*10+1,
                          p_sdo_srid  => p_sdo_srid);
-    SELF.sdo_gtype  := TRUNC(NVL(p_sdo_gtype,2002)/10)*10+2; -- Cannot be other than a line.
-    SELF.sdo_srid   := p_sdo_srid;
+    SELF.sdo_gtype      := TRUNC(NVL(p_sdo_gtype,2002)/10)*10+2; -- Cannot be other than a line.
+    SELF.sdo_srid       := p_sdo_srid;
     SELF.projected      := case when NVL(p_projected,-1) = -1 
                                 then case when SELF.sdo_srid is null 
                                           then 1 
@@ -237,9 +237,9 @@ AS
                             end;
     SELF.PrecisionModel := &&INSTALL_SCHEMA..T_PrecisionModel(NVL(p_precision,8),3,3,NVL(p_tolerance,0.005));
     Return;
-  END T_SEGMENT;
+  END T_Segment;
 
-  Constructor Function T_SEGMENT(SELF    IN OUT NOCOPY T_SEGMENT,
+  Constructor Function T_Segment(SELF         IN OUT NOCOPY T_Segment,
                                  p_segment_id In Integer,
                                  p_startCoord IN mdsys.vertex_type,
                                  p_midCoord   IN mdsys.vertex_type,
@@ -253,20 +253,20 @@ AS
   AS
   BEGIN
     SELF.segment_id := p_segment_id;
-    SELF.startCoord := &&INSTALL_SCHEMA..t_vertex(
+    SELF.startCoord := &&INSTALL_SCHEMA..T_Vertex(
                          p_vertex    => p_startCoord,
                          p_sdo_gtype => TRUNC(NVL(p_sdo_gtype,2002)/10)*10+1,
                          p_sdo_srid  => p_sdo_srid);
-    SELF.midCoord   := &&INSTALL_SCHEMA..t_vertex(
+    SELF.midCoord   := &&INSTALL_SCHEMA..T_Vertex(
                          p_vertex    => p_midCoord,
                          p_sdo_gtype => TRUNC(NVL(p_sdo_gtype,2002)/10)*10+1,
                          p_sdo_srid  => p_sdo_srid);
-    SELF.endCoord   := &&INSTALL_SCHEMA..t_vertex(
+    SELF.endCoord   := &&INSTALL_SCHEMA..T_Vertex(
                          p_vertex    => p_endCoord,
                          p_sdo_gtype => TRUNC(NVL(p_sdo_gtype,2002)/10)*10+1,
                          p_sdo_srid  => p_sdo_srid);
-    SELF.sdo_gtype  := TRUNC(NVL(p_sdo_gtype,2002)/10)*10+2; -- Cannot be other than a line.
-    SELF.sdo_srid   := p_sdo_srid;
+    SELF.sdo_gtype      := TRUNC(NVL(p_sdo_gtype,2002)/10)*10+2; -- Cannot be other than a line.
+    SELF.sdo_srid       := p_sdo_srid;
     SELF.projected      := case when NVL(p_projected,-1) = -1 
                                 then case when SELF.sdo_srid is null 
                                           then 1 
@@ -281,9 +281,9 @@ AS
       end If;
     end If;
     Return;
-  END T_SEGMENT;
+  END T_Segment;
 
-  Constructor Function T_SEGMENT(SELF    IN OUT NOCOPY T_SEGMENT,
+  Constructor Function T_Segment(SELF            In OUT NOCOPY T_Segment,
                                  p_element_id    In Integer,
                                  p_subelement_id In Integer,
                                  p_segment_id    In Integer,
@@ -297,14 +297,14 @@ AS
   Return Self AS Result
   AS
   BEGIN
-    SELF.element_id    := p_element_id;
-    SELF.subelement_id := p_subelement_id;
-    SELF.segment_id    := p_segment_id;
-    SELF.startCoord    := p_startCoord;
-    SELF.midCoord      := NULL;
-    SELF.endCoord      := p_endCoord;
-    SELF.sdo_gtype     := TRUNC(NVL(p_sdo_gtype,2002)/10)*10+2; -- Cannot be other than a line.
-    SELF.sdo_srid      := p_sdo_srid;
+    SELF.element_id     := p_element_id;
+    SELF.subelement_id  := p_subelement_id;
+    SELF.segment_id     := p_segment_id;
+    SELF.startCoord     := p_startCoord;
+    SELF.midCoord       := NULL;
+    SELF.endCoord       := p_endCoord;
+    SELF.sdo_gtype      := TRUNC(NVL(p_sdo_gtype,2002)/10)*10+2; -- Cannot be other than a line.
+    SELF.sdo_srid       := p_sdo_srid;
     SELF.projected      := case when NVL(p_projected,-1) = -1 
                                 then case when SELF.sdo_srid is null 
                                           then 1 
@@ -314,9 +314,9 @@ AS
                             end;
     SELF.PrecisionModel := &&INSTALL_SCHEMA..T_PrecisionModel(NVL(p_precision,8),3,3,NVL(p_tolerance,0.005));
     Return;
-  END T_SEGMENT;
+  END T_Segment;
 
-  Constructor Function T_SEGMENT(SELF    IN OUT NOCOPY T_SEGMENT,
+  Constructor Function T_Segment(SELF            In OUT NOCOPY T_Segment,
                                  p_element_id    In Integer,
                                  p_subelement_id In Integer,
                                  p_segment_id    In Integer,
@@ -331,14 +331,14 @@ AS
   Return Self AS Result
   AS
   BEGIN
-    SELF.element_id    := p_element_id;
-    SELF.subelement_id := p_subelement_id;
-    SELF.segment_id    := p_segment_id;
-    SELF.startCoord    := p_startCoord;
-    SELF.midCoord      := p_midCoord;
-    SELF.endCoord      := p_endCoord;
-    SELF.sdo_gtype     := TRUNC(NVL(p_sdo_gtype,2002)/10)*10+2; -- Cannot be other than a line.
-    SELF.sdo_srid      := p_sdo_srid;
+    SELF.element_id     := p_element_id;
+    SELF.subelement_id  := p_subelement_id;
+    SELF.segment_id     := p_segment_id;
+    SELF.startCoord     := p_startCoord;
+    SELF.midCoord       := p_midCoord;
+    SELF.endCoord       := p_endCoord;
+    SELF.sdo_gtype      := TRUNC(NVL(p_sdo_gtype,2002)/10)*10+2; -- Cannot be other than a line.
+    SELF.sdo_srid       := p_sdo_srid;
     SELF.projected      := case when NVL(p_projected,-1) = -1 
                                 then case when SELF.sdo_srid is null 
                                           then 1 
@@ -353,7 +353,7 @@ AS
       end If;
     end If;
     Return;
-  END T_SEGMENT;
+  END T_Segment;
 
   /* ================= Methods ================= */
 
@@ -505,35 +505,44 @@ AS
            Return &&INSTALL_SCHEMA..T_Vertex 
   As
   Begin
-    return new &&INSTALL_SCHEMA..T_Vertex( p_x => (SELF.startCoord.x + SELF.endCoord.x) / 2.0,
-                               p_y => (SELF.startCoord.y + SELF.endCoord.y) / 2.0,
-                               p_z => (SELF.startCoord.z + SELF.endCoord.z) / 2.0,
-                               p_w => (SELF.startCoord.w + SELF.endCoord.w) / 2.0,
-                               p_id => 1,
-                               p_sdo_gtype => SELF.startCoord.sdo_gtype,
-                               p_sdo_srid  => SELF.startCoord.sdo_srid);
+    if ( SELF.ST_isCircularArc()=0 ) Then
+      return new &&INSTALL_SCHEMA..T_Vertex( 
+                     p_x => (SELF.startCoord.x + SELF.endCoord.x) / 2.0,
+                     p_y => (SELF.startCoord.y + SELF.endCoord.y) / 2.0,
+                     p_z => (SELF.startCoord.z + SELF.endCoord.z) / 2.0,
+                     p_w => (SELF.startCoord.w + SELF.endCoord.w) / 2.0,
+                     p_id => 1,
+                     p_sdo_gtype => SELF.startCoord.sdo_gtype,
+                                p_sdo_srid  => SELF.startCoord.sdo_srid);
+    Else
+      Return SELF.ST_OffsetPoint(
+                     p_ratio  => 0.5,
+                     p_offset => 0.0,
+                     p_unit   => null
+             );
+    End If;
   End ST_MidPoint;
 
-  Member Procedure ST_SetCoordinates(SELF         IN OUT NOCOPY T_SEGMENT,
-                                     p_startCoord in &&INSTALL_SCHEMA..T_VERTEX,
-                                     p_midCoord   in &&INSTALL_SCHEMA..T_VERTEX,
-                                     p_endCoord   in &&INSTALL_SCHEMA..T_VERTEX
+  Member Procedure ST_SetCoordinates(SELF         IN OUT NOCOPY T_Segment,
+                                     p_startCoord in &&INSTALL_SCHEMA..T_Vertex,
+                                     p_midCoord   in &&INSTALL_SCHEMA..T_Vertex,
+                                     p_endCoord   in &&INSTALL_SCHEMA..T_Vertex
                                      )
   As
   BEGIN
-     SELF.startCoord := p_startCoord;
+     IF ( p_startCoord is not null) then SELF.startCoord := p_startCoord; end if;
      SELF.midCoord   := p_midCoord;
-     SELF.endCoord   := p_endCoord;
+     IF ( p_endCoord is not null) then SELF.endCoord := p_endCoord; end if;
   END ST_SetCoordinates;
 
-  Member Procedure ST_SetCoordinates(SELF         IN OUT NOCOPY T_SEGMENT,
-                                     p_startCoord in &&INSTALL_SCHEMA..T_VERTEX,
-                                     p_endCoord   in &&INSTALL_SCHEMA..T_VERTEX
+  Member Procedure ST_SetCoordinates(SELF         IN OUT NOCOPY T_Segment,
+                                     p_startCoord in &&INSTALL_SCHEMA..T_Vertex,
+                                     p_endCoord   in &&INSTALL_SCHEMA..T_Vertex
                                      )
   As
   BEGIN
-     SELF.startCoord := p_startCoord;
-     SELF.endCoord   := p_endCoord;
+     IF ( p_startCoord is not null) then SELF.startCoord := p_startCoord; end if;
+     IF ( p_endCoord is not null) then SELF.endCoord := p_endCoord; end if;
   END ST_SetCoordinates;
 
   Member Function ST_UpdateCoordinate(p_coordinate in &&INSTALL_SCHEMA..T_Vertex,
@@ -556,6 +565,7 @@ AS
     ElsIf ( v_which IN ('M','2') ) Then
       v_copy          := &&INSTALL_SCHEMA..T_Segment(SELF);
       v_copy.midCoord := &&INSTALL_SCHEMA..T_Vertex(p_coordinate);
+
       Return v_copy;
     ElsIf ( v_which IN ('E','3') ) Then
       v_copy          := &&INSTALL_SCHEMA..T_Segment(SELF);
@@ -567,7 +577,7 @@ AS
   End ST_UpdateCoordinate;
 
   Member Function ST_Self
-           Return &&INSTALL_SCHEMA..T_SEGMENT
+           Return &&INSTALL_SCHEMA..T_Segment
   As
   Begin
     Return &&INSTALL_SCHEMA..T_Segment(SELF);
@@ -621,6 +631,7 @@ AS
       END IF;
     ELSE
       Return CASE WHEN SELF.sdo_gtype < 2000
+
                   THEN SELF.sdo_gtype
                   ELSE SELF.sdo_gtype / 1000
               END;
@@ -659,29 +670,30 @@ AS
   end ST_hasZ;
 
   Member Function ST_To2D
-  Return &&INSTALL_SCHEMA..T_SEGMENT
+  Return &&INSTALL_SCHEMA..T_Segment
   AS
   BEGIN
     RETURN CASE WHEN SELF.ST_DIMS()=2
-                THEN &&INSTALL_SCHEMA..T_SEGMENT(SELF)
-                ELSE &&INSTALL_SCHEMA..T_SEGMENT(p_element_id    => SELF.element_id,
+                THEN &&INSTALL_SCHEMA..T_Segment(SELF)
+                ELSE &&INSTALL_SCHEMA..T_Segment(p_element_id  => SELF.element_id,
                                    p_subelement_id => SELF.element_id,
-                                   p_segment_id     => SELF.segment_id,
+                                   p_segment_id    => SELF.segment_id,
                                    p_startCoord    => SELF.startCoord.ST_To2D(),
                                    p_midCoord      => NULL,
                                    p_endCoord      => SELF.EndCoord.ST_To2D(),
                                    p_sdo_gtype     => 2001,
                                    p_sdo_srid      => SELF.sdo_srid)
             END;
+
   END ST_To2D;
 
   Member Function ST_To3D(p_keep_measure in integer default 0,
                           p_default_z    in number  default null)
-  Return &&INSTALL_SCHEMA..T_SEGMENT
+  Return &&INSTALL_SCHEMA..T_Segment
   As
   Begin
     RETURN case when SELF.ST_Dims() = 2   /* Upscale to 3D */
-                then &&INSTALL_SCHEMA..T_SEGMENT(
+                then &&INSTALL_SCHEMA..T_Segment(
                        element_id    => SELF.element_id,
                        subelement_id => SELF.element_id,
                        segment_id    => SELF.segment_id,
@@ -694,9 +706,9 @@ AS
                        precisionModel=> SELF.PrecisionModel
                      )
                 when SELF.ST_Dims()=3 and SELF.ST_hasZ()=1  /* Nothing to do */
-                then T_SEGMENT(SELF)
+                then T_Segment(SELF)
                 when SELF.ST_Dims()=3
-                then &&INSTALL_SCHEMA..T_SEGMENT(
+                then &&INSTALL_SCHEMA..T_Segment(
                        element_id    => SELF.element_id,
                        subelement_id => SELF.element_id,
                        segment_id    => SELF.segment_id,
@@ -709,7 +721,7 @@ AS
                        precisionModel=> SELF.PrecisionModel
                      )
                 when SELF.ST_Dims()=4
-                then &&INSTALL_SCHEMA..T_SEGMENT(
+                then &&INSTALL_SCHEMA..T_Segment(
                        element_id    => SELF.element_id,
                        subelement_id => SELF.element_id,
                        segment_id    => SELF.segment_id,
@@ -748,7 +760,7 @@ AS
   End ST_isCollinear;
   
   Member Function ST_Merge(p_segment in &&INSTALL_SCHEMA..T_Segment)
-           Return &&INSTALL_SCHEMA..T_SEGMENT
+           Return &&INSTALL_SCHEMA..T_Segment
   AS
     v_self     &&INSTALL_SCHEMA..T_Segment;
     v_segment  &&INSTALL_SCHEMA..T_Segment;
@@ -758,8 +770,8 @@ AS
       Return SELF;
     END IF;
     -- Check if equals
-    IF ( SELF.ST_Equals(p_segment    => p_segment,
-                        p_coords     => 1)=1) Then
+    IF ( SELF.ST_Equals(p_segment => p_segment,
+                        p_coords  => 1)=1) Then
       Return SELF;
     END IF;
 
@@ -795,7 +807,7 @@ AS
       -- DEBUG dbms_output.put_line('  Two segments have shared end/start point And Are Collinear.');
       -- DEBUG dbms_output.put_line('</ST_Merge>');
 -- SGG
-      Return new &&INSTALL_SCHEMA..T_SEGMENT(
+      Return new &&INSTALL_SCHEMA..T_Segment(
                    p_segment_id    => 1,   /*SELF.segment_id*/
                    p_element_id    => SELF.element_id,
                    p_subelement_id => SELF.subelement_id,
@@ -808,7 +820,7 @@ AS
       -- DEBUG dbms_output.put_line('  Two segments have shared end/start point but Not Collinear.');
       -- DEBUG dbms_output.put_line('</ST_Merge>');
       -- Return merged segment with shared point as midCoord.
-      Return new &&INSTALL_SCHEMA..T_SEGMENT(
+      Return new &&INSTALL_SCHEMA..T_Segment(
                    p_segment_id    => 0,   /*SELF.segment_id*/
                    p_element_id    => SELF.element_id,
                    p_subelement_id => SELF.subelement_id,
@@ -835,6 +847,7 @@ AS
     v_dims           pls_integer := 2;
     v_vertex         &&INSTALL_SCHEMA..T_Vertex;
     v_ordinates      mdsys.sdo_ordinate_array;
+
   BEGIN
     -- DEBUG dbms_output.put_line('<ST_Densify>');
     IF ( p_distance is null ) THEN
@@ -885,6 +898,7 @@ AS
       END IF;
       v_ord := v_ord + v_Dims;
     END LOOP;
+
     -- DEBUG dbms_output.put_line('</ST_Densify>');
     Return mdsys.sdo_geometry(
              SELF.sdo_gtype,
@@ -892,14 +906,15 @@ AS
              NULL,
              mdsys.sdo_elem_info_array(1,2,1),
              v_ordinates
-	   );
+	   ); 
   END ST_Densify;
 
   Member Function ST_Reverse
-  Return &&INSTALL_SCHEMA..T_SEGMENT
+  Return &&INSTALL_SCHEMA..T_Segment
   AS
+
   BEGIN
-    Return &&INSTALL_SCHEMA..T_SEGMENT(
+    Return &&INSTALL_SCHEMA..T_Segment(
              p_element_id    => SELF.ELEMENT_ID,
              p_subelement_id => SELF.SUBELEMENT_ID,
              p_segment_id    => SELF.segment_ID,
@@ -912,18 +927,18 @@ AS
   END ST_Reverse;
 
   Member Function ST_Parallel(p_offset in Number)
-  Return &&INSTALL_SCHEMA..T_SEGMENT Deterministic
+  Return &&INSTALL_SCHEMA..T_Segment Deterministic
   As
     v_deflection_angle Number;
-    v_bearing           Number;
-    v_offset            Number;
-    v_sign              Number;
-    v_delta_x           Number;
-    v_delta_y           Number;
-    v_circle            &&INSTALL_SCHEMA..T_Vertex;
-    v_start_point       &&INSTALL_SCHEMA..T_Vertex;
-    v_mid_point         &&INSTALL_SCHEMA..T_Vertex;
-    v_end_point         &&INSTALL_SCHEMA..T_Vertex;
+    v_bearing          Number;
+    v_offset           Number;
+    v_sign             Number;
+    v_delta_x          Number;
+    v_delta_y          Number;
+    v_circle           &&INSTALL_SCHEMA..T_Vertex;
+    v_start_point      &&INSTALL_SCHEMA..T_Vertex;
+    v_mid_point        &&INSTALL_SCHEMA..T_Vertex;
+    v_end_point        &&INSTALL_SCHEMA..T_Vertex;
   Begin
     v_offset := NVL(p_offset,0.0);
     If ( v_offset = 0.0 ) Then
@@ -944,8 +959,8 @@ AS
       -- Compute first offset point
       v_start_point := SELF.startCoord
                            .ST_FromBearingAndDistance(
-                               p_bearing => v_bearing,
-                               p_distance => ABS(v_offset),
+                               p_bearing   => v_bearing,
+                               p_distance  => ABS(v_offset),
                                p_projected => SELF.projected
                             );
 
@@ -963,6 +978,7 @@ AS
                     p_id        => SELF.startCoord.ID,
                     p_X         => v_start_point.X,
                     p_Y         => v_start_point.Y,
+
                     p_Z         => SELF.startCoord.Z,
                     p_W         => SELF.startCoord.W,
                     p_sdo_gtype => SELF.startCoord.sdo_gtype,
@@ -989,6 +1005,7 @@ AS
     -- Compute curve center
     --
     v_circle := SELF.ST_FindCircle();
+
 
     -- Is collinear?
     -- DEBUG dbms_output.put_line('ST_Parallel circle.ID='||v_circle.ID);
@@ -1083,7 +1100,7 @@ AS
     v_bearing     := v_circle.ST_Bearing(
                        p_vertex    => SELF.MidCoord,
                        p_projected => SELF.projected,
-                                         p_normalize=>1);
+                       p_normalize => 1);
     v_mid_point   := v_circle
                        .ST_FromBearingAndDistance(
                            p_bearing   => v_bearing,
@@ -1109,31 +1126,31 @@ AS
                subelement_id => SELF.subelement_id,
                segment_id    => SELF.segment_id,
                startCoord    => &&INSTALL_SCHEMA..T_Vertex (
-                    p_id        => SELF.startCoord.ID,
-                    p_X         => v_start_point.X,
-                    p_Y         => v_start_point.Y,
-                    p_Z         => SELF.startCoord.Z,
-                    p_W         => SELF.startCoord.W,
-                    p_sdo_gtype => SELF.startCoord.sdo_gtype,
-                    p_sdo_srid  => SELF.sdo_Srid
-                ),
+                  p_id        => SELF.startCoord.ID,
+                  p_X         => v_start_point.X,
+                  p_Y         => v_start_point.Y,
+                  p_Z         => SELF.startCoord.Z,
+                  p_W         => SELF.startCoord.W,
+                  p_sdo_gtype => SELF.startCoord.sdo_gtype,
+                  p_sdo_srid  => SELF.sdo_Srid
+               ),
                midCoord => &&INSTALL_SCHEMA..T_Vertex (
-                    p_id        => SELF.midCoord.ID,
-                    p_X         => v_mid_point.X,
-                    p_Y         => v_mid_point.Y,
-                    p_Z         => SELF.midCoord.Z,
-                    p_W         => SELF.midCoord.W,
-                    p_sdo_gtype => SELF.startCoord.sdo_gtype,
-                    p_sdo_srid  => SELF.sdo_Srid
-                ),
+                  p_id        => SELF.midCoord.ID,
+                  p_X         => v_mid_point.X,
+                  p_Y         => v_mid_point.Y,
+                  p_Z         => SELF.midCoord.Z,
+                  p_W         => SELF.midCoord.W,
+                  p_sdo_gtype => SELF.startCoord.sdo_gtype,
+                  p_sdo_srid  => SELF.sdo_Srid
+               ),
                endCoord => &&INSTALL_SCHEMA..T_Vertex (
-                    p_id        => SELF.endCoord.ID,
-                    p_X         => v_end_point.X,
-                    p_Y         => v_end_point.Y,
-                    p_Z         => SELF.EndCoord.Z,
-                    p_W         => SELF.EndCoord.W,
-                    p_sdo_gtype => SELF.startCoord.sdo_gtype,
-                    p_sdo_srid  => SELF.sdo_Srid
+                  p_id        => SELF.endCoord.ID,
+                  p_X         => v_end_point.X,
+                  p_Y         => v_end_point.Y,
+                  p_Z         => SELF.EndCoord.Z,
+                  p_W         => SELF.EndCoord.W,
+                  p_sdo_gtype => SELF.startCoord.sdo_gtype,
+                  p_sdo_srid  => SELF.sdo_Srid
                ),
                sdo_gtype => SELF.sdo_gtype,
                sdo_srid  => SELF.sdo_Srid,
@@ -1143,7 +1160,7 @@ AS
   End ST_Parallel;
 
   Member Function ST_AddCurveBetweenSegments(
-                     p_segment   In &&INSTALL_SCHEMA..T_SEGMENT,
+                     p_segment   In &&INSTALL_SCHEMA..T_Segment,
                      p_iVertex   in &&INSTALL_SCHEMA..T_Vertex default NULL,
                      p_radius    In number         default null,
                      p_unit      In varchar2       default NULL)
@@ -1190,8 +1207,8 @@ AS
     IF ( p_radius is not null ) THEN
        -- Compute centre of circular arc
        v_cVertex := SELF.ST_OffsetBetween (
-                            p_segment   => p_segment,
-                            p_offset    => p_radius,
+                            p_segment    => p_segment,
+                            p_offset     => p_radius,
                             p_unit       => p_unit
                     );
        -- DEBUG dbms_output.put_line(v_cVertex.ST_AsText());
@@ -1227,13 +1244,13 @@ AS
     --
     IF (  (v_geom.Get_Dims() = 2 /*2002*/ )
        OR (v_geom.Get_Dims() = 3 AND v_geom.Get_Lrs_Dim() != 0 /*3302*/) ) Then
-       -- DEBUG dbms_output.put_line('T_SEGMENT.ST_LENGTH: 200x or 330x');
+       -- DEBUG dbms_output.put_line('T_Segment.ST_LENGTH: 200x or 330x');
        v_length := CASE WHEN p_unit IS NOT NULL AND SELF.SDO_Srid IS NOT NULL
                         THEN MDSYS.SDO_Geom.SDO_Length(v_geom,SELF.precisionModel.tolerance,P_UNIT)
                         ELSE MDSYS.SDO_Geom.SDO_Length(v_geom,SELF.precisionModel.tolerance)
                     END;
     ELSIF (Not v_isLocator ) Then -- v_geom.GET_DIMS() = 3 /*3002*/ And Not v_isLocator) Then
-       -- DEBUG dbms_output.put_line('T_SEGMENT.ST_LENGTH: Spatial sdo_geom.sdo_length; p_unit=' || NVL(p_unit,'null'));
+       -- DEBUG dbms_output.put_line('T_Segment.ST_LENGTH: Spatial sdo_geom.sdo_length; p_unit=' || NVL(p_unit,'null'));
        v_length := CASE WHEN p_unit IS NOT NULL AND SELF.SDO_Srid IS NOT NULL
                         THEN MDSYS.SDO_Geom.SDO_Length(v_geom,SELF.precisionModel.tolerance,P_UNIT)
                         ELSE MDSYS.SDO_Geom.SDO_Length(v_geom,SELF.precisionModel.tolerance)
@@ -1249,21 +1266,21 @@ AS
                          THEN MDSYS.SDO_Geom.SDO_Length(v_geom,SELF.precisionModel.tolerance,P_UNIT)
                          ELSE MDSYS.SDO_Geom.SDO_Length(v_geom,SELF.precisionModel.tolerance)
                      END;
-       -- DEBUG dbms_output.put_line('T_SEGMENT.ST_LENGTH v_seg_len= ' || v_seg_len);
+       -- DEBUG dbms_output.put_line('T_Segment.ST_LENGTH v_seg_len= ' || v_seg_len);
        -- Now compute Z component
        v_length := SQRT(POWER(v_seg_len,2) +
                         POWER(case when v_z_posn = 3 then SELF.endCoord.z  else SELF.endCoord.w end
                               -
                               case when v_z_posn = 3 then SELF.StartCoord.z else SELF.StartCoord.w end,2) );
     END IF;
-    -- DEBUG dbms_output.put_line('T_SEGMENT.ST_LENGTH Return = ' || v_length);
+    -- DEBUG dbms_output.put_line('T_Segment.ST_LENGTH Return = ' || v_length);
     Return v_length;
   END ST_Length;
 
   Member Function ST_Angle
-  Return NUMBER
-  AS
-  BEGIN
+           Return Number
+  As
+  Begin
     return &&INSTALL_SCHEMA..COGO.ArcTan2(SELF.endCoord.y - SELF.startCoord.y, 
                               SELF.endCoord.x - SELF.startCoord.x);
   End ST_Angle;
@@ -1293,12 +1310,12 @@ AS
     v_length          number;
     v_vertex_b        &&INSTALL_SCHEMA..T_Vertex;
     v_vertex          &&INSTALL_SCHEMA..T_Vertex;
-    v_segment         &&INSTALL_SCHEMA..T_SEGMENT;
+    v_segment         &&INSTALL_SCHEMA..T_Segment;
     v_has_z           BOOLEAN;
     v_test_len        NUMBER;
     v_isLocator       BOOLEAN;
   Begin
-    -- BEGIN dbms_output.put_line('T_SEGMENT.ST_DISTANCE: START');
+    -- BEGIN dbms_output.put_line('T_Segment.ST_DISTANCE: START');
     If (p_geometry is null) Then
        Return -1; /* False */
     End If;
@@ -1320,7 +1337,7 @@ AS
     -- Normalise geometries for use in sdo_geom.sdo_distance
     -- DEBUG dbms_output.put_line('v_vertex.ST_Dims() ' || v_vertex.ST_Dims() || ' = SELF.ST_Dims() '||SELF.ST_Dims());
     -- DEBUG dbms_output.put_line('v_vertex.ST_Lrs_Dim() ' || v_vertex.ST_Lrs_Dim() || ' = SELF.ST_Lrs_Dim() '||SELF.ST_Lrs_Dim());
-    v_segment := &&INSTALL_SCHEMA..T_SEGMENT(SELF);
+    v_segment := &&INSTALL_SCHEMA..T_Segment(SELF);
     IF ( v_tgeometry.ST_Dims() = 2 and SELF.ST_Dims() = 2 ) THEN
       NULL;  -- ie Do Nothing...
     ELSIF ( v_tgeometry.ST_Dims() = 2 and SELF.ST_Dims() = 3 ) THEN
@@ -1328,17 +1345,17 @@ AS
     ELSIF ( v_tgeometry.ST_Dims() = 3 and SELF.ST_Dims() = 2 ) THEN
       v_tgeometry := v_tgeometry.ST_To2D();
     ELSIF ( v_tgeometry.ST_Dims() = 3 AND v_tgeometry.ST_Lrs_Dim()=3 ) THEN
-      v_segment :=     SELF.ST_To2D();
+      v_segment   :=        SELF.ST_To2D();
       v_tgeometry := v_tgeometry.ST_To2D();
     ELSE
-      v_segment :=     SELF.ST_To3D(p_keep_measure=>0,p_default_z=>NULL);
+      v_segment   :=        SELF.ST_To3D(p_keep_measure=>0,p_default_z=>NULL);
       v_tgeometry := v_tgeometry.ST_To3D(p_zordtokeep=>3);
     End If;
     -- DEBUG dbms_output.put_line(' vertex: ' || v_tgeometry.ST_AsEWKT() || ' v_segment: '  || v_segment.ST_AsEWKT());
     -- Get normalised segment as geometry
     v_segment_geom := v_segment.ST_SdoGeometry();
-    -- DEBUG &&INSTALL_SCHEMA._DEBUG.PrintGeom(v_segment_geom,3,false,'v_segment_geom: ');
-    -- DEBUG dbms_output.put_line('T_SEGMENT.ST_DISTANCE: case when p_unit is not null and SELF.ST_Srid() is not null => '||case when p_unit is not null and SELF.ST_Srid() is not null then 'p_unit' else 'no p_unit' end);
+    -- DEBUG dbms_output.put_line('v_segment_geom: ' || &&INSTALL_SCHEMA..PRINT.sdo_geometry(v_segment_geom,SELF.precisionModel.xy));
+    -- DEBUG dbms_output.put_line('T_Segment.ST_DISTANCE: case when p_unit is not null and SELF.ST_Srid() is not null => '||case when p_unit is not null and SELF.ST_Srid() is not null then 'p_unit' else 'no p_unit' end);
     v_distance := case when p_unit is not null and SELF.ST_Srid() is not null
                        then mdsys.sdo_geom.sdo_distance(v_tgeometry.geom,v_segment_geom,SELF.precisionModel.tolerance,p_unit)
                        else mdsys.sdo_geom.sdo_distance(v_tgeometry.geom,v_segment_geom,SELF.precisionModel.tolerance)
@@ -1360,26 +1377,26 @@ AS
                                ),SELF.PrecisionModel.XY);
        -- DEBUG dbms_output.put_line(' AFTER=>' || v_distance);
     End If;
-    -- DEBUG dbms_output.put_line('T_SEGMENT.ST_DISTANCE: result is ' || NVL(round(v_distance,v_precision),-9999));
+    -- DEBUG dbms_output.put_line('T_Segment.ST_DISTANCE: result is ' || NVL(round(v_distance,v_precision),-9999));
     Return ROUND(v_distance,SELF.PrecisionModel.XY);
   End ST_Distance;
 
   Member Function ST_Distance(p_vertex     in &&INSTALL_SCHEMA..T_Vertex,
-                              p_unit      In varchar2 DEFAULT NULL)
+                              p_unit       in varchar2 default null)
            Return Number
-  as
+  As
     v_vertex &&INSTALL_SCHEMA..T_Vertex;
   Begin
     return SELF.ST_Distance(
              p_geometry => p_vertex.ST_SdoGeometry(),
              p_unit     => p_unit
-                     );
+           );
   End ST_Distance;
 
   Member Function ST_Distance(p_segment    in &&INSTALL_SCHEMA..T_Segment,
                               p_unit       in varchar2 default null)
            Return Number
-    as
+  As
     v_vertex &&INSTALL_SCHEMA..T_Vertex;
   Begin
     return SELF.ST_Distance(
@@ -1392,8 +1409,8 @@ AS
                      p_segment in &&INSTALL_SCHEMA..T_Segment,
                      p_unit    in varchar2 default null
                   )
-       Return Number
-       As
+           Return Number
+  As
     denominator    number;
     numerator      number;
     noIntersection boolean;
@@ -1405,7 +1422,7 @@ AS
     s_num          number;
     s              number;
     r              number;
-       Begin
+  Begin
     -- DEBUG dbms_output.put_line('<ST_SegmentToSegmentDistance>');
     if ( p_segment is null ) then
       return null;
@@ -1429,7 +1446,7 @@ AS
                   p_unit      => p_unit
              );
     end if;
-
+    
     if (C.ST_Equals(D)=1) then
       -- DEBUG dbms_output.put_line('  1. C=D -> ST_ProjectPoint');
       --return distancePointLine(D, A, B);
@@ -1524,8 +1541,8 @@ AS
     v_projected            pls_integer;
   Begin
     -- DEBUG dbms_output.put_line('<ST_PointToCircularArc>');
-    If (p_vertex is null) Then
-       Return NULL;
+    IF ( p_vertex is null ) Then
+      Return null;
     End If;
     v_projected := case when SELF.sdo_srid is null then 1 else &&INSTALL_SCHEMA..t_segment.ST_GetProjected(SELF.sdo_srid) end;
     If ( SELF.ST_isCircularArc()=0 ) Then
@@ -1686,7 +1703,7 @@ AS
       End If;      
     End If;
     
-    -- DEBUG DEBUG.PrintGeom(v_intersection_point.ST_SdoGeometry(),3,false,'  v_intersection_point: ');
+    -- DEBUG dbms_output.put_line('  v_intersection_point: ' || &&INSTALL_SCHEMA..PRINT.sdo_geometry(v_intersection_point.ST_SdoGeometry(),SELF.precisionModel.xy));
     Return v_intersection_point;
   End ST_PointToCircularArc;
   
@@ -1731,6 +1748,7 @@ AS
     sqrP_LB  := sqrDistPP3D(p_vertex,        SELF.startCoord);
     sqrP_LE  := sqrDistPP3D(p_vertex,        SELF.endCoord);
     sqrLB_LE := sqrDistPP3D(SELF.startCoord, SELF.endCoord);
+
     LB_LE    := SQRT(sqrLB_LE);
     I_LB     := (sqrP_LB + sqrLB_LE - sqrP_LE)/(2.0*LB_LE);
 
@@ -1855,7 +1873,7 @@ AS
       v_vertex := SELF.ST_ProjectPoint(p_vertex=>&&INSTALL_SCHEMA..T_Vertex(p_geometry));
       Return v_vertex;
     End If;
-
+    
     -- SDO_CLOSEST_POINTS
     -- A. Cannot use to compute measure value even if we try and trick the code
     --    into doing so by pretending a 3302 segment is 3302.
@@ -1863,11 +1881,12 @@ AS
     -- C. If Locator then both geom1/geom2 must be 2D
     -- D. If Spatial then don't mix dimensions eg 3001/4402
     --    So, convert both to Same Dimension and then add measure back in via alternate method
+
     -- DEBUG dbms_output.put_line(' SELF ' || SELF.ST_AsText());
-    -- DEBUG DEBUG.PrintGeom(p_geometry,3,false,'  p_geometry: ');
+    -- DEBUG dbms_output.put_line('  p_geometry: ' || &&INSTALL_SCHEMA..PRINT.sdo_geometry(p_geometry,SELF.precisionModel.xy));
 
     v_tgeometry := &&INSTALL_SCHEMA..T_Geometry(p_geometry,SELF.PrecisionModel.tolerance,SELF.PrecisionModel.XY,SELF.projected); -- SGG IsGeographic
-    v_segment := &&INSTALL_SCHEMA..T_Segment(SELF);
+    v_segment   := &&INSTALL_SCHEMA..T_Segment(SELF);
     
     -- DEBUG dbms_output.put_line('  v_tgeometry.ST_Dims()/v_segment.ST_Dims()='||v_tgeometry.ST_Dims() || '/' || v_segment.ST_Dims());
     -- DEBUG dbms_output.put_line('  v_tgeometry.ST_Lrs_Dims()/v_segment.ST_Lrs_Dims()='||v_tgeometry.ST_Lrs_Dim() || '/' || v_segment.ST_Lrs_Dim());
@@ -1887,14 +1906,14 @@ AS
         NULL; -- Leave alone
       Else -- Reduce
         -- Lrs_Dim = 3
-      v_segment :=     SELF.ST_To2D();
+        v_segment   :=        SELF.ST_To2D();
         v_tgeometry := v_tgeometry.ST_To2D();
       End If;
     ELSIF ( v_tgeometry.ST_Dims() = 4 AND SELF.ST_Dims() = 4 ) Then
       If ( v_tgeometry.ST_Lrs_Dim()=0 ) THEN
         v_segment   :=        SELF.ST_To3D(p_keep_measure=> 0,p_default_z=>NULL); -- SGG 4D
         v_tgeometry := v_tgeometry.ST_To3D(p_zordtokeep  => 3);
-    ELSE
+      ELSE
         v_segment   :=        SELF.ST_To3D(p_keep_measure=>0,p_default_z=>NULL); -- SGG 4D
         v_tgeometry := v_tgeometry.ST_To3D(p_zordtokeep=>case when v_tgeometry.ST_LRS_Dim()=3 then 4 else 3 end);
       END IF;
@@ -1915,15 +1934,14 @@ AS
            geoma     => v_point_on_geom,
            geomb     => v_point_on_segment
       );
-      -- DEBUG 
-      DEBUG.PrintGeom(v_point_on_segment,3,false,'  v_point_on_segment (SDO_CLOSEST_POINTS): ');
+      -- DEBUG dbms_output.put_line('  v_point_on_segment (SDO_CLOSEST_POINTS): '||PRINT.sdo_geometry(v_point_on_segment,SELF.precisionModel.xy));
       EXCEPTION
         --WHEN NO_DATA_FOUND THEN
         --   Return NULL;
         WHEN geographic3D THEN
       -- DEBUG dbms_output.put_line('SDO_CLOSEST_POINTS: Forcing 2D answer ');
           v_tgeometry    := v_tgeometry.ST_To2D();
-          v_segment_geom := v_segment.ST_To2D().ST_SdoGeometry();
+          v_segment_geom :=   v_segment.ST_To2D().ST_SdoGeometry();
           MDSYS.SDO_GEOM.SDO_CLOSEST_POINTS(
             geom1     => v_tgeometry.geom,
             geom2     => v_segment_geom,
@@ -1934,7 +1952,7 @@ AS
             geomb     => v_point_on_segment
          );
     END;
-    -- DEBUG dbms_output.put_line('  Result of SDO_GEOM.SDO_CLOSEST_POINT, v_point_on_segment=' || case when v_point_on_segment is null then 'NULL' else DEBUG.PrintGeom(v_point_on_segment,3,0,null,0) end);
+    -- DEBUG dbms_output.put_line('  Result of SDO_GEOM.SDO_CLOSEST_POINT, v_point_on_segment=' || case when v_point_on_segment is null then 'NULL' else PRINT.sdo_geometry(v_point_on_segment,SELF.precisionModel.xy) end);
 
     -- Check if CLOSEST_POINTS worked
     --
@@ -1980,10 +1998,10 @@ AS
             v_vertex.Z := SELF.startCoord.z;
             v_vertex.W := v_segment_length * v_ratio;
             v_vertex.sdo_gtype := 4401;
-    ELSE
+          Else 
             v_vertex.Z := v_segment_length * v_ratio;
             v_vertex.sdo_gtype := 3301;
-    End If;
+          End If;
         Else
           -- Now calculate Measure
           if ( SELF.ST_Lrs_Dim() = 3 ) Then
@@ -2012,12 +2030,12 @@ AS
 
   Member Function ST_ProjectPoint(p_vertex in &&INSTALL_SCHEMA..T_Vertex,
                                   p_unit   In varchar2 Default NULL)
-    Return &&INSTALL_SCHEMA..T_Vertex
-  AS
+           Return &&INSTALL_SCHEMA..T_Vertex 
+  As
     geographic3D EXCEPTION;
     PRAGMA       EXCEPTION_INIT(
                     geographic3D,-13364
-                  );
+                 );
     v_vertex           &&INSTALL_SCHEMA..T_Vertex;
     v_segment          &&INSTALL_SCHEMA..T_Segment;
     v_point_on_point   mdsys.sdo_geometry;
@@ -2082,8 +2100,8 @@ AS
          );
     END;
     -- DEBUG dbms_output.put_line('  After SDO_CLOSEST_POINTS');
-    -- DEBUG debug.printGeom(v_point_on_point,   SELF.precisionModel.xy,false,p_vertex.Sdo_Gtype||' point_on_point    : ');
-    -- DEBUG debug.printGeom(v_point_on_segment, SELF.precisionModel.xy,false,'     point_on_line ' || SELF.sdo_gtype||': ' );
+    -- DEBUG dbms_output.put_line(p_vertex.Sdo_Gtype||' point_on_point    : '|| &&INSTALL_SCHEMA..PRINT.sdo_geometry(v_point_on_point,SELF.precisionModel.xy));
+    -- DEBUG dbms_output.put_line('     point_on_line ' || SELF.sdo_gtype||': ' || &&INSTALL_SCHEMA..PRINT.sdo_geometry(v_point_on_segment,SELF.precisionModel.xy));
 
     v_vertex := &&INSTALL_SCHEMA..T_Vertex(v_point_on_segment);
     -- DEBUG dbms_output.put_line('  v_vertex=' || v_vertex.ST_AsText());
@@ -2140,13 +2158,13 @@ AS
     Return &&INSTALL_SCHEMA..T_Vertex
   AS
     v_centre &&INSTALL_SCHEMA..T_Vertex;
-    dA NUMBER;
-    dB NUMBER;
-    dC NUMBER;
-    dD NUMBER;
-    dE NUMBER;
-    dF NUMBER;
-    dG NUMBER;
+    dA       NUMBER;
+    dB       NUMBER;
+    dC       NUMBER;
+    dD       NUMBER;
+    dE       NUMBER;
+    dF       NUMBER;
+    dG       NUMBER;
     v_x      Number;
     v_y      Number;
     v_radius Number;
@@ -2184,7 +2202,7 @@ AS
                            p_id        => 0,
                            p_sdo_gtype => 3001,
                            p_sdo_srid  => SELF.sdo_srid);
-        
+
         Return v_centre;
       END IF;
     ELSE
@@ -2238,7 +2256,8 @@ AS
                            end;
     return v_deflection_angle;
   End ST_ComputeDeflectionAngle;
-    
+
+  /* SGG : Need p_offset length for tangent from circularArc to point */
   Member Function ST_ComputeTangentPoint(p_position  In VarChar2,
                                          p_fraction  In Number   default 0.0,
                                          p_unit      IN varchar2 default NULL)
@@ -2249,14 +2268,14 @@ AS
     c_i_invalid_fraction Constant Integer       := -20121;
     c_s_invalid_fraction Constant VarChar2(100) := 'When p_position = FRACTION, p_fraction must be between 0.0 and 1.0.';
 
-    v_position  VarChar2(10) := UPPER(SUBSTR(NVL(p_position,'START'),1,10));
-    v_angle     NUMBER;
-    v_bearing   NUMBER;
-    v_distance  NUMBER;
+    v_position         VarChar2(10) := UPPER(SUBSTR(NVL(p_position,'START'),1,10));
+    v_angle            NUMBER;
+    v_bearing          NUMBER;
+    v_distance         NUMBER;
     v_deflection_angle NUMBER;
     v_arc_rotation     pls_integer;
 
-    v_fraction  Number := NVL(p_fraction,0.0);
+    v_fraction         Number := NVL(p_fraction,0.0);
     v_centre           &&INSTALL_SCHEMA..T_Vertex;
     v_vertex           &&INSTALL_SCHEMA..T_Vertex;
     v_result           &&INSTALL_SCHEMA..T_Vertex;
@@ -2288,15 +2307,15 @@ AS
     --- Compute vertex on circular arc
     IF ( v_position = 'FRACTION' and v_fraction <> 0.0 and v_fraction <> 1.0 ) THEN
       v_vertex := SELF.ST_OffsetPoint(
-                     p_ratio     => v_fraction,
-                     p_offset    => 0.0,
+                          p_ratio     => v_fraction,
+                          p_offset    => 0.0,
                           p_unit      => p_unit
                   );
     ELSE
       v_vertex := case when v_position = 'START' or (v_position = 'FRACTION' and v_fraction = 0.0) then SELF.startCoord
                        when v_position = 'MID'                                                     then SELF.midCoord
                        when v_position = 'END'   or (v_position = 'FRACTION' and v_fraction = 1.0) then SELF.endCoord
-                       ELSE              SELF.endCoord
+                       ELSE                                                                        SELF.endCoord
                    END;
     END IF;
     -- DEBUG dbms_output.put_line('  vertex on boundary ' || v_vertex.ST_AsEWKT());
@@ -2335,7 +2354,7 @@ AS
     -- Create tangent point 1/2 radius distance from point on circular arc.
     v_result := v_vertex.ST_FromBearingAndDistance(v_bearing,v_distance,SELF.projected);
     -- DEBUG dbms_output.put_line('  result ' || v_result.ST_AsEWKT());
-
+    
     -- DEBUG dbms_output.put_line('</ST_ComputeTangentPoint>');
     Return v_result;
   END ST_ComputeTangentPoint;
@@ -2377,17 +2396,17 @@ AS
     ELSE
       -- DEBUG dbms_output.put_line('  Computing start vertex by position');
       v_starT_Vertex := CASE v_position
-                       WHEN 'START' THEN SELF.startCoord
-                       WHEN 'MID'   THEN SELF.midCoord
-                       WHEN 'END'   THEN SELF.endCoord
-                       ELSE              SELF.endCoord
-                   END;
+                        WHEN 'START' THEN SELF.startCoord
+                        WHEN 'MID'   THEN SELF.midCoord
+                        WHEN 'END'   THEN SELF.endCoord
+                        ELSE              SELF.endCoord
+                        END;
       v_fraction := CASE v_position
-                         WHEN 'START' THEN 0.0
+                    WHEN 'START' THEN 0.0
                     WHEN 'MID'   THEN 0.5 --<< SGG Nope
-                         WHEN 'END'   THEN 1.0
-                         ELSE              1.0
-                     END;
+                    WHEN 'END'   THEN 1.0
+                    ELSE              1.0
+                    END;
     END IF;
     -- DEBUG dbms_output.put_line('  Start vertex is ' || v_starT_Vertex.ST_AsText());
 
@@ -2401,6 +2420,7 @@ AS
     -- DEBUG dbms_output.put_line('</ST_ComputeTangentLine>');
     -- Now compute and return the tangent line.
     Return &&INSTALL_SCHEMA..T_Segment(
+
              p_segment_id => 1,
              p_startCoord => v_starT_Vertex,
              p_endCoord   => v_tangent_point,
@@ -2412,21 +2432,20 @@ AS
   Member Function ST_OffsetPoint(p_ratio     IN NUMBER,
                                  p_offset    IN NUMBER,
                                  p_unit      IN VARCHAR2 Default NULL)
-
   Return &&INSTALL_SCHEMA..T_Vertex
   AS
-    v_az      NUMBER;
-    v_angle   NUMBER;
+    v_az               NUMBER;
+    v_angle            NUMBER;
     v_vertex           &&INSTALL_SCHEMA..T_Vertex;
     v_centre           &&INSTALL_SCHEMA..T_Vertex;
-    v_bearing NUMBER;
+    v_bearing          NUMBER;
     v_distance         NUMBER;
     v_measure_ratio    NUMBER;
-    v_dir     Integer;
+    v_dir              Integer;
     v_linePt           &&INSTALL_SCHEMA..T_Vertex;
     v_delta            &&INSTALL_SCHEMA..T_Vertex;
 
-    v_point   mdsys.sdo_geometry;
+    v_point            mdsys.sdo_geometry;
     v_deflection_angle Number;
     v_arc_rotation     pls_integer;
 
@@ -2435,6 +2454,7 @@ AS
     IF (SELF.ST_isEmpty()=1) THEN
       Return NULL;
     END IF;
+
     IF (p_ratio NOT BETWEEN 0 AND 1) THEN
       Return NULL;
     END IF;
@@ -2482,12 +2502,12 @@ AS
                      );
         -- DEBUG dbms_output.put_line('   SS: bearing is ' || v_bearing);
       Else 
-      v_angle := &&INSTALL_SCHEMA..COGO.ST_Degrees(
-                   v_centre.ST_SubtendedAngle(
-                     SELF.startCoord,
-                     SELF.EndCoord
-                   )
-                 );
+        v_angle := &&INSTALL_SCHEMA..COGO.ST_Degrees(
+                     v_centre.ST_SubtendedAngle(
+                       SELF.startCoord,
+                       SELF.EndCoord
+                     )
+                   );
         v_deflection_angle := SELF.ST_ComputeDeflectionAngle(NULL);
         v_arc_rotation     := SIGN(v_deflection_angle);
         -- DEBUG dbms_output.put_line('  rotation sign ' || v_arc_rotation);
@@ -2496,15 +2516,16 @@ AS
         v_measure_ratio := (v_angle * p_ratio) / v_angle;
         -- DEBUG dbms_output.put_line('  measure_ratio= ' || v_measure_ratio);
 
-      -- now get angle subtended by this measure ratio
-      v_angle := p_ratio * v_angle;
-      -- DEBUG dbms_output.put_line('Subtended angle based on ratio of circular arc ' || v_angle);
-      -- Turn subtended angle of ratio into a bearing
+        -- now get angle subtended by this measure ratio
+
+        v_angle := p_ratio * v_angle;
+        -- DEBUG dbms_output.put_line('  Subtended angle based on ratio of circular arc ' || v_angle);
+        -- Turn subtended angle of ratio into a bearing
         v_bearing := v_centre.ST_Bearing(
-                                    p_vertex    => SELF.startCoord,
+                       p_vertex    => SELF.startCoord,
                        p_projected => SELF.projected,
-                                    p_normalize => 0
-                   );
+                       p_normalize => 0
+                     );
         -- DEBUG dbms_output.put_line('   bearing from centre to start is ' || v_bearing);
         v_bearing := &&INSTALL_SCHEMA..COGO.ST_Normalize(p_degrees => v_bearing + (v_arc_rotation*v_angle));
         -- DEBUG dbms_output.put_line('   Compute (Normalized) bearing from centre to tangent point is ' || v_bearing );
@@ -2546,6 +2567,7 @@ AS
                              p_normalize => 0
                      )
                  );
+
       v_dir   := CASE WHEN v_az < &&INSTALL_SCHEMA..COGO.PI() THEN -1 ELSE 1 END;
       v_delta := &&INSTALL_SCHEMA..T_Vertex(
                    p_x         => ABS(COS(v_az)) * NVL(p_offset,0) * v_dir,
@@ -2559,6 +2581,7 @@ AS
             OR v_az > 3 * &&INSTALL_SCHEMA..COGO.PI()/2 ) THEN
         v_delta.x  := -1 * v_delta.x;
       END IF;
+
       -- v_delta holds offset delta line
       -- Need to compute point for that offset
       v_linePt := &&INSTALL_SCHEMA..T_Vertex(
@@ -2583,14 +2606,15 @@ AS
     END IF;
     -- DEBUG dbms_output.put_line('Returned vertex is ' || v_Vertex.ST_AsEWKT());
     -- DEBUG dbms_output.put_line('</ST_OffsetPoint>');
+
     Return v_vertex;
   END ST_OffsetPoint;
 
   /* ST_OffsetBetween
   *  Computes offset point (left/-ve; right/+ve) at bi-sector of angle formed by SELF and p_segment
   */
-  Member Function ST_OffsetBetween(p_segment   IN &&INSTALL_SCHEMA..T_SEGMENT,
-                                   p_offset    IN NUMBER,
+  Member Function ST_OffsetBetween(p_segment    IN &&INSTALL_SCHEMA..T_Segment,
+                                   p_offset     IN NUMBER,
                                    p_unit       IN VARCHAR2 Default NULL)
   Return &&INSTALL_SCHEMA..T_Vertex
   AS
@@ -2604,7 +2628,7 @@ AS
     v_mid_vertex    &&INSTALL_SCHEMA..T_Vertex;
     v_prev_vertex   &&INSTALL_SCHEMA..T_Vertex;
     v_segment       &&INSTALL_SCHEMA..T_Segment;
-    v_geom        mdsys.sdo_geometry;
+    v_geom          mdsys.sdo_geometry;
   BEGIN
     -- DEBUG dbms_output.put_line('<ST_OffsetBetween>');
 
@@ -2624,7 +2648,7 @@ AS
 
       v_prev_vertex := &&INSTALL_SCHEMA..T_Vertex(SELF.endCoord);
       v_mid_vertex  := SELF.startCoord;
-      v_next_vertex := &&INSTALL_SCHEMA..T_Vertex(p_segment.endCoord);
+      v_nexT_Vertex := &&INSTALL_SCHEMA..T_Vertex(p_segment.endCoord);
     ELSE
       -- They don't touch, return no intersection point
       RETURN NULL;
@@ -2642,7 +2666,7 @@ AS
 
     -- DEBUG dbms_output.put_line('      v_prev_vertex='||v_prev_vertex.ST_AsText() || '  v_mid_vertex=' ||v_mid_vertex.ST_AsText()  || ' v_nexT_Vertex='||v_nexT_Vertex.ST_AsText());
     -- DEBUG dbms_output.put_line('      v_mid_vertex.ST_Dims()='||v_mid_vertex.ST_Dims() || ' v_prev_vertex.ST_Dims()=' ||v_mid_vertex.ST_Dims()  || ' v_nexT_Vertex.ST_Dims()='||v_nexT_Vertex.ST_Dims());
-    v_angle   := v_mid_vertex.ST_SubtendedAngle(v_prev_vertex,v_next_vertex);
+    v_angle   := v_mid_vertex.ST_SubtendedAngle(v_prev_vertex,v_next_Vertex);
     -- DEBUG dbms_output.put('      ST_SubtendedAngle(degrees)='||&&INSTALL_SCHEMA..COGO.ST_Degrees(v_angle));
     -- v_distance := ABS(v_offset / sin(v_angle/2.0));
     v_angle   := &&INSTALL_SCHEMA..COGO.ST_Degrees(
@@ -2652,7 +2676,7 @@ AS
     -- DEBUG dbms_output.put(' v_angle/2.0(degrees)='||v_angle);
     v_bearing := &&INSTALL_SCHEMA..COGO.ST_Normalize(
                    v_mid_vertex.ST_Bearing(
-                     p_vertex => v_next_vertex,
+                     p_vertex    => v_nexT_Vertex,
                      p_normalize => 0
                    )
                    +
@@ -2688,10 +2712,10 @@ AS
     v_Fraction Number := NVL(p_segmentLengthFraction,0.0);
   Begin
     If ( SELF.ST_isCircularArc()=1 ) Then
-      RETURN SELF.ST_ComputeTangentPoint(
-                      p_position  => 'FRACTION',
-                      p_fraction  => v_Fraction,
-                      p_unit      => NULL
+      RETURN SELF.ST_OffsetPoint(
+                      p_ratio  => p_segmentLengthFraction,
+                      p_offset => 0.0,
+                      p_unit   => NULL
              );
     End If;
 
@@ -2781,10 +2805,18 @@ AS
     v_a        Number;
     v_h        NUMBER;
   Begin
-    IF (      SELF.ST_IsCircularArc()=0 OR
-         p_segment.ST_IsCircularArc()=0 ) THEN              
-      Return SELF.ST_Intersect(p_segment,p_unit);
-    END IF;
+    IF ( SELF.ST_isCircularArc() = 0 AND p_segment.ST_isCircularArc() = 0 ) THEN
+      -- DEBUG dbms_output.put_line('   One is a CircularArc: Call ST_Intersect');
+      RETURN SELF.ST_Intersect(
+                     p_segment,
+                     p_unit);
+    ELSIF ( NOT (SELF.ST_isCircularArc() = 1 AND p_segment.ST_isCircularArc() = 1 ) ) THEN
+      -- DEBUG dbms_output.put_line('   Two CircularArcs: Call ST_Intersect2CircularArcs');
+      RETURN SELF.ST_Intersect2CircularArcs(
+                     p_segment,
+                     p_unit);
+    END IF; 
+
     v_circle_1 :=      SELF.ST_FindCircle();
     v_circle_2 := p_segment.ST_FindCircle();
     IF ( v_circle_1.id = -9 or v_circle_2.id = -9 ) THEN
@@ -2838,8 +2870,8 @@ AS
     Return v_iPoints;
   END ST_Intersect2CircularArcs;
   
-  Member Function ST_IntersectCircularArc(p_segment   in &&INSTALL_SCHEMA..T_Segment,
-                                          p_unit      in varchar2 default NULL)
+  Member Function ST_IntersectCircularArc(p_segment in &&INSTALL_SCHEMA..T_Segment,
+                                          p_unit    in varchar2 default NULL)
            Return &&INSTALL_SCHEMA..T_Segment
   Is
     c_dPrecision       integer := 8;
@@ -2866,7 +2898,6 @@ AS
     v_dist_int_pt2CurveStart NUMBER;
     v_dist_int_pt2CurveEnd   NUMBER;
     v_dist_int_pt2CurveMid   NUMBER;
-
     v_within_arc             BOOLEAN;
     v_pt1_line               Number;
     v_pt1_arc                Number;
@@ -2880,13 +2911,27 @@ AS
     v_vertex                 &&INSTALL_SCHEMA..T_Vertex;
     
   Begin
-
     -- DEBUG dbms_output.put_line('<ST_IntersectCircle>');
+
+    IF (    SELF.ST_isCircularArc() = 1 AND p_segment.ST_isCircularArc() = 1 ) THEN
+      -- DEBUG dbms_output.put_line('   Two CircularArcs: Call ST_Intersect2CircularArcs');
+      RETURN SELF.ST_Intersect2CircularArcs(
+                     p_segment,
+                     p_unit);
+    ELSIF ( SELF.ST_isCircularArc() = 0 AND p_segment.ST_isCircularArc() = 0 ) THEN
+      -- DEBUG dbms_output.put_line('   One is a CircularArc: Call ST_Intersect');
+      RETURN SELF.ST_Intersect(
+                     p_segment,
+                     p_unit);
+    END IF; 
+
+    -- We have a single LineString and CircularArc.
     v_circular_arc := CASE WHEN SELF.ST_IsCircularArc()=1 THEN SELF ELSE p_segment END;
     v_line_segment := CASE WHEN SELF.ST_IsCircularArc()=0 THEN SELF ELSE p_segment END;
     v_arc_length   := v_circular_arc.ST_Length(p_unit);
     v_line_length  := v_line_segment.ST_Length(p_unit);
     v_centre       := v_circular_arc.ST_FindCircle(); -- We have already checked if p_circular_arc is indeed a circular arc.
+
     IF ( v_centre.id = -9 ) Then
     -- DEBUG dbms_output.put_line('</ST_IntersectCircle>');
       Return NULL;
@@ -3074,7 +3119,6 @@ AS
 
     -- ************************************
     -- Circular arc and intersection
-
     -- ************************************
     
   Begin
@@ -3124,9 +3168,9 @@ AS
     END If;
   End ST_Intersect;
 
-  Member Function ST_IntersectDetail(p_segment   in &&INSTALL_SCHEMA..T_SEGMENT,
+  Member Function ST_IntersectDetail(p_segment   in &&INSTALL_SCHEMA..T_Segment,
                                      p_unit      in varchar2 default null)
-           Return &&INSTALL_SCHEMA..T_SEGMENT
+           Return &&INSTALL_SCHEMA..T_Segment
   AS
     v_dx1          NUMBER;
     v_dY1          NUMBER;
@@ -3134,9 +3178,10 @@ AS
     v_dy2          NUMBER;
     v_t1           NUMBER;
     v_t2           NUMBER;
+
     v_denominator  NUMBER;
     v_iPoints      &&INSTALL_SCHEMA..T_Segment;
-    v_test_segment &&INSTALL_SCHEMA..T_Segment;
+    v_tesT_Segment &&INSTALL_SCHEMA..T_Segment;
     v_intersection &&INSTALL_SCHEMA..T_Segment
             := new &&INSTALL_SCHEMA..T_Segment (
                      p_segment_id => 1,
@@ -3146,7 +3191,8 @@ AS
                      p_sdo_gtype  => SELF.Sdo_Gtype,
                      p_sdo_srid   => SELF.sdo_srid
                );
-               
+
+
   BEGIN
     -- DEBUG dbms_output.put_line('<ST_IntersectDetail>');
     -- TODO: Support circular arcs.
@@ -3158,6 +3204,7 @@ AS
     -- DEBUG dbms_output.put_line('</ST_IntersectWithCircularArc>');
     -- DEBUG dbms_output.put_line('</ST_IntersectDetail>');
       Return &&INSTALL_SCHEMA..T_Segment(v_iPoints);
+
     END IF;
     -- Get the segments' parameters.
     v_dx1  := SELF.endCoord.x    - SELF.startCoord.x;
@@ -3171,6 +3218,7 @@ AS
     -- DEBUG dbms_output.put_line('v_denominator='||v_denominator);
     IF ( v_denominator = 0 ) THEN
       v_intersection.StartCoord.id := -3;
+
       -- DEBUG dbms_output.put_line('The lines are parallel or straight and connected');
       If ( (SELF.startCoord.x=p_segment.startCoord.x and SELF.startCoord.y=p_segment.startCoord.y)
         OR (SELF.startCoord.x=p_segment.endCoord.x   and SELF.startCoord.y=p_segment.endCoord.y) ) Then
@@ -3184,6 +3232,7 @@ AS
         OR   (SELF.endCoord.x=p_segment.startCoord.x and SELF.endCoord.y=p_segment.startCoord.y) ) Then
         v_intersection.StartCoord.x := SELF.endCoord.x;
         v_intersection.midCoord.x   := SELF.endCoord.x;
+
         v_intersection.endCoord.x   := SELF.endCoord.x;
         v_intersection.StartCoord.y := SELF.endCoord.y;
         v_intersection.midCoord.y   := SELF.endCoord.y;
@@ -3197,6 +3246,7 @@ AS
         v_intersection.endCoord.x    := NULL;
         v_intersection.endCoord.z    := NULL;
       End If;
+
       Return v_intersection;
     END IF;
 
@@ -3204,12 +3254,13 @@ AS
              (p_segment.startCoord.y -      SELF.startCoord.y) * v_dx2
             ) 
             / v_denominator;
-             
+
     v_t2 := ( (p_segment.startCoord.x -       SELF.startCoord.x) * v_dY1 + 
                     (SELF.startCoord.y - p_segment.startCoord.y) * v_dx1
             ) / -v_denominator;
 
     -- Find the point of intersection.
+
     v_intersection.StartCoord.id := case when v_t1 < 0 and v_t2 < 0 then  0
                                          when v_t1 < 0              then -1
                                          when v_t2 < 0              then -2
@@ -3223,7 +3274,8 @@ AS
     -- Compute by ratio any z value
     If ( SELF.ST_Dims() = 3 and p_segment.ST_Dims() = 3 ) Then
        -- Note: we do the ratio via 2D length of segments not 3D.
-       v_test_segment := &&INSTALL_SCHEMA..T_SEGMENT(
+
+       v_tesT_Segment := &&INSTALL_SCHEMA..T_Segment(
                           p_segment_id => 0,
                           p_startCoord => SELF.startCoord.ST_To2D(),
                           p_endCoord   => v_intersection.startCoord.ST_To2D(),
@@ -3231,11 +3283,12 @@ AS
                           p_sdo_srid   => SELF.sdo_srid
                         );
        v_intersection.startCoord.z := SELF.startCoord.z + ( ( v_tesT_Segment.ST_Length(p_unit) / SELF.ST_To2D().ST_Length(p_unit) ) * (SELF.endCoord.z-SELF.startCoord.z) );
-       v_test_segment.startCoord   := p_segment.startCoord.ST_To2D();
-       v_test_segment.endCoord     := v_intersection.startCoord.ST_To2D();
+       v_tesT_Segment.startCoord   := p_segment.startCoord.ST_To2D();
+       v_tesT_Segment.endCoord     := v_intersection.startCoord.ST_To2D();
        v_intersection.endCoord.z   := p_segment.startCoord.z + ( ( v_tesT_Segment.ST_Length(p_unit) / p_segment.ST_To2D().ST_Length(p_unit) ) * (p_segment.endCoord.z-p_segment.startCoord.z) );
       v_intersection.midCoord.z    := v_intersection.startCoord.z;
       IF ( round(v_intersection.endCoord.z,8) <> round(v_intersection.startCoord.z,8) ) Then
+
         v_intersection.startCoord.z := NULL;
       END IF;
     Else
@@ -3249,13 +3302,14 @@ AS
     v_intersection.midCoord.x := SELF.startCoord.x     + v_dx1  * v_t1;
     v_intersection.midCoord.y := SELF.startCoord.y     + v_dY1  * v_t1;
     v_intersection.endCoord.id := -2;
+
     v_intersection.endCoord.x := p_segment.startCoord.x + v_dx2 * v_t2;
     v_intersection.endCoord.y := p_segment.startCoord.y + v_dy2 * v_t2;
     -- DEBUG dbms_output.put_line('</ST_IntersectDetail>');    
     Return v_intersection;
   END ST_IntersectDetail;
 
-  Member Function ST_IntersectDescription(p_segment    in &&INSTALL_SCHEMA..T_SEGMENT,
+  Member Function ST_IntersectDescription(p_segment    in &&INSTALL_SCHEMA..T_Segment,
                                           p_unit       in varchar2 default null)
            Return varchar2
   AS
@@ -3268,12 +3322,13 @@ AS
     v_description            varchar2(10000);
     v_segment_1_description  varchar2(500);
     v_segment_2_description  varchar2(500);
-    
+
     -- Point test short names
     INT_POINT_EQ_INT_POINT_1     pls_integer;
     INT_POINT_EQ_INT_POINT_2     pls_integer;
     INT_POINT_1_EQ_END_POINT_1   pls_integer;
     INT_POINT_1_EQ_START_POINT_1 pls_integer;
+
     INT_POINT_2_EQ_END_POINT_2   pls_integer;
     INT_POINT_2_EQ_START_POINT_2 pls_integer;
   BEGIN
@@ -3301,6 +3356,7 @@ AS
     -- Intersection not at one of ends.
     -- Compute intersection.
     --
+
     v_intersection_points := SELF.ST_IntersectDetail(p_segment);
     -- Debug dbms_output.put_line('  intersection point= ' || v_intersection_points.startCoord.ST_AsText());
 
@@ -3368,6 +3424,7 @@ AS
                  WHEN INT_POINT_EQ_INT_POINT_1 = 1 and INT_POINT_EQ_INT_POINT_2 = 0
                       /* Intersection point is within first segment but not second */
                  THEN 'Intersection '
+
                       ||
                       v_segment_1_description
                       ||
@@ -3381,6 +3438,7 @@ AS
                         END
 
                  WHEN INT_POINT_EQ_INT_POINT_1 = 0 AND INT_POINT_EQ_INT_POINT_2 = 1 
+
                       /* Intersection point is near second segment but not first */
                  THEN 'Virtual Intersection Near '
                       ||
@@ -3395,6 +3453,7 @@ AS
                       ||
                       v_segment_2_description
 
+
                  WHEN INT_POINT_EQ_INT_POINT_1 = 0 AND INT_POINT_EQ_INT_POINT_2 = 0 
                  THEN 'Virtual Intersection Near '
                       ||
@@ -3407,6 +3466,7 @@ AS
                            WHEN INT_POINT_1_EQ_END_POINT_1   = 1 AND INT_POINT_2_EQ_START_POINT_2 = 1
                            THEN 'End 1 and Near Start 2'
                            ELSE 'Unknown'
+
                        END
                  ELSE 'Unknown'
              END;
@@ -3443,6 +3503,7 @@ AS
     IF ( v_start_fraction not between 0 and 1
       or v_end_fraction   not between 0 and 1 ) Then
       Return SELF;
+
     END IF;
     -- Ensure start <= end.
     v_temp_fraction := LEAST(   v_start_fraction,v_end_fraction);
@@ -3459,8 +3520,8 @@ AS
                        p_sdo_srid      => SELF.sdo_srid
                  );
     v_segment.startCoord := SELF.ST_OffsetPoint(
-                     p_ratio     => v_start_fraction,
-                     p_offset    => 0.0,
+                                    p_ratio     => v_start_fraction,
+                                    p_offset    => 0.0,
                                     p_unit      => p_unit
                             );
     IF ( v_start_fraction = v_end_fraction ) Then
@@ -3513,7 +3574,7 @@ AS
   Member Function ST_LRS_Add_Measure(p_start_measure IN NUMBER   Default NULL,
                                      p_end_measure   IN NUMBER   Default NULL,
                                      p_unit          IN VARCHAR2 Default NULL)
-  Return &&INSTALL_SCHEMA..T_SEGMENT
+           Return &&INSTALL_SCHEMA..T_Segment 
   As
     v_measure_ord      pls_integer := 0;
     v_start_measure    number;
@@ -3530,7 +3591,7 @@ AS
     v_geom             mdsys.sdo_geometry;
   Begin
     IF ( SELF.ST_LRS_isMeasured()=1 ) Then
-      Return SELF;
+       RETURN SELF;
     End If;
     -- DEBUG dbms_output.put_line('<ST_LRS_Add_Measure>');
     v_measure_ord   := SELF.ST_Dims() + 1;
@@ -3685,26 +3746,26 @@ AS
                            p_dec_places_y In integer Default null,
                            p_dec_places_z In integer Default 3,
                            p_dec_places_m In integer Default 3)
-  Return &&INSTALL_SCHEMA..T_SEGMENT Deterministic
+  Return &&INSTALL_SCHEMA..T_Segment Deterministic
   As
   Begin
-    Return new &&INSTALL_SCHEMA..T_SEGMENT(
-                 element_id    => SELF.element_id,
-                 subelement_id => SELF.subelement_id,
-                 segment_id    => SELF.segment_id,
-                 startCoord    => case when SELF.startCoord is null
-                                       then null
-                                       else SELF.startCoord.ST_Round(p_dec_places_x,p_dec_places_y,p_dec_places_z,p_dec_places_m)
-                                   end,
-                 midCoord      => case when SELF.midCoord is null
-                                       then null
-                                       else SELF.midCoord.ST_Round(p_dec_places_x,p_dec_places_y,p_dec_places_z,p_dec_places_m)
-                                   end,
-                 endCoord      => case when SELF.endCoord is null
-                                       then NULL
-                                       else SELF.endCoord.ST_Round(p_dec_places_x,p_dec_places_y,p_dec_places_z,p_dec_places_m)
-                                   end,
-                 sdo_gtype     => SELF.SDO_GTYPE,
+    Return new &&INSTALL_SCHEMA..T_Segment(
+                 element_id     => SELF.element_id,
+                 subelement_id  => SELF.subelement_id,
+                 segment_id     => SELF.segment_id,
+                 startCoord     => case when SELF.startCoord is null
+                                        then null
+                                        else SELF.startCoord.ST_Round(p_dec_places_x,p_dec_places_y,p_dec_places_z,p_dec_places_m)
+                                    end,
+                 midCoord       => case when SELF.midCoord is null
+                                        then null
+                                        else SELF.midCoord.ST_Round(p_dec_places_x,p_dec_places_y,p_dec_places_z,p_dec_places_m)
+                                    end,
+                 endCoord       => case when SELF.endCoord is null
+                                        then NULL
+                                        else SELF.endCoord.ST_Round(p_dec_places_x,p_dec_places_y,p_dec_places_z,p_dec_places_m)
+                                    end,
+                 sdo_gtype      => SELF.SDO_GTYPE,
                  sdo_srid       => SELF.SDO_SRID,
                  projected      => SELF.projected,
                  PrecisionModel => SELF.PrecisionModel
@@ -3713,8 +3774,8 @@ AS
 
   Member Function ST_Round
   Return &&INSTALL_SCHEMA..T_Segment Deterministic
-  AS
-  BEGIN
+  As
+  Begin
     if ( SELF.precisionModel is null ) Then
       return SELF.ST_Self();
     else
@@ -3723,7 +3784,7 @@ AS
                      p_dec_places_y => SELF.PrecisionModel.xy,
                      p_dec_places_z => SELF.PrecisionModel.z,
                      p_dec_places_m => SELF.PrecisionModel.w
-                 );
+             );
     end If;
   End ST_Round;
 
@@ -3731,7 +3792,7 @@ AS
   Return VARCHAR2
   AS
   BEGIN
-    Return 'T_SEGMENT(' ||
+    Return 'T_Segment(' ||
               'p_element_id=>'    || NVL(TO_CHAR(SELF.element_id),    'NULL') || ',' ||
               'p_subelement_id=>' || NVL(TO_CHAR(SELF.subelement_id), 'NULL') || ',' ||
               'p_segment_id=>'    || NVL(TO_CHAR(SELF.segment_id),    'NULL') || ',' ||
@@ -3784,6 +3845,7 @@ AS
   /* NOTE: p_dims can also be a full sdo_gtype */
   Member Function ST_SdoGeometry(p_dims in integer Default null)
   Return mdsys.sdo_geometry
+
   AS
     v_ordinates  mdsys.sdo_ordinate_array;
     v_ord        pls_integer;
@@ -3797,6 +3859,7 @@ AS
         v_ordinates(v_ord  ) := SELF.startCoord.X;
         v_ordinates(v_ord+1) := SELF.startCoord.Y;
         IF (v_dims>2) THEN
+
           v_ordinates(v_ord+2) := SELF.startCoord.Z;
           IF ( v_dims>3 ) THEN
             v_ordinates(v_ord+2) := SELF.startCoord.W;
@@ -3810,6 +3873,7 @@ AS
         v_ordinates.EXTEND(v_dims);
         v_ordinates(v_ord  ) := SELF.midCoord.X;
         v_ordinates(v_ord+1) := SELF.midCoord.Y;
+
         IF (v_dims>2) THEN
           v_ordinates(v_ord+2) := SELF.midCoord.Z;
           IF ( v_dims>3 ) THEN
@@ -3823,6 +3887,7 @@ AS
         v_ord := v_ordinates.COUNT+1;
         v_ordinates.EXTEND(v_dims);
         v_ordinates(v_ord  ) := SELF.endCoord.X;
+
         v_ordinates(v_ord+1) := SELF.endCoord.Y;
         IF (v_dims>2) THEN
           v_ordinates(v_ord+2) := SELF.endCoord.Z;
@@ -3836,6 +3901,7 @@ AS
              v_dims * 1000 + 
              case when v_ordinates.COUNT = v_dims then 1 else 2 end +
              CASE WHEN v_dims = 2 THEN 0
+
                   WHEN v_dims = 3 AND SELF.ST_lrs_dim()in(0,3) THEN SELF.ST_Lrs_Dim()
                   WHEN v_dims = 4 THEN SELF.ST_Lrs_Dim()
                   ELSE 0
@@ -3850,11 +3916,11 @@ AS
            );
   END ST_SdoGeometry;
 
-  Member Function ST_Equals(p_segment    In &&INSTALL_SCHEMA..T_Segment,
-                            p_coords     In Integer default 1)
+  Member Function ST_Equals(p_segment In &&INSTALL_SCHEMA..T_Segment,
+                            p_coords  In Integer default 1)
   Return NUMBER
   IS
-    c_Min CONSTANT NUMBER      := -1E38;
+    c_Min CONSTANT NUMBER := -1E38;
   BEGIN
     IF (p_segment IS NULL) THEN
       Return 0; /* False */
@@ -3886,10 +3952,11 @@ AS
       ELSE
         Return 0; /* False */
       END IF;
+
     END IF;
   END ST_Equals;
 
-  Order Member Function orderBy(p_segment IN &&INSTALL_SCHEMA..T_SEGMENT)
+  Order Member Function orderBy(p_segment IN &&INSTALL_SCHEMA..T_Segment)
     Return NUMBER
   IS
     c_Min CONSTANT NUMBER := -1E38;

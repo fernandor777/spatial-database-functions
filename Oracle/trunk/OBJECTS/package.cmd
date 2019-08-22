@@ -18,8 +18,8 @@ F:\Projects\database\code\robodoc-win32-4.99.36\robodoc ^
       --documenttitle "SPDBA Object Types and Methods Documentation" 
 
 echo Remove comments from all BODIES and write to package directory...
-echo ... Package_DEBUG_Body.sql
-sed -r -f comment_strip.sed src/Package_DEBUG_Body.sql > dist\Package_DEBUG_body.sql
+echo ... Package_PRINT_Body.sql
+sed -r -f comment_strip.sed src/Package_PRINT_Body.sql > dist\Package_PRINT_body.sql
 echo ... Package_TOOLS_Body.sql
 sed -r -f comment_strip.sed src/Package_TOOLS_Body.sql > dist\Package_TOOLS_body.sql
 echo ... Package_COGO_Body.sql
@@ -45,7 +45,7 @@ copy Install_Check.sql      dist
 copy Test_Permissions.sql   dist
 
 echo Copy all other SQL files to package directory ...
-copy src\Package_DEBUG.sql  dist
+copy src\Package_PRINT.sql  dist
 copy src\Package_TOOLS.sql  dist
 copy src\Package_COGO.sql   dist
 copy src\Package_ST_LRS.sql dist
@@ -89,8 +89,8 @@ zip SC4OPOE_PLSQL_Object_Edition.zip ^
        install_sh ^
        Install_Check.sql ^
        Test_Permissions.sql ^
-       Package_DEBUG.sql ^
-       Package_DEBUG_Body.sql ^
+       Package_PRINT.sql ^
+       Package_PRINT_Body.sql ^
        Package_TOOLS.sql ^
        Package_TOOLS_Body.sql ^
        Package_COGO.sql ^
@@ -124,8 +124,8 @@ del /Q Test_Permissions.sql
 del /Q install_cmd
 del /Q install_sh 
 del /Q install_check.sql
-del /Q Package_DEBUG.sql 
-del /Q Package_DEBUG_Body.sql 
+del /Q Package_PRINT.sql 
+del /Q Package_PRINT_Body.sql 
 del /Q Package_TOOLS.sql 
 del /Q Package_TOOLS_Body.sql 
 del /Q Package_COGO.sql 

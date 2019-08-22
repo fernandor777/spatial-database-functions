@@ -1,3 +1,4 @@
+0. See if can rewrite where ST_Segmentize('DISTANCE')
 1. New line offset based on JTS
 2. Double/Triple check ST_Intersect 
    -- Circle problem

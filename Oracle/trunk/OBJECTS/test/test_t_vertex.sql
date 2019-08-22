@@ -5,125 +5,122 @@ CREATE OR REPLACE PACKAGE test_t_vertex IS
    --%suite(test_t_vertex)
    --%suitepath(alltests)
    
-   --%test
+   --%test(T_Vertex.)
    PROCEDURE t_vertex;
 
-   --%test
+   --%test(T_Vertex.ST_X)
    PROCEDURE st_x;
 
-   --%test
+   --%test(T_Vertex.ST_Y)
    PROCEDURE st_y;
 
-   --%test
+   --%test(T_Vertex.ST_Z)
    PROCEDURE st_z;
 
-   --%test
+   --%test(T_Vertex.ST_W)
    PROCEDURE st_w;
 
-   --%test
+   --%test(T_Vertex.ST_M)
    PROCEDURE st_m;
 
-   --%test
+   --%test(T_Vertex.ST_Id)
    PROCEDURE st_id;
 
-   --%test
+   --%test(T_Vertex.ST_Srid)
    PROCEDURE st_srid;
 
-   --%test
+   --%test(T_Vertex.ST_GType)
    PROCEDURE st_sdo_gtype;
 
-   --%test
-   PROCEDURE st_isdeleted;
-
-   --%test
-   PROCEDURE st_ismeasured;
-
-   --%test
-   PROCEDURE st_self;
-
-   --%test
-   PROCEDURE st_setcoordinate;
-
-   --%test
+   --%test(T_Vertex.ST_SetDeleted)
    PROCEDURE st_setdeleted;
 
-   --%test
+   --%test(T_Vertex.ST_isDeleted)
+   PROCEDURE st_isdeleted;
+
+   --%test(T_Vertex.ST_isMeasured)
+   PROCEDURE st_ismeasured;
+
+   --%TEST(t_vertex.ST_Equals)
+   PROCEDURE st_equals;
+   
+   --%test(T_Vertex.ST_Self)
+   PROCEDURE st_self;
+
+   --%test(T_Vertex.ST_SetCoordinate)
+   PROCEDURE st_setcoordinate;
+
+   --%test(T_Vertex.ST_isEmpty)
    PROCEDURE st_isempty;
 
-   --%test
+   --%test(T_Vertex.ST_Dims)
    PROCEDURE st_dims;
 
-   --%test
+   --%test(T_Vertex.ST_HasZ)
    PROCEDURE st_hasz;
 
-   --%test
+   --%test(T_Vertex.ST_HasM)
    PROCEDURE st_hasm;
 
-   --%test
+   --%test(T_Vertex.ST_LRS_Dim)
    PROCEDURE st_lrs_dim;
 
-   --%test
+   --%test(T_Vertex.ST_LRS_Set_Measure)
    PROCEDURE st_lrs_set_measure;
 
-   --%test
+   --%test(T_Vertex.ST_To2D)
    PROCEDURE st_to2d;
 
-   --%test
+   --%test(T_Vertex.ST_To3D)
    PROCEDURE st_to3d;
 
-   --%test
+   --%test(T_Vertex.ST_VertexType)
    PROCEDURE st_vertextype;
 
-   --%test
+   --%test(T_Vertex.ST_SdoPointType)
    PROCEDURE st_sdopointtype;
 
-   --%test
+   --%test(T_Vertex.ST_Bearing)
    PROCEDURE st_bearing;
 
-   --%test
+   --%test(T_Vertex.ST_Distance)
    PROCEDURE st_distance;
 
-   --%test
+   --%test(T_Vertex.ST_FromBearingAndDistance)
    PROCEDURE st_frombearinganddistance;
 
-   --%test
-   PROCEDURE st_add;
-
-   --%test
-   PROCEDURE st_normal;
-
-   --%test
-   PROCEDURE st_subtract;
-
-   --%test
-   PROCEDURE st_scale;
-
-   --%test
-   PROCEDURE st_subtendedangle;
-
-   --%test
+   --%test(T_Vertex.ST_WithinTolerance)
    PROCEDURE st_withintolerance;
 
-   --%test
+   --%test(T_Vertex.ST_Add)
+   PROCEDURE st_add;
+
+   --%test(T_Vertex.ST_Normal)
+   PROCEDURE st_normal;
+
+   --%test(T_Vertex.ST_Subtract)
+   PROCEDURE st_subtract;
+
+   --%test(T_Vertex.ST_Scale)
+   PROCEDURE st_scale;
+
+   --%test(T_Vertex.ST_SubTendedAngle)
+   PROCEDURE st_subtendedangle;
+
+   --%test(T_Vertex.ST_Round)
    PROCEDURE st_round;
 
-   --%test
+   --%test(T_Vertex.ST_SdoGeometry)
    PROCEDURE st_sdogeometry;
 
-   --%test
+   --%test(T_Vertex.ST_AsText)
    PROCEDURE st_astext;
 
-   --%test
+   --%test(T_Vertex.ST_AsEWKT)
    PROCEDURE st_asewkt;
 
-   --%test
+   --%test(T_Vertex.ST_AsCoordString)
    PROCEDURE st_ascoordstring;
-
-   --%test
-   PROCEDURE st_equals;
-
-   --%test
-   PROCEDURE orderby;
 
 END test_t_vertex;
 /
@@ -139,7 +136,7 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
       l_actual   INTEGER := 0;
       l_expected INTEGER := 0;
    BEGIN
-      -- populate actual
+      -- populate actual tests for Constructors
       -- t_vertex.t_vertex;
 
       -- populate expected
@@ -153,16 +150,14 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    -- test st_x case 1: ...
    --
    PROCEDURE st_x IS
-      l_actual   INTEGER := 0;
-      l_expected INTEGER := 0;
+      l_actual   NUMBER := 0;
+      l_expected NUMBER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_x;
-
-      -- populate expected
-      -- ...
-
-      -- assert
+      l_actual := spdba.T_Vertex(sdo_geometry(3001,NULL,SDO_POINT_TYPE(1,2,3),NULL,NULL))
+                       .ST_X();
+      l_expected := 1;
       ut.expect(l_actual).to_equal(l_expected);
    END st_x;
 
@@ -170,16 +165,14 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    -- test st_y case 1: ...
    --
    PROCEDURE st_y IS
-      l_actual   INTEGER := 0;
-      l_expected INTEGER := 0;
+      l_actual   NUMBER := 0;
+      l_expected NUMBER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_y;
-
-      -- populate expected
-      -- ...
-
-      -- assert
+      l_actual := spdba.T_Vertex(sdo_geometry(3001,NULL,SDO_POINT_TYPE(1,2,3),NULL,NULL))
+                       .ST_Y();
+      l_expected := 2;
       ut.expect(l_actual).to_equal(l_expected);
    END st_y;
 
@@ -187,16 +180,14 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    -- test st_z case 1: ...
    --
    PROCEDURE st_z IS
-      l_actual   INTEGER := 0;
-      l_expected INTEGER := 0;
+      l_actual   NUMBER := 0;
+      l_expected NUMBER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_z;
-
-      -- populate expected
-      -- ...
-
-      -- assert
+      l_actual := spdba.T_Vertex(sdo_geometry(3001,NULL,SDO_POINT_TYPE(1,2,3),NULL,NULL))
+                       .ST_Z();
+      l_expected := 3;
       ut.expect(l_actual).to_equal(l_expected);
    END st_z;
 
@@ -204,16 +195,14 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    -- test st_w case 1: ...
    --
    PROCEDURE st_w IS
-      l_actual   INTEGER := 0;
-      l_expected INTEGER := 0;
+      l_actual   NUMBER := 0;
+      l_expected NUMBER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_w;
-
-      -- populate expected
-      -- ...
-
-      -- assert
+      l_actual := spdba.T_Vertex(sdo_geometry(4301,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,1,1),SDO_ORDINATE_ARRAY(1,2,3,4)))
+                       .ST_W();
+      l_expected := 4;
       ut.expect(l_actual).to_equal(l_expected);
    END st_w;
 
@@ -221,16 +210,28 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    -- test st_m case 1: ...
    --
    PROCEDURE st_m IS
-      l_actual   INTEGER := 0;
-      l_expected INTEGER := 0;
+      l_actual   NUMBER := 0;
+      l_expected NUMBER := 0;
    BEGIN
-      -- populate actual
       -- t_vertex.st_m;
+      l_actual := spdba.T_Vertex(sdo_geometry(3001,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,1,1),SDO_ORDINATE_ARRAY(1,2,3)))
+                       .ST_M();
+      l_expected := NULL;
+      ut.expect(l_actual).to_equal(l_expected);
 
-      -- populate expected
-      -- ...
+      l_actual := spdba.T_Vertex(sdo_geometry(3301,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,1,1),SDO_ORDINATE_ARRAY(1,2,3)))
+                       .ST_M();
+      l_expected := 3;
+      ut.expect(l_actual).to_equal(l_expected);
 
-      -- assert
+      l_actual := spdba.T_Vertex(sdo_geometry(4301,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,1,1),SDO_ORDINATE_ARRAY(1,2,3,4)))
+                       .ST_M();
+      l_expected := 3;
+      ut.expect(l_actual).to_equal(l_expected);
+
+      l_actual := spdba.T_Vertex(sdo_geometry(4401,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,1,1),SDO_ORDINATE_ARRAY(1,2,3,4)))
+                       .ST_M();
+      l_expected := 4;
       ut.expect(l_actual).to_equal(l_expected);
    END st_m;
 
@@ -243,11 +244,11 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    BEGIN
       -- populate actual
       -- t_vertex.st_id;
-
-      -- populate expected
-      -- ...
-
-      -- assert
+      l_actual := spdba.T_VERTEX(
+                        p_id           => -9999,
+                        p_sdo_srid     => null)
+                      .ST_ID();
+      l_expected := -9999;
       ut.expect(l_actual).to_equal(l_expected);
    END st_id;
 
@@ -260,11 +261,18 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    BEGIN
       -- populate actual
       -- t_vertex.st_srid;
+      l_actual := spdba.T_VERTEX(
+                        p_id           => -9999,
+                        p_sdo_srid     => null)
+                      .ST_Srid();
+      l_expected := NULL;
+      ut.expect(l_actual).to_equal(l_expected);
 
-      -- populate expected
-      -- ...
-
-      -- assert
+      l_actual := spdba.T_VERTEX(
+                        p_id           => -9999,
+                        p_sdo_srid     => 8307)
+                      .ST_Srid();
+      l_expected := 8307;
       ut.expect(l_actual).to_equal(l_expected);
    END st_srid;
 
@@ -277,13 +285,27 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    BEGIN
       -- populate actual
       -- t_vertex.st_sdo_gtype;
-
-      -- populate expected
-      -- ...
-
-      -- assert
+      l_actual := spdba.T_Vertex(sdo_geometry(4301,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,1,1),SDO_ORDINATE_ARRAY(1,2,3,4)))
+                       .ST_Sdo_GType();
+      l_expected := 4301;
       ut.expect(l_actual).to_equal(l_expected);
    END st_sdo_gtype;
+
+   --
+   -- test st_setdeleted case 1: ...
+   --
+   PROCEDURE st_setdeleted IS
+      l_actual   INTEGER := 0;
+      l_expected INTEGER := 0;
+      v_vertex   spdba.t_vertex;
+   BEGIN
+      -- t_vertex.st_setdeleted;
+      v_vertex := spdba.T_Vertex(sdo_geometry(4301,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,1,1),SDO_ORDINATE_ARRAY(1,2,3,4)));
+      v_vertex.ST_SetDeleted(p_deleted => 1);
+      l_actual := v_vertex.deleted;
+      l_expected := 1;
+      ut.expect(l_actual).to_equal(l_expected);      
+   END st_setdeleted;
 
    --
    -- test st_isdeleted case 1: ...
@@ -291,15 +313,18 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    PROCEDURE st_isdeleted IS
       l_actual   INTEGER := 0;
       l_expected INTEGER := 0;
+      v_vertex   spdba.t_vertex;
    BEGIN
-      -- populate actual
       -- t_vertex.st_isdeleted;
-
-      -- populate expected
-      -- ...
-
-      -- assert
+      v_vertex := spdba.T_Vertex(sdo_geometry(4301,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,1,1),SDO_ORDINATE_ARRAY(1,2,3,4)));
+      l_actual := v_vertex.ST_isDeleted();
+      l_expected := 0;
       ut.expect(l_actual).to_equal(l_expected);
+
+      v_vertex.ST_SetDeleted(p_deleted => 1);
+      l_actual := v_vertex.ST_isDeleted();
+      l_expected := 1;
+      ut.expect(l_actual).to_equal(l_expected);      
    END st_isdeleted;
 
    --
@@ -308,16 +333,41 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    PROCEDURE st_ismeasured IS
       l_actual   INTEGER := 0;
       l_expected INTEGER := 0;
+      v_vertex   spdba.t_vertex;
    BEGIN
-      -- populate actual
       -- t_vertex.st_ismeasured;
-
-      -- populate expected
-      -- ...
-
-      -- assert
+      v_vertex := spdba.T_Vertex(sdo_geometry(4301,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,1,1),SDO_ORDINATE_ARRAY(1,2,3,4)));
+      l_actual := v_vertex.ST_isMeasured();
+      l_expected := 1;
+      ut.expect(l_actual).to_equal(l_expected);
+      
+      v_vertex := spdba.T_Vertex(sdo_geometry(4001,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,1,1),SDO_ORDINATE_ARRAY(1,2,3,4)));
+      l_actual := v_vertex.ST_isMeasured();
+      l_expected := 0;
       ut.expect(l_actual).to_equal(l_expected);
    END st_ismeasured;
+
+   --
+   -- test st_equals case 1: ...
+   --
+   PROCEDURE st_equals IS
+      l_actual   INTEGER := 0;
+      l_expected INTEGER := 0;
+      v_vertex1  spdba.t_vertex;
+      v_vertex2  spdba.t_vertex;
+   BEGIN
+      -- t_vertex.st_equals;
+      v_vertex1 := spdba.T_Vertex(sdo_geometry(4301,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,1,1),SDO_ORDINATE_ARRAY(1,2,3,4)));
+      v_vertex2 := spdba.T_Vertex(sdo_geometry(4301,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,1,1),SDO_ORDINATE_ARRAY(1,2,3,4)));
+      l_actual := v_vertex1.ST_Equals(v_vertex2);
+      l_expected := 1;
+      ut.expect(l_actual).to_equal(l_expected);
+      
+      v_vertex2 := spdba.T_Vertex(sdo_geometry(3001,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,1,1),SDO_ORDINATE_ARRAY(1,2,3)));
+      l_actual := v_vertex1.ST_Equals(v_vertex2);
+      l_expected := 0;
+      ut.expect(l_actual).to_equal(l_expected);
+   END st_equals;
 
    --
    -- test st_self case 1: ...
@@ -325,14 +375,14 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    PROCEDURE st_self IS
       l_actual   INTEGER := 0;
       l_expected INTEGER := 0;
+      v_vertex   spdba.t_vertex;
+      v_self     spdba.t_vertex;
    BEGIN
-      -- populate actual
       -- t_vertex.st_self;
-
-      -- populate expected
-      -- ...
-
-      -- assert
+      v_vertex := spdba.T_Vertex(sdo_geometry(4301,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,1,1),SDO_ORDINATE_ARRAY(1,2,3,4)));
+      v_self   := v_vertex.ST_Self();
+      l_actual := v_vertex.ST_Equals(v_self);
+      l_expected := 1;
       ut.expect(l_actual).to_equal(l_expected);
    END st_self;
 
@@ -340,35 +390,17 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    -- test st_setcoordinate case 1: ...
    --
    PROCEDURE st_setcoordinate IS
-      l_actual   INTEGER := 0;
-      l_expected INTEGER := 0;
+      l_actual   VARCHAR2(1000);
+      l_expected VARCHAR2(1000);
+      v_vertex   spdba.t_vertex;
    BEGIN
-      -- populate actual
       -- t_vertex.st_setcoordinate;
-
-      -- populate expected
-      -- ...
-
-      -- assert
+      v_vertex := spdba.T_Vertex(sdo_geometry(4301,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,1,1),SDO_ORDINATE_ARRAY(1,2,3,4)));
+      v_vertex.ST_SetCoordinate(p_x=>10,p_y=>9,p_z=>8,p_w=>7);
+      l_actual := v_vertex.ST_AsEWKT();
+      l_expected := 'POINTZM (10 9 8 7)';
       ut.expect(l_actual).to_equal(l_expected);
    END st_setcoordinate;
-
-   --
-   -- test st_setdeleted case 1: ...
-   --
-   PROCEDURE st_setdeleted IS
-      l_actual   INTEGER := 0;
-      l_expected INTEGER := 0;
-   BEGIN
-      -- populate actual
-      -- t_vertex.st_setdeleted;
-
-      -- populate expected
-      -- ...
-
-      -- assert
-      ut.expect(l_actual).to_equal(l_expected);
-   END st_setdeleted;
 
    --
    -- test st_isempty case 1: ...
@@ -376,14 +408,17 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    PROCEDURE st_isempty IS
       l_actual   INTEGER := 0;
       l_expected INTEGER := 0;
+      v_vertex   spdba.t_vertex;
    BEGIN
-      -- populate actual
       -- t_vertex.st_isempty;
-
-      -- populate expected
-      -- ...
-
-      -- assert
+      v_vertex := spdba.T_Vertex(sdo_geometry(4301,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,1,1),SDO_ORDINATE_ARRAY(1,2,3,4)));
+      l_actual := v_vertex.ST_isEmpty();
+      l_expected := 0;
+      ut.expect(l_actual).to_equal(l_expected);
+      
+      v_vertex := spdba.T_Vertex();
+      l_actual := v_vertex.ST_isEmpty();
+      l_expected := 1;
       ut.expect(l_actual).to_equal(l_expected);
    END st_isempty;
 
@@ -394,13 +429,20 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
       l_actual   INTEGER := 0;
       l_expected INTEGER := 0;
    BEGIN
-      -- populate actual
       -- t_vertex.st_dims;
+      l_actual := spdba.T_Vertex(sdo_geometry(2001,NULL,SDO_POINT_TYPE(1,2,NULL),NULL,NULL))
+                       .ST_Dims();
+      l_expected := 2;
+      ut.expect(l_actual).to_equal(l_expected);
 
-      -- populate expected
-      -- ...
+      l_actual := spdba.T_Vertex(sdo_geometry(3001,NULL,SDO_POINT_TYPE(1,2,3),NULL,NULL))
+                       .ST_Dims();
+      l_expected := 3;
+      ut.expect(l_actual).to_equal(l_expected);
 
-      -- assert
+      l_actual := spdba.T_Vertex(sdo_geometry(4301,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,1,1),SDO_ORDINATE_ARRAY(1,2,3,4)))
+                       .ST_Dims();
+      l_expected := 4;
       ut.expect(l_actual).to_equal(l_expected);
    END st_dims;
 
@@ -411,13 +453,25 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
       l_actual   INTEGER := 0;
       l_expected INTEGER := 0;
    BEGIN
-      -- populate actual
       -- t_vertex.st_hasz;
+      l_actual := spdba.T_Vertex(sdo_geometry(2001,NULL,SDO_POINT_TYPE(1,2,NULL),NULL,NULL))
+                       .st_hasz();
+      l_expected := 0;
+      ut.expect(l_actual).to_equal(l_expected);
 
-      -- populate expected
-      -- ...
+      l_actual := spdba.T_Vertex(sdo_geometry(3001,NULL,SDO_POINT_TYPE(1,2,3),NULL,NULL))
+                       .st_hasz();
+      l_expected := 1;
+      ut.expect(l_actual).to_equal(l_expected);
 
-      -- assert
+      l_actual := spdba.T_Vertex(sdo_geometry(3301,NULL,SDO_POINT_TYPE(1,2,3),NULL,NULL))
+                       .st_hasz();
+      l_expected := 0;
+      ut.expect(l_actual).to_equal(l_expected);
+
+      l_actual := spdba.T_Vertex(sdo_geometry(4301,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,1,1),SDO_ORDINATE_ARRAY(1,2,3,4)))
+                       .st_hasz();
+      l_expected := 1;
       ut.expect(l_actual).to_equal(l_expected);
    END st_hasz;
 
@@ -428,13 +482,25 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
       l_actual   INTEGER := 0;
       l_expected INTEGER := 0;
    BEGIN
-      -- populate actual
       -- t_vertex.st_hasm;
+      l_actual := spdba.T_Vertex(sdo_geometry(2001,NULL,SDO_POINT_TYPE(1,2,NULL),NULL,NULL))
+                       .ST_HasM();
+      l_expected := 0;
+      ut.expect(l_actual).to_equal(l_expected);
 
-      -- populate expected
-      -- ...
+      l_actual := spdba.T_Vertex(sdo_geometry(3001,NULL,SDO_POINT_TYPE(1,2,3),NULL,NULL))
+                       .ST_HasM();
+      l_expected := 0;
+      ut.expect(l_actual).to_equal(l_expected);
 
-      -- assert
+      l_actual := spdba.T_Vertex(sdo_geometry(3301,NULL,SDO_POINT_TYPE(1,2,3),NULL,NULL))
+                       .ST_HasM();
+      l_expected := 1;
+      ut.expect(l_actual).to_equal(l_expected);
+
+      l_actual := spdba.T_Vertex(sdo_geometry(4301,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,1,1),SDO_ORDINATE_ARRAY(1,2,3,4)))
+                       .ST_HasM();
+      l_expected := 1;
       ut.expect(l_actual).to_equal(l_expected);
    END st_hasm;
 
@@ -445,13 +511,30 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
       l_actual   INTEGER := 0;
       l_expected INTEGER := 0;
    BEGIN
-      -- populate actual
       -- t_vertex.st_lrs_dim;
+      l_actual := spdba.T_Vertex(sdo_geometry(2001,NULL,SDO_POINT_TYPE(1,2,NULL),NULL,NULL))
+                       .ST_LRS_Dim();
+      l_expected := 0;
+      ut.expect(l_actual).to_equal(l_expected);
 
-      -- populate expected
-      -- ...
+      l_actual := spdba.T_Vertex(sdo_geometry(3001,NULL,SDO_POINT_TYPE(1,2,3),NULL,NULL))
+                       .ST_LRS_Dim();
+      l_expected := 0;
+      ut.expect(l_actual).to_equal(l_expected);
 
-      -- assert
+      l_actual := spdba.T_Vertex(sdo_geometry(3301,NULL,SDO_POINT_TYPE(1,2,3),NULL,NULL))
+                       .ST_LRS_Dim();
+      l_expected := 3;
+      ut.expect(l_actual).to_equal(l_expected);
+
+      l_actual := spdba.T_Vertex(sdo_geometry(4301,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,1,1),SDO_ORDINATE_ARRAY(1,2,3,4)))
+                       .ST_LRS_Dim();
+      l_expected := 3;
+      ut.expect(l_actual).to_equal(l_expected);
+
+      l_actual := spdba.T_Vertex(sdo_geometry(4401,NULL,NULL,SDO_ELEM_INFO_ARRAY(1,1,1),SDO_ORDINATE_ARRAY(1,2,3,4)))
+                       .ST_LRS_Dim();
+      l_expected := 4;
       ut.expect(l_actual).to_equal(l_expected);
    END st_lrs_dim;
 
@@ -459,16 +542,33 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    -- test st_lrs_set_measure case 1: ...
    --
    PROCEDURE st_lrs_set_measure IS
-      l_actual   INTEGER := 0;
-      l_expected INTEGER := 0;
+      l_actual   varchar2(1000);
+      l_expected varchar2(1000);
    BEGIN
-      -- populate actual
       -- t_vertex.st_lrs_set_measure;
+      l_actual := spdba.t_vertex(
+                       p_id => 0,
+                       p_x  => 0.0,
+                       p_y  => 0.0,
+                       p_sdo_gtype => 2001,
+                       p_sdo_srid  => NULL
+                     )
+                     .ST_LRS_Set_Measure(2.1)
+                     .ST_AsText();
+      l_expected := 'T_Vertex(p_x=>0,p_y=>0,p_z=>2.1,p_w=>NULL,p_id=>0,p_sdo_gtype=>3301,p_sdo_srid=>NULL)';
+      ut.expect(l_actual).to_equal(l_expected);
 
-      -- populate expected
-      -- ...
-
-      -- assert
+     l_actual := spdba.t_vertex(
+                       p_id => 0,
+                       p_x  => 0.0,
+                       p_y  => 0.0,
+                       p_z  => 0.0,
+                       p_sdo_gtype => 3001,
+                       p_sdo_srid  => NULL
+                     )
+                     .ST_LRS_Set_Measure(1.2)
+                     .ST_AsText();
+      l_expected := 'T_Vertex(p_x=>0,p_y=>0,p_z=>0,p_w=>1.2,p_id=>0,p_sdo_gtype=>4401,p_sdo_srid=>NULL)';
       ut.expect(l_actual).to_equal(l_expected);
    END st_lrs_set_measure;
 
@@ -476,16 +576,35 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    -- test st_to2d case 1: ...
    --
    PROCEDURE st_to2d IS
-      l_actual   INTEGER := 0;
-      l_expected INTEGER := 0;
+      l_actual   varchar2(1000);
+      l_expected varchar2(1000);
    BEGIN
-      -- populate actual
       -- t_vertex.st_to2d;
+     l_actual := spdba.t_vertex(
+                           p_id => 0,
+                           p_x  => 0.0,
+                           p_y  => 0.0,
+                           p_z  => 0.0,
+                           p_sdo_gtype => 3001,
+                           p_sdo_srid  => NULL
+                         )
+                         .ST_To2D()
+                         .ST_AsEWKT();
+      l_expected := 'POINT (0 0)';
+      ut.expect(l_actual).to_equal(l_expected);
 
-      -- populate expected
-      -- ...
-
-      -- assert
+     l_actual := spdba.t_vertex(
+                           p_id => 1,
+                           p_x  => 1.0,
+                           p_y  => 2.0,
+                           p_z  => 3.0,
+                           p_w  => 4.0,
+                           p_sdo_gtype => 4401,
+                           p_sdo_srid  => NULL
+                         )
+                         .ST_To2D()
+                         .ST_AsEWKT();
+      l_expected := 'POINT (1 2)';
       ut.expect(l_actual).to_equal(l_expected);
    END st_to2d;
 
@@ -493,33 +612,77 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    -- test st_to3d case 1: ...
    --
    PROCEDURE st_to3d IS
-      l_actual   INTEGER := 0;
-      l_expected INTEGER := 0;
+      l_actual   varchar2(1000);
+      l_expected varchar2(1000);
    BEGIN
-      -- populate actual
       -- t_vertex.st_to3d;
-
-      -- populate expected
-      -- ...
-
-      -- assert
+     l_actual := spdba.t_vertex(
+                           p_id => 0,
+                           p_x  => 0.0,
+                           p_y  => 0.0,
+                           p_sdo_gtype => 2001,
+                           p_sdo_srid  => NULL
+                         )
+                         .ST_To3D(p_keep_measure => 0,
+                                  p_default_z    => 9.0)
+                         .ST_AsEWKT();
+      l_expected := 'POINTZ (0 0 9)';
       ut.expect(l_actual).to_equal(l_expected);
+
+     l_actual := spdba.t_vertex(
+                           p_id => 1,
+                           p_x  => 1.0,
+                           p_y  => 2.0,
+                           p_z  => 3.0,
+                           p_w  => 4.0,
+                           p_sdo_gtype => 4401,
+                           p_sdo_srid  => NULL
+                         )
+                         .ST_To3D(p_keep_measure => 0,
+                                  p_default_z    => NULL)
+                         .ST_AsEWKT();
+      l_expected := 'POINTZ (1 2 3)';
+      ut.expect(l_actual).to_equal(l_expected);
+
+     l_actual := spdba.t_vertex(
+                           p_id => 1,
+                           p_x  => 1.0,
+                           p_y  => 2.0,
+                           p_z  => 3.0,
+                           p_w  => 4.0,
+                           p_sdo_gtype => 4401,
+                           p_sdo_srid  => NULL
+                         )
+                         .ST_To3D(p_keep_measure => 1,
+                                  p_default_z    => NULL)
+                         .ST_AsEWKT();
+      l_expected := 'POINTM (1 2 4)';
+      ut.expect(l_actual).to_equal(l_expected);
+
    END st_to3d;
 
    --
    -- test st_vertextype case 1: ...
    --
    PROCEDURE st_vertextype IS
-      l_actual   INTEGER := 0;
-      l_expected INTEGER := 0;
+      l_actual      varchar2(1000);
+      l_expected    varchar2(1000);
    BEGIN
-      -- populate actual
       -- t_vertex.st_vertextype;
-
-      -- populate expected
-      -- ...
-
-      -- assert
+     l_actual := PRINT.vertex_type(
+                        p_point =>
+                          spdba.t_vertex(
+                            p_id => 1,
+                            p_x  => 1.0,
+                            p_y  => 2.0,
+                            p_z  => 3.0,
+                            p_w  => 4.0,
+                            p_sdo_gtype => 4401,
+                            p_sdo_srid  => NULL
+                          ).ST_VertexType(),
+                          p_round => 3
+                    );
+      l_expected := 'MDSYS.VERTEX_TYPE(1,2,3,4)';
       ut.expect(l_actual).to_equal(l_expected);
    END st_vertextype;
 
@@ -527,16 +690,24 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    -- test st_sdopointtype case 1: ...
    --
    PROCEDURE st_sdopointtype IS
-      l_actual   INTEGER := 0;
-      l_expected INTEGER := 0;
+      l_actual   varchar2(1000);
+      l_expected varchar2(1000);
    BEGIN
-      -- populate actual
       -- t_vertex.st_sdopointtype;
-
-      -- populate expected
-      -- ...
-
-      -- assert
+     l_actual := PRINT.sdo_point_type(
+                        p_point =>
+                          spdba.t_vertex(
+                            p_id => 1,
+                            p_x  => 1.0,
+                            p_y  => 2.0,
+                            p_z  => 3.0,
+                            p_w  => 4.0,
+                            p_sdo_gtype => 4401,
+                            p_sdo_srid  => NULL
+                          ).ST_SdoPointType(),
+                          p_round => 3
+                    );
+      l_expected := 'MDSYS.SDO_POINT_TYPE(1,2,3)';
       ut.expect(l_actual).to_equal(l_expected);
    END st_sdopointtype;
 
@@ -544,33 +715,97 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    -- test st_bearing case 1: ...
    --
    PROCEDURE st_bearing IS
-      l_actual   INTEGER := 0;
-      l_expected INTEGER := 0;
+      l_actual   NUMBER := 0;
+      l_expected NUMBER := 0;
    BEGIN
-      -- populate actual
       -- t_vertex.st_bearing;
+     l_actual := ROUND(
+                   spdba.t_vertex(
+                       p_id => 1,
+                       p_x  => 0.0,
+                       p_y  => 0.0,
+                       p_sdo_gtype => 2001,
+                       p_sdo_srid  => NULL
+                   ).ST_Bearing(
+                     spdba.t_vertex(
+                         p_id => 2,
+                         p_x  => 0.0,
+                         p_y  => 10.0,
+                         p_sdo_gtype => 2001,
+                         p_sdo_srid  => NULL
+                     ) 
+                   ),
+                  3);
+      l_expected := 0;
+      ut.expect(l_actual).to_equal(l_expected);
 
-      -- populate expected
-      -- ...
-
-      -- assert
+     l_actual := ROUND(
+                   spdba.t_vertex(
+                       p_id => 1,
+                       p_x  => 1.0,
+                       p_y  => 2.0,
+                       p_sdo_gtype => 2001,
+                       p_sdo_srid  => NULL
+                   ).ST_Bearing(
+                     spdba.t_vertex(
+                         p_id => 2,
+                         p_x  => 2.0,
+                         p_y  => 3.0,
+                         p_sdo_gtype => 2001,
+                         p_sdo_srid  => NULL
+                     ) 
+                   ),
+                  3);
+      l_expected := 45;
       ut.expect(l_actual).to_equal(l_expected);
    END st_bearing;
 
-   --
    -- test st_distance case 1: ...
    --
    PROCEDURE st_distance IS
-      l_actual   INTEGER := 0;
-      l_expected INTEGER := 0;
+      l_actual   NUMBER := 0;
+      l_expected NUMBER := 0;
    BEGIN
       -- populate actual
       -- t_vertex.st_distance;
+      l_actual := ROUND(
+                   spdba.t_vertex(
+                       p_id => 1,
+                       p_x  => 0.0,
+                       p_y  => 0.0,
+                       p_sdo_gtype => 2001,
+                       p_sdo_srid  => NULL
+                   ).ST_Distance(
+                     spdba.t_vertex(
+                         p_id => 2,
+                         p_x  => 0.0,
+                         p_y  => 10.0,
+                         p_sdo_gtype => 2001,
+                         p_sdo_srid  => NULL
+                     ) 
+                   ),
+                  3);
+      l_expected := 10;
+      ut.expect(l_actual).to_equal(l_expected);
 
-      -- populate expected
-      -- ...
-
-      -- assert
+     l_actual := ROUND(
+                   spdba.t_vertex(
+                       p_id => 1,
+                       p_x  => 1.0,
+                       p_y  => 2.0,
+                       p_sdo_gtype => 2001,
+                       p_sdo_srid  => NULL
+                   ).ST_Distance(
+                     spdba.t_vertex(
+                         p_id => 2,
+                         p_x  => 2.0,
+                         p_y  => 3.0,
+                         p_sdo_gtype => 2001,
+                         p_sdo_srid  => NULL
+                     ) 
+                   ),
+                  3);
+      l_expected := 1.414;
       ut.expect(l_actual).to_equal(l_expected);
    END st_distance;
 
@@ -578,103 +813,27 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    -- test st_frombearinganddistance case 1: ...
    --
    PROCEDURE st_frombearinganddistance IS
-      l_actual   INTEGER := 0;
-      l_expected INTEGER := 0;
+      l_actual   varchar2(1000);
+      l_expected varchar2(1000);
    BEGIN
       -- populate actual
       -- t_vertex.st_frombearinganddistance;
-
-      -- populate expected
-      -- ...
-
-      -- assert
+     l_actual := spdba.t_vertex(
+                       p_id => 1,
+                       p_x  => 1.0,
+                       p_y  => 2.0,
+                       p_sdo_gtype => 2001,
+                       p_sdo_srid  => NULL
+                 ).ST_FromBearingAndDistance(
+                       p_bearing  => 45.0,
+                       p_distance => 1.414,
+                       p_projected => 1
+                 )
+                  .ST_Round(3)
+                  .ST_AsEWKT();
+      l_expected := 'POINT (2 3)';
       ut.expect(l_actual).to_equal(l_expected);
    END st_frombearinganddistance;
-
-   --
-   -- test st_add case 1: ...
-   --
-   PROCEDURE st_add IS
-      l_actual   INTEGER := 0;
-      l_expected INTEGER := 0;
-   BEGIN
-      -- populate actual
-      -- t_vertex.st_add;
-
-      -- populate expected
-      -- ...
-
-      -- assert
-      ut.expect(l_actual).to_equal(l_expected);
-   END st_add;
-
-   --
-   -- test st_normal case 1: ...
-   --
-   PROCEDURE st_normal IS
-      l_actual   INTEGER := 0;
-      l_expected INTEGER := 0;
-   BEGIN
-      -- populate actual
-      -- t_vertex.st_normal;
-
-      -- populate expected
-      -- ...
-
-      -- assert
-      ut.expect(l_actual).to_equal(l_expected);
-   END st_normal;
-
-   --
-   -- test st_subtract case 1: ...
-   --
-   PROCEDURE st_subtract IS
-      l_actual   INTEGER := 0;
-      l_expected INTEGER := 0;
-   BEGIN
-      -- populate actual
-      -- t_vertex.st_subtract;
-
-      -- populate expected
-      -- ...
-
-      -- assert
-      ut.expect(l_actual).to_equal(l_expected);
-   END st_subtract;
-
-   --
-   -- test st_scale case 1: ...
-   --
-   PROCEDURE st_scale IS
-      l_actual   INTEGER := 0;
-      l_expected INTEGER := 0;
-   BEGIN
-      -- populate actual
-      -- t_vertex.st_scale;
-
-      -- populate expected
-      -- ...
-
-      -- assert
-      ut.expect(l_actual).to_equal(l_expected);
-   END st_scale;
-
-   --
-   -- test st_subtendedangle case 1: ...
-   --
-   PROCEDURE st_subtendedangle IS
-      l_actual   INTEGER := 0;
-      l_expected INTEGER := 0;
-   BEGIN
-      -- populate actual
-      -- t_vertex.st_subtendedangle;
-
-      -- populate expected
-      -- ...
-
-      -- assert
-      ut.expect(l_actual).to_equal(l_expected);
-   END st_subtendedangle;
 
    --
    -- test st_withintolerance case 1: ...
@@ -683,30 +842,241 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
       l_actual   INTEGER := 0;
       l_expected INTEGER := 0;
    BEGIN
-      -- populate actual
       -- t_vertex.st_withintolerance;
-
-      -- populate expected
-      -- ...
-
-      -- assert
+     l_actual := spdba.t_vertex(
+                       p_id => 1,
+                       p_x  => 1.0,
+                       p_y  => 2.0,
+                       p_sdo_gtype => 2001,
+                       p_sdo_srid  => NULL
+                 ).ST_WithinTolerance(
+                     p_vertex => 
+                       spdba.t_vertex(
+                         p_id => 2,
+                         p_x  => 1.001,
+                         p_y  => 2.0005,
+                         p_sdo_gtype => 2001,
+                         p_sdo_srid  => NULL
+                       ),
+                       p_tolerance => 0.005
+                 );
+      l_expected := 1;
+      ut.expect(l_actual).to_equal(l_expected);
+      
+     l_actual := spdba.t_vertex(
+                       p_id => 1,
+                       p_x  => 1.0,
+                       p_y  => 2.0,
+                       p_sdo_gtype => 2001,
+                       p_sdo_srid  => NULL
+                 ).ST_WithinTolerance(
+                     p_vertex => 
+                       spdba.t_vertex(
+                         p_id => 2,
+                         p_x  => 1.1,
+                         p_y  => 2.1,
+                         p_sdo_gtype => 2001,
+                         p_sdo_srid  => NULL
+                       ),
+                       p_tolerance => 0.005
+                 );
+      l_expected := 0;
       ut.expect(l_actual).to_equal(l_expected);
    END st_withintolerance;
+
+   --
+   -- test st_add case 1: ...
+   --
+   PROCEDURE st_add IS
+      l_actual      varchar2(1000);
+      l_expected    varchar2(1000);
+   BEGIN
+      -- t_vertex.st_add;
+     l_actual := spdba.t_vertex(
+                       p_id => 1,
+                       p_x  => 1.0,
+                       p_y  => 2.0,
+                       p_sdo_gtype => 2001,
+                       p_sdo_srid  => NULL
+                 ).ST_Add(
+                   spdba.t_vertex(
+                       p_id => 2,
+                       p_x  => 2.0,
+                       p_y  => 3.0,
+                       p_sdo_gtype => 2001,
+                       p_sdo_srid  => NULL
+                   ) 
+                 ).ST_AsEWKT();
+      l_expected := 'POINT (3 5)';
+      ut.expect(l_actual).to_equal(l_expected);
+   END st_add;
+
+   --
+   -- test st_subtract case 1: ...
+   --
+   PROCEDURE st_subtract IS
+      l_actual      varchar2(1000);
+      l_expected    varchar2(1000);
+   BEGIN
+      -- t_vertex.st_subtract;
+     l_actual := spdba.t_vertex(
+                       p_id => 1,
+                       p_x  => 1.0,
+                       p_y  => 2.0,
+                       p_sdo_gtype => 2001,
+                       p_sdo_srid  => NULL
+                 ).ST_Subtract(
+                   spdba.t_vertex(
+                       p_id => 2,
+                       p_x  => 2.0,
+                       p_y  => 3.0,
+                       p_sdo_gtype => 2001,
+                       p_sdo_srid  => NULL
+                   ) 
+                 ).ST_AsEWKT();
+      l_expected := 'POINT (-1 -1)';
+      ut.expect(l_actual).to_equal(l_expected);
+   END st_subtract;
+
+   --
+   -- test st_scale case 1: ...
+   --
+   PROCEDURE st_scale IS
+      l_actual      varchar2(1000);
+      l_expected    varchar2(1000);
+   BEGIN
+      -- t_vertex.st_scale;
+     l_actual := spdba.t_vertex(
+                       p_id => 1,
+                       p_x  => 1.0,
+                       p_y  => 2.0,
+                       p_sdo_gtype => 2001,
+                       p_sdo_srid  => NULL
+                 ).ST_Scale(2.0)
+                  .ST_AsEWKT();
+      l_expected := 'POINT (2 4)';
+   END st_scale;
+
+   --
+   -- test st_subtendedangle case 1: ...
+   --
+   PROCEDURE st_subtendedangle IS
+      l_actual   NUMBER := 0;
+      l_expected NUMBER := 1;
+   BEGIN
+      -- t_vertex.st_subtendedangle;
+      l_actual := ROUND(
+                   spdba.COGO.ST_Degrees(
+                    spdba.T_Vertex(
+                       p_id => 1,
+                       p_x  => 0,
+                       p_y  => 0,
+                       p_sdo_gtype=> 2001,
+                       p_sdo_srid => NULL
+                     )
+                     .ST_SubtendedAngle(
+                         spdba.T_Vertex(
+                            p_id => 2,
+                            p_x  => 10,
+                            p_y  => 0,
+                            p_sdo_gtype=> 2001,
+                            p_sdo_srid => NULL
+                         ),
+                         spdba.T_Vertex(
+                            p_id => 3,
+                            p_x  => 10,
+                            p_y  => 10,
+                            p_sdo_gtype=> 2001,
+                            p_sdo_srid => NULL
+                         )
+                       )
+                    ),8);
+      l_expected := 45;
+      ut.expect(l_actual).to_equal(l_expected);
+
+      -- Geodetic
+      l_actual := ROUND(
+                   spdba.COGO.ST_Degrees(
+                    spdba.T_Vertex(
+                       p_id => 1,
+                       p_x  => 147.5,
+                       p_y  => -42.5,
+                       p_sdo_gtype=> 2001,
+                       p_sdo_srid => 4283
+                     )
+                     .ST_SubtendedAngle(
+                         spdba.T_Vertex(
+                            p_id => 2,
+                            p_x  => 147.3,
+                            p_y  => -41.5,
+                            p_sdo_gtype=> 2001,
+                            p_sdo_srid => 4283
+                         ),
+                         spdba.T_Vertex(
+                            p_id => 3,
+                            p_x  => 147.8,
+                            p_y  => -41.1,
+                            p_sdo_gtype=> 2001,
+                            p_sdo_srid => 4283
+                         )
+                      )
+                    ),8);
+      l_expected := 336.59531045;
+      ut.expect(l_actual).to_equal(l_expected);
+   End st_subtendedangle;
+
+   --
+   -- test st_normal case 1: ...
+   --
+   PROCEDURE st_normal IS
+      l_actual   varchar2(1000);
+      l_expected varchar2(1000);
+   BEGIN
+      -- t_vertex.st_normal;
+     l_actual := spdba.t_vertex(
+                       p_id => 1,
+                       p_x  => 1.0,
+                       p_y  => 2.0,
+                       p_sdo_gtype => 2001,
+                       p_sdo_srid  => NULL
+                 ).ST_Normal() 
+                  .ST_Round(3)
+                  .ST_AsEWKT();
+      l_expected := 'POINT (.447 .894)';
+      ut.expect(l_actual).to_equal(l_expected);
+   END st_normal;
 
    --
    -- test st_round case 1: ...
    --
    PROCEDURE st_round IS
-      l_actual   INTEGER := 0;
-      l_expected INTEGER := 0;
+      l_actual   varchar2(1000);
+      l_expected varchar2(1000);
    BEGIN
-      -- populate actual
       -- t_vertex.st_round;
+     l_actual := spdba.t_vertex(
+                       p_id => 1,
+                       p_x  => 1.09183401948310,
+                       p_y  => 2.2340198409,
+                       p_sdo_gtype => 2001,
+                       p_sdo_srid  => NULL
+                 ).ST_Round(3,5)
+                  .ST_AsEWKT();
+      l_expected := 'POINT (1.092 2.23402)';
+      ut.expect(l_actual).to_equal(l_expected);
 
-      -- populate expected
-      -- ...
-
-      -- assert
+      -- t_vertex.st_round;
+     l_actual := spdba.t_vertex(
+                       p_id => 1,
+                       p_x  => 1.09183401948310,
+                       p_y  => 2.2340198409,
+                       p_z  => 91.83401948310,
+                       p_w  => 4.238409,
+                       p_sdo_gtype => 4301,
+                       p_sdo_srid  => NULL
+                 ).ST_Round(3,4,2,1)
+                  .ST_AsEWKT();
+      l_expected := 'POINTZM (1.092 2.234 91.83 4.2)';
       ut.expect(l_actual).to_equal(l_expected);
    END st_round;
 
@@ -714,16 +1084,25 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    -- test st_sdogeometry case 1: ...
    --
    PROCEDURE st_sdogeometry IS
-      l_actual   INTEGER := 0;
-      l_expected INTEGER := 0;
+      l_actual   varchar2(1000);
+      l_expected varchar2(1000);
    BEGIN
-      -- populate actual
       -- t_vertex.st_sdogeometry;
-
-      -- populate expected
-      -- ...
-
-      -- assert
+     l_actual := PRINT.sdo_geometry(
+                  p_geom =>
+                   spdba.t_vertex(
+                       p_id => 1,
+                       p_x  => 1.09183401948310,
+                       p_y  => 2.2340198409,
+                       p_z  => 91.83401948310,
+                       p_w  => 4.238409,
+                       p_sdo_gtype => 4301,
+                       p_sdo_srid  => NULL
+                   ).ST_Round(3,4,2,1)
+                    .ST_SdoGeometry(),
+                  p_round => 3
+                );
+      l_expected := 'MDSYS.SDO_GEOMETRY(4301,NULL,NULL,MDSYS.SDO_ELEM_INFO_ARRAY(1,1,1),MDSYS.SDO_ORDINATE_ARRAY(1.092,2.234,91.83,4.2))';
       ut.expect(l_actual).to_equal(l_expected);
    END st_sdogeometry;
 
@@ -731,16 +1110,20 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    -- test st_astext case 1: ...
    --
    PROCEDURE st_astext IS
-      l_actual   INTEGER := 0;
-      l_expected INTEGER := 0;
+      l_actual   varchar2(1000);
+      l_expected varchar2(1000);
    BEGIN
-      -- populate actual
       -- t_vertex.st_astext;
-
-      -- populate expected
-      -- ...
-
-      -- assert
+     l_actual := spdba.t_vertex(
+                       p_id => 1,
+                       p_x  => 1.09183401948310,
+                       p_y  => 2.2340198409,
+                       p_z  => 91.83401948310,
+                       p_w  => 4.238409,
+                       p_sdo_gtype => 4301,
+                       p_sdo_srid  => NULL
+                 ).ST_AsText();
+      l_expected := 'T_Vertex(p_x=>1.0918340194831,p_y=>2.2340198409,p_z=>91.8340194831,p_w=>4.238409,p_id=>1,p_sdo_gtype=>4301,p_sdo_srid=>NULL)';
       ut.expect(l_actual).to_equal(l_expected);
    END st_astext;
 
@@ -748,16 +1131,20 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    -- test st_asewkt case 1: ...
    --
    PROCEDURE st_asewkt IS
-      l_actual   INTEGER := 0;
-      l_expected INTEGER := 0;
+      l_actual   varchar2(1000);
+      l_expected varchar2(1000);
    BEGIN
-      -- populate actual
       -- t_vertex.st_asewkt;
-
-      -- populate expected
-      -- ...
-
-      -- assert
+     l_actual := spdba.t_vertex(
+                       p_id => 1,
+                       p_x  => 1.09183401948310,
+                       p_y  => 2.2340198409,
+                       p_z  => 91.83401948310,
+                       p_w  => 4.238409,
+                       p_sdo_gtype => 4301,
+                       p_sdo_srid  => NULL
+                 ).ST_AsEWKT();
+      l_expected := 'POINTZM (1.0918340194831 2.2340198409 91.8340194831 4.238409)';
       ut.expect(l_actual).to_equal(l_expected);
    END st_asewkt;
 
@@ -765,52 +1152,22 @@ CREATE OR REPLACE PACKAGE BODY test_t_vertex IS
    -- test st_ascoordstring case 1: ...
    --
    PROCEDURE st_ascoordstring IS
-      l_actual   INTEGER := 0;
-      l_expected INTEGER := 0;
+      l_actual   varchar2(1000);
+      l_expected varchar2(1000);
    BEGIN
-      -- populate actual
       -- t_vertex.st_ascoordstring;
-
-      -- populate expected
-      -- ...
-
-      -- assert
+     l_actual := spdba.t_vertex(
+                       p_id => 1,
+                       p_x  => 1.09183401948310,
+                       p_y  => 2.2340198409,
+                       p_z  => 91.83401948310,
+                       p_w  => 4.238409,
+                       p_sdo_gtype => 4301,
+                       p_sdo_srid  => NULL
+                 ).ST_AsCoordString();
+      l_expected := '1.0918340194831 2.2340198409 91.8340194831 4.238409';
       ut.expect(l_actual).to_equal(l_expected);
    END st_ascoordstring;
-
-   --
-   -- test st_equals case 1: ...
-   --
-   PROCEDURE st_equals IS
-      l_actual   INTEGER := 0;
-      l_expected INTEGER := 0;
-   BEGIN
-      -- populate actual
-      -- t_vertex.st_equals;
-
-      -- populate expected
-      -- ...
-
-      -- assert
-      ut.expect(l_actual).to_equal(l_expected);
-   END st_equals;
-
-   --
-   -- test orderby case 1: ...
-   --
-   PROCEDURE orderby IS
-      l_actual   INTEGER := 0;
-      l_expected INTEGER := 0;
-   BEGIN
-      -- populate actual
-      -- t_vertex.orderby;
-
-      -- populate expected
-      -- ...
-
-      -- assert
-      ut.expect(l_actual).to_equal(l_expected);
-   END orderby;
 
 END test_t_vertex;
 /
