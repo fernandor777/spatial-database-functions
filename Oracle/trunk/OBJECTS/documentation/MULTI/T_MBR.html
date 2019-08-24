@@ -2,12 +2,12 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
+<head><link rel="shortcut icon" href="http://www.spatialdbadvisor.com/images/243t.png"/>
 <meta http-equiv="Content-Style-Type" content="text/css" />
 <meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
 <link rel="stylesheet" href="./robodoc.css" type="text/css" />
-<title>./export/t_mbr.sql</title>
-<!-- Source: ./export/t_mbr.sql -->
+<title>./src/T_MBR.sql</title>
+<!-- Source: ./src/T_MBR.sql -->
 <!-- Generated with ROBODoc Version 4.99.36 (Mar 13 2008) -->
 </head>
 <body>
@@ -21,25 +21,26 @@
 <a class="menuitem" href="./robo_functions.html#top">Functions</a>
 <a class="menuitem" href="./robo_modules.html#top">Modules</a>
 <a class="menuitem" href="./robo_methods.html#top">Methods</a>
+<a class="menuitem" href="./robo_strutures.html#top">Structures</a>
 <a class="menuitem" href="./robo_types.html#top">Types</a>
 <a class="menuitem" href="./robo_variables.html#top">Variables</a>
 </div> <!-- navigation -->
 <div id="content">
 <h3>TABLE OF CONTENTS</h3>
 <ul>
-<li>1. <a href="#robo11">OBJECT TYPE/T_MBR</a></li>
+<li>1. <a href="#robo28">OBJECT TYPE/T_MBR</a></li>
 <ul>
-<li>1.1. <a href="#robo197">T_MBR/ATTRIBUTES(T_MBR)</a></li>
-<li>1.2. <a href="#robo198">T_MBR/CONSTRUCTORS(T_MBR)</a></li>
-<li>1.3. <a href="#robo199">T_MBR/Inspectors(T_MBR)</a></li>
-<li>1.4. <a href="#robo200">T_MBR/Modifiers(T_MBR)</a></li>
-<li>1.5. <a href="#robo201">T_MBR/Sorting(T_MBR)</a></li>
-<li>1.6. <a href="#robo202">T_MBR/Testers(T_MBR)</a></li>
+<li>1.1. <a href="#robo221">T_MBR/ATTRIBUTES(T_MBR)</a></li>
+<li>1.2. <a href="#robo222">T_MBR/CONSTRUCTORS(T_MBR)</a></li>
+<li>1.3. <a href="#robo223">T_MBR/Inspectors(T_MBR)</a></li>
+<li>1.4. <a href="#robo224">T_MBR/Modifiers(T_MBR)</a></li>
+<li>1.5. <a href="#robo225">T_MBR/Sorting(T_MBR)</a></li>
+<li>1.6. <a href="#robo226">T_MBR/Testers(T_MBR)</a></li>
 </ul>
 </ul>
 <hr />
 <a name="OBJECT20TYPE2fT5fMBR"></a>
-<a name="robo11"></a><h2>OBJECT TYPE/T_MBR [ Types ]</h2>
+<a name="robo28"></a><h2>OBJECT TYPE/T_MBR [ Types ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_types.html#robo_top_of_doc">Types</a> ]</p>
 <p class="item_name">NAME</p>
@@ -64,9 +65,9 @@
 
 <hr />
 <a name="T5fMBR2fATTRIBUTES28T5fMBR29"></a>
-<a name="robo197"></a><h2>T_MBR/ATTRIBUTES(T_MBR) [ Variables ]</h2>
+<a name="robo221"></a><h2>T_MBR/ATTRIBUTES(T_MBR) [ Variables ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo11">T_MBR</a> ] [ <a href="./robo_variables.html#robo_top_of_doc">Variables</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo28">T_MBR</a> ] [ <a href="./robo_variables.html#robo_top_of_doc">Variables</a> ]</p>
 <p class="item_name">ATTRIBUTES</p>
 <pre>    MinX -- X Ordinate of lower left (LL) corner of MBR.
     MinY -- Y Ordinate of lower left (LL) corner of MBR.
@@ -82,36 +83,36 @@
 
 <hr />
 <a name="T5fMBR2fCONSTRUCTORS28T5fMBR29"></a>
-<a name="robo198"></a><h2>T_MBR/CONSTRUCTORS(T_MBR) [ Methods ]</h2>
+<a name="robo222"></a><h2>T_MBR/CONSTRUCTORS(T_MBR) [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo11">T_MBR</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo28">T_MBR</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
-<pre>    A collection of &amp;&amp;INSTALL_SCHEMA..<a href="#robo11">T_MBR</a> Constructors.
+<pre>    A collection of &amp;&amp;INSTALL_SCHEMA..<a href="#robo28">T_MBR</a> Constructors.
 </pre>
 <p class="item_name">SOURCE</p>
-<pre class="source">   Constructor Function <a href="#robo11">T_MBR</a><span class="sign">(</span>SELF IN OUT NOCOPY <a href="#robo11">T_MBR</a><span class="sign">)</span>
+<pre class="source">   Constructor Function <a href="#robo28">T_MBR</a><span class="sign">(</span>SELF IN OUT NOCOPY <a href="#robo28">T_MBR</a><span class="sign">)</span>
                    Return SELF as Result<span class="sign">,</span>
 
-   Constructor Function <a href="#robo11">T_MBR</a><span class="sign">(</span>SELF IN OUT NOCOPY <a href="#robo11">T_MBR</a><span class="sign">,</span>
-                              p_mbr in spdba<span class="sign">.</span><a href="#robo11">T_MBR</a><span class="sign">)</span>
+   Constructor Function <a href="#robo28">T_MBR</a><span class="sign">(</span>SELF IN OUT NOCOPY <a href="#robo28">T_MBR</a><span class="sign">,</span>
+                              p_mbr in <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><a href="#robo28">T_MBR</a><span class="sign">)</span>
                    Return SELF as Result<span class="sign">,</span>
 
-   Constructor Function <a href="#robo11">T_MBR</a><span class="sign">(</span> SELF        IN OUT NOCOPY <a href="#robo11">T_MBR</a><span class="sign">,</span>
+   Constructor Function <a href="#robo28">T_MBR</a><span class="sign">(</span> SELF        IN OUT NOCOPY <a href="#robo28">T_MBR</a><span class="sign">,</span>
                                p_geometry  IN MDSYS<span class="sign">.</span>SDO_GEOMETRY<span class="sign">,</span>
                                p_tolerance IN NUMBER DEFAULT 0<span class="sign">.</span>005<span class="sign">)</span>
                    Return SELF as Result<span class="sign">,</span>
 
-   Constructor Function <a href="#robo11">T_MBR</a><span class="sign">(</span> SELF       IN OUT NOCOPY <a href="#robo11">T_MBR</a><span class="sign">,</span>
+   Constructor Function <a href="#robo28">T_MBR</a><span class="sign">(</span> SELF       IN OUT NOCOPY <a href="#robo28">T_MBR</a><span class="sign">,</span>
                                p_geometry IN MDSYS<span class="sign">.</span>SDO_GEOMETRY<span class="sign">,</span>
                                p_dimarray IN MDSYS<span class="sign">.</span>SDO_DIM_ARRAY <span class="sign">)</span>
                    Return SELF as Result<span class="sign">,</span>
 
-   Constructor Function <a href="#robo11">T_MBR</a><span class="sign">(</span> SELF      IN OUT NOCOPY <a href="#robo11">T_MBR</a><span class="sign">,</span>
-                               p_Vertex  In spdba<span class="sign">.</span>T_Vertex<span class="sign">,</span>
+   Constructor Function <a href="#robo28">T_MBR</a><span class="sign">(</span> SELF      IN OUT NOCOPY <a href="#robo28">T_MBR</a><span class="sign">,</span>
+                               p_Vertex  In <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span>T_Vertex<span class="sign">,</span>
                                p_dExtent In Number<span class="sign">)</span>
                    Return SELF as Result<span class="sign">,</span>
 
-   Constructor Function <a href="#robo11">T_MBR</a><span class="sign">(</span> SELF      IN OUT NOCOPY <a href="#robo11">T_MBR</a><span class="sign">,</span>
+   Constructor Function <a href="#robo28">T_MBR</a><span class="sign">(</span> SELF      IN OUT NOCOPY <a href="#robo28">T_MBR</a><span class="sign">,</span>
                                p_dX      In NUMBER<span class="sign">,</span>
                                p_dY      In Number<span class="sign">,</span>
                                p_dExtent In Number<span class="sign">)</span>
@@ -120,9 +121,9 @@
 
 <hr />
 <a name="T5fMBR2fInspectors28T5fMBR29"></a>
-<a name="robo199"></a><h2>T_MBR/Inspectors(T_MBR) [ Variables ]</h2>
+<a name="robo223"></a><h2>T_MBR/Inspectors(T_MBR) [ Variables ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo11">T_MBR</a> ] [ <a href="./robo_variables.html#robo_top_of_doc">Variables</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo28">T_MBR</a> ] [ <a href="./robo_variables.html#robo_top_of_doc">Variables</a> ]</p>
 <p class="item_name">SOURCE</p>
 <pre class="source">  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>property  <span class="sign">:</span> X
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>version   <span class="sign">:</span> 1<span class="sign">.</span>0
@@ -172,7 +173,7 @@
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>returntype<span class="sign">:</span> T_Vertex
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history   <span class="sign">:</span> SGG August 2006 <span class="sign">-</span> Original Coding
   Member Function Centre
-           Return spdba<span class="sign">.</span>T_Vertex Deterministic<span class="sign">,</span>
+           Return <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span>T_Vertex Deterministic<span class="sign">,</span>
 
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>property  <span class="sign">:</span> Center
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>version   <span class="sign">:</span> 1<span class="sign">.</span>0
@@ -181,7 +182,7 @@
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>returntype<span class="sign">:</span> T_Vertex
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history   <span class="sign">:</span> SGG August 2006 <span class="sign">-</span> Original Coding
   Member Function Center
-           Return spdba<span class="sign">.</span>T_Vertex Deterministic<span class="sign">,</span>
+           Return <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span>T_Vertex Deterministic<span class="sign">,</span>
 
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>function  <span class="sign">:</span> AsDimArray
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>version   <span class="sign">:</span> 1<span class="sign">.</span>0
@@ -234,11 +235,11 @@
 
 <hr />
 <a name="T5fMBR2fModifiers28T5fMBR29"></a>
-<a name="robo200"></a><h2>T_MBR/Modifiers(T_MBR) [ Variables ]</h2>
+<a name="robo224"></a><h2>T_MBR/Modifiers(T_MBR) [ Variables ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo11">T_MBR</a> ] [ <a href="./robo_variables.html#robo_top_of_doc">Variables</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo28">T_MBR</a> ] [ <a href="./robo_variables.html#robo_top_of_doc">Variables</a> ]</p>
 <p class="item_name">SOURCE</p>
-<pre class="source">  Member Procedure SetEmpty<span class="sign">(</span>SELF IN OUT NOCOPY <a href="#robo11">T_MBR</a><span class="sign">)</span><span class="sign">,</span>
+<pre class="source">  Member Procedure SetEmpty<span class="sign">(</span>SELF IN OUT NOCOPY <a href="#robo28">T_MBR</a><span class="sign">)</span><span class="sign">,</span>
 
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span>
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>procedure  <span class="sign">:</span> SetToPart
@@ -256,7 +257,7 @@
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>copyright  <span class="sign">:</span> GPL <span class="sign">-</span> Free for public use
   Member Function SetToPart<span class="sign">(</span>p_geometry in mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span> 
                             p_which    in integer <span class="comment">/* 0 smallest, 1 largest */</span> <span class="sign">)</span>
-           Return spdba<span class="sign">.</span><a href="#robo11">T_MBR</a> Deterministic<span class="sign">,</span>
+           Return <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><a href="#robo28">T_MBR</a> Deterministic<span class="sign">,</span>
 
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span>
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>procedure  <span class="sign">:</span> SetSmallestPart
@@ -273,7 +274,7 @@
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history    <span class="sign">:</span> Simon Greener <span class="sign">-</span> Feb 2012 <span class="sign">-</span> Original coding<span class="sign">.</span>
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>copyright  <span class="sign">:</span> GPL <span class="sign">-</span> Free for public use
   Member Function SetSmallestPart<span class="sign">(</span>p_geometry IN MDSYS<span class="sign">.</span>SDO_GEOMETRY <span class="sign">)</span>
-           Return spdba<span class="sign">.</span><a href="#robo11">T_MBR</a> Deterministic<span class="sign">,</span>
+           Return <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><a href="#robo28">T_MBR</a> Deterministic<span class="sign">,</span>
 
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span><span class="sign">-</span>
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>procedure  <span class="sign">:</span> SetLargestPart
@@ -290,13 +291,13 @@
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history    <span class="sign">:</span> Simon Greener <span class="sign">-</span> Apr 2003 <span class="sign">-</span> Original coding<span class="sign">.</span>
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>copyright  <span class="sign">:</span> GPL <span class="sign">-</span> Free for public use
   Member Function SetLargestPart<span class="sign">(</span>p_geometry IN MDSYS<span class="sign">.</span>SDO_GEOMETRY <span class="sign">)</span>
-           Return spdba<span class="sign">.</span><a href="#robo11">T_MBR</a> Deterministic<span class="sign">,</span>
+           Return <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><a href="#robo28">T_MBR</a> Deterministic<span class="sign">,</span>
 
-  Member Function Intersection<span class="sign">(</span>p_other In spdba<span class="sign">.</span><a href="#robo11">T_MBR</a> <span class="sign">)</span>
-           Return spdba<span class="sign">.</span><a href="#robo11">T_MBR</a> Deterministic<span class="sign">,</span>
-
-  Member Function Expand<span class="sign">(</span>p_Vertex IN spdba<span class="sign">.</span>T_Vertex<span class="sign">)</span>
-           Return spdba<span class="sign">.</span><a href="#robo11">T_MBR</a> Deterministic<span class="sign">,</span>
+  Member Function Intersection<span class="sign">(</span>p_other In <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><a href="#robo28">T_MBR</a> <span class="sign">)</span>
+           Return <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><a href="#robo28">T_MBR</a> Deterministic<span class="sign">,</span>
+  
+  Member Function Expand<span class="sign">(</span>p_Vertex IN <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span>T_Vertex<span class="sign">)</span>
+           Return <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><a href="#robo28">T_MBR</a> Deterministic<span class="sign">,</span>
 
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>function  <span class="sign">:</span> Expand
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>version   <span class="sign">:</span> 1<span class="sign">.</span>0
@@ -309,41 +310,41 @@
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history   <span class="sign">:</span> SGG November 2004 <span class="sign">-</span> Original Coding
   Member Function Expand<span class="sign">(</span>p_dX IN NUMBER<span class="sign">,</span>
                          p_dY IN NUMBER<span class="sign">)</span>
-           Return spdba<span class="sign">.</span><a href="#robo11">T_MBR</a> Deterministic<span class="sign">,</span>
+           Return <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><a href="#robo28">T_MBR</a> Deterministic<span class="sign">,</span>
 
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>procedure <span class="sign">:</span> Expand
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>version   <span class="sign">:</span> 1<span class="sign">.</span>0
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>precis    <span class="sign">:</span> Enlarges the boundary of the Current MBR so that it contains another MBR<span class="sign">.</span>
   <span class="sign">-</span><span class="sign">-</span>              Does nothing if other is wholly on or within the boundaries<span class="sign">.</span>
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>param     <span class="sign">:</span> p_other <span class="sign">-</span> MBR to merge with
-  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>paramType <span class="sign">:</span> <a href="#robo11">T_MBR</a>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>paramType <span class="sign">:</span> <a href="#robo28">T_MBR</a>
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history   <span class="sign">:</span> SGG November 2004 <span class="sign">-</span> Original Coding
-  Member Function Expand<span class="sign">(</span>p_other IN spdba<span class="sign">.</span><a href="#robo11">T_MBR</a><span class="sign">)</span>
-           Return spdba<span class="sign">.</span><a href="#robo11">T_MBR</a> Deterministic<span class="sign">,</span>
+  Member Function Expand<span class="sign">(</span>p_other IN <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><a href="#robo28">T_MBR</a><span class="sign">)</span>
+           Return <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><a href="#robo28">T_MBR</a> Deterministic<span class="sign">,</span>
 
-  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>function  <span class="sign">:</span> <a href="./t_vector3d_sql.html#robo273">Normalize</a><span class="sign">(</span>ratio<span class="sign">)</span>
+  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>function  <span class="sign">:</span> <a href="./T_Vector3D_sql.html#robo315">Normalize</a><span class="sign">(</span>ratio<span class="sign">)</span>
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>version   <span class="sign">:</span> 1<span class="sign">.</span>0
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>precis    <span class="sign">:</span> Method that adjusts width<span class="sign">/</span>height etc based on passed ratio eg imageWidth<span class="sign">/</span>imageHeight<span class="sign">.</span>
   <span class="sign">-</span><span class="sign">-</span>              If <span class="sign">&gt;</span> 0 then the MBR<span class="squote">'s width is changed to height * ratio.
   --              If &lt; 0 then the MBR'</span>s height is changed to width <span class="sign">*</span> ratio<span class="sign">.</span>
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history   <span class="sign">:</span> SGG August 2006 <span class="sign">-</span> Original Coding
-  Member Function <a href="./t_vector3d_sql.html#robo273">Normalize</a><span class="sign">(</span>p_dRatio In Number<span class="sign">)</span>
-           Return spdba<span class="sign">.</span><a href="#robo11">T_MBR</a> Deterministic<span class="sign">,</span>
+  Member Function <a href="./T_Vector3D_sql.html#robo315">Normalize</a><span class="sign">(</span>p_dRatio In Number<span class="sign">)</span>
+           Return <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><a href="#robo28">T_MBR</a> Deterministic<span class="sign">,</span>
 </pre>
 
 <hr />
 <a name="T5fMBR2fSorting28T5fMBR29"></a>
-<a name="robo201"></a><h2>T_MBR/Sorting(T_MBR) [ Variables ]</h2>
+<a name="robo225"></a><h2>T_MBR/Sorting(T_MBR) [ Variables ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo11">T_MBR</a> ] [ <a href="./robo_variables.html#robo_top_of_doc">Variables</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo28">T_MBR</a> ] [ <a href="./robo_variables.html#robo_top_of_doc">Variables</a> ]</p>
 <p class="item_name">SOURCE</p>
-<pre class="source">  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>function  <span class="sign">:</span> <a href="./t_vector3d_sql.html#robo268">Equals</a>
+<pre class="source">  <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>function  <span class="sign">:</span> <a href="./T_Vector3D_sql.html#robo310">Equals</a>
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>version   <span class="sign">:</span> 1<span class="sign">.</span>0
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>precis    <span class="sign">:</span> Tests to see if an MBR is equal to another<span class="sign">.</span>
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>return    <span class="sign">:</span> True if p_other is equal to Current else false
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>returntype<span class="sign">:</span> Boolean
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history   <span class="sign">:</span> SGG November 2004 <span class="sign">-</span> Original Coding
-  Member Function <a href="./t_vector3d_sql.html#robo268">Equals</a><span class="sign">(</span>   p_other In spdba<span class="sign">.</span><a href="#robo11">T_MBR</a> <span class="sign">)</span>
+  Member Function <a href="./T_Vector3D_sql.html#robo310">Equals</a><span class="sign">(</span>   p_other In <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><a href="#robo28">T_MBR</a> <span class="sign">)</span>
            Return Boolean Deterministic<span class="sign">,</span>
 
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>function  <span class="sign">:</span> Evaluate
@@ -353,15 +354,15 @@
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>returntype<span class="sign">:</span> Number
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history   <span class="sign">:</span> SGG August 2006 <span class="sign">-</span> Original Coding
   Order 
-  Member Function Evaluate<span class="sign">(</span>p_other In spdba<span class="sign">.</span><a href="#robo11">T_MBR</a><span class="sign">)</span>
+  Member Function Evaluate<span class="sign">(</span>p_other In <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><a href="#robo28">T_MBR</a><span class="sign">)</span>
            Return Integer
 </pre>
 
 <hr />
 <a name="T5fMBR2fTesters28T5fMBR29"></a>
-<a name="robo202"></a><h2>T_MBR/Testers(T_MBR) [ Variables ]</h2>
+<a name="robo226"></a><h2>T_MBR/Testers(T_MBR) [ Variables ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo11">T_MBR</a> ] [ <a href="./robo_variables.html#robo_top_of_doc">Variables</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo28">T_MBR</a> ] [ <a href="./robo_variables.html#robo_top_of_doc">Variables</a> ]</p>
 <p class="item_name">SOURCE</p>
 <pre class="source">   Member Function isEmpty
             Return Boolean Deterministic<span class="sign">,</span>
@@ -373,7 +374,7 @@
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>return    <span class="sign">:</span> True or False
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>returntype<span class="sign">:</span> Boolean
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>history   <span class="sign">:</span> SGG November 2004 <span class="sign">-</span> Original Coding
-  Member Function Contains<span class="sign">(</span> p_other In spdba<span class="sign">.</span><a href="#robo11">T_MBR</a> <span class="sign">)</span>
+  Member Function Contains<span class="sign">(</span> p_other In <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><a href="#robo28">T_MBR</a> <span class="sign">)</span>
            Return Boolean Deterministic<span class="sign">,</span>
 
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>function  <span class="sign">:</span> Contains
@@ -389,7 +390,7 @@
   Member Function Contains<span class="sign">(</span> p_vertex In mdsys<span class="sign">.</span>vertex_type <span class="sign">)</span>
            Return Boolean Deterministic<span class="sign">,</span>
 
-  Member Function Contains<span class="sign">(</span> p_vertex In spdba<span class="sign">.</span>T_Vertex <span class="sign">)</span> 
+  Member Function Contains<span class="sign">(</span> p_vertex In <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span>T_Vertex <span class="sign">)</span> 
            Return Boolean Deterministic<span class="sign">,</span>
 
   <span class="sign">-</span><span class="sign">-</span> <span class="sign">@</span>function  <span class="sign">:</span> Compare
@@ -399,7 +400,7 @@
   -- @returntype: Number
   -- @history   : SGG May 2005 - Original Coding
   --
-  Member Function Compare( p_other In spdba.<a href="#robo11">T_MBR</a> )
+  Member Function Compare( p_other In spdba.<a href="#robo28">T_MBR</a> )
            Return Integer Deterministic,
 
   -- @function  : Overlap
@@ -409,7 +410,7 @@
   -- @return    : True or False
   -- @returntype: Boolean
   -- @history   : SGG November 2004 - Original Coding
-  Member Function Overlap( p_other in spdba.<a href="#robo11">T_MBR</a> )
+  Member Function Overlap( p_other in &amp;&amp;INSTALL_SCHEMA..<a href="#robo28">T_MBR</a> )
            Return Boolean Deterministic,
 
   -- @function : Intersects
@@ -437,12 +438,12 @@
   Static Function Intersects (
                       p1 in spdba.t_vertex, p2 in spdba.T_Vertex, 
                       q1 in spdba.t_vertex, q2 in spdba.t_vertex)
-           return boolean deterministic,
+                  Return boolean Deterministic,
 </pre>
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./export/t_mbr.sql with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.36 on Sat Aug 17 2019 13:43:51
+<p>Generated from ./src/T_MBR.sql with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.36 on Sun Aug 25 2019 09:56:16
 </p>
 </div> <!-- footer -->
 </body>

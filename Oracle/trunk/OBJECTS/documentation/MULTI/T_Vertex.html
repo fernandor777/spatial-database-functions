@@ -2,12 +2,12 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
+<head><link rel="shortcut icon" href="http://www.spatialdbadvisor.com/images/243t.png"/>
 <meta http-equiv="Content-Style-Type" content="text/css" />
 <meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
 <link rel="stylesheet" href="./robodoc.css" type="text/css" />
-<title>./export/t_vertex.sql</title>
-<!-- Source: ./export/t_vertex.sql -->
+<title>./src/T_Vertex.sql</title>
+<!-- Source: ./src/T_Vertex.sql -->
 <!-- Generated with ROBODoc Version 4.99.36 (Mar 13 2008) -->
 </head>
 <body>
@@ -21,45 +21,46 @@
 <a class="menuitem" href="./robo_functions.html#top">Functions</a>
 <a class="menuitem" href="./robo_modules.html#top">Modules</a>
 <a class="menuitem" href="./robo_methods.html#top">Methods</a>
+<a class="menuitem" href="./robo_strutures.html#top">Structures</a>
 <a class="menuitem" href="./robo_types.html#top">Types</a>
 <a class="menuitem" href="./robo_variables.html#top">Variables</a>
 </div> <!-- navigation -->
 <div id="content">
 <h3>TABLE OF CONTENTS</h3>
 <ul>
-<li>1. <a href="#robo15">OBJECT TYPE/T_VERTEX</a></li>
+<li>1. <a href="#robo33">OBJECT TYPE/T_VERTEX</a></li>
 <ul>
-<li>1.1. <a href="#robo279">T_VERTEX/ATTRIBUTES(T_VERTEX)</a></li>
-<li>1.2. <a href="#robo280">T_VERTEX/CONSTRUCTORS(T_VERTEX)</a></li>
-<li>1.3. <a href="./t_vertexlist_sql.html#robo281">T_VERTEX/CONSTRUCTORS(T_VERTEXE)</a></li>
-<li>1.4. <a href="#robo282">T_VERTEX/INSPECTORS(T_VERTEX)</a></li>
-<li>1.5. <a href="#robo283">T_VERTEX/OrderBy</a></li>
-<li>1.6. <a href="#robo284">T_VERTEX/ST_AsCoordString</a></li>
-<li>1.7. <a href="#robo285">T_VERTEX/ST_AsText</a></li>
-<li>1.8. <a href="#robo286">T_VERTEX/ST_Bearing</a></li>
-<li>1.9. <a href="#robo287">T_VERTEX/ST_Dims</a></li>
-<li>1.10. <a href="#robo288">T_VERTEX/ST_Distance</a></li>
-<li>1.11. <a href="#robo289">T_VERTEX/ST_Equals</a></li>
-<li>1.12. <a href="#robo290">T_VERTEX/ST_FromBearingAndDistance</a></li>
-<li>1.13. <a href="#robo291">T_VERTEX/ST_HasM</a></li>
-<li>1.14. <a href="#robo292">T_VERTEX/ST_hasZ</a></li>
-<li>1.15. <a href="#robo293">T_VERTEX/ST_isEmpty</a></li>
-<li>1.16. <a href="#robo294">T_VERTEX/ST_Lrs_Dim</a></li>
-<li>1.17. <a href="#robo295">T_VERTEX/ST_LRS_Set_Measure</a></li>
-<li>1.18. <a href="#robo296">T_VERTEX/ST_Round</a></li>
-<li>1.19. <a href="#robo297">T_VERTEX/ST_SdoGeometry</a></li>
-<li>1.20. <a href="#robo298">T_VERTEX/ST_SdoPointType</a></li>
-<li>1.21. <a href="#robo299">T_VERTEX/ST_Self</a></li>
-<li>1.22. <a href="#robo300">T_VERTEX/ST_SubtendedAngle</a></li>
-<li>1.23. <a href="#robo301">T_VERTEX/ST_To2D</a></li>
-<li>1.24. <a href="#robo302">T_VERTEX/ST_To3D</a></li>
-<li>1.25. <a href="#robo303">T_VERTEX/ST_VertexType</a></li>
-<li>1.26. <a href="#robo304">T_VERTEX/ST_WithinTolerance</a></li>
+<li>1.1. <a href="#robo321">T_VERTEX/ATTRIBUTES(T_VERTEX)</a></li>
+<li>1.2. <a href="#robo322">T_VERTEX/CONSTRUCTORS(T_VERTEX)</a></li>
+<li>1.3. <a href="#robo323">T_VERTEX/INSPECTORS(T_VERTEX)</a></li>
+<li>1.4. <a href="#robo324">T_VERTEX/OrderBy</a></li>
+<li>1.5. <a href="#robo325">T_VERTEX/ST_AsCoordString</a></li>
+<li>1.6. <a href="#robo326">T_VERTEX/ST_AsText</a></li>
+<li>1.7. <a href="#robo327">T_VERTEX/ST_Bearing</a></li>
+<li>1.8. <a href="#robo328">T_VERTEX/ST_Dims</a></li>
+<li>1.9. <a href="#robo329">T_VERTEX/ST_Distance</a></li>
+<li>1.10. <a href="#robo330">T_VERTEX/ST_Equals</a></li>
+<li>1.11. <a href="#robo331">T_VERTEX/ST_FromBearingAndDistance</a></li>
+<li>1.12. <a href="#robo332">T_VERTEX/ST_HasM</a></li>
+<li>1.13. <a href="#robo333">T_VERTEX/ST_hasZ</a></li>
+<li>1.14. <a href="#robo334">T_VERTEX/ST_isEmpty</a></li>
+<li>1.15. <a href="#robo335">T_VERTEX/ST_Lrs_Dim</a></li>
+<li>1.16. <a href="#robo336">T_VERTEX/ST_LRS_Set_Measure</a></li>
+<li>1.17. <a href="#robo337">T_VERTEX/ST_Round</a></li>
+<li>1.18. <a href="#robo338">T_VERTEX/ST_SdoGeometry</a></li>
+<li>1.19. <a href="#robo339">T_VERTEX/ST_SdoPointType</a></li>
+<li>1.20. <a href="#robo340">T_VERTEX/ST_Self</a></li>
+<li>1.21. <a href="#robo341">T_VERTEX/ST_SetCoordinate</a></li>
+<li>1.22. <a href="#robo342">T_VERTEX/ST_SubtendedAngle</a></li>
+<li>1.23. <a href="#robo343">T_VERTEX/ST_To2D</a></li>
+<li>1.24. <a href="#robo344">T_VERTEX/ST_To3D</a></li>
+<li>1.25. <a href="#robo345">T_VERTEX/ST_VertexType</a></li>
+<li>1.26. <a href="#robo346">T_VERTEX/ST_WithinTolerance</a></li>
 </ul>
 </ul>
 <hr />
 <a name="OBJECT20TYPE2fT5fVERTEX"></a>
-<a name="robo15"></a><h2>OBJECT TYPE/T_VERTEX [ Types ]</h2>
+<a name="robo33"></a><h2>OBJECT TYPE/T_VERTEX [ Types ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_types.html#robo_top_of_doc">Types</a> ]</p>
 <p class="item_name">NAME</p>
@@ -85,9 +86,9 @@
 
 <hr />
 <a name="T5fVERTEX2fATTRIBUTES28T5fVERTEX29"></a>
-<a name="robo279"></a><h2>T_VERTEX/ATTRIBUTES(T_VERTEX) [ Variables ]</h2>
+<a name="robo321"></a><h2>T_VERTEX/ATTRIBUTES(T_VERTEX) [ Variables ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo15">T_VERTEX</a> ] [ <a href="./robo_variables.html#robo_top_of_doc">Variables</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo33">T_VERTEX</a> ] [ <a href="./robo_variables.html#robo_top_of_doc">Variables</a> ]</p>
 <p class="item_name">ATTRIBUTES</p>
 <pre>    X         -- X Ordinate
     Y         -- Y Ordinate
@@ -111,18 +112,18 @@
 
 <hr />
 <a name="T5fVERTEX2fCONSTRUCTORS28T5fVERTEX29"></a>
-<a name="robo280"></a><h2>T_VERTEX/CONSTRUCTORS(T_VERTEX) [ Methods ]</h2>
+<a name="robo322"></a><h2>T_VERTEX/CONSTRUCTORS(T_VERTEX) [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo15">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo33">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
-<pre>    A collection of <a href="#robo15">T_VERTEX</a> Constructors.
+<pre>    A collection of <a href="#robo33">T_VERTEX</a> Constructors.
 </pre>
 <p class="item_name">SOURCE</p>
 <pre class="source">  Constructor Function T_Vertex<span class="sign">(</span> SELF IN OUT NOCOPY T_Vertex<span class="sign">)</span>
        Return Self As Result<span class="sign">,</span>
 
   Constructor Function T_Vertex<span class="sign">(</span> SELF    IN OUT NOCOPY T_Vertex<span class="sign">,</span>
-                                 p_vertex In SPDBA<span class="sign">.</span>T_vertex <span class="sign">)</span>
+                                 p_vertex In <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span>T_vertex <span class="sign">)</span>
        Return Self As Result<span class="sign">,</span>
 
   Constructor Function T_Vertex<span class="sign">(</span> SELF    IN OUT NOCOPY T_Vertex<span class="sign">,</span>
@@ -132,10 +133,10 @@
  <span class="comment">/*  EXAMPLE
   *    SELECT t.id,
   *           TRIM(BOTH ' ' FROM t.token) as token,
-  *           <a href="#robo15">T_VERTEX</a>(p_coord_string =&gt; TRIM(BOTH ' ' FROM t.token),
+  *           <a href="#robo33">T_VERTEX</a>(p_coord_string =&gt; TRIM(BOTH ' ' FROM t.token),
   *                    p_id           =&gt; t.id,
   *                    p_sdo_srid     =&gt; null)
-  *             .<a href="./t_segment_sql.html#robo209">ST_AsText</a>() as vertex
+  *             .<a href="./T_Geometry_sql.html#robo49">ST_AsText</a>() as vertex
   *      FROM table(tools.tokenizer('1.1 -2.1 3.47, 10 0 2,10 5 3,10 10 4,5 10 5,5 5 6',',')) t
   *    ORDER BY t.id;
   *
@@ -152,10 +153,10 @@
   *
   *    SELECT t.id,
   *             TRIM(BOTH ' ' FROM t.token) as token,
-  *             <a href="#robo15">T_VERTEX</a>(TRIM(BOTH ' ' FROM t.token),
+  *             <a href="#robo33">T_VERTEX</a>(TRIM(BOTH ' ' FROM t.token),
   *                      t.id,
   *                      null)
-  *               .<a href="./t_segment_sql.html#robo209">ST_AsText</a>() as vertex
+  *               .<a href="./T_Geometry_sql.html#robo49">ST_AsText</a>() as vertex
   *        FROM table(tools.tokenizer(
   *                     '1.1 -2.1 3.47 1.0,10 0 2 2.1,10 5 3 3,10 10 4 4.1,5 10 5 5.1,5 5 6 6.1',',')) t
   *      ORDER BY t.id;
@@ -237,17 +238,17 @@
 
 <hr />
 <a name="T5fVERTEX2fINSPECTORS28T5fVERTEX29"></a>
-<a name="robo282"></a><h2>T_VERTEX/INSPECTORS(T_VERTEX) [ Methods ]</h2>
+<a name="robo323"></a><h2>T_VERTEX/INSPECTORS(T_VERTEX) [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo15">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo33">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
-<pre>    A collection of <a href="#robo15">T_VERTEX</a> variable inspectors.
+<pre>    A collection of <a href="#robo33">T_VERTEX</a> variable inspectors.
 </pre>
 <p class="item_name">DESCRIPTION</p>
 <pre>    ST_X, ST_Y, ST_Z, ST_W return the relevant (z,y,z,w) underlying ordinate property values.
     ST_ID returns the value given to the ID property.
-    <a href="./t_segment_sql.html#robo250">ST_SRID</a> returns the value given to the sdo_srid property.
-    ST_Sdo_Gtype returns the value given to the sdo_gtype property (see also <a href="./t_geometry_sql.html#robo48">ST_Dims</a>()).
+    <a href="./T_Segment_sql.html#robo290">ST_SRID</a> returns the value given to the sdo_srid property.
+    ST_Sdo_Gtype returns the value given to the sdo_gtype property (see also <a href="#robo328">ST_Dims</a>()).
 </pre>
 <p class="item_name">SOURCE</p>
 <pre class="source">  Member Function ST_X          Return Number  Deterministic<span class="sign">,</span>
@@ -256,7 +257,7 @@
   Member Function ST_W          Return Number  Deterministic<span class="sign">,</span>
   Member Function ST_M          Return Number  Deterministic<span class="sign">,</span>
   Member Function ST_ID         Return integer Deterministic<span class="sign">,</span>
-  Member Function <a href="./t_segment_sql.html#robo250">ST_SRID</a>       Return integer Deterministic<span class="sign">,</span>
+  Member Function <a href="./T_Segment_sql.html#robo290">ST_SRID</a>       Return integer Deterministic<span class="sign">,</span>
   Member Function ST_SDO_GTYPE  Return integer Deterministic<span class="sign">,</span>
   Member Function ST_IsDeleted  Return integer Deterministic<span class="sign">,</span>
   Member Function ST_IsMeasured Return integer Deterministic<span class="sign">,</span>
@@ -264,14 +265,14 @@
 
 <hr />
 <a name="T5fVERTEX2fOrderBy"></a>
-<a name="robo283"></a><h2>T_VERTEX/OrderBy [ Methods ]</h2>
+<a name="robo324"></a><h2>T_VERTEX/OrderBy [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo15">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo33">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>OrderBy</strong> -- Implements ordering function that can be used to sort a collection of T_Vertex objects.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Order Member Function <strong>OrderBy</strong>(p_vertex in SPDBA.T_Vertex)
+<pre>    Order Member Function <strong>OrderBy</strong>(p_vertex in &amp;&amp;INSTALL_SCHEMA..T_Vertex)
                    Return Number deterministic
 </pre>
 <p class="item_name">DESCRIPTION</p>
@@ -279,7 +280,7 @@
     For example in the ORDER BY clause of a SELECT statement. Comparison uses all ordinates: X, Y, Z and W.
 </pre>
 <p class="item_name">PARAMETERS</p>
-<pre>    p_vertex (<a href="#robo15">T_VERTEX</a>) - Order pair
+<pre>    p_vertex (<a href="#robo33">T_VERTEX</a>) - Order pair
 </pre>
 <p class="item_name">RESULT</p>
 <pre>    order value (NUMBER) - -1 less than; 0 equal; 1 greater than
@@ -324,9 +325,9 @@
 
 <hr />
 <a name="T5fVERTEX2fST5fAsCoordString"></a>
-<a name="robo284"></a><h2>T_VERTEX/ST_AsCoordString [ Methods ]</h2>
+<a name="robo325"></a><h2>T_VERTEX/ST_AsCoordString [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo15">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo33">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_AsCoordString</strong> -- Returns text Description of Vertex
 </pre>
@@ -338,7 +339,7 @@
 <p class="item_name">DESCRIPTION</p>
 <pre>    Returns textual description of the vertex's ordinates only.
     Useful for working with WKT.
-    If rounding of ordinates is required first use <a href="./t_geometry_sql.html#robo156">ST_Round</a>.
+    If rounding of ordinates is required first use <a href="./T_Geometry_sql.html#robo177">ST_Round</a>.
 </pre>
 <p class="item_name">PARAMETERS</p>
 <pre>    p_separator    (varchar2) -- Separator between ordinates.
@@ -352,11 +353,11 @@
 <pre>    select T_Vertex(
              sdo_geometry('POINT(0 0)',NULL)
            )
-           .<a href="./t_segment_sql.html#robo209">ST_AsText</a>() as pVertex,
+           .<a href="./T_Geometry_sql.html#robo49">ST_AsText</a>() as pVertex,
            T_Vertex(
              sdo_geometry('POINT(147.5 -42.5)',4283)
            )
-           .<a href="./t_segment_sql.html#robo209">ST_AsText</a>() as gVertex
+           .<a href="./T_Geometry_sql.html#robo49">ST_AsText</a>() as gVertex
       from dual;
 
     PVERTEX                                                   GVERTEX
@@ -375,9 +376,9 @@
 
 <hr />
 <a name="T5fVERTEX2fST5fAsText"></a>
-<a name="robo285"></a><h2>T_VERTEX/ST_AsText [ Methods ]</h2>
+<a name="robo326"></a><h2>T_VERTEX/ST_AsText [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo15">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo33">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_AsText</strong> -- Returns text Description of Vertex
 </pre>
@@ -387,7 +388,7 @@
 </pre>
 <p class="item_name">DESCRIPTION</p>
 <pre>    Returns textual description of vertex.
-    If rounding of ordinates is required, first use <a href="./t_geometry_sql.html#robo156">ST_Round</a>.
+    If rounding of ordinates is required, first use <a href="./T_Geometry_sql.html#robo177">ST_Round</a>.
 </pre>
 <p class="item_name">PARAMETERS</p>
 <pre>    p_format_model (varchar2) -- Oracle Number Format Model (see documentation)
@@ -423,14 +424,14 @@
 
 <hr />
 <a name="T5fVERTEX2fST5fBearing"></a>
-<a name="robo286"></a><h2>T_VERTEX/ST_Bearing [ Methods ]</h2>
+<a name="robo327"></a><h2>T_VERTEX/ST_Bearing [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo15">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo33">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_Bearing</strong> -- Returns bearing from SELF to supplied T_Vertex.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Member Function <strong>ST_Bearing</strong>(p_vertex    in SPDBA.T_Vertex,
+<pre>    Member Function <strong>ST_Bearing</strong>(p_vertex    in &amp;&amp;INSTALL_SCHEMA..T_Vertex,
                                p_projected in integer default 1,
                                p_normalize in integer default 1 )
              Return Number Deterministic
@@ -438,15 +439,15 @@
 <p class="item_name">DESCRIPTION</p>
 <pre>    This function computes a bearing from the current object point (SELF) to the supplied T_Vertex.
     Result is in degrees.
-    Use static function TOOLS.<a href="./COGO_sql.html#robo7">ST_Degrees</a> to return as a whole circle bearing.
+    Use static function <a href="./Package_TOOLS_sql.html#robo4">TOOLS</a>.<a href="./Package_COGO_sql.html#robo12">ST_Degrees</a> to return as a whole circle bearing.
     Geodetic calculations are used if p_projected = 0, otherwise planar calculations are used.
     If p_normlize is true (1), the resulting bearing is normalised to a value between 0.360.
 </pre>
 <p class="item_name">PARAMETERS</p>
-<pre>    p_vertex (<a href="#robo15">T_VERTEX</a>)   -- A Vertex to which a bearing is calculated.
-    p_projected (integer) -- Usually called from <a href="./t_geometry_sql.html#robo10">T_GEOMETRY</a> with SELF.projected.
+<pre>    p_vertex (<a href="#robo33">T_VERTEX</a>)   -- A Vertex to which a bearing is calculated.
+    p_projected (integer) -- Usually called from <a href="./T_Geometry_sql.html#robo24">T_GEOMETRY</a> with SELF.projected.
                              If either 1 for Projected/Planar and 0 for Geographic/Geodetic.
-                             If NULL, TOOLS.ST_GetSridType is called.
+                             If NULL, <a href="./Package_TOOLS_sql.html#robo4">TOOLS</a>.<a href="./Package_TOOLS_sql.html#robo353">ST_GetSridType</a> is called.
     p_normalize (integer) -- If 1 computed bearing is normalized to a value between 0..360 degrees.
 </pre>
 <p class="item_name">RESULT</p>
@@ -472,7 +473,7 @@
          45
 
     -- Simple geodetic bearing (2D)
-    select  <a href="./COGO_sql.html#robo0">COGO</a>.<a href="./COGO_sql.html#robo2">DD2DMS</a>(
+    select  <a href="./Package_COGO_sql.html#robo0">COGO</a>.<a href="./Package_COGO_sql.html#robo7">DD2DMS</a>(
              T_Vertex(
                sdo_geometry('POINT(147.5 -42.5)',4283)
              )
@@ -491,7 +492,7 @@
     90°02'01.606"
 </pre>
 <p class="item_name">SEE ALSO</p>
-<pre>    <a href="./COGO_sql.html#robo7">ST_Degrees</a>.
+<pre>    <a href="./Package_COGO_sql.html#robo12">ST_Degrees</a>.
 </pre>
 <p class="item_name">AUTHOR</p>
 <pre>    Simon Greener
@@ -505,9 +506,9 @@
 
 <hr />
 <a name="T5fVERTEX2fST5fDims"></a>
-<a name="robo287"></a><h2>T_VERTEX/ST_Dims [ Methods ]</h2>
+<a name="robo328"></a><h2>T_VERTEX/ST_Dims [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo15">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo33">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_Dims</strong> -- Returns number of ordinate dimensions
 </pre>
@@ -551,14 +552,14 @@
 
 <hr />
 <a name="T5fVERTEX2fST5fDistance"></a>
-<a name="robo288"></a><h2>T_VERTEX/ST_Distance [ Methods ]</h2>
+<a name="robo329"></a><h2>T_VERTEX/ST_Distance [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo15">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo33">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_Distance</strong> -- Returns distance from current vertex (SELF) to supplied T_Vertex.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Member Function <strong>ST_Distance</strong>(p_vertex    in SPDBA.T_Vertex,
+<pre>    Member Function <strong>ST_Distance</strong>(p_vertex    in &amp;&amp;INSTALL_SCHEMA..T_Vertex,
                                 p_tolerance in number   default 0.05,
                                 p_unit      in varchar2 default NULL)
              Return Number Deterministic
@@ -568,7 +569,7 @@
     Result is in the distance units of the SDO_SRID, or in p_units where supplied.
 </pre>
 <p class="item_name">PARAMETERS</p>
-<pre>    p_vertex  (<a href="#robo15">T_VERTEX</a>) - A Vertex to which a bearing is calculated.
+<pre>    p_vertex  (<a href="#robo33">T_VERTEX</a>) - A Vertex to which a bearing is calculated.
     p_tolerance (NUMBER) - sdo_tolerance for use with sdo_geom.sdo_distance.
     p_unit    (VARCHAR2) - Oracle Unit of Measure eg unit=M.
 </pre>
@@ -627,14 +628,14 @@
 
 <hr />
 <a name="T5fVERTEX2fST5fEquals"></a>
-<a name="robo289"></a><h2>T_VERTEX/ST_Equals [ Methods ]</h2>
+<a name="robo330"></a><h2>T_VERTEX/ST_Equals [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo15">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo33">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_Equals</strong> -- Compares current object (SELF) with supplied vertex.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Member Function <strong>ST_Equals</strong>(p_vertex    in SPDBA.T_Vertex,
+<pre>    Member Function <strong>ST_Equals</strong>(p_vertex    in &amp;&amp;INSTALL_SCHEMA..T_Vertex,
                               p_dPrecision in number default 3)
              Return Integer deterministic
 </pre>
@@ -644,7 +645,7 @@
     SDO_GTYPE, SDO_SRID and ID are not compared.
 </pre>
 <p class="item_name">PARAMETERS</p>
-<pre>    p_vertex    (<a href="#robo15">T_VERTEX</a>) - Vertex that is to be compared to current object (SELF).
+<pre>    p_vertex    (<a href="#robo33">T_VERTEX</a>) - Vertex that is to be compared to current object (SELF).
     p_dPrecision (INTEGER) - Decimal digits of precision for all ordinates.
 </pre>
 <p class="item_name">RESULT</p>
@@ -671,7 +672,7 @@
                ),
                t.IntValue
            ) as vEquals
-      from table(TOOLS.generate_series(1,3,1)) t;
+      from table(<a href="./Package_TOOLS_sql.html#robo4">TOOLS</a>.generate_series(1,3,1)) t;
 
     PRECISION VEQUALS
     --------- -------
@@ -691,9 +692,9 @@
 
 <hr />
 <a name="T5fVERTEX2fST5fFromBearingAndDistance"></a>
-<a name="robo290"></a><h2>T_VERTEX/ST_FromBearingAndDistance [ Methods ]</h2>
+<a name="robo331"></a><h2>T_VERTEX/ST_FromBearingAndDistance [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo15">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo33">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_FromBearingAndDistance</strong> -- Returns new T_Vertex given bearing and distance.
 </pre>
@@ -704,19 +705,19 @@
              Return T_Vertex Deterministic
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre>    This function computes a new <a href="#robo15">T_VERTEX</a> computed from current object point (SELF)
+<pre>    This function computes a new <a href="#robo33">T_VERTEX</a> computed from current object point (SELF)
     the supplied bearing and distance.
     Geodetic calculations are used if p_projected = 0, otherwise planar calculations are used.
 </pre>
 <p class="item_name">PARAMETERS</p>
 <pre>    p_bearing    (NUMBER) -- A whole circle bearing in radians.
     p_distance   (NUMBER) -- Distance expressed in Oracle Unit of Measure eg METER.
-    p_projected (integer) -- Usually called from <a href="./t_geometry_sql.html#robo10">T_GEOMETRY</a> with SELF.projected.
+    p_projected (integer) -- Usually called from <a href="./T_Geometry_sql.html#robo24">T_GEOMETRY</a> with SELF.projected.
                              If either 1 for Projected/Planar and 0 for Geographic/Geodetic.
-                             If NULL, TOOLS.ST_GetSridType is called.
+                             If NULL, <a href="./Package_TOOLS_sql.html#robo4">TOOLS</a>.<a href="./Package_TOOLS_sql.html#robo353">ST_GetSridType</a> is called.
 </pre>
 <p class="item_name">RESULT</p>
-<pre>    vertexx (<a href="#robo15">T_VERTEX</a>) -- New vertex computed using bearing and distance from current object.
+<pre>    vertexx (<a href="#robo33">T_VERTEX</a>) -- New vertex computed using bearing and distance from current object.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre>    -- Planar in Meters
@@ -728,8 +729,8 @@
                 p_distance  =&gt; 14.142,
                 p_projected =&gt; 1
              )
-             .<a href="./t_geometry_sql.html#robo156">ST_Round</a>(3)
-             .<a href="./t_segment_sql.html#robo209">ST_AsText</a>() as vertex
+             .<a href="./T_Geometry_sql.html#robo177">ST_Round</a>(3)
+             .<a href="./T_Geometry_sql.html#robo49">ST_AsText</a>() as vertex
       from dual;
 
     VERTEX
@@ -741,12 +742,12 @@
              sdo_geometry('POINT(147.5 -42.5)',4283)
            )
            .<strong>ST_FromBearingAndDistance</strong> (
-               p_bearing   =&gt; <a href="./COGO_sql.html#robo0">COGO</a>.<a href="./COGO_sql.html#robo4">DMS2DD</a>('90°02''01.606"'),
+               p_bearing   =&gt; <a href="./Package_COGO_sql.html#robo0">COGO</a>.<a href="./Package_COGO_sql.html#robo9">DMS2DD</a>('90°02''01.606"'),
                p_distance  =&gt; 8219.9,
                p_projected =&gt; 0
            )
-           .<a href="./t_geometry_sql.html#robo156">ST_Round</a>(6)
-           .<a href="./t_segment_sql.html#robo209">ST_AsText</a>() as vertex
+           .<a href="./T_Geometry_sql.html#robo177">ST_Round</a>(6)
+           .<a href="./T_Geometry_sql.html#robo49">ST_AsText</a>() as vertex
       from dual;
 
     VERTEX
@@ -765,9 +766,9 @@
 
 <hr />
 <a name="T5fVERTEX2fST5fHasM"></a>
-<a name="robo291"></a><h2>T_VERTEX/ST_HasM [ Methods ]</h2>
+<a name="robo332"></a><h2>T_VERTEX/ST_HasM [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo15">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo33">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_HasM</strong> -- Tests vertex to see if coordinates include a measure.
 </pre>
@@ -783,7 +784,7 @@
 <pre>    BOOLEAN (INTEGER) -- 1 is measure ordinate exists, 0 otherwise.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre>    select t_vertex().<a href="./t_geometry_sql.html#robo74">ST_hasM</a>() as eM,
+<pre>    select t_vertex().<a href="./T_Geometry_sql.html#robo95">ST_hasM</a>() as eM,
            t_vertex(
              p_id =&gt; 0,
              p_x  =&gt; 0.0,
@@ -791,7 +792,7 @@
              p_sdo_gtype =&gt; 2001,
              p_sdo_srid  =&gt; NULL
            )
-           .<a href="./t_geometry_sql.html#robo74">ST_hasM</a>() as hasM2,
+           .<a href="./T_Geometry_sql.html#robo95">ST_hasM</a>() as hasM2,
            t_vertex(
              p_id =&gt; 0,
              p_x  =&gt; 0.0,
@@ -800,7 +801,7 @@
              p_sdo_gtype =&gt; 3301,
              p_sdo_srid  =&gt; NULL
            )
-           .<a href="./t_geometry_sql.html#robo74">ST_hasM</a>() as hasM3
+           .<a href="./T_Geometry_sql.html#robo95">ST_hasM</a>() as hasM3
       from dual;
 
     EM HASM2 HASM3
@@ -819,9 +820,9 @@
 
 <hr />
 <a name="T5fVERTEX2fST5fhasZ"></a>
-<a name="robo292"></a><h2>T_VERTEX/ST_hasZ [ Methods ]</h2>
+<a name="robo333"></a><h2>T_VERTEX/ST_hasZ [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo15">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo33">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_hasZ</strong> -- Tests vertex to see if coordinates include a Z ordinate.
 </pre>
@@ -849,7 +850,7 @@
              p_sdo_gtype =&gt; 2001,
              p_sdo_srid  =&gt; NULL
            )
-           .<a href="./t_geometry_sql.html#robo48">ST_Dims</a>() as dims2,
+           .<a href="#robo328">ST_Dims</a>() as dims2,
            t_vertex(
              p_id =&gt; 0,
              p_x  =&gt; 0.0,
@@ -858,7 +859,7 @@
              p_sdo_gtype =&gt; 3001,
              p_sdo_srid  =&gt; NULL
            )
-           .<a href="./t_geometry_sql.html#robo48">ST_Dims</a>() as dims3
+           .<a href="#robo328">ST_Dims</a>() as dims3
       from dual;
 
             EZ      DIMS2      DIMS3
@@ -877,9 +878,9 @@
 
 <hr />
 <a name="T5fVERTEX2fST5fisEmpty"></a>
-<a name="robo293"></a><h2>T_VERTEX/ST_isEmpty [ Methods ]</h2>
+<a name="robo334"></a><h2>T_VERTEX/ST_isEmpty [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo15">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo33">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_isEmpty</strong> -- Checks if Vertex data exists or not.
 </pre>
@@ -922,9 +923,9 @@
 
 <hr />
 <a name="T5fVERTEX2fST5fLrs5fDim"></a>
-<a name="robo294"></a><h2>T_VERTEX/ST_Lrs_Dim [ Methods ]</h2>
+<a name="robo335"></a><h2>T_VERTEX/ST_Lrs_Dim [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo15">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo33">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_Lrs_Dim</strong> -- Tests vertex to see if coordinates include a measure ordinate and returns measure ordinate's position.
 </pre>
@@ -940,7 +941,7 @@
 <pre>    BOOLEAN (INTEGER) -- L from DLNN.
 </pre>
 <p class="item_name">EXAMPLE</p>
-<pre>    select t_vertex().<a href="./t_segment_sql.html#robo236">ST_LRS_Dim</a>() as eLrsDim,
+<pre>    select t_vertex().<a href="./T_Geometry_sql.html#robo112">ST_LRS_Dim</a>() as eLrsDim,
            t_vertex(
              p_id =&gt; 0,
              p_x  =&gt; 0.0,
@@ -948,7 +949,7 @@
              p_sdo_gtype =&gt; 2001,
              p_sdo_srid  =&gt; NULL
            )
-           .<a href="./t_segment_sql.html#robo236">ST_LRS_Dim</a>() as lrsDim2,
+           .<a href="./T_Geometry_sql.html#robo112">ST_LRS_Dim</a>() as lrsDim2,
            t_vertex(
              p_id =&gt; 0,
              p_x  =&gt; 0.0,
@@ -957,7 +958,7 @@
              p_sdo_gtype =&gt; 3301,
              p_sdo_srid  =&gt; NULL
            )
-           .<a href="./t_segment_sql.html#robo236">ST_LRS_Dim</a>() as lrsDim3
+           .<a href="./T_Geometry_sql.html#robo112">ST_LRS_Dim</a>() as lrsDim3
       from dual;
 
     ELRSDIM LRSDIM2 LRSDIM3
@@ -976,9 +977,9 @@
 
 <hr />
 <a name="T5fVERTEX2fST5fLRS5fSet5fMeasure"></a>
-<a name="robo295"></a><h2>T_VERTEX/ST_LRS_Set_Measure [ Methods ]</h2>
+<a name="robo336"></a><h2>T_VERTEX/ST_LRS_Set_Measure [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo15">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo33">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_LRS_Set_Measure</strong> -- Sets measure attribute, adjusts sdo_gtype.
 </pre>
@@ -988,7 +989,7 @@
 </pre>
 <p class="item_name">DESCRIPTION</p>
 <pre>    This function sets the W or Z ordinate the the supplied measure value
-    depending on the dimensionality of the vertex and its LRS dimension (see <a href="./t_segment_sql.html#robo236">ST_LRS_Dim</a>()).
+    depending on the dimensionality of the vertex and its LRS dimension (see <a href="./T_Geometry_sql.html#robo112">ST_LRS_Dim</a>()).
     Can change dimensionality of underlying T_Vertex object for example if already 3D,
     with Z, but unmeasured: result will be vertex with 4401 sdo_gtype.
 </pre>
@@ -996,7 +997,7 @@
 <pre>    p_measure (number) - New Measure value.
 </pre>
 <p class="item_name">RESULT</p>
-<pre>    vertex (<a href="#robo15">T_VERTEX</a>)
+<pre>    vertex (<a href="#robo33">T_VERTEX</a>)
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre>    -- <strong>ST_LRS_Set_Measure</strong>
@@ -1008,7 +1009,7 @@
              p_sdo_srid  =&gt; NULL
            )
            .<strong>ST_LRS_Set_Measure</strong>(2.1)
-           .<a href="./t_segment_sql.html#robo209">ST_AsText</a>() as new3301Vertex,
+           .<a href="./T_Geometry_sql.html#robo49">ST_AsText</a>() as new3301Vertex,
            t_vertex(
              p_id =&gt; 0,
              p_x  =&gt; 0.0,
@@ -1018,7 +1019,7 @@
              p_sdo_srid  =&gt; NULL
            )
            .<strong>ST_LRS_Set_Measure</strong>(1.2)
-           .<a href="./t_segment_sql.html#robo209">ST_AsText</a>() as new4401Vertex
+           .<a href="./T_Geometry_sql.html#robo49">ST_AsText</a>() as new4401Vertex
       from dual;
 
     NEW3301VERTEX                                         NEW4401VERTEX
@@ -1037,9 +1038,9 @@
 
 <hr />
 <a name="T5fVERTEX2fST5fRound"></a>
-<a name="robo296"></a><h2>T_VERTEX/ST_Round [ Methods ]</h2>
+<a name="robo337"></a><h2>T_VERTEX/ST_Round [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo15">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo33">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_Round</strong> -- Rounds X,Y,Z and m(w) ordinates to passed in precision.
 </pre>
@@ -1062,7 +1063,7 @@
     p_dec_places_m (integer) - value applied to m Ordinate.
 </pre>
 <p class="item_name">RESULT</p>
-<pre>    vertex (<a href="#robo15">T_VERTEX</a>)
+<pre>    vertex (<a href="#robo33">T_VERTEX</a>)
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre>    -- Geodetic
@@ -1074,7 +1075,7 @@
              p_sdo_srid =&gt; 4283
            )
            .<strong>ST_Round</strong>(6,6)
-           .<a href="./t_segment_sql.html#robo209">ST_AsText</a>() as vertex
+           .<a href="./T_Geometry_sql.html#robo49">ST_AsText</a>() as vertex
      from dual;
 
     VERTEX
@@ -1091,7 +1092,7 @@
              p_sdo_srid =&gt; NULL
            )
            .<strong>ST_Round</strong>(3,3,2)
-           .<a href="./t_segment_sql.html#robo209">ST_AsText</a>() as vertex
+           .<a href="./T_Geometry_sql.html#robo49">ST_AsText</a>() as vertex
      from dual;
 
     VERTEX
@@ -1110,9 +1111,9 @@
 
 <hr />
 <a name="T5fVERTEX2fST5fSdoGeometry"></a>
-<a name="robo297"></a><h2>T_VERTEX/ST_SdoGeometry [ Methods ]</h2>
+<a name="robo338"></a><h2>T_VERTEX/ST_SdoGeometry [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo15">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo33">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_SdoGeometry</strong> -- Returns Vertex as a suitably encoded MDSYS.SDO_GEOMETRY object.
 </pre>
@@ -1122,11 +1123,11 @@
 </pre>
 <p class="item_name">DESCRIPTION</p>
 <pre>    The encoding of the returned SDO_GEOMETRY object depends on the dimension of the vertex
-    supplied using p_dims or SELF.<a href="./t_geometry_sql.html#robo48">ST_Dims</a>() if p_dims is null.
+    supplied using p_dims or SELF.<a href="#robo328">ST_Dims</a>() if p_dims is null.
     This can be best seen in the source code from T_Vertex Type Body at the end of this documentation.
 </pre>
 <p class="item_name">PARAMETERS</p>
-<pre>    p_dims in integer default null - A dimension value that will override SELF.<a href="./t_geometry_sql.html#robo48">ST_Dims</a>() eg return 2D from a 3D vertex.
+<pre>    p_dims in integer default null - A dimension value that will override SELF.<a href="#robo328">ST_Dims</a>() eg return 2D from a 3D vertex.
 </pre>
 <p class="item_name">RESULT</p>
 <pre>    point (MDSYS.SDO_GEOMETRY) -- Type of Point geometry depends on what the vertex represents.
@@ -1139,7 +1140,7 @@
              p_sdo_gtype=&gt; 2001,
              p_sdo_srid =&gt; 4283
            )
-           .<a href="./t_geometry_sql.html#robo156">ST_Round</a>(6,6)
+           .<a href="./T_Geometry_sql.html#robo177">ST_Round</a>(6,6)
            .<strong>ST_SdoGeometry</strong>() as geom
      from dual;
 
@@ -1155,7 +1156,7 @@
              p_sdo_gtype=&gt; 3001,
              p_sdo_srid =&gt; NULL
            )
-           .<a href="./t_geometry_sql.html#robo156">ST_Round</a>(3,3,2)
+           .<a href="./T_Geometry_sql.html#robo177">ST_Round</a>(3,3,2)
            .<strong>ST_SdoGeometry</strong>() as geom
      from dual;
 
@@ -1172,7 +1173,7 @@
              p_sdo_gtype=&gt; 4401,
              p_sdo_srid =&gt; NULL
            )
-           .<a href="./t_geometry_sql.html#robo156">ST_Round</a>(3,3,2)
+           .<a href="./T_Geometry_sql.html#robo177">ST_Round</a>(3,3,2)
            .<strong>ST_SdoGeometry</strong>() as geom
      from dual;
 
@@ -1190,7 +1191,7 @@
 <pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
 </pre>
 <p class="item_name">SOURCE</p>
-<pre class="source">  <span class="sign">-</span><span class="sign">-</span>   v_dims integer <span class="sign">:</span><span class="sign">=</span> NVL<span class="sign">(</span>p_dims<span class="sign">,</span>SELF<span class="sign">.</span><a href="./t_geometry_sql.html#robo48">ST_Dims</a><span class="sign">(</span><span class="sign">)</span><span class="sign">)</span><span class="sign">;</span>
+<pre class="source">  <span class="sign">-</span><span class="sign">-</span>   v_dims integer <span class="sign">:</span><span class="sign">=</span> NVL<span class="sign">(</span>p_dims<span class="sign">,</span>SELF<span class="sign">.</span><a href="#robo328">ST_Dims</a><span class="sign">(</span><span class="sign">)</span><span class="sign">)</span><span class="sign">;</span>
   <span class="sign">-</span><span class="sign">-</span> Begin
   <span class="sign">-</span><span class="sign">-</span>   If <span class="sign">(</span> SELF<span class="sign">.</span>sdo_gtype is null <span class="sign">)</span> Then
   <span class="sign">-</span><span class="sign">-</span>      Return null<span class="sign">;</span>
@@ -1200,7 +1201,7 @@
   <span class="sign">-</span><span class="sign">-</span>      <span class="sign">-</span><span class="sign">-</span> 3001<span class="sign">,</span> 3301<span class="sign">,</span> 4001<span class="sign">,</span> 4301 and 4401 all stop with Z<span class="sign">.</span> GetVertices places M in 4401 in Z spot not W
   <span class="sign">-</span><span class="sign">-</span>      Return mdsys<span class="sign">.</span>sdo_geometry<span class="sign">(</span>SELF<span class="sign">.</span>sdo_gtype<span class="sign">,</span>SELF<span class="sign">.</span>sdo_SRID<span class="sign">,</span>mdsys<span class="sign">.</span>sdo_point_type<span class="sign">(</span>self<span class="sign">.</span>x<span class="sign">,</span>self<span class="sign">.</span>y<span class="sign">,</span>self<span class="sign">.</span>z<span class="sign">)</span><span class="sign">,</span>null<span class="sign">,</span>null<span class="sign">)</span><span class="sign">;</span>
   <span class="sign">-</span><span class="sign">-</span>   ElsIf <span class="sign">(</span> v_dims <span class="sign">=</span> 4 <span class="sign">)</span> Then
-  <span class="sign">-</span><span class="sign">-</span>      If <span class="sign">(</span> SELF<span class="sign">.</span><a href="./t_geometry_sql.html#robo48">ST_Dims</a><span class="sign">(</span><span class="sign">)</span> <span class="sign">=</span> 3 <span class="sign">)</span> Then
+  <span class="sign">-</span><span class="sign">-</span>      If <span class="sign">(</span> SELF<span class="sign">.</span><a href="#robo328">ST_Dims</a><span class="sign">(</span><span class="sign">)</span> <span class="sign">=</span> 3 <span class="sign">)</span> Then
   <span class="sign">-</span><span class="sign">-</span>         Return mdsys<span class="sign">.</span>sdo_geometry<span class="sign">(</span>SELF<span class="sign">.</span>sdo_gtype<span class="sign">,</span>SELF<span class="sign">.</span>sdo_SRID<span class="sign">,</span>mdsys<span class="sign">.</span>sdo_point_type<span class="sign">(</span>self<span class="sign">.</span>x<span class="sign">,</span>self<span class="sign">.</span>y<span class="sign">,</span>self<span class="sign">.</span>z<span class="sign">)</span><span class="sign">,</span>null<span class="sign">,</span>null<span class="sign">)</span><span class="sign">;</span>
   <span class="sign">-</span><span class="sign">-</span>      Else
   <span class="sign">-</span><span class="sign">-</span>         Return mdsys<span class="sign">.</span>sdo_geometry<span class="sign">(</span>SELF<span class="sign">.</span>sdo_gtype<span class="sign">,</span>SELF<span class="sign">.</span>sdo_SRID<span class="sign">,</span>NULL<span class="sign">,</span>mdsys<span class="sign">.</span>sdo_elem_info_array<span class="sign">(</span>1<span class="sign">,</span>1<span class="sign">,</span>1<span class="sign">)</span><span class="sign">,</span>mdsys<span class="sign">.</span>sdo_ordinate_array<span class="sign">(</span>self<span class="sign">.</span>x<span class="sign">,</span>self<span class="sign">.</span>y<span class="sign">,</span>self<span class="sign">.</span>z<span class="sign">,</span>self<span class="sign">.</span>w<span class="sign">)</span><span class="sign">)</span><span class="sign">;</span>
@@ -1210,9 +1211,9 @@
 
 <hr />
 <a name="T5fVERTEX2fST5fSdoPointType"></a>
-<a name="robo298"></a><h2>T_VERTEX/ST_SdoPointType [ Methods ]</h2>
+<a name="robo339"></a><h2>T_VERTEX/ST_SdoPointType [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo15">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo33">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_SdoPointType</strong> -- Returns vertex X,Y and Z ordinates as a MDSYS.SDO_POINT_TYPE object.
 </pre>
@@ -1256,9 +1257,9 @@
 
 <hr />
 <a name="T5fVERTEX2fST5fSelf"></a>
-<a name="robo299"></a><h2>T_VERTEX/ST_Self [ Methods ]</h2>
+<a name="robo340"></a><h2>T_VERTEX/ST_Self [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo15">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo33">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_Self</strong> -- Handy method for use with TABLE(T_Vertices) to return element as T_Vertex object.
 </pre>
@@ -1267,12 +1268,12 @@
              Return T_Vertex Deterministic,
 </pre>
 <p class="item_name">DESCRIPTION</p>
-<pre>    When extracting vertices from a geometry into T_Vertex objects via a TABLE function call to <a href="./t_geometry_sql.html#robo10">T_GEOMETRY</a>.T_Vertices()
-    it is handy to have a method which allows access to the resulting <a href="#robo15">T_VERTEX</a> row as a single object.
+<pre>    When extracting vertices from a geometry into T_Vertex objects via a TABLE function call to <a href="./T_Geometry_sql.html#robo24">T_GEOMETRY</a>.T_Vertices()
+    it is handy to have a method which allows access to the resulting <a href="#robo33">T_VERTEX</a> row as a single object.
     In a sense this method allows access similar to t.COLUMN_VALUE for atmoic datatype access from TABLE functions.
 </pre>
 <p class="item_name">RESULT</p>
-<pre>    vertex (<a href="#robo15">T_VERTEX</a>) -- A single T_Vertex object.
+<pre>    vertex (<a href="#robo33">T_VERTEX</a>) -- A single T_Vertex object.
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre>    set serveroutput on
@@ -1282,10 +1283,10 @@
                                  SDO_GEOMETRY(2002,28355,NULL,
                                      SDO_ELEM_INFO_ARRAY(1,2,1),
                                      SDO_ORDINATE_ARRAY(252282.861,5526962.496,252282.861,5526882.82, 252315.91,5526905.639, 252287.189,5526942.228)) )
-                               .<a href="./t_geometry_sql.html#robo195">ST_Vertices</a>()) v
+                               .<a href="./T_Geometry_sql.html#robo216">ST_Vertices</a>()) v
                   )
       LOOP
-        dbms_output.put_line(rec.id || ' =&gt; ' || rec.vertex.<a href="./t_segment_sql.html#robo209">ST_AsText</a>());
+        dbms_output.put_line(rec.id || ' =&gt; ' || rec.vertex.<a href="./T_Geometry_sql.html#robo49">ST_AsText</a>());
       END LOOP;
     END;
     /
@@ -1306,16 +1307,75 @@
 </pre>
 
 <hr />
-<a name="T5fVERTEX2fST5fSubtendedAngle"></a>
-<a name="robo300"></a><h2>T_VERTEX/ST_SubtendedAngle [ Methods ]</h2>
+<a name="T5fVERTEX2fST5fSetCoordinate"></a>
+<a name="robo341"></a><h2>T_VERTEX/ST_SetCoordinate [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo15">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo33">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>ST_SetCoordinate</strong> -- Is a procedure that sets a vertex's X,Y,Z and W(M) ordinates to passed in values
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Member Procedure <strong>ST_SetCoordinate</strong>(
+                        SELF  IN OUT NOCOPY T_Vertex,
+                        p_x in number default 8,
+                        p_y in number default NULL,
+                        p_z in number default 3,
+                        p_w in number default 3)
+             Return T_Vertex Deterministic,
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Assigns supplied values to t_vertex's x,y,z,w ordinates.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>      SELF.x := ROUND(SELF.x,p_dec_places_x);
+</pre>
+<p class="item_name">PARAMETERS</p>
+<pre>    p_x (number) - value assigned to x Ordinate.
+    p_y (number) - value assigned to y Ordinate.
+    p_z (number) - value assigned to z Ordinate.
+    p_w (number) - value assigned to w Ordinate.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    set serveroutput on size unlimited
+    declare
+      v_vertex &amp;&amp;INSTALL_SCHEMA..t_vertex;
+    begin
+      v_vertex := &amp;&amp;INSTALL_SCHEMA..T_Vertex(
+                   p_x        =&gt; 147.5489578,
+                   p_y        =&gt; -42.53625,
+                   p_id       =&gt; 1,
+                   p_sdo_gtype=&gt; 2001,
+                   p_sdo_srid =&gt; 4283
+                 );
+      v_vertex.<strong>ST_SetCoordinate</strong>(p_x =&gt; 148, p_y =&gt; -43);
+      dbms_output.put_line(v_vertex.<a href="./T_Geometry_sql.html#robo47">ST_AsEWKT</a>());
+    END;
+    /
+    
+    SRID=4283;POINT (148 -43)
+    PL/SQL procedure successfully completed.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - Jan 2013 - Original coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+
+<hr />
+<a name="T5fVERTEX2fST5fSubtendedAngle"></a>
+<a name="robo342"></a><h2>T_VERTEX/ST_SubtendedAngle [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo33">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_SubtendedAngle</strong> -- Returns angle subtended by p_start_vertex/SELF/p_end_vertex
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Member Function <strong>ST_SubtendedAngle</strong>(p_start_vertex in SPDBA.T_Vertex,
-                                      p_end_vertex   in SPDBA.T_Vertex)
+<pre>    Member Function <strong>ST_SubtendedAngle</strong>(p_start_vertex in &amp;&amp;INSTALL_SCHEMA..T_Vertex,
+                                      p_end_vertex   in &amp;&amp;INSTALL_SCHEMA..T_Vertex)
              Return Number deterministic
 </pre>
 <p class="item_name">DESCRIPTION</p>
@@ -1323,11 +1383,11 @@
     p_start_vertex ---&gt; SELF ---&gt; p_end_vertex
 </pre>
 <p class="item_name">PARAMETERS</p>
-<pre>    p_start_vertex (<a href="#robo15">T_VERTEX</a>) -- Vertex that defines first point in angle.
-    p_end_vertex   (<a href="#robo15">T_VERTEX</a>) -- Vertex that defines last  point in angle.
-    p_projected     (integer) -- Usually called from <a href="./t_geometry_sql.html#robo10">T_GEOMETRY</a> with SELF.projected.
+<pre>    p_start_vertex (<a href="#robo33">T_VERTEX</a>) -- Vertex that defines first point in angle.
+    p_end_vertex   (<a href="#robo33">T_VERTEX</a>) -- Vertex that defines last  point in angle.
+    p_projected     (integer) -- Usually called from <a href="./T_Geometry_sql.html#robo24">T_GEOMETRY</a> with SELF.projected.
                                  If either 1 for Projected/Planar and 0 for Geographic/Geodetic.
-                                 If NULL, TOOLS.ST_GetSridType is called.
+                                 If NULL, <a href="./Package_TOOLS_sql.html#robo4">TOOLS</a>.<a href="./Package_TOOLS_sql.html#robo353">ST_GetSridType</a> is called.
 </pre>
 <p class="item_name">RESULT</p>
 <pre>    angle (NUMBER) - Subtended angle in radians.
@@ -1335,7 +1395,7 @@
 <p class="item_name">EXAMPLE</p>
 <pre>    -- Planar in Meters
     select Round(
-           <a href="./COGO_sql.html#robo0">COGO</a>.<a href="./COGO_sql.html#robo7">ST_Degrees</a>(
+           <a href="./Package_COGO_sql.html#robo0">COGO</a>.<a href="./Package_COGO_sql.html#robo12">ST_Degrees</a>(
              T_Vertex(
                p_id =&gt; 1,
                p_x  =&gt; 0,
@@ -1367,8 +1427,8 @@
         45
 
     -- Geodetic
-    select <a href="./COGO_sql.html#robo0">COGO</a>.<a href="./COGO_sql.html#robo2">DD2DMS</a>(
-            <a href="./COGO_sql.html#robo0">COGO</a>.<a href="./COGO_sql.html#robo7">ST_Degrees</a>(
+    select <a href="./Package_COGO_sql.html#robo0">COGO</a>.<a href="./Package_COGO_sql.html#robo7">DD2DMS</a>(
+            <a href="./Package_COGO_sql.html#robo0">COGO</a>.<a href="./Package_COGO_sql.html#robo12">ST_Degrees</a>(
              T_Vertex(
                p_id =&gt; 1,
                p_x  =&gt; 147.5,
@@ -1412,9 +1472,9 @@
 
 <hr />
 <a name="T5fVERTEX2fST5fTo2D"></a>
-<a name="robo301"></a><h2>T_VERTEX/ST_To2D [ Methods ]</h2>
+<a name="robo343"></a><h2>T_VERTEX/ST_To2D [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo15">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo33">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_To2D</strong> -- Removes and Z or measured attributes, adjusts sdo_gtype.
 </pre>
@@ -1428,7 +1488,7 @@
     If the Vertex is 3D or 4D, any Z or W (measure) will be removed; sdo_gtype is set to 2001.
 </pre>
 <p class="item_name">RESULT</p>
-<pre>    vertex (<a href="#robo15">T_VERTEX</a>)
+<pre>    vertex (<a href="#robo33">T_VERTEX</a>)
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre>    -- <strong>ST_To2D</strong>
@@ -1442,7 +1502,7 @@
              p_sdo_srid  =&gt; NULL
            )
            .<strong>ST_To2D</strong>()
-           .<a href="./t_segment_sql.html#robo209">ST_AsText</a>() as Vertex2D
+           .<a href="./T_Geometry_sql.html#robo49">ST_AsText</a>() as Vertex2D
       from dual;
 
     VERTEX2D
@@ -1461,9 +1521,9 @@
 
 <hr />
 <a name="T5fVERTEX2fST5fTo3D"></a>
-<a name="robo302"></a><h2>T_VERTEX/ST_To3D [ Methods ]</h2>
+<a name="robo344"></a><h2>T_VERTEX/ST_To3D [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo15">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo33">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_To3D</strong> -- Adds Z attribute, adjusts sdo_gtype.
 </pre>
@@ -1488,7 +1548,7 @@
                                this parameter holds the new value for that ordinate.
 </pre>
 <p class="item_name">RESULT</p>
-<pre>    vertex (<a href="#robo15">T_VERTEX</a>)
+<pre>    vertex (<a href="#robo33">T_VERTEX</a>)
 </pre>
 <p class="item_name">EXAMPLE</p>
 <pre>    -- <strong>ST_To3D</strong>
@@ -1505,8 +1565,8 @@
     select a.vertex2D
             .<strong>ST_To3D</strong>(p_keep_measure =&gt; 0,
                      p_default_z    =&gt; 3.0)
-            .<a href="#robo295">ST_LRS_Set_Measure</a>(4.0)
-            .<a href="./t_segment_sql.html#robo209">ST_AsText</a>() as vertex3
+            .<a href="#robo336">ST_LRS_Set_Measure</a>(4.0)
+            .<a href="./T_Geometry_sql.html#robo49">ST_AsText</a>() as vertex3
       from data a;
 
     VERTEX3
@@ -1525,9 +1585,9 @@
 
 <hr />
 <a name="T5fVERTEX2fST5fVertexType"></a>
-<a name="robo303"></a><h2>T_VERTEX/ST_VertexType [ Methods ]</h2>
+<a name="robo345"></a><h2>T_VERTEX/ST_VertexType [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo15">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo33">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_VertexType</strong> -- Returns vertex ordinates as a MDSYS.VERTEX_TYPE object.
 </pre>
@@ -1570,14 +1630,14 @@
 
 <hr />
 <a name="T5fVERTEX2fST5fWithinTolerance"></a>
-<a name="robo304"></a><h2>T_VERTEX/ST_WithinTolerance [ Methods ]</h2>
+<a name="robo346"></a><h2>T_VERTEX/ST_WithinTolerance [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo15">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo33">T_VERTEX</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>ST_WithinTolerance</strong> -- Discovers whether supplied vertex is within tolerance of current object vertex (SELF).
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Member Function <strong>ST_WithinTolerance</strong>(p_vertex    in SPDBA.T_Vertex,
+<pre>    Member Function <strong>ST_WithinTolerance</strong>(p_vertex    in &amp;&amp;INSTALL_SCHEMA..T_Vertex,
                                        p_tolerance in number default 0.005)
              Return Integer deterministic
 </pre>
@@ -1587,7 +1647,7 @@
     p_start_vertex ---&gt; SELF ---&gt; p_end_vertex
 </pre>
 <p class="item_name">PARAMETERS</p>
-<pre>    p_vertex  (<a href="#robo15">T_VERTEX</a>) - Vertex that is to be compared to current object (SELF).
+<pre>    p_vertex  (<a href="#robo33">T_VERTEX</a>) - Vertex that is to be compared to current object (SELF).
     p_tolerance (NUMBER) - sdo_tolerance for use with sdo_geom.sdo_distance.
 </pre>
 <p class="item_name">RESULT</p>
@@ -1614,7 +1674,7 @@
        from dual
     )
     select a.vertex_1
-           .<a href="./t_geometry_sql.html#robo49">ST_Distance</a>(
+           .<a href="#robo329">ST_Distance</a>(
                p_vertex    =&gt; new T_Vertex(a.vertex_2),
                p_tolerance =&gt; 0.005,
                p_unit      =&gt; 'unit=M'
@@ -1627,7 +1687,7 @@
                p_projected =&gt; 0
              ) as withinTolerance
       from data a,
-           table(TOOLS.generate_series(0,1,1)) t;
+           table(<a href="./Package_TOOLS_sql.html#robo4">TOOLS</a>.generate_series(0,1,1)) t;
 
 
       DISTANCE  TOLERANCE WITHINTOLERANCE
@@ -1647,7 +1707,7 @@
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./export/t_vertex.sql with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.36 on Sat Aug 17 2019 13:43:51
+<p>Generated from ./src/T_Vertex.sql with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.36 on Sun Aug 25 2019 09:56:16
 </p>
 </div> <!-- footer -->
 </body>
