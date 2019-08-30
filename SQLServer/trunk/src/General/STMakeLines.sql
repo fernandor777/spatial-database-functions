@@ -106,7 +106,7 @@ CREATE FUNCTION [$(owner)].[STMakeLineXY]
 )
 Returns geometry
 AS
-/****f* EDITOR/STMakeLineXY (2008)
+/****f* CREATE/STMakeLineXY (2008)
  *  NAME
  *    STMakeLineXY -- Creates a two point 2D XY linestring.
  *  SYNOPSIS
@@ -206,7 +206,7 @@ CREATE FUNCTION [$(owner)].[STMakeLine]
 )
 Returns geometry
 AS
-/****f* EDITOR/STMakeLine (2008)
+/****f* CREATE/STMakeLine (2008)
  *  NAME
  *    STMakeLine -- Creates a two point linestring.
  *  SYNOPSIS
@@ -307,7 +307,7 @@ CREATE FUNCTION [$(owner)].[STMakeLineFromMultiPoint]
 )
 Returns geometry
 AS
-/****f* EDITOR/STMakeLineFromMultiPoint (2008)
+/****f* CREATE/STMakeLineFromMultiPoint (2008)
  *  NAME
  *    STMakeLineFromMultiPoint -- Creates a linestring from supplied MULTIPOINT geometry.
  *  SYNOPSIS
@@ -360,7 +360,7 @@ CREATE FUNCTION [$(owner)].[STMakeLineFromGeometryCollection]
 )
 Returns geometry
 AS
-/****f* EDITOR/STMakeLineFromGeometryCollection (2008)
+/****f* CREATE/STMakeLineFromGeometryCollection (2008)
  *  NAME
  *    STMakeLineFromGeometryCollection -- Creates a linestring from supplied GeometryCollection geometry.
  *  SYNOPSIS
@@ -431,7 +431,7 @@ CREATE FUNCTION [$(owner)].[STMakeLineWktFromGeometryCollection]
 )
 Returns varchar(max)
 AS
-/****f* EDITOR/STMakeLineWktFromGeometryCollection (2008)
+/****f* CREATE/STMakeLineWktFromGeometryCollection (2008)
  *  NAME
  *    STMakeLineWktFromGeometryCollection -- Creates a linestring from supplied GeometryCollection geometry.
  *  SYNOPSIS
@@ -506,7 +506,7 @@ CREATE FUNCTION [$(owner)].[STMakeLineWktFromGeographyCollection]
 )
 Returns varchar(max)
 AS
-/****f* EDITOR/STMakeLineWktFromGeographyCollection (2008)
+/****f* CREATE/STMakeLineWktFromGeographyCollection (2008)
  *  NAME
  *    STMakeLineWktFromGeographyCollection -- Creates a linestring from supplied GeometryCollection geography.
  *  SYNOPSIS
@@ -596,7 +596,7 @@ CREATE FUNCTION [$(owner)].[STMakeCircularLine]
 )
 Returns geometry
 AS
-/****f* EDITOR/STMakeCircularLine (2008)
+/****f* CREATE/STMakeCircularLine (2008)
  *  NAME
  *    STMakeCircularLine -- Creates a three point Circular linestring.
  *  SYNOPSIS

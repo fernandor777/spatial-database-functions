@@ -1,6 +1,11 @@
-F:\Projects\database\code\robodoc-win32-4.99.36\robodoc ^
+ECHO Clean Previous Documentation...
+
+del /Q documentation\*.*
+
+Echo Generate Documentation for SQL Server General....
+..\..\tools\bin\robodoc ^
      --src src\general ^
-     --doc documentation\SQLServer    ^
+     --doc documentation\c_SQLServer    ^
      --singledoc ^
      --index ^
      --html ^
@@ -8,9 +13,10 @@ F:\Projects\database\code\robodoc-win32-4.99.36\robodoc ^
      --sections ^
      --documenttitle "SPDBA General Function Documentation"
 
-F:\Projects\database\code\robodoc-win32-4.99.36\robodoc ^
+Echo Generate Documentation for SQL Server LRS....
+..\..\tools\bin\robodoc ^
      --src src\LRS     ^
-     --doc documentation\SQLServerLrs ^
+     --doc documentation\c_SQLServerLrs ^
      --singledoc ^
      --index ^
      --html ^
@@ -18,21 +24,15 @@ F:\Projects\database\code\robodoc-win32-4.99.36\robodoc ^
      --sections ^
      --documenttitle "SPDBA LRS Function Documentation"
 
-ECHO Fix header icon....
-cd documentation
-ECHO Copy SED script ...
-copy ..\head_favicon.sed .
-SET PATH=%PATH%;"C:\Program Files (x86)\GnuWin32\bin"
-ECHO Modify SQLServer.html
-copy SQLServer.html    c_SQLServer.html 
-sed -r -f head_favicon.sed c_SQLServer.html > SQLServer.html
-ECHO Modify SQLServerLrs.html
-copy SQLServerLrs.html c_SQLServerLrs.html
-sed -r -f head_favicon.sed c_SQLServerLrs.html > SQLServerLrs.html
+ECHO Modify SQLServer.html ...
+..\..\tools\bin\sed -r -f head_favicon.sed documentation\c_SQLServer.html > documentation\SQLServer.html
+ECHO Modify SQLServerLrs.html ...
+..\..\tools\bin\sed -r -f head_favicon.sed documentation\c_SQLServerLrs.html > documentation\SQLServerLrs.html
+ECHO Rename css files ...
+rename documentation\c_SQLServerLrs.css SQLServerLrs.css
+rename documentation\c_SQLServer.css    SQLServer.css
 ECHO Clean up ...
-del c_SQLServer.html 
-del c_SQLServerLrs.html
-del head_favicon.sed 
-cd ..
+del documentation\c_SQLServer.html 
+del documentation\c_SQLServerLrs.html
 
 pause

@@ -36,7 +36,7 @@ CREATE FUNCTION [$(owner)].[STMakePoint]
 )
 Returns geometry
 As
-/****f* EDITOR/STMakePoint (2008)
+/****f* CREATE/STMakePoint (2008)
  *  NAME
  *    STMakePoint -- Creates a point from input ordinates.
  *  SYNOPSIS

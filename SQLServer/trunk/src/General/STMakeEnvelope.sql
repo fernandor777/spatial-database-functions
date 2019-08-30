@@ -33,7 +33,7 @@ Create Function [$(owner)].[STMakeEnvelope] (
 )
 Returns geometry 
 As
-/****f* EDITOR/STMakeEnvelope
+/****f* CREATE/STMakeEnvelope
  *  NAME
  *    STMakeEnvelope -- Function that constructs a 5 point polygon from supplied ordinates.
  *  SYNOPSIS

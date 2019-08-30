@@ -29,7 +29,7 @@ Create Function [$(owner)].[STIsPseudoMultiCurve]
 )
 Returns bit 
 As
-/****f* LRS/STIsPseudoMultiCurve (2012)
+/****f* INSPECT/STIsPseudoMultiCurve (2012)
  *  NAME
  *    STIsPseudoMultiCurve -- Checks if supplied @p_geometry is a GeometryCollection object containing only LineString, CircularString and CompoundCurve elements.
  *  SYNOPSIS

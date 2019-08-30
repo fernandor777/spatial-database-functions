@@ -1,22 +1,25 @@
+@CHO OFF
+
 set path=%path%;C:\gnuwin32\bin
 
 rename install.cmd install_cmd
 
-mkdir documentation
-copy F:\Projects\database\code\Documentation\SQLServer\SQLServer*.html Documentation
-copy F:\Projects\database\code\Documentation\SQLServer\SQLServer*.css Documentation
 
-del SC4SSSE_SQL_Server_Spatial_Base_Edition.zip
-del SC4SSSE_SQL_Server_Spatial_LRS_Edition.zip
+del deploy\SC4SSSBE_SQL_Server_Spatial_Base_Edition.zip
+del deploy\SC4SSSCE_SQL_Server_Spatial_Complete_Edition.zip
 
-zip -r SC4SSBE_SQL_Server_Spatial_Base_Edition.zip ^
+..\..\Tools\bin\zip ^
+    -r deploy\SC4SSSBE_SQL_Server_Spatial_Base_Edition.zip ^
+       README.txt ^
        install_cmd ^
        Function_Count.sql ^
        src\General\*.* ^
        Documentation\SQLServer.html ^
        Documentation\SQLServer.css
 
-zip -r SC4SSLRSE_SQL_Server_Spatial_LRS_Edition.zip ^
+..\..\Tools\bin\zip ^
+    -r deploy\SC4SSSCE_SQL_Server_Spatial_Complete_Edition.zip ^
+       README.txt ^
        install_cmd ^
        Function_Count.sql ^
        src\General\*.* ^
@@ -26,8 +29,4 @@ zip -r SC4SSLRSE_SQL_Server_Spatial_LRS_Edition.zip ^
 
 rename install_cmd install.cmd
 
-del    Documentation\SQLServer*.html 
-del    Documentation\SQLServer*.css
-rmdir  Documentation
- 
 pause

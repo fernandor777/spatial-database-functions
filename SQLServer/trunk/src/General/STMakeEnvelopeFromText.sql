@@ -12,30 +12,30 @@ GO
 
 IF EXISTS (SELECT * 
              FROM sysobjects 
-            WHERE id = object_id (N'[$(owner)].[STEnvelopeFromText]')
+            WHERE id = object_id (N'[$(owner)].[STMakeEnvelopeFromText]')
               AND xtype IN (N'FN', N'IF', N'TF') 
 )
 BEGIN
-  DROP FUNCTION [$(owner)].[STEnvelopeFromText];
-  PRINT 'Dropped [$(owner)].[STEnvelopeFromText] ...';
+  DROP FUNCTION [$(owner)].[STMakeEnvelopeFromText];
+  PRINT 'Dropped [$(owner)].[STMakeEnvelopeFromText] ...';
 END;
 GO
 
-PRINT 'Creating [$(owner)].[STEnvelopeFromText] ...';
+PRINT 'Creating [$(owner)].[STMakeEnvelopeFromText] ...';
 GO
 
-Create Function [$(owner)].[STEnvelopeFromText] (
+Create Function [$(owner)].[STMakeEnvelopeFromText] (
   @p_mbr_coords varchar(max),
   @p_delim      varchar(1) = ' ',
   @p_srid       integer    = 0
 )
 Returns geometry 
 As
-/****f* EDITOR/STEnvelopeFromText
+/****f* CREATE/STMakeEnvelopeFromText
  *  NAME
- *    STEnvelopeFromText -- Function that constructs a 5 point polygon from supplied string.
+ *    STMakeEnvelopeFromText -- Function that constructs a 5 point polygon from supplied string.
  *  SYNOPSIS
- *    Function [dbo].[STEnvelopeFromText] (
+ *    Function [dbo].[STMakeEnvelopeFromText] (
  *               @p_mbr_coords varchar,
  *               @p_delim      varchar(1) = ' ',
  *               @p_srid       integer    = 0
@@ -53,7 +53,7 @@ As
  *  EXAMPLE
  *    USE GISDB
  *    GO
- *    SELECT [dbo].[STEnvelopeFromText](0,0,1,1,null) as mbr;
+ *    SELECT [dbo].[STMakeEnvelopeFromText](0,0,1,1,null) as mbr;
  *  AUTHOR
  *    Simon Greener
  *  HISTORY
@@ -108,7 +108,7 @@ Begin
 End
 GO
 
-SELECT [$(owner)].[STEnvelopeFromText]('0 0,1 1',null) as mbr;
+SELECT [$(owner)].[STMakeEnvelopeFromText]('0 0,1 1',null) as mbr;
 
 QUIT
 GO
