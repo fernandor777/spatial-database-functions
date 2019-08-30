@@ -115,6 +115,9 @@ sqlcmd -b -S %server_instance% -d %dbname% -v usedbname=%dbname% owner=%owner% -
 ECHO ... MBR Functions
 find /I src/general/STMBR.sql "CREATE FUNCTION" | find /I "CREATE"
 sqlcmd -b -S %server_instance% -d %dbname% -v usedbname=%dbname% owner=%owner% -m-1 -E -i src/general/STMBR.sql                                        -o log/STMBR.log
+sqlcmd -b -S %server_instance% -d %dbname% -v usedbname=%dbname% owner=%owner% -m-1 -E -i src/general/STMakeEnvelope.sql                               -o log/STMakeEnvelope.log
+sqlcmd -b -S %server_instance% -d %dbname% -v usedbname=%dbname% owner=%owner% -m-1 -E -i src/general/STEnvelopeFromText.sql                           -o log/STEnvelopeFromText.log
+
 ECHO ... STMorton function
 sqlcmd -b -S %server_instance% -d %dbname% -v usedbname=%dbname% owner=%owner% -m-1 -E -i src/general/STMorton.sql                                     -o log/STMorton.log 
 ECHO ... Date Functions  ...
@@ -122,6 +125,7 @@ find /I src/general/date_fns.sql "CREATE FUNCTION" | find /I "CREATE"
 sqlcmd -b -S %server_instance% -d %dbname% -v usedbname=%dbname% owner=%owner% -m-1 -E -i src/general/date_fns.sql                                     -o log/date_fns.log 
 ECHO ... GeometryTypes...
 sqlcmd -b -S %server_instance% -d %dbname% -v usedbname=%dbname% owner=%owner% -m-1 -E -i src/general/STGeometryTypes.sql                              -o log/STGeometryTypes.log
+sqlcmd -b -S %server_instance% -d %dbname% -v usedbname=%dbname% owner=%owner% -m-1 -E -i src/general/STMulti.sql                                      -o log/Multi.log
 
 ECHO ... INSPECTION Functions ...
 ECHO ...... STDetermine Function
