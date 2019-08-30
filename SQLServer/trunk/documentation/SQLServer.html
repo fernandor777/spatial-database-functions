@@ -65,8 +65,8 @@
 <li>47. <a href="#robo46">CONVERSION/STToGeography (2008)</a></li>
 <li>48. <a href="#robo47">CONVERSION/STToGeometry (2012)</a></li>
 <li>49. <a href="#robo48">CREATE/STMakeCircularLine (2008)</a></li>
-<li>50. <a href="#robo49">CREATE/STMakeEnvelope</a></li>
-<li>51. <a href="#robo50">CREATE/STMakeEnvelopeFromText</a></li>
+<li>50. <a href="#robo49">CREATE/STMakeEnvelope (2008)</a></li>
+<li>51. <a href="#robo50">CREATE/STMakeEnvelopeFromText (2008)</a></li>
 <li>52. <a href="#robo51">CREATE/STMakeLine (2008)</a></li>
 <li>53. <a href="#robo52">CREATE/STMakeLineFromGeometryCollection (2008)</a></li>
 <li>54. <a href="#robo53">CREATE/STMakeLineFromMultiPoint (2008)</a></li>
@@ -2619,14 +2619,14 @@
 <pre>    (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
 </pre>
 <a name="robo49"></a>
-<a name="CREATE2fSTMakeEnvelope"></a>
-<h1>50.  CREATE/STMakeEnvelope [ Functions ]  </h1>
+<a name="CREATE2fSTMakeEnvelope2028200829"></a>
+<h1>50.  CREATE/STMakeEnvelope (2008) [ Functions ]  </h1>
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
 <p class="item_name">NAME</p>
-<pre>    <strong>STMakeEnvelope</strong> -- Function that constructs a 5 point polygon from supplied ordinates.
+<pre>    STMakeEnvelope -- Function that constructs a 5 point polygon from supplied ordinates.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Function [$(owner)].[<strong>STMakeEnvelope</strong>] (
+<pre>    Function [$(owner)].[STMakeEnvelope] (
                @p_mbr_coords in varchar,
                @p_srid       in integer default null
              )
@@ -2649,7 +2649,7 @@
 <p class="item_name">EXAMPLE</p>
 <pre>    USE GISDB
     GO
-    SELECT [$(owner)].[<strong>STMakeEnvelope</strong>](0,0,1,1,null) as mbr;
+    SELECT [$(owner)].[STMakeEnvelope](0,0,1,1,null) as mbr;
 </pre>
 <p class="item_name">AUTHOR</p>
 <pre>    Simon Greener
@@ -2661,14 +2661,14 @@
 <pre>    (c) 2008-2019 by TheSpatialDBAdvisor/Simon Greener
 </pre>
 <a name="robo50"></a>
-<a name="CREATE2fSTMakeEnvelopeFromText"></a>
-<h1>51.  CREATE/STMakeEnvelopeFromText [ Functions ]  </h1>
+<a name="CREATE2fSTMakeEnvelopeFromText2028200829"></a>
+<h1>51.  CREATE/STMakeEnvelopeFromText (2008) [ Functions ]  </h1>
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
 <p class="item_name">NAME</p>
-<pre>    <strong>STMakeEnvelopeFromText</strong> -- Function that constructs a 5 point polygon from supplied string.
+<pre>    STMakeEnvelopeFromText -- Function that constructs a 5 point polygon from supplied string.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Function [dbo].[<strong>STMakeEnvelopeFromText</strong>] (
+<pre>    Function [dbo].[STMakeEnvelopeFromText] (
                @p_mbr_coords varchar,
                @p_delim      varchar(1) = ' ',
                @p_srid       integer    = 0
@@ -2690,7 +2690,7 @@
 <p class="item_name">EXAMPLE</p>
 <pre>    USE GISDB
     GO
-    SELECT [dbo].[<strong>STMakeEnvelopeFromText</strong>](0,0,1,1,null) as mbr;
+    SELECT [dbo].[STMakeEnvelopeFromText](0,0,1,1,null) as mbr;
 </pre>
 <p class="item_name">AUTHOR</p>
 <pre>    Simon Greener
@@ -6394,7 +6394,7 @@
 <pre>    (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
 </pre>
 <div id="footer">
-<p>Generated from ./src/general/ with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.36 on Fri Aug 30 2019 19:24:06
+<p>Generated from ./src/general/ with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.36 on Fri Aug 30 2019 20:05:12
 </p>
 </div> <!-- footer -->
 </body>

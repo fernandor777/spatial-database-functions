@@ -31,7 +31,7 @@ Create Function [$(owner)].[STMakeEnvelopeFromText] (
 )
 Returns geometry 
 As
-/****f* CREATE/STMakeEnvelopeFromText
+/****f* CREATE/STMakeEnvelopeFromText (2008)
  *  NAME
  *    STMakeEnvelopeFromText -- Function that constructs a 5 point polygon from supplied string.
  *  SYNOPSIS

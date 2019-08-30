@@ -1,8 +1,9 @@
-ECHO Clean Previous Documentation...
+@ECHO OFF
 
+ECHO Clean Previous Documentation...
 del /Q documentation\*.*
 
-Echo Generate Documentation for SQL Server General....
+ECHO Generate Documentation for SQL Server General....
 ..\..\tools\bin\robodoc ^
      --src src\general ^
      --doc documentation\c_SQLServer    ^
@@ -11,9 +12,9 @@ Echo Generate Documentation for SQL Server General....
      --html ^
      --toc ^
      --sections ^
-     --documenttitle "SPDBA General Function Documentation"
+     --documenttitle "SPDBA General Function Documentation" > NUL
 
-Echo Generate Documentation for SQL Server LRS....
+ECHO Generate Documentation for SQL Server LRS....
 ..\..\tools\bin\robodoc ^
      --src src\LRS     ^
      --doc documentation\c_SQLServerLrs ^
@@ -22,7 +23,7 @@ Echo Generate Documentation for SQL Server LRS....
      --html ^
      --toc ^
      --sections ^
-     --documenttitle "SPDBA LRS Function Documentation"
+     --documenttitle "SPDBA LRS Function Documentation" > NUL
 
 ECHO Modify SQLServer.html ...
 ..\..\tools\bin\sed -r -f head_favicon.sed documentation\c_SQLServer.html > documentation\SQLServer.html
