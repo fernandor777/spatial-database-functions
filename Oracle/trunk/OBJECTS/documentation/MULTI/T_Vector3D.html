@@ -2,12 +2,12 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
+<head><link rel="shortcut icon" href="http://www.spatialdbadvisor.com/images/243t.png"/>
 <meta http-equiv="Content-Style-Type" content="text/css" />
 <meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
 <link rel="stylesheet" href="./robodoc.css" type="text/css" />
-<title>./export/t_vector3d.sql</title>
-<!-- Source: ./export/t_vector3d.sql -->
+<title>./src/T_Vector3D.sql</title>
+<!-- Source: ./src/T_Vector3D.sql -->
 <!-- Generated with ROBODoc Version 4.99.36 (Mar 13 2008) -->
 </head>
 <body>
@@ -21,43 +21,44 @@
 <a class="menuitem" href="./robo_functions.html#top">Functions</a>
 <a class="menuitem" href="./robo_modules.html#top">Modules</a>
 <a class="menuitem" href="./robo_methods.html#top">Methods</a>
+<a class="menuitem" href="./robo_strutures.html#top">Structures</a>
 <a class="menuitem" href="./robo_types.html#top">Types</a>
 <a class="menuitem" href="./robo_variables.html#top">Variables</a>
 </div> <!-- navigation -->
 <div id="content">
 <h3>TABLE OF CONTENTS</h3>
 <ul>
-<li>1. <a href="#robo14">OBJECT TYPE/T_VECTOR3D</a></li>
+<li>1. <a href="#robo32">OBJECT TYPE/T_VECTOR3D</a></li>
 <ul>
-<li>1.1. <a href="#robo255">T_VECTOR3D/AddV</a></li>
-<li>1.2. <a href="#robo256">T_VECTOR3D/Angle</a></li>
-<li>1.3. <a href="#robo257">T_VECTOR3D/AsSdoGeometry</a></li>
-<li>1.4. <a href="#robo258">T_VECTOR3D/AsText</a></li>
-<li>1.5. <a href="#robo259">T_VECTOR3D/ATTRIBUTES(T_VECTOR3D)</a></li>
-<li>1.6. <a href="#robo260">T_VECTOR3D/CONSTRUCTORS(T_VECTOR3D)</a></li>
-<li>1.7. <a href="#robo261">T_VECTOR3D/Cross</a></li>
-<li>1.8. <a href="#robo262">T_VECTOR3D/Distance(t_vector3d)</a></li>
-<li>1.9. <a href="#robo263">T_VECTOR3D/Distance(t_vertex)</a></li>
-<li>1.10. <a href="#robo264">T_VECTOR3D/DistanceSquared(T_Vector3D)</a></li>
-<li>1.11. <a href="#robo265">T_VECTOR3D/DistanceSquared(t_vertex)</a></li>
-<li>1.12. <a href="#robo266">T_VECTOR3D/Divide</a></li>
-<li>1.13. <a href="#robo267">T_VECTOR3D/Dot</a></li>
-<li>1.14. <a href="#robo268">T_VECTOR3D/Equals</a></li>
-<li>1.15. <a href="#robo269">T_VECTOR3D/Magnitude</a></li>
-<li>1.16. <a href="#robo270">T_VECTOR3D/MagnitudeSquared</a></li>
-<li>1.17. <a href="#robo271">T_VECTOR3D/Multiply</a></li>
-<li>1.18. <a href="#robo272">T_VECTOR3D/Negate</a></li>
-<li>1.19. <a href="#robo273">T_VECTOR3D/Normalize</a></li>
-<li>1.20. <a href="#robo274">T_VECTOR3D/Normalize(t_vector3d)</a></li>
-<li>1.21. <a href="#robo275">T_VECTOR3D/ProjectOnLine(t_segment)</a></li>
-<li>1.22. <a href="#robo276">T_VECTOR3D/ProjectOnLine(t_vector t_vector)</a></li>
-<li>1.23. <a href="#robo277">T_VECTOR3D/Subtract</a></li>
-<li>1.24. <a href="#robo278">T_VECTOR3D/Zero</a></li>
+<li>1.1. <a href="#robo297">T_VECTOR3D/AddV</a></li>
+<li>1.2. <a href="#robo298">T_VECTOR3D/Angle</a></li>
+<li>1.3. <a href="#robo299">T_VECTOR3D/AsSdoGeometry</a></li>
+<li>1.4. <a href="#robo300">T_VECTOR3D/AsText</a></li>
+<li>1.5. <a href="#robo301">T_VECTOR3D/ATTRIBUTES(T_VECTOR3D)</a></li>
+<li>1.6. <a href="#robo302">T_VECTOR3D/CONSTRUCTORS(T_VECTOR3D)</a></li>
+<li>1.7. <a href="#robo303">T_VECTOR3D/Cross</a></li>
+<li>1.8. <a href="#robo304">T_VECTOR3D/Distance(t_vector3d)</a></li>
+<li>1.9. <a href="#robo305">T_VECTOR3D/Distance(t_vertex)</a></li>
+<li>1.10. <a href="#robo306">T_VECTOR3D/DistanceSquared(T_Vector3D)</a></li>
+<li>1.11. <a href="#robo307">T_VECTOR3D/DistanceSquared(t_vertex)</a></li>
+<li>1.12. <a href="#robo308">T_VECTOR3D/Divide</a></li>
+<li>1.13. <a href="#robo309">T_VECTOR3D/Dot</a></li>
+<li>1.14. <a href="#robo310">T_VECTOR3D/Equals</a></li>
+<li>1.15. <a href="#robo311">T_VECTOR3D/Magnitude</a></li>
+<li>1.16. <a href="#robo312">T_VECTOR3D/MagnitudeSquared</a></li>
+<li>1.17. <a href="#robo313">T_VECTOR3D/Multiply</a></li>
+<li>1.18. <a href="#robo314">T_VECTOR3D/Negate</a></li>
+<li>1.19. <a href="#robo315">T_VECTOR3D/Normalize</a></li>
+<li>1.20. <a href="#robo316">T_VECTOR3D/Normalize(t_vector3d)</a></li>
+<li>1.21. <a href="#robo317">T_VECTOR3D/ProjectOnLine(t_segment)</a></li>
+<li>1.22. <a href="#robo318">T_VECTOR3D/ProjectOnLine(t_vector t_vector)</a></li>
+<li>1.23. <a href="#robo319">T_VECTOR3D/Subtract</a></li>
+<li>1.24. <a href="#robo320">T_VECTOR3D/Zero</a></li>
 </ul>
 </ul>
 <hr />
 <a name="OBJECT20TYPE2fT5fVECTOR3D"></a>
-<a name="robo14"></a><h2>OBJECT TYPE/T_VECTOR3D [ Types ]</h2>
+<a name="robo32"></a><h2>OBJECT TYPE/T_VECTOR3D [ Types ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_types.html#robo_top_of_doc">Types</a> ]</p>
 <p class="item_name">NAME</p>
@@ -79,15 +80,15 @@
 
 <hr />
 <a name="T5fVECTOR3D2fAddV"></a>
-<a name="robo255"></a><h2>T_VECTOR3D/AddV [ Methods ]</h2>
+<a name="robo297"></a><h2>T_VECTOR3D/AddV [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo14">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo32">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>AddV</strong> -- Constructs segment as segment sum of SELF and v1 parameter.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>   Member Function <strong>AddV</strong>(v1 in SPDBA.<a href="#robo14">T_VECTOR3D</a>)
-            Return SPDBA.<a href="#robo14">T_VECTOR3D</a> Deterministic,
+<pre>   Member Function <strong>AddV</strong>(v1 in &amp;&amp;INSTALL_SCHEMA..<a href="#robo32">T_VECTOR3D</a>)
+            Return &amp;&amp;INSTALL_SCHEMA..<a href="#robo32">T_VECTOR3D</a> Deterministic,
 </pre>
 <p class="item_name">PARAMETERS</p>
 <p class="item_name">AUTHOR</p>
@@ -102,20 +103,20 @@
 
 <hr />
 <a name="T5fVECTOR3D2fAngle"></a>
-<a name="robo256"></a><h2>T_VECTOR3D/Angle [ Methods ]</h2>
+<a name="robo298"></a><h2>T_VECTOR3D/Angle [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo14">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo32">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
-<pre>    <strong>Angle</strong> -- Returns the angle in radians between this segment and the segment parameter; the return value is constrained to the range [0-<a href="./COGO_sql.html#robo5">PI</a>].
+<pre>    <strong>Angle</strong> -- Returns the angle in radians between this segment and the segment parameter; the return value is constrained to the range [0-<a href="./Package_COGO_sql.html#robo10">PI</a>]. 
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Member Function <strong>Angle</strong>(v1 in SPDBA.<a href="#robo14">T_VECTOR3D</a>)
+<pre>    Member Function <strong>Angle</strong>(v1 in &amp;&amp;INSTALL_SCHEMA..<a href="#robo32">T_VECTOR3D</a>) 
              Return Number Deterministic,
 </pre>
 <p class="item_name">PARAMETERS</p>
 <pre>    v1 (T_Vector3D) - Second segment
   RETURNS
-    The angle in radians in the range [0-<a href="./COGO_sql.html#robo5">PI</a>]
+    The angle in radians in the range [0-<a href="./Package_COGO_sql.html#robo10">PI</a>] 
 </pre>
 <p class="item_name">AUTHOR</p>
 <pre>    Simon Greener
@@ -129,11 +130,11 @@
 
 <hr />
 <a name="T5fVECTOR3D2fAsSdoGeometry"></a>
-<a name="robo257"></a><h2>T_VECTOR3D/AsSdoGeometry [ Methods ]</h2>
+<a name="robo299"></a><h2>T_VECTOR3D/AsSdoGeometry [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo14">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo32">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
-<pre>    <strong>AsSdoGeometry</strong> -- Creates an SDO_GEOMETRY equivalent of <a href="#robo14">T_VECTOR3D</a>.
+<pre>    <strong>AsSdoGeometry</strong> -- Creates an SDO_GEOMETRY equivalent of <a href="#robo32">T_VECTOR3D</a>.
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre>    Member Function <strong>AsSdoGeometry</strong>(p_srid in integer default null)
@@ -154,11 +155,11 @@
 
 <hr />
 <a name="T5fVECTOR3D2fAsText"></a>
-<a name="robo258"></a><h2>T_VECTOR3D/AsText [ Methods ]</h2>
+<a name="robo300"></a><h2>T_VECTOR3D/AsText [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo14">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo32">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
-<pre>    <strong>AsText</strong> -- Creates an textual representation of a <a href="#robo14">T_VECTOR3D</a> object.
+<pre>    <strong>AsText</strong> -- Creates an textual representation of a <a href="#robo32">T_VECTOR3D</a> object.
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre>    Member Function <strong>AsText</strong>(p_round IN integer DEFAULT 9)
@@ -179,13 +180,13 @@
 
 <hr />
 <a name="T5fVECTOR3D2fATTRIBUTES28T5fVECTOR3D29"></a>
-<a name="robo259"></a><h2>T_VECTOR3D/ATTRIBUTES(T_VECTOR3D) [ Variables ]</h2>
+<a name="robo301"></a><h2>T_VECTOR3D/ATTRIBUTES(T_VECTOR3D) [ Variables ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo14">T_VECTOR3D</a> ] [ <a href="./robo_variables.html#robo_top_of_doc">Variables</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo32">T_VECTOR3D</a> ] [ <a href="./robo_variables.html#robo_top_of_doc">Variables</a> ]</p>
 <p class="item_name">ATTRIBUTES</p>
-<pre>   x -- X Ordinate
+<pre>   x -- X Ordinate 
    y -- Y Ordinate
-   z -- Z Ordinate
+   z -- Z Ordinate 
 </pre>
 <p class="item_name">SOURCE</p>
 <pre class="source">   x number<span class="sign">,</span>
@@ -195,42 +196,42 @@
 
 <hr />
 <a name="T5fVECTOR3D2fCONSTRUCTORS28T5fVECTOR3D29"></a>
-<a name="robo260"></a><h2>T_VECTOR3D/CONSTRUCTORS(T_VECTOR3D) [ Methods ]</h2>
+<a name="robo302"></a><h2>T_VECTOR3D/CONSTRUCTORS(T_VECTOR3D) [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo14">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo32">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
-<pre>    A collection of <a href="#robo14">T_VECTOR3D</a> Constructors.
+<pre>    A collection of <a href="#robo32">T_VECTOR3D</a> Constructors.
 </pre>
 <p class="item_name">SOURCE</p>
-<pre class="source">  Constructor Function <a href="#robo14">T_VECTOR3D</a><span class="sign">(</span> SELF      IN OUT NOCOPY <a href="#robo14">T_VECTOR3D</a><span class="sign">,</span>
-                                   p_SEGMENT IN SPDBA<span class="sign">.</span><a href="./t_segment_sql.html#robo13">T_SEGMENT</a><span class="sign">)</span>
+<pre class="source">  Constructor Function <a href="#robo32">T_VECTOR3D</a><span class="sign">(</span> SELF      IN OUT NOCOPY <a href="#robo32">T_VECTOR3D</a><span class="sign">,</span>
+                                   p_SEGMENT IN <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><a href="./T_Segment_sql.html#robo30">T_SEGMENT</a><span class="sign">)</span>
                 Return Self As Result<span class="sign">,</span>
 
-  Constructor Function <a href="#robo14">T_VECTOR3D</a><span class="sign">(</span> SELF      IN OUT NOCOPY <a href="#robo14">T_VECTOR3D</a><span class="sign">,</span>
-                                   p_SEGMENT IN SPDBA<span class="sign">.</span><a href="#robo14">T_VECTOR3D</a><span class="sign">)</span>
+  Constructor Function <a href="#robo32">T_VECTOR3D</a><span class="sign">(</span> SELF      IN OUT NOCOPY <a href="#robo32">T_VECTOR3D</a><span class="sign">,</span>
+                                   p_SEGMENT IN <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><a href="#robo32">T_VECTOR3D</a><span class="sign">)</span>
                 Return Self As Result<span class="sign">,</span>
 
-  Constructor Function <a href="#robo14">T_VECTOR3D</a><span class="sign">(</span> SELF     IN OUT NOCOPY <a href="#robo14">T_VECTOR3D</a><span class="sign">,</span>
-                                   p_vertex IN SPDBA<span class="sign">.</span>T_Vertex<span class="sign">)</span>
+  Constructor Function <a href="#robo32">T_VECTOR3D</a><span class="sign">(</span> SELF     IN OUT NOCOPY <a href="#robo32">T_VECTOR3D</a><span class="sign">,</span>
+                                   p_vertex IN <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span>T_Vertex<span class="sign">)</span>
                 Return Self As Result<span class="sign">,</span>
 
-  Constructor Function <a href="#robo14">T_VECTOR3D</a><span class="sign">(</span> SELF           IN OUT NOCOPY <a href="#robo14">T_VECTOR3D</a><span class="sign">,</span>
-                                   p_start_vertex IN SPDBA<span class="sign">.</span>T_Vertex<span class="sign">,</span>
-                                   p_end_vertex   IN SPDBA<span class="sign">.</span>T_Vertex<span class="sign">)</span>
+  Constructor Function <a href="#robo32">T_VECTOR3D</a><span class="sign">(</span> SELF           IN OUT NOCOPY <a href="#robo32">T_VECTOR3D</a><span class="sign">,</span>
+                                   p_start_vertex IN <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span>T_Vertex<span class="sign">,</span>
+                                   p_end_vertex   IN <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span>T_Vertex<span class="sign">)</span>
                 Return Self As Result<span class="sign">,</span>
 </pre>
 
 <hr />
 <a name="T5fVECTOR3D2fCross"></a>
-<a name="robo261"></a><h2>T_VECTOR3D/Cross [ Methods ]</h2>
+<a name="robo303"></a><h2>T_VECTOR3D/Cross [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo14">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo32">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>Cross</strong> -- Creates a new segment that is the segment cross product of segments SELF and v1.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Member Function <strong>Cross</strong>(v1 in SPDBA.<a href="#robo14">T_VECTOR3D</a>)
-             Return SPDBA.<a href="#robo14">T_VECTOR3D</a> Deterministic,
+<pre>    Member Function <strong>Cross</strong>(v1 in &amp;&amp;INSTALL_SCHEMA..<a href="#robo32">T_VECTOR3D</a>)
+             Return &amp;&amp;INSTALL_SCHEMA..<a href="#robo32">T_VECTOR3D</a> Deterministic,
 </pre>
 <p class="item_name">PARAMETERS</p>
 <pre>    v1 (T_Vector3D) - Second segment
@@ -247,14 +248,14 @@
 
 <hr />
 <a name="T5fVECTOR3D2fDistance28t5fvector3d29"></a>
-<a name="robo262"></a><h2>T_VECTOR3D/Distance(t_vector3d) [ Methods ]</h2>
+<a name="robo304"></a><h2>T_VECTOR3D/Distance(t_vector3d) [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo14">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo32">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
-<pre>    Distance -- Returns the distance between this <a href="#robo14">T_VECTOR3D</a> the specified point.
+<pre>    Distance -- Returns the distance between this <a href="#robo32">T_VECTOR3D</a> the specified point.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Member Function Distance(p_point in SPDBA.<a href="#robo14">T_VECTOR3D</a>)
+<pre>    Member Function Distance(p_point in &amp;&amp;INSTALL_SCHEMA..<a href="#robo32">T_VECTOR3D</a>)
              Return Number Deterministic,
 </pre>
 <p class="item_name">PARAMETERS</p>
@@ -274,14 +275,14 @@
 
 <hr />
 <a name="T5fVECTOR3D2fDistance28t5fvertex29"></a>
-<a name="robo263"></a><h2>T_VECTOR3D/Distance(t_vertex) [ Methods ]</h2>
+<a name="robo305"></a><h2>T_VECTOR3D/Distance(t_vertex) [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo14">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo32">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
-<pre>    Distance -- Returns the distance between this <a href="#robo14">T_VECTOR3D</a> the specified point.
+<pre>    Distance -- Returns the distance between this <a href="#robo32">T_VECTOR3D</a> the specified point.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Member Function Distance(p_point in SPDBA.T_Vertex )
+<pre>    Member Function Distance(p_point in &amp;&amp;INSTALL_SCHEMA..T_Vertex )
              Return Number Deterministic,
 </pre>
 <p class="item_name">PARAMETERS</p>
@@ -301,19 +302,19 @@
 
 <hr />
 <a name="T5fVECTOR3D2fDistanceSquared28T5fVector3D29"></a>
-<a name="robo264"></a><h2>T_VECTOR3D/DistanceSquared(T_Vector3D) [ Methods ]</h2>
+<a name="robo306"></a><h2>T_VECTOR3D/DistanceSquared(T_Vector3D) [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo14">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo32">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
 <pre>    DistanceSquared -- Returns the square of the distance between the specified points.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Member Function DistanceSquared(p_point in SPDBA.<a href="#robo14">T_VECTOR3D</a>)
+<pre>    Member Function DistanceSquared(p_point in &amp;&amp;INSTALL_SCHEMA..<a href="#robo32">T_VECTOR3D</a>)
              Return Number Deterministic,
 </pre>
 <p class="item_name">PARAMETERS</p>
 <pre>    p_point (T_Vector3D) - Point.
-  RETURNS
+  RETURNS 
     The square of the distance between the segment and point1.
 </pre>
 <p class="item_name">AUTHOR</p>
@@ -328,14 +329,14 @@
 
 <hr />
 <a name="T5fVECTOR3D2fDistanceSquared28t5fvertex29"></a>
-<a name="robo265"></a><h2>T_VECTOR3D/DistanceSquared(t_vertex) [ Methods ]</h2>
+<a name="robo307"></a><h2>T_VECTOR3D/DistanceSquared(t_vertex) [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo14">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo32">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
 <pre>    DistanceSquared -- Returns the square of the distance between the specified points.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Member Function DistanceSquared(p_point in SPDBA.T_Vertex)
+<pre>    Member Function DistanceSquared(p_point in &amp;&amp;INSTALL_SCHEMA..T_Vertex)
              Return Number Deterministic,
 </pre>
 <p class="item_name">PARAMETERS</p>
@@ -351,15 +352,15 @@
 
 <hr />
 <a name="T5fVECTOR3D2fDivide"></a>
-<a name="robo266"></a><h2>T_VECTOR3D/Divide [ Methods ]</h2>
+<a name="robo308"></a><h2>T_VECTOR3D/Divide [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo14">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo32">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>Divide</strong> -- Returns the components of the current segment divided by the specified scalar.
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre>    Member Function <strong>Divide</strong>(p_scalar in Number)
-             Return SPDBA.<a href="#robo14">T_VECTOR3D</a> Deterministic,
+             Return &amp;&amp;INSTALL_SCHEMA..<a href="#robo32">T_VECTOR3D</a> Deterministic,   
 </pre>
 <p class="item_name">PARAMETERS</p>
 <pre>    p_scalar (number) - The scalar value.
@@ -378,14 +379,14 @@
 
 <hr />
 <a name="T5fVECTOR3D2fDot"></a>
-<a name="robo267"></a><h2>T_VECTOR3D/Dot [ Methods ]</h2>
+<a name="robo309"></a><h2>T_VECTOR3D/Dot [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo14">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo32">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>Dot</strong> -- Returns the dot product of the current segment and the provided parameter.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Member Function <strong>Dot</strong>(v1 in SPDBA.<a href="#robo14">T_VECTOR3D</a>)
+<pre>    Member Function <strong>Dot</strong>(v1 in &amp;&amp;INSTALL_SCHEMA..<a href="#robo32">T_VECTOR3D</a>)
              Return Number Deterministic,
 </pre>
 <p class="item_name">PARAMETERS</p>
@@ -405,9 +406,9 @@
 
 <hr />
 <a name="T5fVECTOR3D2fEquals"></a>
-<a name="robo268"></a><h2>T_VECTOR3D/Equals [ Methods ]</h2>
+<a name="robo310"></a><h2>T_VECTOR3D/Equals [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo14">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo32">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>Equals</strong> -- Compares two vectors for equality (in magnitude and direction)
 </pre>
@@ -432,9 +433,9 @@
 
 <hr />
 <a name="T5fVECTOR3D2fMagnitude"></a>
-<a name="robo269"></a><h2>T_VECTOR3D/Magnitude [ Methods ]</h2>
+<a name="robo311"></a><h2>T_VECTOR3D/Magnitude [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo14">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo32">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>Magnitude</strong> -- Returns the <strong>Magnitude</strong> of this segment.
 </pre>
@@ -456,17 +457,17 @@
 
 <hr />
 <a name="T5fVECTOR3D2fMagnitudeSquared"></a>
-<a name="robo270"></a><h2>T_VECTOR3D/MagnitudeSquared [ Methods ]</h2>
+<a name="robo312"></a><h2>T_VECTOR3D/MagnitudeSquared [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo14">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo32">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
-<pre>    <strong>MagnitudeSquared</strong> -- Returns the squared <a href="#robo269">Magnitude</a> of this segment.
+<pre>    <strong>MagnitudeSquared</strong> -- Returns the squared <a href="#robo311">Magnitude</a> of this segment.
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre>    Member Function <strong>MagnitudeSquared</strong>
              Return Number Deterministic,
   RETURNS
-    The squared <a href="#robo269">Magnitude</a> of this segment
+    The squared <a href="#robo311">Magnitude</a> of this segment
 </pre>
 <p class="item_name">AUTHOR</p>
 <pre>    Simon Greener
@@ -480,15 +481,15 @@
 
 <hr />
 <a name="T5fVECTOR3D2fMultiply"></a>
-<a name="robo271"></a><h2>T_VECTOR3D/Multiply [ Methods ]</h2>
+<a name="robo313"></a><h2>T_VECTOR3D/Multiply [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo14">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo32">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>Multiply</strong> -- Returns the components of the specified segment multiplied by the specified scalar.
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre>    Member Function <strong>Multiply</strong>(p_scalar in Number)
-             Return SPDBA.<a href="#robo14">T_VECTOR3D</a> Deterministic,
+             Return &amp;&amp;INSTALL_SCHEMA..<a href="#robo32">T_VECTOR3D</a> Deterministic,
 </pre>
 <p class="item_name">PARAMETERS</p>
 <pre>    p_scalar (number) - The scalar value.
@@ -507,15 +508,15 @@
 
 <hr />
 <a name="T5fVECTOR3D2fNegate"></a>
-<a name="robo272"></a><h2>T_VECTOR3D/Negate [ Methods ]</h2>
+<a name="robo314"></a><h2>T_VECTOR3D/Negate [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo14">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo32">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>Negate</strong> -- Computes a segment with the same magnitude as SELF but pointing to the opposite direction.
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre>    Member Function <strong>Negate</strong>
-             Return SPDBA.<a href="#robo14">T_VECTOR3D</a> Deterministic,
+             Return &amp;&amp;INSTALL_SCHEMA..<a href="#robo32">T_VECTOR3D</a> Deterministic,
   RETURNS
     A segment with the same magnitude as SELF but pointing to the opposite
 </pre>
@@ -531,15 +532,15 @@
 
 <hr />
 <a name="T5fVECTOR3D2fNormalize"></a>
-<a name="robo273"></a><h2>T_VECTOR3D/Normalize [ Methods ]</h2>
+<a name="robo315"></a><h2>T_VECTOR3D/Normalize [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo14">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo32">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>Normalize</strong> -- Normalizes the current segment returning a new one.
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre>    Member Function <strong>Normalize</strong>
-             Return SPDBA.<a href="#robo14">T_VECTOR3D</a> Deterministic,
+             Return &amp;&amp;INSTALL_SCHEMA..<a href="#robo32">T_VECTOR3D</a> Deterministic,
 </pre>
 <p class="item_name">AUTHOR</p>
 <pre>    Simon Greener
@@ -553,15 +554,15 @@
 
 <hr />
 <a name="T5fVECTOR3D2fNormalize28t5fvector3d29"></a>
-<a name="robo274"></a><h2>T_VECTOR3D/Normalize(t_vector3d) [ Methods ]</h2>
+<a name="robo316"></a><h2>T_VECTOR3D/Normalize(t_vector3d) [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo14">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo32">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
-<pre>    <a href="#robo273">Normalize</a> -- Creates a new segment that is the value of this segment to the normalization of segment v1.
+<pre>    <a href="#robo315">Normalize</a> -- Creates a new segment that is the value of this segment to the normalization of segment v1.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Member Function <a href="#robo273">Normalize</a>(v1 in SPDBA.<a href="#robo14">T_VECTOR3D</a> )
-             Return SPDBA.<a href="#robo14">T_VECTOR3D</a> Deterministic,
+<pre>    Member Function <a href="#robo315">Normalize</a>(v1 in &amp;&amp;INSTALL_SCHEMA..<a href="#robo32">T_VECTOR3D</a> )
+             Return &amp;&amp;INSTALL_SCHEMA..<a href="#robo32">T_VECTOR3D</a> Deterministic,
 </pre>
 <p class="item_name">PARAMETERS</p>
 <pre>    v1 (T_Vector3D) - param v1 the un-normalized segment
@@ -578,15 +579,15 @@
 
 <hr />
 <a name="T5fVECTOR3D2fProjectOnLine28t5fsegment29"></a>
-<a name="robo275"></a><h2>T_VECTOR3D/ProjectOnLine(t_segment) [ Methods ]</h2>
+<a name="robo317"></a><h2>T_VECTOR3D/ProjectOnLine(t_segment) [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo14">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo32">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
 <pre>    ProjectOnLine -- Computes the current segment projected on p_line.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Member Function ProjectOnLine(p_line in SPDBA.<a href="./t_segment_sql.html#robo13">T_SEGMENT</a>)
-             Return SPDBA.<a href="#robo14">T_VECTOR3D</a> Deterministic,
+<pre>    Member Function ProjectOnLine(p_line in &amp;&amp;INSTALL_SCHEMA..<a href="./T_Segment_sql.html#robo30">T_SEGMENT</a>)
+             Return &amp;&amp;INSTALL_SCHEMA..<a href="#robo32">T_VECTOR3D</a> Deterministic,
 </pre>
 <p class="item_name">PARAMETERS</p>
 <pre>    p_line (T_Segment) - Second segment
@@ -603,16 +604,16 @@
 
 <hr />
 <a name="T5fVECTOR3D2fProjectOnLine28t5fvector20t5fvector29"></a>
-<a name="robo276"></a><h2>T_VECTOR3D/ProjectOnLine(t_vector t_vector) [ Methods ]</h2>
+<a name="robo318"></a><h2>T_VECTOR3D/ProjectOnLine(t_vector t_vector) [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo14">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo32">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
 <pre>    ProjectOnLine -- Computes the current segment projected on the specified line.
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Member Function ProjectOnLine(pointOnLine1 in SPDBA.<a href="#robo14">T_VECTOR3D</a>,
-                                  pointOnLine2 in SPDBA.<a href="#robo14">T_VECTOR3D</a>)
-             Return SPDBA.<a href="#robo14">T_VECTOR3D</a> Deterministic,
+<pre>    Member Function ProjectOnLine(pointOnLine1 in &amp;&amp;INSTALL_SCHEMA..<a href="#robo32">T_VECTOR3D</a>, 
+                                  pointOnLine2 in &amp;&amp;INSTALL_SCHEMA..<a href="#robo32">T_VECTOR3D</a>)
+             Return &amp;&amp;INSTALL_SCHEMA..<a href="#robo32">T_VECTOR3D</a> Deterministic,
 </pre>
 <p class="item_name">PARAMETERS</p>
 <pre>    Second segment
@@ -633,15 +634,15 @@
 
 <hr />
 <a name="T5fVECTOR3D2fSubtract"></a>
-<a name="robo277"></a><h2>T_VECTOR3D/Subtract [ Methods ]</h2>
+<a name="robo319"></a><h2>T_VECTOR3D/Subtract [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo14">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo32">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>Subtract</strong> -- Sets the value of this segment to the segment difference of itself and segment (this = this - segment).
 </pre>
 <p class="item_name">SYNOPSIS</p>
-<pre>    Member Function <strong>Subtract</strong>(v1 in SPDBA.<a href="#robo14">T_VECTOR3D</a>)
-             Return SPDBA.<a href="#robo14">T_VECTOR3D</a> Deterministic,
+<pre>    Member Function <strong>Subtract</strong>(v1 in &amp;&amp;INSTALL_SCHEMA..<a href="#robo32">T_VECTOR3D</a>)
+             Return &amp;&amp;INSTALL_SCHEMA..<a href="#robo32">T_VECTOR3D</a> Deterministic,
 </pre>
 <p class="item_name">PARAMETERS</p>
 <pre>    v1 (T_Vector3D) - Second segment
@@ -658,15 +659,15 @@
 
 <hr />
 <a name="T5fVECTOR3D2fZero"></a>
-<a name="robo278"></a><h2>T_VECTOR3D/Zero [ Methods ]</h2>
+<a name="robo320"></a><h2>T_VECTOR3D/Zero [ Methods ]</h2>
 
-<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo14">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo32">T_VECTOR3D</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
 <pre>    <strong>Zero</strong> -- Sets all the values in this segment to zero.
 </pre>
 <p class="item_name">SYNOPSIS</p>
 <pre>    Member Function zero
-             Return SPDBA.<a href="#robo14">T_VECTOR3D</a> Deterministic,
+             Return &amp;&amp;INSTALL_SCHEMA..<a href="#robo32">T_VECTOR3D</a> Deterministic,
 </pre>
 <p class="item_name">AUTHOR</p>
 <pre>    Simon Greener
@@ -680,7 +681,7 @@
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./export/t_vector3d.sql with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.36 on Sat Aug 17 2019 13:43:51
+<p>Generated from ./src/T_Vector3D.sql with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.36 on Sun Aug 25 2019 09:56:16
 </p>
 </div> <!-- footer -->
 </body>

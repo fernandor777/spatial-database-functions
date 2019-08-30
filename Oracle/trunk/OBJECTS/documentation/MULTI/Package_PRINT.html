@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head><link rel="shortcut icon" href="http://www.spatialdbadvisor.com/images/243t.png"/>
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
+<link rel="stylesheet" href="./robodoc.css" type="text/css" />
+<title>./src/Package_PRINT.sql</title>
+<!-- Source: ./src/Package_PRINT.sql -->
+<!-- Generated with ROBODoc Version 4.99.36 (Mar 13 2008) -->
+</head>
+<body>
+<div id="logo">
+<a name="robo_top_of_doc">SPDBA Object Types and Methods Documentation</a>
+</div> <!-- logo -->
+<div id="navigation">
+<a class="menuitem" href="./toc_index.html#top">Table of Contents</a>
+<a class="menuitem" href="./robo_sourcefiles.html#top">Sourcefiles</a>
+<a class="menuitem" href="./masterindex.html#top">Index</a>
+<a class="menuitem" href="./robo_functions.html#top">Functions</a>
+<a class="menuitem" href="./robo_modules.html#top">Modules</a>
+<a class="menuitem" href="./robo_methods.html#top">Methods</a>
+<a class="menuitem" href="./robo_strutures.html#top">Structures</a>
+<a class="menuitem" href="./robo_types.html#top">Types</a>
+<a class="menuitem" href="./robo_variables.html#top">Variables</a>
+</div> <!-- navigation -->
+<div id="content">
+<h3>TABLE OF CONTENTS</h3>
+<ul>
+<li>1. <a href="#robo2">PACKAGE/PRINT</a></li>
+</ul>
+<hr />
+<a name="PACKAGE2fPRINT"></a>
+<a name="robo2"></a><h2>PACKAGE/PRINT [ Modules ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_modules.html#robo_top_of_doc">Modules</a> ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>PRINT</strong> - Functions that can be used to create string versions of complex types for output during debugging eg dbms_output.
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    A package that publishes some functions that can be used to create string versions of complex types for output during debugging eg dbms_output.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - August 2019 - Original coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<p class="item_name">SOURCE</p>
+<pre class="source">  Function sdo_point_type<span class="sign">(</span> p_point in mdsys<span class="sign">.</span>sdo_point_type<span class="sign">,</span>
+                           p_round in number default 3<span class="sign">)</span>
+    Return varchar2 deterministic<span class="sign">;</span>
+
+  Function Vertex_Type<span class="sign">(</span>p_point in mdsys<span class="sign">.</span>vertex_type<span class="sign">,</span>
+                       p_round in number default 3<span class="sign">)</span>
+    Return varchar2 deterministic<span class="sign">;</span>
+
+  Function sdo_elem_info<span class="sign">(</span> p_elem_info in mdsys<span class="sign">.</span>sdo_elem_info_array <span class="sign">)</span>
+    return varchar2 deterministic<span class="sign">;</span>
+
+  Function sdo_ordinates<span class="sign">(</span>p_ordinates in mdsys<span class="sign">.</span>sdo_ordinate_array<span class="sign">,</span>
+                         p_coordDim  in pls_integer default 2<span class="sign">,</span>
+                         p_round     in pls_integer default 3<span class="sign">)</span>
+    Return clob deterministic<span class="sign">;</span>
+
+  Function sdo_geometry<span class="sign">(</span>p_geom  in mdsys<span class="sign">.</span>sdo_geometry<span class="sign">,</span>
+                        p_round in number default 3<span class="sign">)</span>
+    Return clob deterministic<span class="sign">;</span>
+</pre>
+
+</div> <!-- content -->
+<div id="footer">
+<p>Generated from ./src/Package_PRINT.sql with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.36 on Sun Aug 25 2019 09:56:16
+</p>
+</div> <!-- footer -->
+</body>
+</html>

@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
+<head><link rel="shortcut icon" href="http://www.spatialdbadvisor.com/images/243t.png"/>
 <meta http-equiv="Content-Style-Type" content="text/css" />
 <meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
 <link rel="stylesheet" href="./robodoc.css" type="text/css" />
@@ -28,16 +28,16 @@
 <div id="content">
 <h3>TABLE OF CONTENTS</h3>
 <ul>
-<li>1. <a href="#robo14">OBJECT TYPE ARRAY/T_BEARING_DISTANCES</a></li>
+<li>1. <a href="#robo15">OBJECT TYPE ARRAY/T_BEARING_DISTANCES</a></li>
 <li>2. <a href="#robo22">OBJECT TYPE/T_BEARING_DISTANCE</a></li>
 <ul>
-<li>2.1. <a href="#robo34">T_BEARING_DISTANCE/ATTRIBUTES(T_BEARING_DISTANCE)</a></li>
-<li>2.2. <a href="#robo35">T_BEARING_DISTANCE/CONSTRUCTORS(T_BEARING_DISTANCE)</a></li>
+<li>2.1. <a href="#robo35">T_BEARING_DISTANCE/ATTRIBUTES(T_BEARING_DISTANCE)</a></li>
+<li>2.2. <a href="#robo36">T_BEARING_DISTANCE/CONSTRUCTORS(T_BEARING_DISTANCE)</a></li>
 </ul>
 </ul>
 <hr />
 <a name="OBJECT20TYPE20ARRAY2fT5fBEARING5fDISTANCES"></a>
-<a name="robo14"></a><h2>OBJECT TYPE ARRAY/T_BEARING_DISTANCES [ Structures ]</h2>
+<a name="robo15"></a><h2>OBJECT TYPE ARRAY/T_BEARING_DISTANCES [ Structures ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_strutures.html#robo_top_of_doc">Structures</a> ]</p>
 <p class="item_name">NAME</p>
@@ -86,12 +86,12 @@
 
 <hr />
 <a name="T5fBEARING5fDISTANCE2fATTRIBUTES28T5fBEARING5fDISTANCE29"></a>
-<a name="robo34"></a><h2>T_BEARING_DISTANCE/ATTRIBUTES(T_BEARING_DISTANCE) [ Variables ]</h2>
+<a name="robo35"></a><h2>T_BEARING_DISTANCE/ATTRIBUTES(T_BEARING_DISTANCE) [ Variables ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo22">T_BEARING_DISTANCE</a> ] [ <a href="./robo_variables.html#robo_top_of_doc">Variables</a> ]</p>
 <p class="item_name">ATTRIBUTES</p>
 <pre>    sDegMinSec varchar2(255) -- Textual description of a bearing eg 180^10'5.2" (cf Google).
-                                See also function <a href="./Package_COGO_sql.html#robo0">COGO</a>.<a href="./Package_COGO_sql.html#robo8">DMS2DD</a>.
+                                See also function <a href="./Package_COGO_sql.html#robo0">COGO</a>.<a href="./Package_COGO_sql.html#robo9">DMS2DD</a>.
     nBearing   number,       -- A numeric bearing eg 180.092784
     distance   number,       -- Length of line along line defined by bearing.
     Z          number,       -- Z ordinate of point at end of bearing/distance (line cogo function only)
@@ -107,7 +107,7 @@
 
 <hr />
 <a name="T5fBEARING5fDISTANCE2fCONSTRUCTORS28T5fBEARING5fDISTANCE29"></a>
-<a name="robo35"></a><h2>T_BEARING_DISTANCE/CONSTRUCTORS(T_BEARING_DISTANCE) [ Methods ]</h2>
+<a name="robo36"></a><h2>T_BEARING_DISTANCE/CONSTRUCTORS(T_BEARING_DISTANCE) [ Methods ]</h2>
 
 <p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo22">T_BEARING_DISTANCE</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
 <p class="item_name">NAME</p>
@@ -133,7 +133,7 @@
 
 </div> <!-- content -->
 <div id="footer">
-<p>Generated from ./src/T_Bearing_Distance.sql with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.36 on Sat Aug 17 2019 13:43:23
+<p>Generated from ./src/T_Bearing_Distance.sql with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.36 on Sun Aug 25 2019 09:56:16
 </p>
 </div> <!-- footer -->
 </body>

@@ -66,6 +66,7 @@ CREATE FUNCTION spdba.ST_Splay(
 )
 RETURNS geometry
 AS
+$$
 BEGIN
   Return spdba.ST_Splay(
            p_geometry,

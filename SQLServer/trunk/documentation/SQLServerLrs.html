@@ -1,0 +1,3203 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head><link rel="shortcut icon" href="http://www.spatialdbadvisor.com/images/243t.png"/>
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
+<link rel="stylesheet" href="./SQLServerLrs.css" type="text/css" />
+<title>./documentation/SQLServerLrs</title>
+<!-- Source: ./src/LRS/ -->
+<!-- Generated with ROBODoc Version 4.99.36 (Mar 13 2008) -->
+</head>
+<body>
+<div id="logo">
+<a name="robo_top_of_doc">SPDBA LRS Function Documentation</a>
+</div> <!-- logo -->
+<h3>TABLE OF CONTENTS</h3>
+<ul>
+<li>1. <a href="#robo0">LRS/STAddMeasure (2012)</a></li>
+<li>2. <a href="#robo1">LRS/STEndMeasure (2012)</a></li>
+<li>3. <a href="#robo2">LRS/STFilterLineSegmentByLength (2012)</a></li>
+<li>4. <a href="#robo3">LRS/STFilterLineSegmentByMeasure (2012)</a></li>
+<li>5. <a href="#robo4">LRS/STFindArcPointByMeasure (2012)</a></li>
+<li>6. <a href="#robo5">LRS/STFindMeasure (2012)</a></li>
+<li>7. <a href="#robo6">LRS/STFindMeasureByPoint  (2012)</a></li>
+<li>8. <a href="#robo7">LRS/STFindOffset (2012)</a></li>
+<li>9. <a href="#robo8">LRS/STFindPointByLength (2012)</a></li>
+<li>10. <a href="#robo9">LRS/STFindPointByMeasure (2012)</a></li>
+<li>11. <a href="#robo10">LRS/STFindPointByRatio (2012)</a></li>
+<li>12. <a href="#robo11">LRS/STFindSegmentByLengthRange (2012)</a></li>
+<li>13. <a href="#robo12">LRS/STFindSegmentByMeasureRange (2012)</a></li>
+<li>14. <a href="#robo13">LRS/STFindSegmentByZRange (2012)</a></li>
+<li>15. <a href="#robo14">LRS/STInterpolatePoint (2012)</a></li>
+<li>16. <a href="#robo15">LRS/STIsMeasureDecreasing (2012)</a></li>
+<li>17. <a href="#robo16">LRS/STIsMeasureIncreasing (2012)</a></li>
+<li>18. <a href="#robo17">LRS/STLineInterpolatePoint (2012)</a></li>
+<li>19. <a href="#robo18">LRS/STLineLocatePoint  (2012)</a></li>
+<li>20. <a href="#robo19">LRS/STLineSubstring (2012)</a></li>
+<li>21. <a href="#robo20">LRS/STLocateAlong (2012)</a></li>
+<li>22. <a href="#robo21">LRS/STLocateBetween (2012)</a></li>
+<li>23. <a href="#robo22">LRS/STLocateBetweenElevations (2008)</a></li>
+<li>24. <a href="#robo23">LRS/STMeasureRange (2012)</a></li>
+<li>25. <a href="#robo24">LRS/STMeasureToPercentage (2012)</a></li>
+<li>26. <a href="#robo25">LRS/STPercentageToMeasure (2012)</a></li>
+<li>27. <a href="#robo26">LRS/STPointToCircularArc (2012)</a></li>
+<li>28. <a href="#robo27">LRS/STProjectPoint (2012)</a></li>
+<li>29. <a href="#robo28">LRS/STRemoveMeasure (2012)</a></li>
+<li>30. <a href="#robo29">LRS/STResetMeasure (2012)</a></li>
+<li>31. <a href="#robo30">LRS/STReverseMeasure (2012)</a></li>
+<li>32. <a href="#robo31">LRS/STScaleMeasure (2012)</a></li>
+<li>33. <a href="#robo32">LRS/STSetM (2012)</a></li>
+<li>34. <a href="#robo33">LRS/STSetMeasure (2012)</a></li>
+<li>35. <a href="#robo34">LRS/STSplit (2012)</a></li>
+<li>36. <a href="#robo35">LRS/STSplitCircularStringByLength (2012)</a></li>
+<li>37. <a href="#robo36">LRS/STSplitCircularStringByMeasure (2012)</a></li>
+<li>38. <a href="#robo37">LRS/STSplitLineSegmentByLength (2012)</a></li>
+<li>39. <a href="#robo38">LRS/STSplitLineSegmentByMeasure (2012)</a></li>
+<li>40. <a href="#robo39">LRS/STSplitProcedure (2012)</a></li>
+<li>41. <a href="#robo40">LRS/STStartMeasure (2012)</a></li>
+<li>42. <a href="#robo41">LRS/STUpdateMeasure (2012)</a></li>
+<li>43. <a href="#robo42">LRS/STValidLrsGeometry (2012)</a></li>
+<li>44. <a href="#robo43">LRS/STValidLrsPoint (2012)</a></li>
+<li>45. <a href="#robo44">LRS/STValidMeasure (2012)</a></li>
+</ul>
+<a name="robo0"></a>
+<a name="LRS2fSTAddMeasure2028201229"></a>
+<h1>1.  LRS/STAddMeasure (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    STAddMeasure -- Function that adds measures to the supplied linestring point.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function STAddMeasure (
+               @p_linestring    geometry,
+               @p_start_measure float,
+               @p_end_measure   float,
+               @p_round_xy      int = 3,
+               @p_round_zm      int = 2
+             )
+     Returns geometry 
+</pre>
+<p class="item_name">USAGE</p>
+<pre>    SELECT [$(lrsowner).[STAddMeasure] (
+             geometry::STGeomFromText('LINESTRING(0 0,1 1)',0),
+             1,
+             1.414,
+             3, 
+             2 
+           ).AsTextZM() as MeasureLine;
+    MeasureLine
+    LINESTRING (0 0 NULL 1, 1 1 NULL 1.41)
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Function that add measured ordinates to the supplied @p_linestring.
+    Supports LineString, CircularString, CompoundCurve geometries
+    If geometry is already measured it is returned unchanged.
+    Start Point is assigned @p_start_measure and End Point is assigned @p_end_measure.
+    Intermediate Points' measure values are calculated based on length calculations.
+    The updated coordinate's XY ordinates are rounded to @p_round_xy number of decimal digits of precision.
+    The updated coordinate's ZM ordinates are rounded to @p_round_ZM number of decimal digits of precision.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_linestring       (geometry) - Supplied Linestring geometry.
+    @p_start_measure       (float) - New Start M easurevalue.
+    @p_end_measure         (float) - New End Measure value.
+    @p_round_xy              (int) - Decimal degrees of precision to which calculated XY ordinates are rounded.
+    @p_round_zm              (int) - Decimal degrees of precision to which calculated ZM ordinates are rounded.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    measured linestring (geometry) - Input linestring with measures applied.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - December 2017 - Original TSQL Coding for SQL Spatial.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo1"></a>
+<a name="LRS2fSTEndMeasure2028201229"></a>
+<h1>2.  LRS/STEndMeasure (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    STEndMeasure -- Returns M value of last point in a measured geometry.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function STEndMeasure (
+       @p_linestring geometry
+    )
+    Returns geometry 
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Returns the measure associated with the last point in a measured line-string.
+    Supports Linestrings with CircularString elements (2012).
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_linestring (geometry) - Supplied Linestring geometry.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    measure (float) -- Measure value of the last point in a measured line-string.
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    If the line-string is not measured it returns the length of @p_linestring.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    select [lrs].[STEndMeasure](geometry::STGeomFromText('LINESTRING(1 1 2 3, 2 2 3 4)', 0)) as end_measure
+    union all
+    select [lrs].[STEndMeasure](geometry::STGeomFromText('MULTILINESTRING((1 1 2 3, 2 2 3 4),(3 3 4 5,4 4 5 6))', 0))
+    union all
+    select [lrs].[STEndMeasure](geometry::STGeomFromText('CIRCULARSTRING (3 6.325 NULL 0, 0 7 NULL 3.08, -3 6.325 NULL 6.15)',0))
+    GO
+    
+    end_measure
+    4
+    6
+    6.15
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - January  2013 - Original Coding.
+    Simon Greener - December 2017 - Port to SQL Server.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2012-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo2"></a>
+<a name="LRS2fSTFilterLineSegmentByLength2028201229"></a>
+<h1>3.  LRS/STFilterLineSegmentByLength (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    STFilterLineSegmentByLength -- This function detects and returns all segments (2 point linestring, 3 point circularString) that fall within the defined by the range @p_start_length .. @p_end_length .
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function [$(lrsowner)].[STFilterLineSegmentByLength] (
+               @p_linestring   geometry,
+               @p_start_length Float,
+               @p_end_length   Float = null,
+               @p_round_xy     int   = 3,
+               @p_round_zm     int   = 2
+             )
+     Returns @Segments TABLE 
+     (
+       id             int,
+       multi_tag      varchar(100),
+       element_id     int,
+       element_tag    varchar(100),
+       subelement_id  int,
+       subelement_tag varchar(100),
+       segment_id     int,
+       sx             float,  
+       sy             float,
+       sz             float,
+       sm             float,
+       mx             float,  
+       my             float,
+       mz             float,
+       mm             float,
+       ex             float, 
+       ey             float,
+       ez             float,
+       em             float,
+       length         float,
+       startLength    float,
+       measureRange   float,
+       geom           geometry
+     )  
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Given a start and end length, this function breaks the input @p_linestring into its fundamental 2 Point LineString or 3 Point CircularStrings.
+    If then analyses each segment to see if it falls within the range defined by @p_start_length .. @p_end_length.
+    If the segment falls within the range, it is returned.
+    If a segment's end point = @p_start_length then it is not returned but the next segment, whose StartPoint = @p_start_length is returned.
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    Supports linestrings with CircularString elements.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_linestring (geometry) - Linestring geometry.
+    @p_start_length  (float) - Length defining start point of located geometry.
+    @p_end_length    (float) - Length defining end point of located geometry.
+    @p_round_xy        (int) - Decimal degrees of precision to which calculated XY ordinates are rounded.
+    @p_round_zm        (int) - Decimal degrees of precision to which calculated ZM ordinates are rounded.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    Table (Array) of Indivitual Line Segments:
+     id             (int)        - Unique identifier starting at segment 1.
+     multi_tag      (varchar100) - WKT Tag if Multi geometry eg MULTILINESTRING/MULTICURVE/MULTIPOLYGON.
+     element_id     (int)        - Top level element identifier eg 1 for first polygon in multiPolygon.
+     element_tag    (varchar100) - WKT Tag for first element eg POLYGON if part of MULTIPOlYGON.
+     subelement_id  (int)        - SubElement identifier of subelement of element with parts eg OuterRing of Polygon
+     subelement_tag (varchar100) - WKT Tag for first subelement of element with parts eg OuterRing of Polygon
+     segment_id     (int)        - Unique identifier starting at segment 1 for each element.
+     sx             (float)      - Start Point X Ordinate 
+     sy             (float)      - Start Point Y Ordinate 
+     sz             (float)      - Start Point Z Ordinate 
+     sm             (float)      - Start Point M Ordinate
+     mx             (float)      - Mid Point X Ordinate (Only if CircularString)
+     my             (float)      - Mid Point Y Ordinate (Only if CircularString)
+     mz             (float)      - Mid Point Z Ordinate (Only if CircularString)
+     mm             (float)      - Mid Point M Ordinate (Only if CircularString)
+     ex             (float)      - End Point X Ordinate 
+     ey             (float)      - End Point Y Ordinate 
+     ez             (float)      - End Point Z Ordinate 
+     em             (float)      - End Point M Ordinate 
+     length         (float)      - Length of this segment in SRID units
+     startLength    (float)      - Cumulative Length (from start of geometry) at the start of this segment in SRID units
+     measureRange   (float)      - Measure Range ie EndM - StartM
+     geom           (geometry)   - Geometry representation of segment.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - December 2017 - Original TSQL Coding for SQL Server.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo3"></a>
+<a name="LRS2fSTFilterLineSegmentByMeasure2028201229"></a>
+<h1>4.  LRS/STFilterLineSegmentByMeasure (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    STFilterLineSegmentByMeasure -- This function detects and returns all segments (2 point linestring, 3 point circularString) that fall within the defined by the range @p_start_measure .. @p_end_measure .
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function [$(lrsowner)].[STFilterLineSegmentByMeasure] (
+               @p_linestring    geometry,
+               @p_start_measure Float,
+               @p_end_measure   Float = null,
+               @p_round_xy      int   = 3,
+               @p_round_zm      int   = 2
+             )
+     Returns @Segments TABLE 
+     (
+       id             int,
+       multi_tag      varchar(100),
+       element_id     int,
+       element_tag    varchar(100),
+       subelement_id  int,
+       subelement_tag varchar(100),
+       segment_id     int,
+       sx             float,  
+       sy             float,
+       sz             float,
+       sm             float,
+       mx             float,  
+       my             float,
+       mz             float,
+       mm             float,
+       ex             float, 
+       ey             float,
+       ez             float,
+       em             float,
+       length         float,
+       startLength    float,
+       measureRange   float,
+       geom           geometry
+     )  
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Given a start and end length, this function breaks the input @p_linestring into its fundamental 2 Point LineString or 3 Point CircularStrings.
+    If then analyses each segment to see if it falls within the range defined by @p_start_measure .. @p_end_measure.
+    If the segment falls within the range, it is returned.
+    If a segment's end point = @p_start_measure then it is not returned but the next segment, whose StartPoint = @p_start_measure is returned.
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    Supports linestrings with CircularString elements.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_linestring (geometry) - Linestring geometry.
+    @p_start_measure (float) - Measure defining start point of located geometry.
+    @p_end_measure   (float) - Measure defining end point of located geometry.
+    @p_round_xy        (int) - Decimal degrees of precision to which calculated XY ordinates are rounded.
+    @p_round_zm        (int) - Decimal degrees of precision to which calculated ZM ordinates are rounded.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    Table (Array) of Indivitual Line Segments:
+     id             (int)        - Unique identifier starting at segment 1.
+     multi_tag      (varchar100) - WKT Tag if Multi geometry eg MULTILINESTRING/MULTICURVE/MULTIPOLYGON.
+     element_id     (int)        - Top level element identifier eg 1 for first polygon in multiPolygon.
+     element_tag    (varchar100) - WKT Tag for first element eg POLYGON if part of MULTIPOlYGON.
+     subelement_id  (int)        - SubElement identifier of subelement of element with parts eg OuterRing of Polygon
+     subelement_tag (varchar100) - WKT Tag for first subelement of element with parts eg OuterRing of Polygon
+     segment_id     (int)        - Unique identifier starting at segment 1 for each element.
+     sx             (float)      - Start Point X Ordinate 
+     sy             (float)      - Start Point Y Ordinate 
+     sz             (float)      - Start Point Z Ordinate 
+     sm             (float)      - Start Point M Ordinate
+     mx             (float)      - Mid Point X Ordinate (Only if CircularString)
+     my             (float)      - Mid Point Y Ordinate (Only if CircularString)
+     mz             (float)      - Mid Point Z Ordinate (Only if CircularString)
+     mm             (float)      - Mid Point M Ordinate (Only if CircularString)
+     ex             (float)      - End Point X Ordinate 
+     ey             (float)      - End Point Y Ordinate 
+     ez             (float)      - End Point Z Ordinate 
+     em             (float)      - End Point M Ordinate 
+     length         (float)      - Length of this segment in SRID units
+     startLength    (float)      - Cumulative Length (from start of geometry) at the start of this segment in SRID units
+     measureRange   (float)      - Measure Range ie EndM - StartM
+     geom           (geometry)   - Geometry representation of segment.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - December 2017 - Original TSQL Coding for SQL Server.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo4"></a>
+<a name="LRS2fSTFindArcPointByMeasure2028201229"></a>
+<h1>5.  LRS/STFindArcPointByMeasure (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>   STFindArcPointByMeasure - Computes point on circular arc @p_measure from start with offset
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function STFindArcPointByMeasure (
+        @p_circular_arc geometry 
+        @p_measure      float,
+        @p_offset       Float = 0.0,
+        @p_round_xy     int   = 3,
+        @p_round_zm     int   = 2
+      )
+      Return Geometry (Point)
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Supplied with a circular linestring, a measured distance from the start, and an offset, 
+    this function computes the point on the circular arc.
+    If the @p_offset value is &lt;&gt; 0, the function computes a new position for the point at a 
+    distance of @p_offset on the left (-ve) or right (+ve) side of the circular arc.
+    The returned vertex has its ordinate values rounded using the relevant decimal place values.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_circular_arc (geometry) - A circular linestring 
+    @p_measure         (float) - Measured distance from start vertex to required point.
+    @p_offset          (float) - The perpendicular distance to offset the generated point.
+                                 A negative value instructs the function to offet the point to the left (start-end),
+                                 and a positive value to the right. 
+    @p_round_xy          (int) - Number of decimal digits of precision for an X or Y ordinate.
+    @p_round_zm          (int) - Number of decimal digits of precision for an Z or M ordinate.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    point          (geometry)          - The computed point.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - January 2017 - Original coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo5"></a>
+<a name="LRS2fSTFindMeasure2028201229"></a>
+<h1>6.  LRS/STFindMeasure (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    STFindMeasure -- Snaps input point to measured linestring returning measure value
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>     Function STFindMeasure (
+        @p_linestring geometry,
+        @p_point      geometry,
+        @p_round_xy   int = 3,
+        @p_round_zm   int = 2 
+      )
+      Returns float 
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Given a point near a the supplied measure @p_linestring, this function returns the measure of the closest point on the measured @p_linestring. 
+
+    Measure value returned is rounded to supplied @p_round_zm parameter.
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    Is identical to [lrs].[STFindMeasureByPoint].
+    Srid of @p_linestring and @p_point must be the same.
+    @p_linestring must be measured.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_linestring (geometry) - Measured (Multi)LineString geometry.
+    @p_point      (geometry) - Offset Point for which closest linestring point measure is needed.
+    @p_round_xy        (int) - Decimal digits of precision for XY ordinates.
+    @p_round_zm        (int) - Decimal digits of precision for M ordinate.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    measure          (float) - Measure of closest point on line to supplied point.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    select [lrs].[STFindMeasure] (
+             geometry::STGeomFromText('LINESTRING(-4 -4 0 1, 0 0 0 5.6, 10 0 0 15.61, 10 10 0 25.4)',28355),
+             geometry::Point(8,8,28355),
+             3,2) as measure
+    union all
+    select [lrs].[STFindMeasure] (
+             geometry::STGeomFromText('LINESTRING(-4 -4 0 1, 0 0 0 5.6, 10 0 0 15.61, 10 10 0 25.4)',28355),
+             geometry::Point(10,0,28355),
+             3,2) as measure
+    GO
+    
+    measure
+    23.44
+    15.61
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - November 2017 - Original coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo6"></a>
+<a name="LRS2fSTFindMeasureByPoint202028201229"></a>
+<h1>7.  LRS/STFindMeasureByPoint  (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    STFindMeasureByPoint -- Returns value of the measure dimension of a point on the provided linesting closest to the provided point.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function [$(lrsowner)].[STFindMeasureByPoint] (
+               @p_linestring geometry,
+               @p_point      geometry,
+               @p_round_xy   int   = 3,
+               @p_round_zm   int   = 2
+             )
+     Returns geometry
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Given a point near a the supplied measure @p_linestring, this function returns the measure of the closest point on the measured @p_linestring. 
+
+    Returned measure value is rounded to @p_round_zm decimal digits of precision.
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    Srid of @p_linestring and @p_point must be the same.
+
+    @p_linestring must be measured.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_linestring (geometry) - Measured linestring with or without Z ordinates.
+    @p_point      (geometry) - Point near to linestring.
+    @p_round_xy        (int) - Decimal digits of precision for XY ordinates.
+    @p_round_zm        (int) - Decimal digits of precision for M ordinate.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    measure value    (float) - Measure of point found on @p_linestring.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>   select [$(lrsowner)].[STFindMeasureByPoint] (
+              geometry::STGeomFromText('LINESTRING(-4 -4 0 1, 0 0 0 5.6, 10 0 0 15.61, 10 10 0 25.4)',28355),
+              geometry::Point(8,8,28355),
+              3,2) as measure
+    union all
+    select [$(lrsowner)].[STFindMeasureByPoint] (
+             geometry::STGeomFromText('LINESTRING(-4 -4 0 1, 0 0 0 5.6, 10 0 0 15.61, 10 10 0 25.4)',28355),
+             geometry::Point(10,0,28355),
+             3,2) as measure
+    GO
+
+    measure
+    23.44
+    15.61
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - January  2013 - Original coding.
+    Simon Greener - December 2017 - Port to SQL Server (TSQL).
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo7"></a>
+<a name="LRS2fSTFindOffset2028201229"></a>
+<h1>8.  LRS/STFindOffset (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    STFindOffset -- Compute smallest perpendicular offset from supplied point to the supplied linestring.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>     Function [$(lrsowner)].[STFindOffset] (
+         @p_linestring geometry,
+         @p_point      geometry,
+         @p_round_xy   int = 3,
+         @p_round_zm   int = 2 
+      )
+      Returns float 
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Given a point near @p_linestring, this function returns the perpendicular distance from it to the closest point on @p_linestring. 
+
+    Returned measure value is rounded to @p_round_zm decimal digits of precision.
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    Calls [$(lrsowner)].[STProjectPoint].
+    Srid of @p_linestring and @p_point must be the same.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_linestring (geometry) - (Multi)LineString geometry.
+    @p_point      (geometry) - Offset Point for which closest linestring point measure is needed.
+    @p_round_xy        (int) - Decimal digits of precision for XY ordinates.
+    @p_round_zm        (int) - Decimal digits of precision for M ordinate.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    offset           (float) - Perpendicular offset distance from point to nearest point on line.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    select [lrs].[STFindOffset] (
+             geometry::STGeomFromText('LINESTRING(-4 -4 0 1, 0 0 0 5.6, 10 0 0 15.61, 10 10 0 25.4)',28355),
+             geometry::Point(8,8,28355),
+             3,2) offset_distance
+    union all
+    select [lrs].[STFindOffset] (
+             geometry::STGeomFromText('LINESTRING(-4 -4 0 1, 0 0 0 5.6, 10 0 0 15.61, 10 10 0 25.4)',28355),
+             geometry::Point(10,0,28355),
+             3,2)
+    go
+    
+    offset_distance
+    2
+    0
+</pre>
+<p class="item_name">TODO</p>
+<pre>    Value is negative if on left of line; positive if on right.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - November 2017 - Original coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo8"></a>
+<a name="LRS2fSTFindPointByLength2028201229"></a>
+<h1>9.  LRS/STFindPointByLength (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    STFindPointByLength -- Returns (possibly offset) point geometry at supplied distance along linestring.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function [$(lrsowner)].[STFindPointByLength] (
+               @p_linestring geometry,
+               @p_length     Float,
+               @p_offset     Float = 0.0,
+               @p_round_xy   int   = 3,
+               @p_round_zm   int   = 2
+             )
+     Returns geometry 
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Given a length (0 to @p_linestring.STLength()), this function returns a geometry point at the position described by that length.
+
+    If a non-zero/null value is suppied for @p_offset, the found point is offset (perpendicular to line) to the left (if @p_offset &lt; 0) or to the right (if @p_offset &gt; 0).
+
+    The returned point has its ordinate values rounded using the supplied @p_round_xy/@p_round_zm decimal place values.
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    Supports LineStrings with CircularString elements.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_linestring (geometry) - Linestring geometry.
+    @p_length        (float) - Length defining position of point to be located. Valid values between 0.0 and @p_linestring.STLength()
+    @p_offset        (float) - Offset (distance) value left (negative) or right (positive) in SRID units.
+    @p_round_xy        (int) - Decimal degrees of precision to which calculated XY ordinates are rounded.
+    @p_round_zm        (int) - Decimal degrees of precision to which calculated ZM ordinates are rounded.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    point         (geometry) - Point at provided distance from start, offset to left or right.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    with data as (
+      select geometry::STGeomFromText('LINESTRING(-4 -4 0  1, 0  0 0  5.6, 10  0 0 15.61, 10 10 0 25.4)',0) as linestring
+      union all
+      select geometry::STGeomFromText('CIRCULARSTRING (3 6.325 NULL 0, 0 7 NULL 3.08, -3 6.325 NULL 6.15)',0) as linestring
+      union all 
+      select geometry::STGeomFromText('COMPOUNDCURVE(CIRCULARSTRING (3 6.3246 NULL 0, 0 7 NULL 3.08, -3 6.3246 NULL 6.15),(-3 6.3246 NULL 6.15, 0 0 NULL 10.1, 3 6.3246 NULL 20.2))',0) as linestring
+      union all
+      select geometry::STGeomFromText('COMPOUNDCURVE(CIRCULARSTRING (3 6.3246, 0 7, -3 6.3246),(-3 6.3246, 0 0, 3 6.3246))',0) as linestring
+    )
+    select a.linestring.STGeometryType() as line_type,
+           a.linestring.HasM as is_measured,
+           g.intValue as length,
+           offset.IntValue as offset,
+           [$(lrsowner)].[STFindPointByLength](a.linestring,g.IntValue,offset.IntValue,3,2).AsTextZM() as fPoint
+      from data as a
+           cross apply
+           [dbo].[generate_series](0,a.lineString.STLength(),a.linestring.STLength() / 4.0 ) as g
+           cross apply
+           [dbo].[generate_series](-1,1,1) as offset
+    order by line_type, is_measured, length
+    GO
+    
+    line_type      is_measured length offset fPoint
+    CircularString           1      0     -1 POINT (3.428 7.229 NULL 0)
+    CircularString           1      0      0 POINT (3 6.325 NULL 0)
+    CircularString           1      0      1 POINT (2.572 5.421 NULL 0)
+    CircularString           1      1     -1 POINT (2.364 7.643 NULL 0.99)
+    CircularString           1      1      0 POINT (2.069 6.687 NULL 0.99)
+    CircularString           1      1      1 POINT (1.774 5.732 NULL 0.99)
+    CircularString           1      2     -1 POINT (1.252 7.901 NULL 1.98)
+    CircularString           1      2      0 POINT (1.096 6.914 NULL 1.98)
+    CircularString           1      2      1 POINT (0.939 5.926 NULL 1.98)
+    CircularString           1      3     -1 POINT (0.115 7.999 NULL 2.98)
+    CircularString           1      3      0 POINT (0.1 6.999 NULL 2.98)
+    CircularString           1      3      1 POINT (0.086 5.999 NULL 2.98)
+    CircularString           1      4     -1 POINT (-1.025 7.934 NULL 3.97)
+    CircularString           1      4      0 POINT (-0.897 6.942 NULL 3.97)
+    CircularString           1      4      1 POINT (-0.769 5.951 NULL 3.97)
+    CircularString           1      5     -1 POINT (-2.144 7.707 NULL 4.96)
+    CircularString           1      5      0 POINT (-1.877 6.744 NULL 4.96)
+    CircularString           1      5      1 POINT (-1.609 5.78 NULL 4.96)
+    CircularString           1      6     -1 POINT (-3.22 7.324 NULL 5.95)
+    CircularString           1      6      0 POINT (-2.818 6.408 NULL 5.95)
+    CircularString           1      6      1 POINT (-2.415 5.493 NULL 5.95)
+    CompoundCurve            0      0     -1 POINT (3.429 7.228)
+    CompoundCurve            0      0      0 POINT (3 6.3246)
+    CompoundCurve            0      0      1 POINT (2.571 5.421)
+    CompoundCurve            0      5     -1 POINT (-2.144 7.707)
+    CompoundCurve            0      5      0 POINT (-1.876 6.744)
+    CompoundCurve            0      5      1 POINT (-1.608 5.78)
+    CompoundCurve            0     10     -1 POINT (-0.468 3.321)
+    CompoundCurve            0     10      0 POINT (-1.372 2.892)
+    CompoundCurve            0     10      1 POINT (-2.276 2.463)
+    CompoundCurve            0     15     -1 POINT (-0.133 2.054)
+    CompoundCurve            0     15      0 POINT (0.771 1.625)
+    CompoundCurve            0     15      1 POINT (1.675 1.196)
+    CompoundCurve            0     20     -1 POINT (2.01 6.572)
+    CompoundCurve            0     20      0 POINT (2.914 6.143)
+    CompoundCurve            0     20      1 POINT (3.818 5.714)
+    CompoundCurve            1      0     -1 POINT (3.429 7.228 NULL 0)
+    CompoundCurve            1      0      0 POINT (3 6.3246 NULL 0)
+    CompoundCurve            1      0      1 POINT (2.571 5.421 NULL 0)
+    CompoundCurve            1      5     -1 POINT (-2.144 7.707 NULL 4.96)
+    CompoundCurve            1      5      0 POINT (-1.876 6.744 NULL 4.96)
+    CompoundCurve            1      5      1 POINT (-1.608 5.78 NULL 4.96)
+    CompoundCurve            1     10     -1 POINT (-0.468 3.321 NULL 6.89)
+    CompoundCurve            1     10      0 POINT (-1.372 2.892 NULL 6.89)
+    CompoundCurve            1     10      1 POINT (-2.276 2.463 NULL 6.89)
+    CompoundCurve            1     15     -1 POINT (-0.133 2.054 NULL 11)
+    CompoundCurve            1     15      0 POINT (0.771 1.625 NULL 11)
+    CompoundCurve            1     15      1 POINT (1.675 1.196 NULL 11)
+    CompoundCurve            1     20     -1 POINT (2.01 6.572 NULL 13.5)
+    CompoundCurve            1     20      0 POINT (2.914 6.143 NULL 13.5)
+    CompoundCurve            1     20      1 POINT (3.818 5.714 NULL 13.5)
+    LineString               1      0     -1 POINT (-4.707 -3.293 0 1)
+    LineString               1      0      0 POINT (-4 -4 0 1)
+    LineString               1      0      1 POINT (-3.293 -4.707 0 1)
+    LineString               1      6     -1 POINT (0.343 1 0 5.73)
+    LineString               1      6      0 POINT (0.343 0 0 5.73)
+    LineString               1      6      1 POINT (0.343-1 0 5.73)
+    LineString               1     12     -1 POINT (6.343 1 0 8.07)
+    LineString               1     12      0 POINT (6.343 0 0 8.07)
+    LineString               1     12      1 POINT (6.343-1 0 8.07)
+    LineString               1     18     -1 POINT (9 2.343 0 16.5)
+    LineString               1     18      0 POINT (10 2.343 0 16.5)
+    LineString               1     18      1 POINT (11 2.343 0 16.5)
+    LineString               1     24     -1 POINT (9 8.343 0 18.79)
+    LineString               1     24      0 POINT (10 8.343 0 18.79)
+    LineString               1     24      1 POINT (11 8.343 0 18.79)
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - December 2017 - Original Coding.
+</pre>
+<a name="robo9"></a>
+<a name="LRS2fSTFindPointByMeasure2028201229"></a>
+<h1>10.  LRS/STFindPointByMeasure (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    STFindPointByMeasure -- Returns (possibly offset) point geometry at supplied measure along linestring.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function [$(lrsowner)].[STFindPointByMeasure] (
+               @p_linestring geometry,
+               @p_measure    Float,
+               @p_offset     Float = 0.0,
+               @p_round_xy   int   = 3,
+               @p_round_zm   int   = 2
+             )
+     Returns geometry 
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Given a measure, this function returns a geometry point at that measure.
+
+    If @p_linestring is not measured, the original geometry is returned.
+
+    If a non-zero/null value is suppied for @p_offset, the found point is offset (perpendicular to line) to the left (if @p_offset &lt; 0) or to the right (if @p_offset &gt; 0).
+
+    The returned point has its ordinate values rounded using the supplied @p_round_xy/@p_round_zm decimal place values.
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    Supports LineStrings with CircularString elements.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_linestring (geometry) - Linestring geometry with measures.
+    @p_measure       (float) - Measure defining position of point to be located.
+    @p_offset        (float) - Offset (distance) value left (negative) or right (positive) in SRID units.
+    @p_round_xy        (int) - Decimal degrees of precision to which calculated XY ordinates are rounded.
+    @p_round_zm        (int) - Decimal degrees of precision to which calculated ZM ordinates are rounded.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    point         (geometry) - Point at provided measure offset to left or right.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    -- Handle non-measured linestring
+    with data as (
+      select geometry::STGeomFromText('COMPOUNDCURVE(CIRCULARSTRING (3 6.3246, 0 7, -3 6.3246),(-3 6.3246, 0 0, 3 6.3246))',0) as linestring
+    )
+    select f.linestring.STEquals(f.fpoint) as equals
+      from (select [lrs].[STFindPointByMeasure](a.linestring,0,0,3,2) as fPoint,
+                   a.linestring
+              from data as a
+           ) f
+    go
+    
+    equals
+    1
+    
+    -- Process different linestrings
+    with data as (
+      select geometry::STGeomFromText('LINESTRING(-4 -4 0  1, 0  0 0  5.6, 10  0 0 15.61, 10 10 0 25.4)',0) as linestring
+      union all
+      select geometry::STGeomFromText('CIRCULARSTRING (3 6.325 NULL 0, 0 7 NULL 3.08, -3 6.325 NULL 6.15)',0) as linestring
+      union all 
+      select geometry::STGeomFromText('COMPOUNDCURVE(CIRCULARSTRING (3 6.3246 NULL 0, 0 7 NULL 3.08, -3 6.3246 NULL 6.15),(-3 6.3246 NULL 6.15, 0 0 NULL 10.1, 3 6.3246 NULL 20.2))',0) as linestring
+    )
+    select a.linestring.STGeometryType() as curve_type,
+           g.intValue as measure,
+           o.IntValue as offset,
+           [lrs].[STFindPointByMeasure](a.linestring,g.IntValue,o.IntValue,3,2).AsTextZM() as fPoint
+      from data as a
+           cross apply
+           [dbo].[generate_series](a.lineString.STPointN(1).M,
+                                   round(a.lineString.STPointN(a.linestring.STNumPoints()).M,0,1),
+                                   [lrs].[STMeasureRange](a.linestring) / 4.0 ) as g
+           cross apply
+           [dbo].[generate_series](-1, 1, 1) as o
+    order by curve_type, measure
+    GO
+    
+    curve_type     measure offset fPoint
+    CircularString       0     -1 POINT (3.428 7.229 NULL 0)
+    CircularString       0      0 POINT (3 6.325 NULL 0)
+    CircularString       0      1 POINT (2.572 5.421 NULL 0)
+    CircularString       1     -1 POINT (2.355 7.646 NULL 1)
+    CircularString       1      0 POINT (2.061 6.69 NULL 1)
+    CircularString       1      1 POINT (1.767 5.734 NULL 1)
+    CircularString       2     -1 POINT (1.234 7.904 NULL 2)
+    CircularString       2      0 POINT (1.08 6.916 NULL 2)
+    CircularString       2      1 POINT (0.925 5.928 NULL 2)
+    CircularString       3     -1 POINT (0.086 8 NULL 3)
+    CircularString       3      0 POINT (0.076 7 NULL 3)
+    CircularString       3      1 POINT (0.065 6 NULL 3)
+    CircularString       4     -1 POINT (-1.063 7.929 NULL 4)
+    CircularString       4      0 POINT (-0.93 6.938 NULL 4)
+    CircularString       4      1 POINT (-0.797 5.947 NULL 4)
+    CircularString       5     -1 POINT (-2.19 7.695 NULL 5)
+    CircularString       5      0 POINT (-1.916 6.733 NULL 5)
+    CircularString       5      1 POINT (-1.643 5.771 NULL 5)
+    CircularString       6     -1 POINT (-3.271 7.301 NULL 6)
+    CircularString       6      0 POINT (-2.863 6.388 NULL 6)
+    CircularString       6      1 POINT (-2.454 5.476 NULL 6)
+    CompoundCurve        0     -1 POINT (3.429 7.228 NULL 0)
+    CompoundCurve        0      0 POINT (3 6.3246 NULL 0)
+    CompoundCurve        0      1 POINT (2.571 5.421 NULL 0)
+    CompoundCurve        5     -1 POINT (-2.19 7.694 NULL 5)
+    CompoundCurve        5      0 POINT (-1.916 6.733 NULL 5)
+    CompoundCurve        5      1 POINT (-1.642 5.771 NULL 5)
+    CompoundCurve       10     -1 POINT (-7 5.325 NULL 10)
+    CompoundCurve       10      0 POINT (-7 6.325 NULL 10)
+    CompoundCurve       10      1 POINT (-7 7.325 NULL 10)
+    CompoundCurve       15     -1 POINT (-12 5.325 NULL 15)
+    CompoundCurve       15      0 POINT (-12 6.325 NULL 15)
+    CompoundCurve       15      1 POINT (-12 7.325 NULL 15)
+    CompoundCurve       20     -1 POINT (-17 5.325 NULL 20)
+    CompoundCurve       20      0 POINT (-17 6.325 NULL 20)
+    CompoundCurve       20      1 POINT (-17 7.325 NULL 20)
+    LineString           1     -1 POINT (-0.707 0.707 NULL 1)
+    LineString           1      0 POINT (-4 -4 0 1)
+    LineString           1      1 POINT (0.707 -0.707 NULL 1)
+    LineString           7     -1 POINT (1.4 1 NULL 7)
+    LineString           7      0 POINT (1.4 0 NULL 7)
+    LineString           7      1 POINT (1.4-1 NULL 7)
+    LineString          13     -1 POINT (7.4 1 NULL 13)
+    LineString          13      0 POINT (7.4 0 NULL 13)
+    LineString          13      1 POINT (7.4-1 NULL 13)
+    LineString          19     -1 POINT (9 3.39 NULL 19)
+    LineString          19      0 POINT (10 3.39 NULL 19)
+    LineString          19      1 POINT (11 3.39 NULL 19)
+    LineString          25     -1 POINT (9 9.39 NULL 25)
+    LineString          25      0 POINT (10 9.39 NULL 25)
+    LineString          25      1 POINT (11 9.39 NULL 25)
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - December 2017 - Original Coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo10"></a>
+<a name="LRS2fSTFindPointByRatio2028201229"></a>
+<h1>11.  LRS/STFindPointByRatio (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    STFindPointByRatio -- Returns (possibly offset) point geometry at supplied length ratio along linestring.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function [$(lrsowner)].[STFindPointByRatio] (
+               @p_linestring geometry,
+               @p_ratio      Float,
+               @p_offset     Float = 0.0,
+               @p_round_xy   int   = 3,
+               @p_round_zm   int   = 2
+             )
+     Returns geometry 
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Given a ratio (0 to 1.0), this function returns a geometry point at the position described by that ratio.
+
+    Ratio is combined with length, so @p_ratio of 1.0 is equivalent to @p_linestring.STLength() ie @p_linestring.STEndPoint().
+
+    For example, @p_ratio value of 0.5 returns point at exact midpoint of linestring (ct centroid).
+
+    If a non-zero/null value is suppied for @p_offset, the found point is offset (perpendicular to line) to the left (if @p_offset &lt; 0) or to the right (if @p_offset &gt; 0).
+
+    The returned point has its ordinate values rounded using the supplied @p_round_xy/@p_round_zm decimal place values.
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    Supports LineStrings with CircularString elements.
+    Wrapper over STFindPointByLength
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_linestring (geometry) - Linestring (including CircularString) geometry.
+    @p_ratio         (float) - Length ratio between 0.0 and 1.0. If Null, @p_linestring is returned.
+    @p_offset        (float) - Offset (distance) value left (negative) or right (positive) in STSrid units.
+    @p_round_xy        (int) - Decimal degrees of precision to which calculated XY ordinates are rounded.
+    @p_round_zm        (int) - Decimal degrees of precision to which calculated ZM ordinates are rounded.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    point         (geometry) - Point at provided length ratio from start, with optional offset to left or right.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    -- LineString test.
+    select f.ratio,
+           o.IntValue as offset,
+           [$(lrsowner)].[STFindPointByRatio] (
+              geometry::STGeomFromText('LINESTRING(-4 -4 0  1, 0  0 0  5.6, 10  0 0 15.61, 10 10 0 25.4)',0),
+              f.ratio,
+              o.IntValue,
+              3,
+              2
+           ).AsTextZM() as fPoint
+      from (select 0.01 * CAST(t.IntValue as numeric) as ratio
+              from [dbo].[Generate_Series](1,100,10) as t
+              ) as f
+              cross apply 
+            [dbo].[generate_series](-1,1,1) as o
+      order by f.ratio
+    GO
+
+    ratio offset fPoint
+    0.01      -1  POINT (-4.526 -3.112 0 1.05)
+    0.01       0  POINT (-3.819 -3.819 0 1.05)
+    0.01       1  POINT (-3.112 -4.526 0 1.05)
+    0.11      -1  POINT (-2.711 -1.297 0 1.51)
+    0.11       0  POINT (-2.004 -2.004 0 1.51)
+    0.11       1  POINT (-1.297 -2.711 0 1.51)
+    0.21      -1  POINT (-0.897 0.517 0 1.97)
+    0.21       0  POINT (-0.19 -0.19 0 1.97)
+    0.21       1  POINT (0.517 -0.897 0 1.97)
+    0.31      -1  POINT (2.297 1 0 6.5)
+    0.31       0  POINT (2.297 0 0 6.5)
+    0.31       1  POINT (2.297 -1 0 6.5)
+    0.41      -1  POINT (4.862 1 0 7.5)
+    0.41       0  POINT (4.862 0 0 7.5)
+    0.41       1  POINT (4.862 -1 0 7.5)
+    0.51      -1  POINT (7.428 1 0 8.5)
+    0.51       0  POINT (7.428 0 0 8.5)
+    0.51       1  POINT (7.428 -1 0 8.5)
+    0.61      -1  POINT (9.994 1 0 9.5)
+    0.61       0  POINT (9.994 0 0 9.5)
+    0.61       1  POINT (9.994 -1 0 9.5)
+    0.71      -1  POINT (9 2.56 0 16.59)
+    0.71       0  POINT (10 2.56 0 16.59)
+    0.71       1  POINT (11 2.56 0 16.59)
+    0.81      -1  POINT (9 5.125 0 17.57)
+    0.81       0  POINT (10 5.125 0 17.57)
+    0.81       1  POINT (11 5.125 0 17.57)
+    0.91      -1  POINT (9 7.691 0 18.54)
+    0.91       0  POINT (10 7.691 0 18.54)
+    0.91       1  POINT (11 7.691 0 18.54)
+    
+    -- Circular Curve test.
+    select f.ratio,
+           o.IntValue as offset,
+           [$(lrsowner)].[STFindPointByRatio] (
+              geometry::STGeomFromText('COMPOUNDCURVE(CIRCULARSTRING (3 6.3246, 0 7, -3 6.3246),(-3 6.3246, 0 0, 3 6.3246))',0),
+              f.ratio,
+              o.IntValue,
+              3,
+              2
+           ).AsTextZM() as fPoint
+      from (select 0.01 * CAST(t.IntValue as numeric) as ratio
+              from [dbo].[Generate_Series](1,100,10) as t
+           ) as f
+           cross apply 
+           [$(owner)].[generate_series](-1,1,1) as o
+      order by f.ratio
+    GO
+    
+    ratio offset fPoint
+    0.01      -1  POINT (3.219 7.324)
+    0.01       0  POINT (2.816 6.409)
+    0.01       1  POINT (2.414 5.493)
+    0.11      -1  POINT (1.001 7.937)
+    0.11       0  POINT (0.876 6.945)
+    0.11       1  POINT (0.751 5.953)
+    0.21      -1  POINT (-1.299 7.894)
+    0.21       0  POINT (-1.137 6.907)
+    0.21       1  POINT (-0.974 5.92)
+    0.31      -1  POINT (-2.07 6.698)
+    0.31       0  POINT (-2.974 6.269)
+    0.31       1  POINT (-3.878 5.84)
+    0.41      -1  POINT (-1.204 4.873)
+    0.41       0  POINT (-2.108 4.444)
+    0.41       1  POINT (-3.012 4.015)
+    0.51      -1  POINT (-0.338 3.048)
+    0.51       0  POINT (-1.242 2.619)
+    0.51       1  POINT (-2.146 2.19)
+    0.61      -1  POINT (0.528 1.223)
+    0.61       0  POINT (-0.376 0.794)
+    0.61       1  POINT (-1.28 0.365)
+    0.71      -1  POINT (-0.415 1.46)
+    0.71       0  POINT (0.489 1.031)
+    0.71       1  POINT (1.393 0.602)
+    0.81      -1  POINT (0.451 3.285)
+    0.81       0  POINT (1.355 2.856)
+    0.81       1  POINT (2.259 2.427)
+    0.91      -1  POINT (1.317 5.111)
+    0.91       0  POINT (2.221 4.682)
+    0.91       1  POINT (3.125 4.253)
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - December 2017 - Original Coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo11"></a>
+<a name="LRS2fSTFindSegmentByLengthRange2028201229"></a>
+<h1>12.  LRS/STFindSegmentByLengthRange (2012) [ Methods ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    STFindSegmentByLengthRange -- Extracts, and possibly offet, linestring using supplied start and end lengths and @p_offset value.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function [$(lrsowner)].[STFindSegmentByLengthRange] (
+               @p_linestring   geometry,
+               @p_start_length Float,
+               @p_end_length   Float = null,
+               @p_offset       Float = 0,
+               @p_round_xy     int   = 3,
+               @p_round_zm     int   = 2
+             )
+     Returns geometry 
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Given a start and end length, this function extracts the line segment defined between them (a point if start=end).
+    If a non-zero value is suppied for @p_offset, the extracted line is then offset to the left (if @p_offset &lt; 0) or
+    to the right (if @p_offset &gt; 0).
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    Supports linestrings with CircularString elements.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_linestring (geometry) - Linestring geometry.
+    @p_start_measure (float) - Measure defining start point of located geometry.
+    @p_end_measure   (float) - Measure defining end point of located geometry.
+    @p_offset        (float) - Offset (distance) value left (negative) or right (positive) in p_units.
+    @p_round_xy        (int) - Decimal degrees of precision to which calculated XY ordinates are rounded.
+    @p_round_zm        (int) - Decimal degrees of precision to which calculated ZM ordinates are rounded.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    line          (geometry) - Line between start/end measure with offset.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    with data as (
+      select geometry::STGeomFromText('LINESTRING(-4 -4 0  1, 0  0 0  5.6, 10  0 0 15.61, 10 10 0 25.4)',0) as linestring
+      union all
+      select geometry::STGeomFromText('COMPOUNDCURVE(CIRCULARSTRING (3 6.3246, 0 7, -3 6.3246),(-3 6.3246, 0 0, 3 6.3246))',0) as linestring
+      union all
+      select geometry::STGeomFromText('MULTILINESTRING ((-4 -4 NULL 0, 0 0 NULL 5.657), (10 0 NULL 5.657, 10 10 NULL 15.657), (11 11 NULL 15.657, 12 12 NULL 17.071))',0) as linestring
+    )
+    select a.linestring.STGeometryType() as geom_type,
+           CAST(g.IntValue+1 as numeric) / 2.0 as start_length,
+           g.intValue+1.0                      as end_length,
+           [$(lrsowner)].[STFindSegmentByLengthRange](
+                    a.linestring,
+                    CAST(g.IntValue   as numeric) / 2.0,
+                    CAST(g.IntValue+1 as numeric),
+                    0.0,
+                    3,2
+           ).AsTextZM() as fsegment
+      from data as a
+           cross apply
+           generate_series(0,
+                           round(a.lineString.STLength(),0),
+                           round(a.lineString.STLength(),0)/8.0 ) as g
+     order by geom_type, start_length
+    GO
+    
+    geom_type       start_length end_length fsegment
+    CompoundCurve    0.5          1.0       CIRCULARSTRING (2.069 6.687, 0 7, 3 6.325)
+    CompoundCurve    1.5          3.0       CIRCULARSTRING (0.1 6.999, 0 7, 2.069 6.687)
+    CompoundCurve    2.5          5.0       CIRCULARSTRING (-1.876 6.744, 0 7, 1.096 6.914)
+    CompoundCurve    3.5          7.0       COMPOUNDCURVE ((-2.657 5.603, -3 6.325), CIRCULARSTRING (-3 6.325, 0 7, 0.1 6.999))
+    CompoundCurve    4.5          9.0       COMPOUNDCURVE (CIRCULARSTRING (-0.897 6.942, 0 7, -3 6.325), (-3 6.325, -1.8 3.796))
+    CompoundCurve    5.5         11.0       COMPOUNDCURVE (CIRCULARSTRING (-1.876 6.744, 0 7, -3 6.325), (-3 6.325, -0.943 1.989))
+    CompoundCurve    6.5         13.0       COMPOUNDCURVE (CIRCULARSTRING (-2.817 6.408, 0 7, -3 6.325), (-3 6.325, -0.086 0.182))
+    CompoundCurve    7.5         15.0       LINESTRING (0.771 1.625, 0 0, -2.657 5.603)
+    CompoundCurve    8.5         17.0       LINESTRING (1.628 3.432, 0 0, -2.229 4.699)
+    CompoundCurve    9.5         19.0       LINESTRING (2.485 5.239, 0 0, -1.8 3.796)
+    CompoundCurve   10.5         21.0       LINESTRING (3 6.325, 0 0, -1.372 2.892)
+    LineString       0.5          1.0       LINESTRING (-3.293 -3.293 0 1.81, -4 -4 0 1)
+    LineString       2.0          4.0       LINESTRING (-1.172 -1.172 0 4.25, -2.939 -2.939 0 2.22)
+    LineString       3.5          7.0       LINESTRING (1.343 0 0 6.94, 0 0 0 5.6, -1.879 -1.879 0 3.44)
+    LineString       5.0         10.0       LINESTRING (4.343 0 0 9.95, 0 0 0 5.6, -0.818 -0.818 0 4.66)
+    LineString       6.5         13.0       LINESTRING (7.343 0 0 12.95, 0.343 0 0 5.94)
+    LineString       8.0         16.0       LINESTRING (10 0.343 0 15.95, 10 0 0 15.61, 1.843 0 0 7.44)
+    LineString       9.5         19.0       LINESTRING (10 3.343 0 18.88, 10 0 0 15.61, 3.343 0 0 8.95)
+    LineString      11.0         22.0       LINESTRING (10 6.343 0 21.82, 10 0 0 15.61, 4.843 0 0 10.45)
+    LineString      12.5         25.0       LINESTRING (10 9.343 0 24.76, 10 0 0 15.61, 6.343 0 0 11.95)
+    MultiLineString  0.5          1.0       LINESTRING (-3.293 -3.293 NULL 1, -4 -4 NULL 0)
+    MultiLineString  1.5          3.0       LINESTRING (-1.879 -1.879 NULL 3, -3.293 -3.293 NULL 1)
+    MultiLineString  2.5          5.0       LINESTRING (-0.464 -0.464 NULL 5, -2.586 -2.586 NULL 2)
+    MultiLineString  3.5          7.0       MULTILINESTRING ((10 1.343 NULL 7, 10 0 NULL 5.66), (0 0 NULL 5.66, -1.879 -1.879 NULL 3))
+    MultiLineString  4.5          9.0       MULTILINESTRING ((10 3.343 NULL 9, 10 0 NULL 5.66), (0 0 NULL 5.66, -1.172 -1.172 NULL 4))
+    MultiLineString  5.5         11.0       MULTILINESTRING ((10 5.343 NULL 11, 10 0 NULL 5.66), (0 0 NULL 5.66, -0.464 -0.464 NULL 5))
+    MultiLineString  6.5         13.0       LINESTRING (10 7.343 NULL 13, 10 0.343 NULL 6)
+    MultiLineString  7.5         15.0       LINESTRING (10 9.343 NULL 15, 10 1.343 NULL 7)
+    MultiLineString  8.5         17.0       MULTILINESTRING ((11.95 11.95 NULL 17, 11 11 NULL 15.66), (10 10 NULL 15.66, 10 2.343 NULL 8))
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - December 2017 - Original Coding.
+</pre>
+<a name="robo12"></a>
+<a name="LRS2fSTFindSegmentByMeasureRange2028201229"></a>
+<h1>13.  LRS/STFindSegmentByMeasureRange (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    STFindSegmentByMeasureRange -- Extracts, and possibly offet, linestring using supplied start and end measures and @p_offset value.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function [$(lrsowner)].[STFindSegmentByMeasureRange] (
+               @p_linestring    geometry,
+               @p_start_measure Float,
+               @p_end_measure   Float = null,
+               @p_offset        Float = 0,
+               @p_round_xy      int   = 3,
+               @p_round_zm      int   = 2
+             )
+     Returns geometry 
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Given a start and end measure, this function extracts the line segment defined between them (a point if start=end).
+
+    If a non-zero value is suppied for @p_offset, the extracted line is then offset to the left (if @p_offset &lt; 0) or to the right (if @p_offset &gt; 0).
+
+    Computes Z and M values if exist on @p_linestring.
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    Supports linestrings with CircularString elements.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_linestring (geometry) - Linestring geometry with measures.
+    @p_start_measure (float) - Measure defining start point of located geometry.
+    @p_end_measure   (float) - Measure defining end point of located geometry.
+    @p_offset        (float) - Offset (distance) value left (negative) or right (positive) in SRID units.
+    @p_round_xy        (int) - Decimal degrees of precision to which calculated XY ordinates are rounded.
+    @p_round_zm        (int) - Decimal degrees of precision to which calculated ZM ordinates are rounded.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    line          (geometry) - Line between start/end measure with offset.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - December 2017 - Original Coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo13"></a>
+<a name="LRS2fSTFindSegmentByZRange2028201229"></a>
+<h1>14.  LRS/STFindSegmentByZRange (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    STFindSegmentByZRange -- Extracts, and possibly offet, linestring using supplied start and end measures and @p_offset value.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function [$(lrsowner)].[STFindSegmentByZRange] (
+               @p_linestring    geometry,
+               @p_start_Z Float,
+               @p_end_Z   Float = null,
+               @p_offset        Float = 0,
+               @p_round_xy      int   = 3,
+               @p_round_zm      int   = 2
+             )
+     Returns geometry 
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Given a start and end measure, this function extracts the line segment defined between them (a point if start=end).
+
+    If a non-zero value is suppied for @p_offset, the extracted line is then offset to the left (if @p_offset &lt; 0) or to the right (if @p_offset &gt; 0).
+
+    Computes Z and M values if exist on @p_linestring.
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    Supports linestrings with CircularString elements.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_linestring (geometry) - Linestring geometry with measures.
+    @p_start_Z (float) - Measure defining start point of located geometry.
+    @p_end_Z   (float) - Measure defining end point of located geometry.
+    @p_offset        (float) - Offset (distance) value left (negative) or right (positive) in SRID units.
+    @p_round_xy        (int) - Decimal degrees of precision to which calculated XY ordinates are rounded.
+    @p_round_zm        (int) - Decimal degrees of precision to which calculated ZM ordinates are rounded.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    line          (geometry) - Line between start/end measure with offset.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - December 2017 - Original Coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo14"></a>
+<a name="LRS2fSTInterpolatePoint2028201229"></a>
+<h1>15.  LRS/STInterpolatePoint (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    STInterpolatePoint -- Returns value of the measure dimension or length of a point on the provided linesting closest to the provided point.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function [$(lrsowner)].[STInterpolatePoint] (
+               @p_linestring geometry,
+               @p_point      geometry,
+               @p_round_xy   int   = 3,
+               @p_round_zm   int   = 2
+             )
+     Returns float
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    This function snaps supplied point to @p_linestring, computes and returns the measure value of the snapped point, or length to the snapped point.
+
+    @p_linestring can be measured or unmeasured.
+
+    Returned value is rounded to @p_round_zm decimal digits of precision.
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    IS a wrapper over STFindMeasureByPoint that returns Measure or length.
+
+    Is implementation of PostGIS ST_InterpolatePoint
+
+    Supports linestrings with CircularString elements.
+
+    Srid of @p_linestring and @p_point must be the same.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_linestring (geometry) - Measured linestring with or without Z ordinates.
+    @p_point      (geometry) - Point near to linestring.
+    @p_round_xy        (int) - Decimal digits of precision for XY ordinates.
+    @p_round_zm        (int) - Decimal digits of precision for M ordinate.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    measure value    (float) - Measure of point found on @p_linestring.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    Print '  [$(lrsowner)].[STInterpolatePoint] ...';
+    GO
+    Print '....Measured LineStrings';
+    select [lrs].[STInterpolatePoint] (
+             geometry::STGeomFromText('LINESTRING(-4 -4 0 1, 0 0 0 5.6, 10 0 0 15.61, 10 10 0 25.4)',28355),
+             geometry::Point(8,8,28355),
+             3,2) as measure
+    union all
+    select [lrs].[STInterpolatePoint] (
+             geometry::STGeomFromText('LINESTRING(-4 -4 0 1, 0 0 0 5.6, 10 0 0 15.61, 10 10 0 25.4)',28355),
+             geometry::Point(10,0,28355),
+             3,2) as measure
+    GO
+    
+    measure
+    23.44
+    15.61
+    
+    Print '....UnMeasured LineStrings';
+    select [lrs].[STInterpolatePoint] (
+             geometry::STGeomFromText('LINESTRING(-4 -4, 0 0, 10 0, 10 10)',28355),
+             geometry::Point(8,8,28355),
+             3,3) as measure
+    union all
+    select [lrs].[STInterpolatePoint] (
+             geometry::STGeomFromText('LINESTRING(-4 -4, 0 0, 10 0, 10 10)',28355),
+             geometry::Point(10,0,28355),
+             3,3) as measure
+    GO
+    
+    measure
+    23.657
+    15.657
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - January  2013 - Original coding.
+    Simon Greener - December 2017 - Port to SQL Server (TSQL).
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo15"></a>
+<a name="LRS2fSTIsMeasureDecreasing2028201229"></a>
+<h1>16.  LRS/STIsMeasureDecreasing (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    STIsMeasureDecreasing -- Checks if M values decrease in value over the whole linestring.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function STIsMeasureDecreasing (
+      @p_linestring geometry
+    )
+   Returns varchar(5)
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Checks all measures of all vertices in a linestring from start to end.
+    Computes difference between each pair of measures. 
+    If all measure differences decrease then TRUE is returned, otherwise FALSE. 
+    For non-measured line-strings the value is always TRUE.
+    Supports Linestrings with CircularString elements (2012).
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    boolean (varchar 5) - TRUE if measures are decreasing, FALSE otherwise.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    select [lrs].[STIsMeasureDecreasing](geometry::STGeomFromText('MULTILINESTRING((1 1 2 3,2 2 3 4),(3 3 4 5,4 4 5 6))',0)) as is_decreasing
+    union all
+    select [lrs].[STIsMeasureDecreasing](geometry::STGeomFromText('MULTILINESTRING((4 4 5 6,3 3 4 5),(2 2 3 4,1 1 2 3))',0)) as is_decreasing
+    union all
+    select [lrs].[STIsMeasureDecreasing](geometry::STGeomFromText('CIRCULARSTRING (3 6.325 NULL 0, 0 7 NULL 3.08, -3 6.325 NULL 6.15)',0)) as is_decreasing
+    GO
+ 
+    is_decreasing
+    FALSE
+    TRUE
+    FALSE
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - January  2013 - Original Coding.
+    Simon Greener - December 2017 - Port to SQL Server.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2012-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo16"></a>
+<a name="LRS2fSTIsMeasureIncreasing2028201229"></a>
+<h1>17.  LRS/STIsMeasureIncreasing (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    STIsMeasureIncreasing -- Checks if M values increase in value over the whole linestring.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function STIsMeasureIncreasing (
+      @p_linestring geometry
+    )
+   Returns varchar(5)
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Checks all measures of all vertices in a linestring from start to end.
+    Computes difference between each pair of measures. 
+    If all measure differences increase then TRUE is returned, otherwise FALSE. 
+    For non-measured line-strings the value is always TRUE.
+    Supports Linestrings with CircularString elements (2012).
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    boolean (varchar 5) - TRUE if measures are increasing, FALSE otherwise.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    select [lrs].[STIsMeasureIncreasing](geometry::STGeomFromText('MULTILINESTRING((1 1 2 3, 2 2 3 4),(3 3 4 5,4 4 5 6))',0)) as is_increasing
+    union all
+    select [lrs].[STIsMeasureIncreasing]([dbo].[STReverse](geometry::STGeomFromText('MULTILINESTRING((1 1 2 3, 2 2 3 4),(3 3 4 5,4 4 5 6))',0),1,1)) as is_increasing
+    union all
+    select [lrs].[STIsMeasureIncreasing](geometry::STGeomFromText('CIRCULARSTRING (3 6.325 NULL 0, 0 7 NULL 3.08, -3 6.325 NULL 6.15)',0)) as is_increasing
+    GO
+    
+    is_increasing
+    TRUE
+    FALSE
+    TRUE
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - January  2013 - Original Coding.
+    Simon Greener - December 2017 - Port to SQL Server.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2012-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo17"></a>
+<a name="LRS2fSTLineInterpolatePoint2028201229"></a>
+<h1>18.  LRS/STLineInterpolatePoint (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    STLineInterpolatePoint -- Returns point geometry at supplied fraction along linestring.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function [$(lrsowner)].[STLineInterpolatePoint] (
+               @p_linestring geometry,
+               @p_fraction   Float
+               @p_round_xy   int   = 3,
+               @p_round_zm   int   = 2
+             )
+     Returns geometry 
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Given a fraction between 0 and 1.0, this function returns a geometry point at the position described by that ratio.
+
+    Ratio is combined with length, so @p_ratio of 1.0 is equivalent to @p_linestring.STLength() ie @p_linestring.STEndPoint().
+    For example, @p_ratio value of 0.5 returns point at exact midpoint of linestring (ct centroid).
+
+    Supports measured and unmeasured linestrings.
+
+    Supports LineStrings with CircularString elements.
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    Wrapper over lrs.STFindPointByRatio
+
+    Implements PostGIS ST_LineInterpolatePoint function.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_linestring (geometry) - Linestring (including CircularString) geometry.
+    @p_ratio         (float) - Length ratio between 0.0 and 1.0. If Null, @p_linestring is returned.
+    @p_round_xy        (int) - Decimal degrees of precision to which calculated XY ordinates are rounded.
+    @p_round_zm        (int) - Decimal degrees of precision to which calculated ZM ordinates are rounded.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    point         (geometry) - Point at provided measure/length fraction from start.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    -- Linestring
+    select f.fraction,
+           [$(lrsowner)].[STLineInterpolatePoint] (
+              @p_linestring geometry::STGeomFromText('LINESTRING(-4 -4 0  1, 0  0 0  5.6, 10  0 0 15.61, 10 10 0 25.4)',0),
+              @p_fraction   f.fraction,
+              @p_round_xy   4,
+              @p_round_zm   3
+           ).AsTextZM() as fPoint
+      from (select 0.01 * CAST(t.IntValue as numeric) as fraction
+              from [dbo].[Generate_Series](1,100,10) as t
+           ) as f
+      order by f.fraction
+    GO
+    
+    fraction fPoint
+    0.01     POINT (-3.8186 -3.8186 0 1.046)
+    0.11     POINT (-2.0044 -2.0044 0 1.506)
+    0.21     POINT (-0.1902 -0.1902 0 1.966)
+    0.31     POINT (2.2968 0 0 6.496)
+    0.41     POINT (4.8625 0 0 7.497)
+    0.51     POINT (7.4281 0 0 8.498)
+    0.61     POINT (9.9938 0 0 9.499)
+    0.71     POINT (10 2.5595 0 16.587)
+    0.81     POINT (10 5.1252 0 17.566)
+    0.91     POINT (10 7.6909 0 18.545)
+ 
+    -- Unmeasured 2D Compound curve test.
+    select f.fraction,
+           [$(lrsowner)].[STLineInterpolatePoint] (
+              geometry::STGeomFromText('COMPOUNDCURVE(CIRCULARSTRING (3 6.3246, 0 7, -3 6.3246),(-3 6.3246, 0 0, 3 6.3246))',0),
+              f.fraction,
+              4,
+              3
+           ).AsTextZM() as fPoint
+      from (select 0.01 * CAST(t.IntValue as numeric) as fraction
+              from [dbo].[Generate_Series](1,100,10) as t
+           ) as f
+      order by f.fraction
+    GO
+
+    fraction fPoint
+    0.01     POINT (2.8163 6.4085)
+    0.11     POINT (0.876 6.945)
+    0.21     POINT (-1.1367 6.9071)
+    0.31     POINT (-2.9736 6.269)
+    0.41     POINT (-2.1079 4.4439)
+    0.51     POINT (-1.2421 2.6187)
+    0.61     POINT (-0.3764 0.7935)
+    0.71     POINT (0.4893 1.0316)
+    0.81     POINT (1.3551 2.8568)
+    0.91     POINT (2.2208 4.682)
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - July 2019 - Original Coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2019 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo18"></a>
+<a name="LRS2fSTLineLocatePoint202028201229"></a>
+<h1>19.  LRS/STLineLocatePoint  (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    STLineLocatePoint -- Returns a float between 0 and 1 representing the location of the closest point on LineString to the given Point
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function [$(lrsowner)].[STLineLocatePoint] (
+               @p_linestring geometry,
+               @p_point      geometry,
+               @p_round_xy   int   = 3,
+               @p_round_zm   int   = 2
+             )
+     Returns geometry
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Given a point near a the supplied measure @p_linestring, this function returns the measure/length ratio of the found positions. 
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    Is identical to PostGIS's ST_LineLocatePoint.
+
+    Srid of @p_linestring and @p_point must be the same.
+
+    If @p_linestring is measured ratio returned is measure of located point / MeasureRange of linestring.
+
+    If @p_linestring is not measured the ratio returned is position of located point from start / STLenth of linestring.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_linestring (geometry) - Measured linestring with or without Z ordinates.
+    @p_point      (geometry) - Point near to linestring.
+    @p_round_xy        (int) - Decimal degrees of precision to which calculated XY ordinates are rounded.
+    @p_round_zm        (int) - Decimal degrees of precision to which calculated ZM ordinates are rounded.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    ratio value      (float) - Ratio of  point found on @p_linestring.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>   select [$(lrsowner)].[STLineLocatePoint] (
+              geometry::STGeomFromText('LINESTRING(-4 -4 0 1, 0 0 0 5.6, 10 0 0 15.61, 10 10 0 25.4)',28355),
+              geometry::Point(8,8,28355),
+              default,
+              default
+          ) as ratio
+    union all
+    select [lrs].[STLineLocatePoint] (
+             geometry::STGeomFromText('LINESTRING(-4 -4,0 0,10 0,10 10)',28355),
+             geometry::Point(10,0,28355),
+             4,
+             8
+          ) as ratio
+    GO
+
+    ratio
+    23.44
+    15.61
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - July 2019 
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2019 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo19"></a>
+<a name="LRS2fSTLineSubstring2028201229"></a>
+<h1>20.  LRS/STLineSubstring (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>  STLineSubstring -- Returns a substring of the providec linestring starting and ending at the given fractions (between 0 and 1) of total 2d length or measure range.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function [$(lrsowner)].[STLineSubstring] (
+               @p_linestring     geometry,
+               @p_start_fraction Float,
+               @p_end_fraction   Float = null,
+               @p_offset         Float = 0,
+               @p_round_xy       int   = 3,
+               @p_round_zm       int   = 2
+             )
+     Returns geometry 
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Given a start and end measure, this function extracts the line segment defined between them (a point if start=end).
+
+    If a non-zero value is suppied for @p_offset, the extracted line is then offset to the left (if @p_offset &lt; 0) or to the right (if @p_offset &gt; 0).
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    Supports linestrings with CircularString elements.
+
+    Supports measured and unmeasured linestrings.
+
+    Is wrapper over STFindSegmentByMeasureRange.
+
+    Provides implementation of PostGIS's ST_LocateBetween(geometry geomA, float8 measure_start, float8 measure_end, float8 offset);
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_linestring  (geometry) - Linestring geometry with measures.
+    @p_start_fraction (float) - Value defining start point of located geometry.
+    @p_end_fraction   (float) - Value defining end point of located geometry.
+    @p_offset         (float) - Offset (distance) value left (negative) or right (positive) in SRID units.
+    @p_round_xy         (int) - Decimal degrees of precision to which calculated XY ordinates are rounded.
+    @p_round_zm         (int) - Decimal degrees of precision to which calculated ZM ordinates are rounded.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    line          (geometry) - Line between start/end measure with offset.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    -- Measured Linestring
+    Print '....Line SubString';
+    select [lrs].[STLineSubstring] (
+             geometry::STGeomFromText('LINESTRING(-4 -4 0 1, 0 0 0 5.6, 10 0 0 15.61, 10 10 0 25.4)',28355),
+             0.0,1.0,0.0,3,2).AsTextZM() as line
+    union all
+    select [lrs].[STLineSubstring] (
+             geometry::STGeomFromText('LINESTRING(-4 -4 0 1, 0 0 0 5.6, 10 0 0 15.61, 10 10 0 25.4)',28355),
+             0.0,0.5,0.0,3,2).AsTextZM() as line
+    GO
+    
+    line
+    LINESTRING (-4 -4 0 1, 0 0 0 5.6, 10 0 0 15.61, 10 10 0 25.4)
+    LINESTRING (-4 -4 0 1, 0 0 0 5.6, 13.2 0 0 13.2)
+    
+     -- UnMeasured LineStrings';
+    select [lrs].[STLineSubstring] (
+             geometry::STGeomFromText('LINESTRING(-4 -4, 0 0, 10 0, 10 10)',28355),
+             0.0,1.0,0.0,3,2).AsTextZM() as line
+    union all
+    select [lrs].[STLineSubstring] (
+             geometry::STGeomFromText('LINESTRING(-4 -4, 0 0, 10 0, 10 10)',28355),
+             0.0,0.5,0.0,3,2).AsTextZM() as line
+    GO
+    
+    line
+    LINESTRING (-4 -4, 0 0, 10 0, 10 10)
+    LINESTRING (-4 -4, 0 0, 7.172 0)
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - July 2019 - Original Coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2019 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo20"></a>
+<a name="LRS2fSTLocateAlong2028201229"></a>
+<h1>21.  LRS/STLocateAlong (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    STLocateAlong -- Returns (possibly offset) point geometry at supplied measure along linestring.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function [$(lrsowner)].[STLocateAlong] (
+               @p_linestring geometry,
+               @p_measure    Float,
+               @p_offset     Float = 0.0,
+               @p_round_xy   int   = 3,
+               @p_round_zm   int   = 2
+             )
+     Returns geometry 
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    This function is identical to STFindPointByName and so is a synonym for it.
+
+    Given a measure, this function returns a geometry point at that measure.
+
+    Only the measure's first point is returned as measures are assume to be organised in ascending or descending order and so are unique.
+
+    If a non-zero/null value is suppied for @p_offset, the found point is offset (perpendicular to line) to the left (if @p_offset &lt; 0) or to the right (if @p_offset &gt; 0).
+
+    Computed point's ordinate values are rounded to @p_round_xy/@p_round_zm decimal digits of precision.
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    Implements PostGIS's ST_LocateAlong(geometry ageom_with_measure, float8 a_measure, float8 offset) except that because
+    measures are assumed to be organised in ascending or descending order and so are unique, only one point can be returned
+    and not multiple as in the PostGIS example.
+
+    Supports LineStrings with CircularString elements.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_linestring (geometry) - Linestring geometry with measures.
+    @p_measure       (float) - Measure defining position of point to be located.
+    @p_offset        (float) - Offset (distance) value left (negative) or right (positive) in STSrid units.
+    @p_round_xy        (int) - Decimal degrees of precision to which calculated XY ordinates are rounded.
+    @p_round_zm        (int) - Decimal degrees of precision to which calculated ZM ordinates are rounded.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    point         (geometry) - Point at provided measure optionally offset to left or right.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    -- Linestring.
+    with data as (
+      select geometry::STGeomFromText('LINESTRING(-4 -4 0  1, 0  0 0  5.6, 10  0 0 15.61, 10 10 0 25.4)',28355) as linestring
+    )
+    select g.intValue as measure,
+           o.IntValue as offset,
+           [$(lrsowner)].[STLocateAlong](linestring,g.IntValue,o.IntValue,3,2).AsTextZM() as fPoint
+      from data as a
+           cross apply
+           [dbo].[generate_series](a.lineString.STPointN(1).M, round(a.lineString.STPointN(a.linestring.STNumPoints()).M,0,1), 2 ) as g
+           cross apply
+           [dbo].[generate_series](-1,1,1) as o
+    union all
+    select g.intValue as measure,
+           o.IntValue as offset,
+           [$(lrsowner)].[STLocateAlong](linestring, linestring.STPointN(g.IntValue).M, o.IntValue,3,2).AsTextZM() as fPoint
+      from data as a
+           cross apply
+           [dbo].[generate_series](1, a.lineString.STNumPoints(), 1 ) as g
+           cross apply
+           [dbo].[generate_series](-1,1,1) as o
+    GO
+    
+    measure offset fPoint
+          1     -1 POINT (-0.707 0.707 NULL 1)
+          1      0 POINT (-4 -4 0 1)
+          1      1 POINT (0.707 -0.707 NULL 1)
+          3     -1 POINT (-3.293 -1.879 NULL 3)
+          3      0 POINT (-2.586 -2.586 NULL 3)
+          3      1 POINT (-1.879 -3.293 NULL 3)
+          5     -1 POINT (-1.879 -0.465 NULL 5)
+          5      0 POINT (-1.172 -1.172 NULL 5)
+          5      1 POINT (-0.465 -1.879 NULL 5)
+          7     -1 POINT (1.4 1 NULL 7)
+          7      0 POINT (1.4 0 NULL 7)
+          7      1 POINT (1.4 -1 NULL 7)
+          9     -1 POINT (3.4 1 NULL 9)
+          9      0 POINT (3.4 0 NULL 9)
+          9      1 POINT (3.4 -1 NULL 9)
+         11     -1 POINT (5.4 1 NULL 11)
+         11      0 POINT (5.4 0 NULL 11)
+         11      1 POINT (5.4 -1 NULL 11)
+         13     -1 POINT (7.4 1 NULL 13)
+         13      0 POINT (7.4 0 NULL 13)
+         13      1 POINT (7.4 -1 NULL 13)
+         15     -1 POINT (9.4 1 NULL 15)
+         15      0 POINT (9.4 0 NULL 15)
+         15      1 POINT (9.4 -1 NULL 15)
+         17     -1 POINT (9 1.39 NULL 17)
+         17      0 POINT (10 1.39 NULL 17)
+         17      1 POINT (11 1.39 NULL 17)
+         19     -1 POINT (9 3.39 NULL 19)
+         19      0 POINT (10 3.39 NULL 19)
+         19      1 POINT (11 3.39 NULL 19)
+         21     -1 POINT (9 5.39 NULL 21)
+         21      0 POINT (10 5.39 NULL 21)
+         21      1 POINT (11 5.39 NULL 21)
+         23     -1 POINT (9 7.39 NULL 23)
+         23      0 POINT (10 7.39 NULL 23)
+         23      1 POINT (11 7.39 NULL 23)
+         25     -1 POINT (9 9.39 NULL 25)
+         25      0 POINT (10 9.39 NULL 25)
+         25      1 POINT (11 9.39 NULL 25)
+          1     -1 POINT (-0.707 0.707 NULL 1)
+          1      0 POINT (-4 -4 0 1)
+          1      1 POINT (0.707 -0.707 NULL 1)
+          2     -1 POINT (-0.707 0.707 NULL 5.6)
+          2      0 POINT (0 0 0 5.6)
+          2      1 POINT (0.707 -0.707 NULL 5.6)
+          3     -1 POINT (10 1 NULL 15.61)
+          3      0 POINT (10 0 0 15.61)
+          3      1 POINT (10 -1 NULL 15.61)
+          4     -1 POINT (9 10 NULL 25.4)
+          4      0 POINT (10 10 0 25.4)
+          4      1 POINT (11 10 NULL 25.4)
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - December 2017 - Original Coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo21"></a>
+<a name="LRS2fSTLocateBetween2028201229"></a>
+<h1>22.  LRS/STLocateBetween (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    STLocateBetween -- Extracts, and possibly offet, linestring using supplied start and end measures and @p_offset value.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function [$(lrsowner)].[STLocateBetween] (
+               @p_linestring    geometry,
+               @p_start_measure Float,
+               @p_end_measure   Float = null,
+               @p_offset        Float = 0,
+               @p_round_xy      int   = 3,
+               @p_round_zm      int   = 2
+             )
+     Returns geometry 
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Given a start and end measure, this function extracts the line segment defined between them (a point if start=end).
+
+    If a non-zero value is suppied for @p_offset, the extracted line is then offset to the left (if @p_offset &lt; 0) or to the right (if @p_offset &gt; 0).
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    Supports linestrings with CircularString elements.
+
+    Supports measured and unmeasured linestrings.
+
+    Is wrapper over STFindSegmentByMeasureRange.
+
+    Provides implementation of PostGIS's ST_LocateBetween(geometry geomA, float8 measure_start, float8 measure_end, float8 offset);
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_linestring (geometry) - Linestring geometry with measures.
+    @p_start_measure (float) - Measure defining start point of located geometry.
+    @p_end_measure   (float) - Measure defining end point of located geometry.
+    @p_offset        (float) - Offset (distance) value left (negative) or right (positive) in SRID units.
+    @p_round_xy        (int) - Decimal degrees of precision to which calculated XY ordinates are rounded.
+    @p_round_zm        (int) - Decimal degrees of precision to which calculated ZM ordinates are rounded.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    line          (geometry) - Line between start/end measure with offset.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - December 2017 - Original Coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo22"></a>
+<a name="LRS2fSTLocateBetweenElevations2028200829"></a>
+<h1>23.  LRS/STLocateBetweenElevations (2008) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    STLocateBetweenElevations -- Computes and returns elements that intersect the specified Z range.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function [$(lrsowner)].[STLocateBetweenElevations] (
+               @p_linestring geometry,
+               @p_start_z    Float,
+               @p_end_z      Float = null,
+               @p_round_xy   int   = 3,
+               @p_round_zm   int   = 2
+             )
+     Returns geometry 
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Is implementation of PostGIS:
+
+       geometry ST_LocateBetweenElevations(geometry geom_mline, 
+                                           float8 elevation_start,
+                                           float8 elevation_end);
+
+    Processes the supplied (3D, 3DM) (multi)linestring returning the elements that intersect the specified range of elevations inclusively.
+
+    May return Points and/or linestrings in the appropriate geometry type.
+
+    Where a new xy position is to be computed, the value is rounded using @p_round_xm.
+
+    Computes M values if exist on @p_linestring and rounds the values based on @p_round_zm..
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    Does not currently support Linestrings with CircularString elements (2012+).
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_linestring (geometry) - Linestring geometry with Z ordinates (could have M ordinates).
+    @p_start_z       (float) - Start Elevation.
+    @p_end_z         (float) - End Elevation.
+    @p_round_xy        (int) - Decimal degrees of precision to which calculated XY ordinates are rounded.
+    @p_round_zm        (int) - Decimal degrees of precision to which calculated ZM ordinates are rounded.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    geometry      (geometry) - Geometry of the appropriate type.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    -- PostGIS 1
+    select [$(lrsowner)].[STLocateBetweenElevations](
+             geometry::STGeomFromText('LINESTRING(1 2 3, 4 5 6)',0),
+             2,4, 
+             3,2).AsTextZM() as geomZ;
+    
+    geomz
+    LINESTRING (1 2 3, 2 3 4)
+    
+    -- PostGIS 2
+    select [$(lrsowner)].[STLocateBetweenElevations](
+             geometry::STGeomFromText('LINESTRING(1 2 6, 4 5 -1, 7 8 9)',0),
+             6,9, 
+             3,2).AsTextZM() as geomZ;
+ 
+    geomz
+    GEOMETRYCOLLECTION (POINT (1 2 6), LINESTRING (6.1 7.1 6, 7 8 9))
+
+    -- PostGIS 3
+    SELECT d.geom.AsTextZM() as geomWKT
+      FROM (SELECT [$(lrsowner)].[STLocateBetweenElevations](
+                     geometry::STGeomFromText('LINESTRING(1 2 6, 4 5 -1, 7 8 9)',0),
+                     6,9,
+                     3,2
+                   ) As the_geom
+           ) As foo
+           cross apply
+           [$(owner)].[STExtract](foo.the_geom,default) as d;
+    
+    geomWKT
+    POINT (1 2 6)
+    LINESTRING (6.1 7.1 6, 7 8 9)
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - July 2019 - Original Coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2019 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo23"></a>
+<a name="LRS2fSTMeasureRange2028201229"></a>
+<h1>24.  LRS/STMeasureRange (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    STMeasureRange -- Returns (Last Point M Value) - (First Point M Value) or length if not measured.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function STMeasureRange (
+      @p_linestring geometry
+    )
+   Returns varchar(5)
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    If @p_linestring is measured, the function returns end point measure value - start point measure value.
+
+    If line-string not measured, returns length of line.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_linestring (geometry) - Supplied Linestring geometry.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    measure range  (float) - Measure range for measured line-string; returns NULL if not measured.
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    If @p_linestring is not measured, the function will return STLength.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    select [lrs].[STMeasureRange](geometry::STGeomFromText('LINESTRING(1 1, 2 2)', 0)) as range
+    union all
+    select [lrs].[STMeasureRange](geometry::STGeomFromText('LINESTRING(1 1 2 3, 2 2 3 4)', 0)) as range
+    union all
+    select [lrs].[STMeasureRange](geometry::STGeomFromText('MULTILINESTRING((1 1 2 3, 2 2 3 4),(3 3 4 5,4 4 5 6))', 0))
+    union all
+    select [lrs].[STMeasureRange](geometry::STGeomFromText('CIRCULARSTRING (3 6.325 NULL 0, 0 7 NULL 3.08, -3 6.325 NULL 6.15)',0))
+    GO
+    
+    range
+    NULL
+    1
+    3
+    6.15
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - January  2013 - Original Coding.
+    Simon Greener - December 2017 - Port to SQL Server.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2012-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo24"></a>
+<a name="LRS2fSTMeasureToPercentage2028201229"></a>
+<h1>25.  LRS/STMeasureToPercentage (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    STMeasureToPercentage --Converts supplied measure value to a percentage.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function STMeasureToPercentage (
+      @p_linestring geometry,
+      @p_measure  Float
+    )
+   Returns varchar(5)
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    The end measure minus the start measure of a measured line-string defines
+    the range of the measures (see ST_Measure_Range). The supplied measure is
+    divided by this range and multiplied by 100 to return the measure as a percentage.
+    For non measured line-strings all values are computed using lengths.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_linestring (geometry) - Supplied Linestring geometry.
+    @p_measure     (float) - Measure somewhere within linestring.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    Percentage     (float) - Returns measure within measure range of linestring as percentage (0..100) 
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    select [lrs].[STMeasureToPercentage](geometry::STGeomFromText('MULTILINESTRING((1 1 2 3, 2 2 3 4),(3 3 4 5,4 4 5 6))',0),4) as percentage
+    union all
+    select [lrs].[STMeasureToPercentage](geometry::STGeomFromText('MULTILINESTRING((1 1 2 3, 2 2 3 4),(3 3 4 5,4 4 5 6))',0),5)
+    union all
+    select [lrs].[STMeasureToPercentage](geometry::STGeomFromText('CIRCULARSTRING (3 6.325 NULL 0, 0 7 NULL 3.08, -3 6.325 NULL 6.15)',0),6.15)
+    GO
+    
+    percentage
+    33.3333333333333
+    66.6666666666667
+    100
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - January  2013 - Original Coding.
+    Simon Greener - December 2017 - Port to SQL Server.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2012-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo25"></a>
+<a name="LRS2fSTPercentageToMeasure2028201229"></a>
+<h1>26.  LRS/STPercentageToMeasure (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    STPercentageToMeasure -- Converts supplied Percentage value to a Measure.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function STPercentageToMeasure (
+      @p_linestring geometry,
+      @p_percentage Float
+    )
+   Returns varchar(5)
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    The supplied percentage value (between 0 and 100) is multipled by
+    the measure range (see STMeasureRange) to return a measure value between
+    the start and end measures. For non measured line-strings all values are
+    computed using lengths.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_linestring (geometry) - Supplied Linestring geometry.
+    @p_percentage    (float) - Percentage within linestring: from 0 to 100.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    Measure value    (float) - Measure at the provided percentage along the linestring.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    select 50.0 as percentage,
+           [lrs].[STStartMeasure](geometry::STGeomFromText('MULTILINESTRING((1 1 2 3, 2 2 3 4),(3 3 4 5,4 4 5 6))',0)) as start_measure,
+           [lrs].[STEndMeasure](geometry::STGeomFromText('MULTILINESTRING((1 1 2 3, 2 2 3 4),(3 3 4 5,4 4 5 6))',0)) as end_measure,
+           [lrs].[STPercentageToMeasure](geometry::STGeomFromText('MULTILINESTRING((1 1 2 3, 2 2 3 4),(3 3 4 5,4 4 5 6))',0),50) as measure
+    union all
+    select 80.0 as percentage,
+           [lrs].[STStartMeasure](geometry::STGeomFromText('MULTILINESTRING((1 1 2 3, 2 2 3 4),(3 3 4 5,4 4 5 6))',0)) as start_measure,
+           [lrs].[STEndMeasure](geometry::STGeomFromText('MULTILINESTRING((1 1 2 3, 2 2 3 4),(3 3 4 5,4 4 5 6))',0)) as end_measure,
+           [lrs].[STPercentageToMeasure](geometry::STGeomFromText('MULTILINESTRING((1 1 2 3, 2 2 3 4),(3 3 4 5,4 4 5 6))',0),80)
+    union all
+    select 10.0 as percentage,
+           [lrs].[STStartMeasure](geometry::STGeomFromText('CIRCULARSTRING (3 6.325 NULL 0, 0 7 NULL 3.08, -3 6.325 NULL 6.15)',0)) as start_measure,
+           [lrs].[STEndMeasure](geometry::STGeomFromText('CIRCULARSTRING (3 6.325 NULL 0, 0 7 NULL 3.08, -3 6.325 NULL 6.15)',0)) as end_measure,
+           [lrs].[STPercentageToMeasure](geometry::STGeomFromText('CIRCULARSTRING (3 6.325 NULL 0, 0 7 NULL 3.08, -3 6.325 NULL 6.15)',0),10)
+    GO
+    
+    percentage start_measure end_measure measure
+          50.0             3           6 4.5
+          80.0             3           6 5.4
+          10.0             0        6.15 0.615
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - January  2013 - Original Coding.
+    Simon Greener - December 2017 - Port to SQL Server.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2012-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo26"></a>
+<a name="LRS2fSTPointToCircularArc2028201229"></a>
+<h1>27.  LRS/STPointToCircularArc (2012) [ Methods ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    STPointToCircularArc -- Return a measured point by snapping provided point to the provided circularstring
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function [$(lrsowner)].[STPointToCircularArc] (
+               @p_circularString geometry,
+               @p_point          geometry,
+               @p_round_xy       int   = 3,
+               @p_round_zm       int   = 2
+             )
+     Returns geometry
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    This function snaps supplied point to @p_circularString, returning the snapped point.
+    
+    Computes Z and M values if exist on @p_circularString.
+    
+    If input @p_circularString is 2D, length from start of @p_circularString to point is returned in M ordinate of snapped point.
+    
+    Returned points ordinate values are rounded to @p_round_xy/@p_round_zm decimal digits of precision.
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    Supports CircularString geometries only.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_circularString (geometry) - (Measured) CircularString with or without Z ordinates.
+    @p_point          (geometry) - Point near to linestring.
+    @p_round_xy            (int) - Decimal digits of precision for XY ordinates.
+    @p_round_zm            (int) - Decimal digits of precision for M ordinate.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    snapped point (geometry) -- First point found on @p_circularString.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    select 'Point has relationship with XYZM circular arc' as test,
+           [lrs].[STPointToCircularArc] (
+              geometry::STGeomFromText('CIRCULARSTRING (3 6.325 -2.1 0, 0 7 -2.1 3.08, -3 6.325 -2.1 6.15)',0),
+              geometry::Point(2,8,0),
+              3,2).AsTextZM() as project_point
+    union all
+    select 'Point does not have relationship with XYM CircularSring' as test,
+           [lrs].[STPointToCircularArc] (
+              geometry::STGeomFromText('CIRCULARSTRING (3 6.325 NULL 0, 0 7 NULL 3.08, -3 6.325 NULL 6.15)',0),
+              geometry::Point(8,8,0),
+              3,2).AsTextZM() as project_point
+    union all
+    select 'Point is on centre of the circular arc' as test,
+           [lrs].[STPointToCircularArc] (
+              geometry::STGeomFromText('CIRCULARSTRING (3 6.3246 -1, 0 7 -1, -3 6.3246 -1)',0),
+              geometry::Point(0,0,0),
+              3,2).AsTextZM() as project_point
+    union all
+    select 'Point projects on to point half way along circular arc' as test,
+           [lrs].[STPointToCircularArc] (
+              geometry::STGeomFromText('CIRCULARSTRING (3 6.3246, 0 7, -3 6.3246)',0),
+              geometry::Point(0,3.5,0),
+              3,2).AsTextZM() as project_point
+    go
+    
+    test                                                    project_point
+    ------------------------------------------------------- -----------------------------
+    Point has relationship with XYZM circular arc           POINT (1.698 6.791 -2.1 1.37)
+    Point does not have relationship with XYM CircularSring NULL
+    Point is on centre of the circular arc                  POINT (3 6.3246 -1)
+    Point projects on to point half way along circular arc  POINT (0 7 NULL 3.1)
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - August 2019 - Original coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2019 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo27"></a>
+<a name="LRS2fSTProjectPoint2028201229"></a>
+<h1>28.  LRS/STProjectPoint (2012) [ Methods ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    STProjectPoint --  Return a measured point by snapping provided point to the provided line.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function STProjectPoint (
+               @p_linestring geometry,
+               @p_point      geometry,
+               @p_round_xy   int   = 3,
+               @p_round_zm   int   = 2
+             )
+     Returns geometry
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    This function snaps supplied point to @p_linestring, returning the snapped point.
+    
+    If there is more than one possible solution the first point is retuend.
+    
+    Computes Z and M values if exist on @p_linestring.
+    
+    If input @p_linestring is 2D, length from start of @p_linestring to point is returned in M ordinate of snapped point.
+    
+    Returned points ordinate values are rounded to @p_round_xy/@p_round_zm decimal digits of precision.
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    Supports linestrings with CircularString elements.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_linestring (geometry) - Measured linestring with or without Z ordinates.
+    @p_point      (geometry) - Point near to linestring.
+    @p_round_xy        (int) - Decimal digits of precision for XY ordinates.
+    @p_round_zm        (int) - Decimal digits of precision for M ordinate.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    snapped point (geometry) -- First point found on @p_linestring.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    select CAST('Actual Measure' as varchar(50)) as test,
+           [lrs].[STProjectPoint] (
+              geometry::STGeomFromText('LINESTRING(-4 -4 0 1, 0 0 0 5.6, 10 0 0 15.61, 10 10 0 25.4)',28355),
+              geometry::Point(8,8,28355),
+              3,2).AsTextZM() as project_point
+    union all
+    select '2D return length in measure' as test,
+           [lrs].[STProjectPoint] (
+              geometry::STGeomFromText('LINESTRING(-4 -4, 0 0, 10 0, 10 10)',28355),
+              geometry::Point(8,8,28355),
+              3,2).AsTextZM() as project_point
+    union all
+    select 'Point has relationship with XYZM circular arc' as test,
+           [lrs].[STProjectPoint] (
+              geometry::STGeomFromText('CIRCULARSTRING (3 6.325 -2.1 0, 0 7 -2.1 3.08, -3 6.325 -2.1 6.15)',0),
+              geometry::Point(2,8,0),
+              3,2).AsTextZM() as project_point
+    union all
+    select 'Point does not have relationship with XYM CircularSring' as test,
+           [lrs].[STProjectPoint] (
+              geometry::STGeomFromText('CIRCULARSTRING (3 6.325 NULL 0, 0 7 NULL 3.08, -3 6.325 NULL 6.15)',0),
+              geometry::Point(8,8,0),
+              3,2).AsTextZM() as project_point
+    union all
+    select 'Point is on centre of the circular arc' as test,
+           [lrs].[STProjectPoint] (
+              geometry::STGeomFromText('CIRCULARSTRING (3 6.3246 -1, 0 7 -1, -3 6.3246 -1)',0),
+              geometry::Point(0,0,0),
+              3,2).AsTextZM() as project_point
+    union all
+    select 'Point projects on to point half way along circular arc' as test,
+           [lrs].[STProjectPoint] (
+              geometry::STGeomFromText('CIRCULARSTRING (3 6.3246, 0 7, -3 6.3246)',0),
+              geometry::Point(0,3.5,0),
+              3,2).AsTextZM() as project_point
+    select 'Closest to LineString' as test,
+           [lrs].[STProjectPoint] (
+              geometry::STGeomFromText('COMPOUNDCURVE(CIRCULARSTRING (3 6.3246, 0 7, -3 6.3246),(-3 6.3246, 0 0, 3 6.3246))',0),
+              geometry::Point(-1,1,0),
+              3,2).AsTextZM() as project_point
+    Union all
+    select 'Closest to CircularString' as test,
+           [lrs].[STProjectPoint] (
+              geometry::STGeomFromText('COMPOUNDCURVE(CIRCULARSTRING (3 6.3246, 0 7, -3 6.3246),(-3 6.3246, 0 0, 3 6.3246))',0),
+              geometry::Point(2,8,0),
+              3,2).AsTextZM() as project_point
+    go
+
+    test                                                    project_point
+    ------------------------------------------------------- -----------------------------
+    Actual Measure                                          POINT (10 8 NULL 23.44)
+    2D return length in measure                             POINT (10 8 NULL 23.66)
+    Point has relationship with XYZM circular arc           POINT (1.698 6.791 -2.1 1.37)
+    Point does not have relationship with XYM CircularSring NULL
+    Point is on centre of the circular arc                  POINT (3 6.3246 -1)
+    Point projects on to point half way along circular arc  POINT (0 7 NULL 3.1)
+    Closest to LineString                                   POINT (-0.571 1.204 NULL 5.67)
+    Closest to CircularString                               POINT (1.698 6.791 NULL 1.39)
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - January  2013 - Original coding.
+    Simon Greener - December 2017 - Port to SQL Server (TSQL).
+    Simon Greener - August   2019 - Added support for CircularArcs and CompoundCurves.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2019 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo28"></a>
+<a name="LRS2fSTRemoveMeasure2028201229"></a>
+<h1>29.  LRS/STRemoveMeasure (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    STRemoveMeasure -- Function that removes measure values from all points in linestring.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function STRemoveMeasure (
+       @p_linestring geometry,
+       @p_round_xy   int = 3,
+       @p_round_zm   int = 2
+     )
+     Returns geometry 
+</pre>
+<p class="item_name">USAGE</p>
+<pre>    SELECT [$(lrsowner).[STRemoveMeasure] (
+             geometry::STGeomFromText('MULTILINESTRING((1 1 NULL 1,2 2 NULL 2),(3 3 NULL 3,4 4 NULL 4))',0),
+             3,
+             2).AsTextZM() as RemoveMeasureLine
+    GO
+    RemoveMeasureLine
+    MULTILINESTRING ((1 1 NULL -999999999, 2 2 NULL -999999999), (3 3 NULL -999999999, 4 4 NULL -999999999))
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Removes all measure ordinate values.
+    Linestring with XYM ordinates is returned with XY ordinates.
+    Linestring with XYZM ordinates is returned with XYZ ordinates.
+    Supports CircularString and CompoundCurve geometry objects and subelements from 2012 onewards.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_linestring        (geometry) - Supplied Linestring geometry.
+    @p_round_xy               (int) - Decimal degrees of precision for when formatting XY ordinates in WKT.
+    @p_round_zm               (int) - Decimal degrees of precision for when formatting Z ordinate in WKT.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    linestring with no M (geometry) - Input geometry with all M ordinates set to NULL.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    select [lrs].[STRemoveMeasure] (
+                 geometry::STGeomFromText('LINESTRING(1 1 NULL 1,2 2 NULL 2)',0),
+                 3,
+                 2
+           ).AsTextZM() as RemoveMeasureLine
+    union all
+    select [lrs].[STRemoveMeasure] (
+                 geometry::STGeomFromText('LINESTRING(1 1 1 1,2 2 2 2)',0),
+                 3,
+                 2
+           ).AsTextZM() as RemoveMeasureLine
+    union all
+    select [lrs].[STRemoveMeasure] (
+                 geometry::STGeomFromText('MULTILINESTRING((1 1 NULL 1,2 2 NULL 2),(3 3 NULL 3,4 4 NULL 4))',0),
+                 3,
+                 2
+           ).AsTextZM() as RemoveMeasureLine
+    union all
+    select [lrs].[STRemoveMeasure] (
+                 geometry::STGeomFromText('MULTILINESTRING((1 1 1 1,2 2 2 2),(3 3 3 3,4 4 4 4))',0),
+                 3,
+                 2
+           ).AsTextZM() as RemoveMeasureLine
+    GO
+    
+    RemoveMeasureLine
+    LINESTRING (1 1, 2 2)
+    LINESTRING (1 1 1, 2 2 2)
+    MULTILINESTRING ((1 1, 2 2), (3 3, 4 4))
+    MULTILINESTRING ((1 1 1, 2 2 2), (3 3 3, 4 4 4))
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - January 2018 - Original Coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo29"></a>
+<a name="LRS2fSTResetMeasure2028201229"></a>
+<h1>30.  LRS/STResetMeasure (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    STResetMeasure -- Function that sets all existing assigned measures to NULL.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function STResetMeasure (
+       @p_geometry       geometry,
+       @p_marker_measure float = -999999999,
+       @p_round_xy       int = 3,
+       @p_round_zm       int = 2
+     )
+     Returns geometry 
+</pre>
+<p class="item_name">USAGE</p>
+<pre>    SELECT [$(lrsowner).[STResetMeasure] (
+             geometry::STGeomFromText('MULTILINESTRING((1 1 NULL 1,2 2 NULL 2),(3 3 NULL 3,4 4 NULL 4))',0),
+             default,
+             3,
+             2).AsTextZM() as ResetMeasureLine
+    GO
+    ResetMeasureLine
+    MULTILINESTRING ((1 1 NULL -999999999, 2 2 NULL -999999999), (3 3 NULL -999999999, 4 4 NULL -999999999))
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Sets all measures of a measured linesting to null values leaving dimensionality of geometry alone. 
+    So, a linestring with XYM remains so, but all measures are set to @c_MarkerMeasure value of -999999999 unless user supplies otherwise.
+    eg Coord 2 of 10.23,5.75,2.65 =&gt; 10.23,5.75,-999999999
+    Supports CircularString and CompoundCurve geometry objects and subelements from 2012 onewards.
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    This is not the same as STTo2D which removes measures etc and returns a pure 2D geometry.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_geometry    (geometry) - Supplied Linestring geometry.
+    @p_marker_measure (float) - Marker Measure applied to all measure values: Default is -999999999,
+    @p_round_xy         (int) - Decimal degrees of precision to which calculated XY ordinates are rounded.
+    @p_round_zm         (int) - Decimal degrees of precision to which calculated ZM ordinates are rounded.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    M Null Geom (geometry) - Input geometry with all M ordinates set to NULL.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - January  2013 - Original Coding.
+    Simon Greener - December 2017 - Converted to TSQL for SQL Spatial.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo30"></a>
+<a name="LRS2fSTReverseMeasure2028201229"></a>
+<h1>31.  LRS/STReverseMeasure (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    STReverseMeasure -- Function that reverses measures assigned to the points of a linestring.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function STReverseMeasure (
+       @p_geometry geometry,
+       @p_round_xy int = 3,
+       @p_round_zm int = 2
+     )
+     Returns geometry 
+</pre>
+<p class="item_name">USAGE</p>
+<pre>    WITH data AS (
+      select geometry::STGeomFromText('COMPOUNDCURVE (CIRCULARSTRING (3 6.3 1.1 0, 0 7 1.1 3.1, -3 6.3 1.1 9.3), (-3 6.3 1.1 9.3, 0 0 1.4 16.3, 3 6.3 1.6 20.2))',0) as Geom
+    )
+    SELECT 'Before' as text, d.geom.AsTextZM() as rGeom from data as d
+    UNION ALL
+    SELECT 'After' as text, [$(lrsowner)].[STReverseMeasure](d.geom,3,2).AsTextZM() as rGeom from data as d;
+    GO
+    text   rGeom
+    ------ -------------------------------------------------------------------------------------------------------------------------------
+    Before COMPOUNDCURVE (CIRCULARSTRING (3 6.3 1.1 0, 0 7 1.1 3.1, -3 6.3 1.1 9.3), (-3 6.3 1.1 9.3, 0 0 1.4 16.3, 3 6.3 1.6 20.2))
+    After  COMPOUNDCURVE (CIRCULARSTRING (3 6.3 1.1 20.2, 0 7 1.1 17.1, -3 6.3 1.1 24.9), (-3 6.3 1.1 24.9, 0 0 1.4 17.9, 3 6.3 1.6 0))
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Reverses measures assigned to a linestring.
+    Supports CircularString and CompoundCurve geometry objects and subelements from 2012 onewards.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_geometry (geometry) - Supplied Linestring geometry.
+    @p_round_xy      (int) - Decimal degrees of precision to which calculated XY ordinates are rounded.
+    @p_round_zm      (int) - Decimal degrees of precision to which calculated ZM ordinates are rounded.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    Reverse M Geom (geometry) - Input geometry with all points' M ordinates reversed.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - January  2013 - Original Coding.
+    Simon Greener - December 2017 - Converted to TSQL for SQL Spatial.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo31"></a>
+<a name="LRS2fSTScaleMeasure2028201229"></a>
+<h1>32.  LRS/STScaleMeasure (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    STScaleMeasure -- Rescales geometry measures and optionally offsets them, stretching the geometry.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function [$(lrsowner)].[STScaleMeasure] (
+       @p_geometry      geometry,
+       @p_start_measure Float,
+       @p_end_measure   Float,
+       @p_shift_measure Float = 0.0,
+       @p_round_xy      int = 3,
+       @p_round_zm      int = 2
+     )
+     Returns geometry 
+</pre>
+<p class="item_name">USAGE</p>
+<pre>    WITH data AS (
+      SELECT [$(lrsowner)].[STAddMeasure] (
+               geometry::STGeomFromText('COMPOUNDCURVE(CIRCULARSTRING (3 6.3246 1.1, 0 7 1.1, -3 6.3246 1.1),(-3 6.3246 1.1, 0 0 1.4, 3 6.3246 1.55))',0),
+               0,null,1,1) as aGeom
+    )
+    SELECT 'Original' as LineType, 
+           f.aGeom.AsTextZM() as mLine
+      FROM data as f
+    UNION ALL
+    SELECT 'Scaled' as LineType,
+           [$(lrsowner)].[STScaleMeasure] ( f.ageom, 100.0, 125.1, 5.0, 3, 2).AsTextZM() as sGeom 
+      FROM data as f;
+    GO
+    LineType mLine
+    -------- --------------------------------------------------------------------------------------------------------------------------------------------
+    Original COMPOUNDCURVE (CIRCULARSTRING (3 6.3 1.1 0, 0 7 1.1 3.1, -3 6.3 1.1 6.2), (-3 6.3 1.1 6.2, 0 0 1.4 13.2, 3 6.3 1.6 20.2))
+    Scaled   COMPOUNDCURVE (CIRCULARSTRING (3 6.3 1.1 105, 0 7 1.1 108.852, -3 6.3 1.1 112.704), (-3 6.3 1.1 112.704, 0 0 1.4 121.402, 3 6.3 1.6 125.1))
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    This function can redistribute measure values between the supplied
+    @p_start_measure (start vertex) and @p_end_measure (end vertex) by adjusting/scaling
+    the measure values of all in between coordinates. In addition, if @p_shift_measure
+    is not 0 (zero), the supplied value is added to each modified measure value
+    performing a translation/shift of those values.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_geometry   (geometry) - Supplied Linestring geometry.
+    @p_start_measure (float) - Measure defining start point for geometry.
+    @p_end_measure   (float) - Measure defining end point for geometry.
+    @p_shift_measure (float) - Shift (scale) value applied to all measure. 
+    @p_round_xy        (int) - Decimal degrees of precision to which calculated XY ordinates are rounded.
+    @p_round_zm        (int) - Decimal degrees of precision to which calculated ZM ordinates are rounded.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    Scaled M Line (geometry) - Input geometry with all points' M ordinates scaled.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - January  2013 - Original Coding.
+    Simon Greener - December 2017 - Converted to TSQL for SQL Spatial.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo32"></a>
+<a name="LRS2fSTSetM2028201229"></a>
+<h1>33.  LRS/STSetM (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    STSetM -- Function that adds or updates (replaces) M value of supplied geometry point.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function STSetM (
+               @p_point    geometry,
+               @p_measure  float,
+               @p_round_xy int = 3,
+               @p_round_zm int = 2
+             )
+     Returns geometry 
+</pre>
+<p class="item_name">USAGE</p>
+<pre>    SELECT STSetM(
+             STPointFromText('POINT(0 0)',0),
+             1,
+             3, 2 
+           ).AsTextZM() as updatedPoint;
+    # updatedPoint
+    'POINT(0 0 NULL 1)'
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Function that adds/updates M ordinate of the supplied @p_point.
+    The updated coordinate's XY ordinates are rounded to @p_round_xy number of decimal digits of precision.
+    The updated coordinate's ZM ordinates are rounded to @p_round_ZM number of decimal digits of precision.
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    Wrapper over STSetMeasure.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_point     (geometry) - Supplied point geometry.
+    @p_measure   (float)    - New M value.
+    @p_round_xy  (int)      - Decimal degrees of precision to which calculated XY ordinates are rounded.
+    @p_round_zm  (int)      - Decimal degrees of precision to which calculated ZM ordinates are rounded.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    point with M (geometry) - Input point with new measure value.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - December 2017 - Original TSQL Coding for SQL Spatial.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo33"></a>
+<a name="LRS2fSTSetMeasure2028201229"></a>
+<h1>34.  LRS/STSetMeasure (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    STSetMeasure -- Function that adds or updates (replaces) M value of supplied geometry point.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function STSetMeasure (
+               @p_point    geometry,
+               @p_measure  float,
+               @p_round_xy int = 3,
+               @p_round_zm int = 2
+             )
+     Returns geometry 
+</pre>
+<p class="item_name">USAGE</p>
+<pre>    SELECT STSetMeasure(
+             STPointFromText('POINT(0 0)',0),
+             1,
+             3, 2 
+           ).AsTextZM() as updatedPoint;
+    # updatedPoint
+    'POINT(0 0 NULL 1)'
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Function that adds/updates M ordinate of the supplied @p_point.
+    The updated coordinate's XY ordinates are rounded to @p_round_xy number of decimal digits of precision.
+    The updated coordinate's ZM ordinates are rounded to @p_round_ZM number of decimal digits of precision.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_point     (geometry) - Supplied point geometry.
+    @p_measure   (float)    - New M value.
+    @p_round_xy  (int)      - Decimal degrees of precision to which calculated XY ordinates are rounded.
+    @p_round_zm  (int)      - Decimal degrees of precision to which calculated ZM ordinates are rounded.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    point with M (geometry) - Input point with new measure value.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - December 2017 - Original TSQL Coding for SQL Spatial.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo34"></a>
+<a name="LRS2fSTSplit2028201229"></a>
+<h1>35.  LRS/STSplit (2012) [ Methods ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    STSplit -- Function that splits a line into two parts.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function [$(lrsowner)].[STSplit] (
+       @p_linestring geometry,
+       @p_point      geometry,
+       @p_round_xy   int = 3,
+       @p_round_zm   int = 2
+     )
+     Returns @lines TABLE
+     (
+       line1 geometry,
+       line2 geometry
+     )
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Splits @p_linestring at position defined by @p_point.
+    If @p_point is not on the line it is first snapped to the line.
+    Supports CircularString and CompoundCurve geometry objects and subelements from 2012 onewards.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_linestring (geometry) - Supplied Linestring geometry.
+    @p_point      (geometry) - Supplied split point.
+    @p_round_xy        (int) - Decimal degrees of precision for when formatting XY ordinates in WKT.
+    @p_round_zm        (int) - Decimal degrees of precision for when formatting Z ordinate in WKT.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    Single record containing one or two linestrings
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    with data as (
+      select geometry::STGeomFromText('LINESTRING(0 0,10 10,20 20,30 30,40 40,50 50,60 60,70 70,80 80,90 90,100 100)',0) as line,
+             geometry::STGeomFromText('POINT(50 50)',0) as point
+    )
+    select s.line1.AsTextZM() as line1, s.line2.AsTextZM() as line2
+      from data as a
+           cross apply 
+           [$(lrsowner)].STSplit(
+                 a.line,
+                 a.point,
+                 3,
+                 2
+           ) as s;
+    line1                                               line2
+    LINESTRING (0 0, 10 10, 20 20, 30 30, 40 40, 50 50) LINESTRING (50 50, 60 60, 70 70, 80 80, 90 90, 100 100)
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - December 2018 - Original Coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo35"></a>
+<a name="LRS2fSTSplitCircularStringByLength2028201229"></a>
+<h1>36.  LRS/STSplitCircularStringByLength (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    STLocateBetween -- Extracts, and possibly offets, that part of the supplied (single) CircularString identified by the @p_start_length and @p_end_length parameters.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function [$(lrsowner)].[STSplitCircularStringByLength] (
+               @p_circular_arc geometry,
+               @p_start_length Float,
+               @p_end_length   Float = null,
+               @p_offset       Float = 0.0,
+               @p_round_xy     int   = 3,
+               @p_round_zm     int   = 2
+             )
+     Returns geometry 
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Given a start and end length, this function extracts a new CircularString segment from the @p_circular_arc.
+    If a non-zero value is suppied for @p_offset, the extracted circularSting is then offset to the left (if @p_offset &lt; 0) or to the right (if @p_offset &gt; 0).
+    If the circularString @p_offset value causes the CircularString to disappear, NULL is returned.
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    Supports a single (3-point) CircularString element only.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_circular_arc (geometry) - A single, 3 point, CircularString.
+    @p_start_length    (float) - Measure defining start point of located geometry.
+    @p_end_length      (float) - Measure defining end point of located geometry.
+    @p_offset          (float) - Offset (distance) value left (negative) or right (positive) in SRID units.
+    @p_round_xy          (int) - Decimal degrees of precision to which calculated XY ordinates are rounded.
+    @p_round_zm          (int) - Decimal degrees of precision to which calculated ZM ordinates are rounded.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    CircularString  (geometry) - New CircularString between start/end measure with optional offset.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    with data as (
+      select geometry::STGeomFromText('CIRCULARSTRING (-3 6.3246, 0 7, 3 6.3246)',0) as linestring
+      union all
+      select geometry::STGeomFromText('CIRCULARSTRING (3 6.325 NULL 0, 0 7 NULL 3.08, -3 6.325 NULL 6.15)',0) as linestring
+    )
+    select [lrs].[STSplitCircularStringByLength](a.linestring,0.5,2.0,0.0,3,2).AsTextZM() as split
+      from data as a;
+    
+    split
+    CIRCULARSTRING (-2.541 6.523, -1.829 6.757, -1.096 6.914)
+    CIRCULARSTRING (2.541 6.523 NULL 0.5, 1.829 6.757 NULL 1.24, 1.096 6.914 NULL 1.98)
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - December 2017 - Original Coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo36"></a>
+<a name="LRS2fSTSplitCircularStringByMeasure2028201229"></a>
+<h1>37.  LRS/STSplitCircularStringByMeasure (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    STSplitCircularStringByMeasure -- Extracts, and possibly offets, that part of the supplied (single) CircularString identified by the @p_start_measure and @p_end_measure parameters.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function [$(lrsowner)].[STSplitCircularStringByMeasure] (
+               @p_circular_arc  geometry,
+               @p_start_measure Float,
+               @p_end_measure   Float = null,
+               @p_offset        Float = 0.0,
+               @p_round_xy      int   = 3,
+               @p_round_zm      int   = 2
+             )
+     Returns geometry 
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Given start and end measures, this function extracts a new CircularString segment from the @p_circular_arc.
+    If a non-zero value is suppied for @p_offset, the extracted circularSting is then offset to the left (if @p_offset &lt; 0) or to the right (if @p_offset &gt; 0).
+    If the circularString offset causes the CircularString to disappear, NULL is returned.
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    Supports a single (3-point) CircularString element only.
+    Currently only supports Increasing measures.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_circular_arc (geometry) - A single, 3 point, CircularString.
+    @p_start_measure   (float) - Measure defining start point of located geometry.
+    @p_end_measure     (float) - Measure defining end point of located geometry.
+    @p_offset          (float) - Offset (distance) value left (negative) or right (positive) in SRID units.
+    @p_round_xy          (int) - Decimal degrees of precision to which calculated XY ordinates are rounded.
+    @p_round_zm          (int) - Decimal degrees of precision to which calculated ZM ordinates are rounded.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    CircularString  (geometry) - New CircularString between start/end measure with optional offset.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - December 2017 - Original Coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo37"></a>
+<a name="LRS2fSTSplitLineSegmentByLength2028201229"></a>
+<h1>38.  LRS/STSplitLineSegmentByLength (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    STSplitLineSegmentByLength -- Extracts, and possibly offets, that part of the supplied (single) LineString identified by the @p_start_length and @p_end_length parameters.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function [$(lrsowner)].[STSplitCircularStringByLength] (
+               @p_linestring   geometry,
+               @p_start_length Float,
+               @p_end_length   Float = null,
+               @p_offset       Float = 0.0,
+               @p_round_xy     int   = 3,
+               @p_round_zm     int   = 2
+             )
+     Returns geometry 
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Given start and end lengths, this function extracts a new LineString segment from the input @p_linestring.
+    If a non-zero value is supplied for @p_offset, the extracted LineString is then offset to the left (if @p_offset &lt; 0) or to the right (if @p_offset &gt; 0).
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    Supports a single (2-point) LineString element only.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_linestring  (geometry) - A single, 2 point, LineString.
+    @p_start_length   (float) - Measure defining start point of located geometry.
+    @p_end_length     (float) - Measure defining end point of located geometry.
+    @p_offset         (float) - Offset (distance) value left (negative) or right (positive) in SRID units.
+    @p_round_xy         (int) - Decimal degrees of precision to which calculated XY ordinates are rounded.
+    @p_round_zm         (int) - Decimal degrees of precision to which calculated ZM ordinates are rounded.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    LineString     (geometry) - New Linestring between start/end lengths with optional offset.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - December 2017 - Original Coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo38"></a>
+<a name="LRS2fSTSplitLineSegmentByMeasure2028201229"></a>
+<h1>39.  LRS/STSplitLineSegmentByMeasure (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    STSplitLineSegmentByMeasure -- Extracts, and possibly offets, that part of the supplied (single) LineString identified by the @p_start_measure and @p_end_measure parameters.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function [$(lrsowner)].[STSplitLineSegmentByMeasure] (
+               @p_linestring    geometry,
+               @p_start_measure Float,
+               @p_end_measure   Float = null,
+               @p_offset        Float = 0.0,
+               @p_round_xy      int   = 3,
+               @p_round_zm      int   = 2
+             )
+     Returns geometry 
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Given start and end measures, this function extracts a new LineString segment from the input @p_linestring.
+    If a non-zero value is supplied for @p_offset, the extracted LineString is then offset to the left (if @p_offset &lt; 0) or to the right (if @p_offset &gt; 0).
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    Supports a single (2-point) LineString element only.
+    Currently only supports Increasing measures.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_linestring   (geometry) - A single, 3 point, CircularString.
+    @p_start_measure   (float) - Measure defining start point of located geometry.
+    @p_end_measure     (float) - Measure defining end point of located geometry.
+    @p_offset          (float) - Offset (distance) value left (negative) or right (positive) in SRID units.
+    @p_round_xy          (int) - Decimal degrees of precision to which calculated XY ordinates are rounded.
+    @p_round_zm          (int) - Decimal degrees of precision to which calculated ZM ordinates are rounded.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    CircularString  (geometry) - New CircularString between start/end measure with optional offset.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    with data as (
+      select geometry::STGeomFromText('CIRCULARSTRING (3 6.325 NULL 0, 0 7 NULL 3.08, -3 6.325 NULL 6.15)',0) as linestring
+    )
+    select [lrs].[STSplitCircularStringByMeasure](a.linestring,0.5,2.0,0.0,3,2).AsTextZM() as split
+      from data as a;
+    
+    split
+    CIRCULARSTRING (2.537 6.524 NULL 0.5, 1.819 6.76 NULL 1.25, 1.08 6.916 NULL 2)
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - December 2017 - Original Coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo39"></a>
+<a name="LRS2fSTSplitProcedure2028201229"></a>
+<h1>40.  LRS/STSplitProcedure (2012) [ Methods ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Methods ]</p>
+<p class="item_name">NAME</p>
+<pre>    STSplitProcedure -- Procedure that splits a line into two parts.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function [$(lrsowner)].[STSplitProcedure] (
+       @p_linestring geometry,
+       @p_point      geometry,
+       @p_line1      geometry OUTPUT,
+       @p_line2      geometry OUTPUT,
+       @p_round_xy   int = 3,
+       @p_round_zm   int = 2
+     )
+     Returns geometry 
+</pre>
+<p class="item_name">USAGE</p>
+<pre>    declare @v_linestring geometry = geometry::STGeomFromText('LINESTRING(0 0,10 10,20 20,30 30,40 40,50 50,60 60,70 70,80 80,90 90,100 100)',0),
+            @v_point      geometry = geometry::STGeomFromText('POINT(50 50)',0),
+            @v_line1      geometry,
+            @v_line2      geometry;
+    exec [$(lrsowner)].STSplitProcedure @p_linestring=@v_linestring,
+                              @p_point=@v_point,
+                              @p_line1=@v_line1 OUTPUT,
+                              @p_line2=@v_line2 OUTPUT,
+                              @p_round_xy=3,
+                              @p_round_zm=2;
+    select @v_line1.STAsText() as line1, @v_line2.STAsText() as line2
+    GO
+    line1                                               line2
+    LINESTRING (0 0, 10 10, 20 20, 30 30, 40 40, 50 50)       LINESTRING (50 50, 60 60, 70 70, 80 80, 90 90, 100 100)
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Splits @p_linestring at position defined by @p_point.
+    If @p_point is not on the line it is first snapped to the line.
+    Supports CircularString and CompoundCurve geometry objects and subelements from 2012 onewards.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_linestring (geometry) - Supplied Linestring geometry.
+    @p_point      (geometry) - Supplied split point.
+    @p_line1      (geometry) - Is an OUTPUT parameter that holds the first part of split line.
+    @p_line2      (geometry) - Is an OUTPUT parameter that holds the second part of split line.
+    @p_round_xy        (int) - Decimal degrees of precision for when formatting XY ordinates in WKT.
+    @p_round_zm        (int) - Decimal degrees of precision for when formatting Z ordinate in WKT.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    Two linestrings (geometry) - Two parts of split linestring.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - December 2018 - Original Coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo40"></a>
+<a name="LRS2fSTStartMeasure2028201229"></a>
+<h1>41.  LRS/STStartMeasure (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    STStartMeasure -- Returns M value of first point in measured geometry.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function STStartMeasure (
+       @p_linestring geometry
+    )
+    Returns geometry 
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Returns start measure associated with first point in a measured line-string.
+    Supports Linestrings with CircularString elements (2012).
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_linestring (geometry) - Supplied Linestring geometry.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    measure (float) -- Measure value of first point in a measured line-string.
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    If the line-string is not measured it returns 0.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    select [$(lrsowner)].[STStartMeasure](geometry::STGeomFromText('LINESTRING(1 1 2 3, 2 2 3 4)', 0)) as start_measure
+    union all
+    select [$(lrsowner)].[STStartMeasure](geometry::STGeomFromText('MULTILINESTRING((1 1 2 3, 2 2 3 4),(3 3 4 5,4 4 5 6))', 0))
+    union all
+    select [$(lrsowner)].[STStartMeasure](geometry::STGeomFromText('CIRCULARSTRING (3 6.325 NULL 0, 0 7 NULL 3.08, -3 6.325 NULL 6.15)',0))
+    GO
+
+   start_measure
+   3
+   3
+   0 
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - January  2013 - Original Coding.
+    Simon Greener - December 2017 - Port to SQL Server.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2012-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo41"></a>
+<a name="LRS2fSTUpdateMeasure2028201229"></a>
+<h1>42.  LRS/STUpdateMeasure (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    STUpdateMeasure -- Rescales (multi)linestring vertex measures from start to end using provided values.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function [$(lrsowner)].[STUpdateMeasure] (
+       @p_linestring    geometry,
+       @p_start_measure Float,
+       @p_end_measure   Float,
+       @p_round_xy      int = 3,
+       @p_round_zm      int = 2
+     )
+     Returns geometry 
+</pre>
+<p class="item_name">USAGE</p>
+<pre>    WITH data AS (
+      SELECT [lrs].[STAddMeasure] (
+               geometry::STGeomFromText('COMPOUNDCURVE(CIRCULARSTRING (3 6.3246 1.1, 0 7 1.1, -3 6.3246 1.1),(-3 6.3246 1.1, 0 0 1.4, 3 6.3246 1.55))',0),
+               0,null,1,1) as aGeom
+    )
+    SELECT 'Original' as LineType, 
+           f.aGeom.AsTextZM() as mLine
+      FROM data as f
+    UNION ALL
+    SELECT 'Updated (1)' as LineType,
+           [lrs].[STUpdateMeasure] ( f.ageom, 1.0, 21.2, 3, 2).AsTextZM() as sGeom 
+      FROM data as f
+    UNION ALL
+    SELECT 'Updated (2)' as LineType,
+           [lrs].[STUpdateMeasure] ( f.ageom, 100.0, 125.1, 3, 2).AsTextZM() as sGeom 
+      FROM data as f;
+    GO
+
+   LineType mLine
+   -------- ---------------------------------------------------------------------------------------------------------------------------------------
+   Original   COMPOUNDCURVE (CIRCULARSTRING (3 6.3 1.1 0, 0 7 1.1 3.1, -3 6.3 1.1 6.2), (-3 6.3 1.1 6.2, 0 0 1.4 13.2, 3 6.3 1.6 20.2))
+   Updated (1)        COMPOUNDCURVE (CIRCULARSTRING (3 6.3 1.1 1, 0 7 1.1 4.1, -3 6.3 1.1 7.2), (-3 6.3 1.1 7.2, 0 0 1.4 14.2, 3 6.3 1.6 21.2))
+   Updated (2)        COMPOUNDCURVE (CIRCULARSTRING (3 6.3 1.1 100, 0 7 1.1 103.85, -3 6.3 1.1 107.7), (-3 6.3 1.1 107.7, 0 0 1.4 116.4, 3 6.3 1.6 125.1))
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    This function resets all measures in a measured linestring by applying @p_start_measure to the start vertex and @p_end_measure to the end vertex.
+    All vertices in between have the measures scaled between the start and end measures by ratio based on length.
+    All M ordinates are rounded to supplied @p_round_zm.
+  NOTE
+    Is a wrapper over [$(lrsowner)].[STScaleMeasure].
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_linestring (geometry) - Supplied Linestring geometry.
+    @p_start_measure (float) - Measure defining start point for geometry.
+    @p_end_measure   (float) - Measure defining end point for geometry.
+    @p_round_xy        (int) - Decimal degrees of precision to which calculated XY ordinates are rounded.
+    @p_round_zm        (int) - Decimal degrees of precision to which calculated ZM ordinates are rounded.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    Scaled M Line (geometry) - Input linestring with all points' M ordinates updated.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - January  2013 - Original Coding.
+    Simon Greener - December 2017 - Converted to TSQL for SQL Spatial.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo42"></a>
+<a name="LRS2fSTValidLrsGeometry2028201229"></a>
+<h1>43.  LRS/STValidLrsGeometry (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    STValidLrsGeometry -- Checks if supplied @p_linestring is a valid measured linestring. 
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function STValidLrsGeometry (
+       @p_linestring geometry
+    )
+    Returns bit
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    This function checks for geometry type and number of dimensions of the geometric segment.
+    Function returns 1 (true) if provided geometry is a linestring with valid measured, and 0 (false) otherwise.
+    Linestring must have either increasing or decreasing measures.
+    The function supports all Linestring geometry types.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_linestring (geometry) - Measured Linestring.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    1/0                (bit) - 1 (true) if measured linestring, 0 (false) otherwise.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    select [lrs].[STValidLrsGeometry](geometry::STGeomFromText('LINESTRING(0 0,50 50,100 100)',0)) as is_measured
+    GO
+  
+    is_measured
+    0
+  
+    select [lrs].[STValidLrsGeometry](geometry::STGeomFromText('LINESTRING(0 0 NULL 1,50 50 NULL 14.1,100 100 NULL 141.1)',0)) as is_measured
+    GO
+  
+    is_measured
+    1
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - January  2017 - Original coding.
+    Simon Greener - December 2017 - Port to SQL Server
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo43"></a>
+<a name="LRS2fSTValidLrsPoint2028201229"></a>
+<h1>44.  LRS/STValidLrsPoint (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    STValidLrsPoint -- Checks if supplied @p_point is a valid LRS point.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function STValidLrsPoint (
+       @p_point geometry
+    )
+    Returns bit
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Function returns 1 (true) if point is measured, and 0 (false) if point is not measured.
+    A valid LRS point has measure information. 
+    The function checks for the Point geometry type and has a measured ordinate.
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_point (geometry) - Measured Point.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    1/0           (bit) - 1 (true) if measured point, 0 (false) otherwise.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    select [lrs].[STValidLrsPoint](geometry::STGeomFromText('POINT(0 0)',0)) as is_measured_point
+    GO
+    
+    is_measured_point
+    0
+    
+    select [lrs].[STValidLrsPoint](geometry::STGeomFromText('POINT(0 0 NULL 1)',0)) as is_measured_point
+    GO
+    
+    is_measured_point
+    1
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - January  2017 - Original coding.
+    Simon Greener - December 2017 - Port to SQL Server
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<a name="robo44"></a>
+<a name="LRS2fSTValidMeasure2028201229"></a>
+<h1>45.  LRS/STValidMeasure (2012) [ Functions ]  </h1>
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ Functions ]</p>
+<p class="item_name">NAME</p>
+<pre>    STValidMeasure -- Checks if supplied measure falls within the linestring's measure range.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Function STValidMeasure (
+       @p_linestring geometry,
+       @p_measure    float
+    )
+    Returns bit
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    Function returns 1 (true) if measure falls within the underlying linestring's measure range 
+    or the 0 (false) string if the supplied measure does not fall within the measure range.
+    Support All Linestring geometry types
+</pre>
+<p class="item_name">INPUTS</p>
+<pre>    @p_linestring (geometry) - Measured linestring.
+    @p_measure       (float) - Actual Measure value.
+</pre>
+<p class="item_name">RESULT</p>
+<pre>    1/0                (bit) - 1 (true) if measure within range, 0 (false) otherwise.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    select t.IntValue,
+           case when [lrs].[STValidMeasure](geometry::STGeomFromText('LINESTRING(-4 -4 0 1, 0 0 0 5.6, 10 0 0 15.61, 10 10 0 25.4)',28355),
+                                                    cast(t.intValue as float) )
+                     = 1 
+                then 'Yes' 
+                else 'No' 
+            end 
+             as isMeasureWithinLinestring
+      from [dbo].[Generate_Series] (-1,30,4) as t;
+    GO
+    
+    IntValue  isMeasureWithinLinestring
+    -1        No
+    3 Yes
+    7 Yes
+    11        Yes
+    15        Yes
+    19        Yes
+    23        Yes
+    27        No
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - January  2017 - Original coding.
+    Simon Greener - December 2017 - Port to SQL Server
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+<div id="footer">
+<p>Generated from ./src/LRS/ with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.36 on Sun Aug 25 2019 14:01:32
+</p>
+</div> <!-- footer -->
+</body>
+</html>

@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head><link rel="shortcut icon" href="http://www.spatialdbadvisor.com/images/243t.png"/>
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
+<link rel="stylesheet" href="./robodoc.css" type="text/css" />
+<title>./src/T_VertexList.sql</title>
+<!-- Source: ./src/T_VertexList.sql -->
+<!-- Generated with ROBODoc Version 4.99.36 (Mar 13 2008) -->
+</head>
+<body>
+<div id="logo">
+<a name="robo_top_of_doc">SPDBA Object Types and Methods Documentation</a>
+</div> <!-- logo -->
+<div id="navigation">
+<a class="menuitem" href="./toc_index.html#top">Table of Contents</a>
+<a class="menuitem" href="./robo_sourcefiles.html#top">Sourcefiles</a>
+<a class="menuitem" href="./masterindex.html#top">Index</a>
+<a class="menuitem" href="./robo_functions.html#top">Functions</a>
+<a class="menuitem" href="./robo_modules.html#top">Modules</a>
+<a class="menuitem" href="./robo_methods.html#top">Methods</a>
+<a class="menuitem" href="./robo_strutures.html#top">Structures</a>
+<a class="menuitem" href="./robo_types.html#top">Types</a>
+<a class="menuitem" href="./robo_variables.html#top">Variables</a>
+</div> <!-- navigation -->
+<div id="content">
+<h3>TABLE OF CONTENTS</h3>
+<ul>
+<li>1. <a href="#robo34">OBJECT TYPE/T_VERTEXLIST</a></li>
+<ul>
+<li>1.1. <a href="#robo347">T_VERTEXLIST/addOrdinates</a></li>
+<li>1.2. <a href="#robo348">T_VERTEXLIST/addVertices</a></li>
+<li>1.3. <a href="#robo349">T_VERTEXLIST/ATTRIBUTES(T_VERTEXLIST)</a></li>
+<li>1.4. <a href="#robo350">T_VERTEXLIST/CONSTRUCTORS(T_VERTEXE)</a></li>
+</ul>
+</ul>
+<hr />
+<a name="OBJECT20TYPE2fT5fVERTEXLIST"></a>
+<a name="robo34"></a><h2>OBJECT TYPE/T_VERTEXLIST [ Types ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="./robo_types.html#robo_top_of_doc">Types</a> ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>T_VERTEXLIST</strong> -- Object type representing a collection of T_VERTICES
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    An object type that represents an array/collection of T_VERTICES.
+    Includes Methods on that type.
+</pre>
+<p class="item_name">NOTES</p>
+<pre>    This also implements JTS's OffsetSegmentString.java.
+    A dynamic list of the vertices in a constructed offset curve.
+    Automatically removes adjacent vertices which are closer than a given tolerance.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Martin Davis  - 2016 - Java coding.
+    Simon Greener - Jul 2019 - extended T_Vertices to include methods derived from OffsetSegmentString.java
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+
+<hr />
+<a name="T5fVERTEXLIST2faddOrdinates"></a>
+<a name="robo347"></a><h2>T_VERTEXLIST/addOrdinates [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo34">T_VERTEXLIST</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>addOrdinates</strong> -- Allows an sdo_ordinate_array to be directly added to the underlying list.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Member Procedure <strong>addOrdinates</strong>( 
+           SELF        IN OUT NOCOPY <a href="#robo34">T_VERTEXLIST</a>,
+           p_dim       in integer,
+           p_lrs_dim   in integer,
+           p_ordinates in mdsys.sdo_ordinate_array ),
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    This procedure allows for an sdo_ordinate_array to be directly added to the underlying list.
+    XYZM ordinates are all supported.
+    All vertices created adopt the SRID of the VertexList's first vertex.
+    Coordinate dimensionality and lrs dim should be same as underling VertexList.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre>    p_dim                  (integer) -- The coordinate dimension used to interpret the numbers in the sdo_ordinate_array.
+    p_lrs_dim              (integer) -- The dimension for the LRS ordiante.
+    p_ordinates (sdo_ordinate_array) -- The sdo_ordinate_array to be added to the vertex list.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    -- Add sdo_ordinate_array to existing vertex list.
+    set serveroutput on size unlimited
+    declare
+      v_vList    t_vertexlist;
+      v_vertices &amp;&amp;INSTALL_SCHEMA..T_Vertices;
+      v_tgeom    t_geometry;
+    begin
+      v_vList    := <a href="#robo34">T_VERTEXLIST</a>(p_segment =&gt; &amp;&amp;INSTALL_SCHEMA..<a href="./T_Segment_sql.html#robo30">T_SEGMENT</a>(p_line=&gt;sdo_geometry(2002,null,null,sdo_elem_info_array(1,2,1),sdo_ordinate_array(0,0,1,1))));
+      dbms_output.put_line('Before v_vList.count=' || v_vList.vertexList.count);
+      v_vList.<strong>addOrdinates</strong>(
+               p_dim     =&gt; 2,
+               p_lrs_dim =&gt; 0,
+               p_ordinates =&gt; sdo_ordinate_array(1,1,2,2,3,3)
+       );
+       dbms_output.put_line('After v_VList.count=' || v_vList.vertexList.count);
+    end;
+    /
+    show errors
+    
+    Before v_vList.count=2
+    After v_VList.count=5
+    
+    PL/SQL procedure successfully completed.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - August 2019 - Original coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+
+<hr />
+<a name="T5fVERTEXLIST2faddVertices"></a>
+<a name="robo348"></a><h2>T_VERTEXLIST/addVertices [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo34">T_VERTEXLIST</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">NAME</p>
+<pre>    <strong>addVertices</strong> -- Enables a collection of vertices to be added to the underlying list.
+</pre>
+<p class="item_name">SYNOPSIS</p>
+<pre>    Member Procedure <strong>addVertices</strong>(SELF       IN OUT NOCOPY &amp;&amp;INSTALL_SCHEMA..<a href="#robo34">T_VERTEXLIST</a>,
+                                 p_vertices in &amp;&amp;INSTALL_SCHEMA..T_Vertices, 
+                                 isForward  in ineger default 1)
+</pre>
+<p class="item_name">DESCRIPTION</p>
+<pre>    This procedure allows for a collection of <a href="./T_Vertex_sql.html#robo33">T_VERTEX</a> objects to be added to the underlying list.
+    XYZM ordinates are all supported.
+    isForward is 1, the two vertex lists are merged with no tests are carried out to see if first vertex in list to be added is same as end vertex in underlying list.
+    However, when isForward is 2 the lists are merged with a test for duplicate coordinates.
+    If isForward is 2, p_vertices is reversed before appending with a duplicate test carried out.
+</pre>
+<p class="item_name">ARGUMENTS</p>
+<pre>    p_vertices (&amp;&amp;INSTALL_SCHEMA..T_Vertices) -- Collection of t_vertex object to add.
+    isForward           (boolean) -- Flag indicating whether vertices should be added in reverse order.
+</pre>
+<p class="item_name">EXAMPLE</p>
+<pre>    -- Add vertices of two linestrings with no test for duplicates
+    set serveroutput on size unlimited
+    declare
+      v_vList    t_vertexlist;
+      v_vertices &amp;&amp;INSTALL_SCHEMA..T_Vertices;
+      v_tgeom    t_geometry;
+    begin
+      v_vList    := <a href="#robo34">T_VERTEXLIST</a>(p_segment =&gt; &amp;&amp;INSTALL_SCHEMA..<a href="./T_Segment_sql.html#robo30">T_SEGMENT</a>(p_line=&gt;sdo_geometry(2002,null,null,sdo_elem_info_array(1,2,1),sdo_ordinate_array(0,0,1,1))));
+      dbms_output.put_line('Before v_vList.count=' || v_vList.vertexList.count);
+      v_tgeom    := t_geometry(sdo_geometry(2002,null,null,sdo_elem_info_array(1,2,1),sdo_ordinate_array(1,1,2,2,3,3)));
+      select v.<a href="./T_Vertex_sql.html#robo340">ST_Self</a>() as vertex
+        bulk collect into v_vertices
+        from table(v_tgeom.<a href="./T_Geometry_sql.html#robo216">ST_Vertices</a>()) v;
+       v_vList.<strong>addVertices</strong>(p_vertices  =&gt; v_vertices,
+                           p_isForward =&gt; 1);
+       dbms_output.put_line('After v_VList.count=' || v_vList.vertexList.count);
+    end;
+    /
+    show errors
+    
+    Before v_vList.count=2
+    After v_VList.count=5
+    
+    PL/SQL procedure successfully completed.
+
+    -- Now add vertices of two linestrings testing for duplicates
+    set serveroutput on size unlimited
+    declare
+      v_vList    t_vertexlist;
+      v_vertices &amp;&amp;INSTALL_SCHEMA..T_Vertices;
+      v_tgeom    t_geometry;
+    begin
+      v_vList    := <a href="#robo34">T_VERTEXLIST</a>(p_segment =&gt; &amp;&amp;INSTALL_SCHEMA..<a href="./T_Segment_sql.html#robo30">T_SEGMENT</a>(p_line=&gt;sdo_geometry(2002,null,null,sdo_elem_info_array(1,2,1),sdo_ordinate_array(0,0,1,1))));
+      dbms_output.put_line('Before v_vList.count=' || v_vList.vertexList.count);
+      v_tgeom    := t_geometry(sdo_geometry(2002,null,null,sdo_elem_info_array(1,2,1),sdo_ordinate_array(1,1,2,2,3,3)));
+      select v.<a href="./T_Vertex_sql.html#robo340">ST_Self</a>() as vertex
+        bulk collect into v_vertices
+        from table(v_tgeom.<a href="./T_Geometry_sql.html#robo216">ST_Vertices</a>()) v;
+       v_vList.<strong>addVertices</strong>(p_vertices  =&gt; v_vertices,
+                           p_isForward =&gt; 2);
+       dbms_output.put_line('After v_VList.count=' || v_vList.vertexList.count);
+    end;
+    /
+    show errors
+    
+    Before v_vList.count=2
+    After v_VList.count=4
+    
+    PL/SQL procedure successfully completed.
+</pre>
+<p class="item_name">AUTHOR</p>
+<pre>    Simon Greener
+</pre>
+<p class="item_name">HISTORY</p>
+<pre>    Simon Greener - July 2019 - Original coding.
+</pre>
+<p class="item_name">COPYRIGHT</p>
+<pre>    (c) 2005-2019 by TheSpatialDBAdvisor/Simon Greener
+</pre>
+
+<hr />
+<a name="T5fVERTEXLIST2fATTRIBUTES28T5fVERTEXLIST29"></a>
+<a name="robo349"></a><h2>T_VERTEXLIST/ATTRIBUTES(T_VERTEXLIST) [ Variables ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo34">T_VERTEXLIST</a> ] [ <a href="./robo_variables.html#robo_top_of_doc">Variables</a> ]</p>
+<p class="item_name">ATTRIBUTES</p>
+<pre>    seglist is a table of t_segment
+    minimimVertexDistance is min distance between two vertices. If less then any vertex is not added.
+</pre>
+<p class="item_name">SOURCE</p>
+<pre class="source">  vertexList            <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span>T_VERTICES<span class="sign">,</span>
+  minimimVertexDistance Number<span class="sign">,</span>
+  dPrecision            integer<span class="sign">,</span>
+</pre>
+
+<hr />
+<a name="T5fVERTEXLIST2fCONSTRUCTORS28T5fVERTEXE29"></a>
+<a name="robo350"></a><h2>T_VERTEXLIST/CONSTRUCTORS(T_VERTEXE) [ Methods ]</h2>
+
+<p>[ <a href="#robo_top_of_doc">Top</a> ] [ <a href="#robo34">T_VERTEXLIST</a> ] [ <a href="./robo_methods.html#robo_top_of_doc">Methods</a> ]</p>
+<p class="item_name">NAME</p>
+<pre>    A collection of <a href="#robo34">T_VERTEXLIST</a> Constructors.
+</pre>
+<p class="item_name">SOURCE</p>
+<pre class="source">  <span class="sign">-</span><span class="sign">-</span> Useful as an <span class="quote">"Empty"</span> constructor<span class="sign">.</span>
+  Constructor Function <a href="#robo34">T_VERTEXLIST</a><span class="sign">(</span>SELF IN OUT NOCOPY <a href="#robo34">T_VERTEXLIST</a><span class="sign">)</span>
+                Return Self As Result<span class="sign">,</span>
+
+  Constructor Function <a href="#robo34">T_VERTEXLIST</a><span class="sign">(</span>SELF     IN OUT NOCOPY <a href="#robo34">T_VERTEXLIST</a><span class="sign">,</span>
+                                    p_vertex in <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><a href="./T_Vertex_sql.html#robo33">T_VERTEX</a><span class="sign">)</span>
+                Return Self As Result<span class="sign">,</span>
+
+  Constructor Function <a href="#robo34">T_VERTEXLIST</a><span class="sign">(</span>SELF        IN OUT NOCOPY <a href="#robo34">T_VERTEXLIST</a><span class="sign">,</span>
+                                    p_segment   in <span class="sign">&amp;</span><span class="sign">&amp;</span>INSTALL_SCHEMA<span class="sign">.</span><span class="sign">.</span><a href="./T_Segment_sql.html#robo30">T_SEGMENT</a><span class="sign">)</span>
+                Return Self As Result<span class="sign">,</span>
+
+  Constructor Function <a href="#robo34">T_VERTEXLIST</a><span class="sign">(</span>SELF        IN OUT NOCOPY <a href="#robo34">T_VERTEXLIST</a><span class="sign">,</span>
+                                    p_line      in mdsys<span class="sign">.</span>sdo_geometry<span class="sign">)</span>
+                Return Self As Result<span class="sign">,</span>
+</pre>
+
+</div> <!-- content -->
+<div id="footer">
+<p>Generated from ./src/T_VertexList.sql with <a href="http://www.xs4all.nl/~rfsber/Robo/robodoc.html">ROBODoc</a> V4.99.36 on Sun Aug 25 2019 09:56:16
+</p>
+</div> <!-- footer -->
+</body>
+</html>
