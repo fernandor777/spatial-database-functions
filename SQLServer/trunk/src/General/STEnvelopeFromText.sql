@@ -76,11 +76,11 @@ Begin
     Return null;
 
   SET @v_ll_point = SUBSTRING(@p_mbr_coords,1,@v_comma_pos-1);
-  SET @v_ll_x     = SUBSTRING(@v_ll_point,1,CHARINDEX(' ',@v_ll_point)-1);
-  SET @v_ll_y     = SUBSTRING(@v_ll_point,CHARINDEX(' ',@v_ll_point)+1,LEN(@v_ll_point));
+  SET @v_ll_x     = SUBSTRING(@v_ll_point,  1,CHARINDEX(' ',@v_ll_point)-1);
+  SET @v_ll_y     = SUBSTRING(@v_ll_point,    CHARINDEX(' ',@v_ll_point)+1,LEN(@v_ll_point));
   SET @v_ur_point = SUBSTRING(@p_mbr_coords,@v_comma_pos+1,LEN(@p_mbr_coords));
-  SET @v_ur_x     = SUBSTRING(@v_ur_point,1,CHARINDEX(' ',@v_ur_point)-1);
-  SET @v_ur_y     = SUBSTRING(@v_ur_point,CHARINDEX(' ',@v_ur_point)+1,LEN(@v_ur_point));
+  SET @v_ur_x     = SUBSTRING(@v_ur_point,  1,CHARINDEX(' ',@v_ur_point)-1);
+  SET @v_ur_y     = SUBSTRING(@v_ur_point,    CHARINDEX(' ',@v_ur_point)+1,LEN(@v_ur_point));
   SET @v_wkt = 'POLYGON((' + 
                          @v_ll_x + ' ' + @v_ll_y + ',' +
                          @v_ur_x + ' ' + @v_ll_y + ',' +
