@@ -26,7 +26,8 @@ GO
 
 Create Function [$(owner)].[STEnvelopeFromText] (
   @p_mbr_coords varchar(max),
-  @p_srid       integer
+  @p_delim      varchar(1) = ' ',
+  @p_srid       integer    = 0
 )
 Returns geometry 
 As
@@ -35,8 +36,9 @@ As
  *    STEnvelopeFromText -- Function that constructs a 5 point polygon from supplied string.
  *  SYNOPSIS
  *    Function [dbo].[STEnvelopeFromText] (
- *               @p_mbr_coords in varchar,
- *               @p_srid       in integer default null
+ *               @p_mbr_coords varchar,
+ *               @p_delim      varchar(1) = ' ',
+ *               @p_srid       integer    = 0
  *             )
  *     Returns geometry 
  *  DESCRIPTION
@@ -44,13 +46,14 @@ As
  *    2D only.
  *  INPUTS
  *    @p_mbr_coords (varchar) - 2 coordinates, 4 ordinates
+ *    @p_delim      (varchar) - delimiter separating ordinates
  *    @p_srid       (integer) - geometry srid
  *  RESULT
  *    geometry     (geometry) - Input coordinates converted to 5 point polygon.
  *  EXAMPLE
  *    USE GISDB
  *    GO
- *    SELECT [dbo].[STEnvelopeFromText]('0 0,1 1',null) as mbr;
+ *    SELECT [dbo].[STEnvelopeFromText](0,0,1,1,null) as mbr;
  *  AUTHOR
  *    Simon Greener
  *  HISTORY
@@ -60,27 +63,39 @@ As
 ******/
 Begin
  Declare
-  @v_comma_pos integer,
-  @v_ll_point  varchar(100),
-  @v_ur_point  varchar(100),
-  @v_ll_x      varchar(100),
-  @v_ll_y      varchar(100),
-  @v_ur_x      varchar(100),
-  @v_ur_y      varchar(100),
-  @v_wkt       varchar(100);
+  @v_delim_count integer,
+  @v_delim_pos   integer,
+  @v_delim_str   varchar(1),
+  @v_mbr_coords  varchar(1000),
+  @v_ll_x        varchar(100),
+  @v_ll_y        varchar(100),
+  @v_ur_x        varchar(100),
+  @v_ur_y        varchar(100),
+  @v_wkt         varchar(100);
  Begin
   IF ( @p_mbr_coords is null ) 
     RETURN NULL;
-  SET @v_comma_pos  = CHARINDEX(',',@p_mbr_coords);
-  IF ( @v_comma_pos = 0)
+  SET @v_delim_str  = ISNULL(@p_delim,' ');
+  SET @v_delim_pos  = CHARINDEX(@v_delim_str,@p_mbr_coords);
+  IF ( @v_delim_pos = 0)
+    Return null;
+  SET @v_delim_count = LEN(@p_mbr_coords) - LEN(REPLACE(@p_mbr_coords,@v_delim_str,''));
+  if ( @v_delim_count <> 3 ) 
     Return null;
 
-  SET @v_ll_point = SUBSTRING(@p_mbr_coords,1,@v_comma_pos-1);
-  SET @v_ll_x     = SUBSTRING(@v_ll_point,  1,CHARINDEX(' ',@v_ll_point)-1);
-  SET @v_ll_y     = SUBSTRING(@v_ll_point,    CHARINDEX(' ',@v_ll_point)+1,LEN(@v_ll_point));
-  SET @v_ur_point = SUBSTRING(@p_mbr_coords,@v_comma_pos+1,LEN(@p_mbr_coords));
-  SET @v_ur_x     = SUBSTRING(@v_ur_point,  1,CHARINDEX(' ',@v_ur_point)-1);
-  SET @v_ur_y     = SUBSTRING(@v_ur_point,    CHARINDEX(' ',@v_ur_point)+1,LEN(@v_ur_point));
+  SET @v_delim_pos  = CHARINDEX(@v_delim_str,@p_mbr_coords);
+  SET @v_ll_x       = SUBSTRING(@p_mbr_coords,1,@v_delim_pos-1);
+  SET @v_mbr_coords = SUBSTRING(@p_mbr_coords,  @v_delim_pos + 1,LEN(@p_mbr_coords));
+
+  SET @v_delim_pos  = CHARINDEX(@v_delim_str,@v_mbr_coords);
+  SET @v_ll_y       = SUBSTRING(@v_mbr_coords,1,@v_delim_pos-1);
+  SET @v_mbr_coords = SUBSTRING(@v_mbr_coords,@v_delim_pos + 1,LEN(@v_mbr_coords));
+
+  SET @v_delim_pos  = CHARINDEX(@v_delim_str,@v_mbr_coords);
+  SET @v_ur_x       = SUBSTRING(@v_mbr_coords,1,@v_delim_pos-1);
+
+  SET @v_ur_y       = SUBSTRING(@v_mbr_coords,@v_delim_pos + 1,LEN(@v_mbr_coords));
+
   SET @v_wkt = 'POLYGON((' + 
                          @v_ll_x + ' ' + @v_ll_y + ',' +
                          @v_ur_x + ' ' + @v_ll_y + ',' +
