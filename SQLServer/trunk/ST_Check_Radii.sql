@@ -1,16 +1,42 @@
-﻿CREATE OR REPLACE FUNCTION adageo.check_radii(p_geom       geometry, 
-                                              p_min_radius Float, 
-                                              p_precision  int)
-  RETURNS geometry 
+﻿CREATE FUNCTION [dbo].[STCheckRadii](
+ @p_geom       geometry, 
+ @p_min_radius Float, 
+ @p_precision  int
+)
+  Returns geometry 
 AS
-/** ----------------------------------------------------------------------------------------
-  * @function   : check_radii
-  * @precis     : Function that checks vertices in a linestring/multilinestring to see if
-  *                the circular arc they describe have radius less than the provided amount.
-  *               Each set of three vertices (which could be overlapping) that fail the test
-  *               are written to a single MultiPoint object. If no circular arcs in the linestring
-  *               describe a circle with radius less than the required amount a NULL geometry is returned.
-  *               If another other than a (Multi)linestring is provided it is returned as is. 
+/****f* GEOPROCESSING/STCheckRadii (2008)
+ *  NAME
+ *    STCheckRadii -- Appends second linestring to end of first linestring.
+ *  SYNOPSIS 
+ *    Function [dbo].[STCheckRadii] (
+ *      @p_geom       geometry, 
+ *      @p_min_radius Float, 
+ *      @p_precision  int
+*     )
+ *  DESCRIPTION
+ *    Function that checks vertices in a linestring/multilinestring to see if
+ *    the circular arc they describe have radius less than the provided amount.
+ *    Each set of three vertices (which could be overlapping) that fail the test
+ *    are written to a single MultiPoint object. If no circular arcs in the linestring
+ *    describe a circle with radius less than the required amount a NULL geometry is returned.
+ *    If another other than a (Multi)linestring is provided it is returned as is. 
+ *  NOTES
+ *    Supports Linestrings with CircularString elements.
+ *  INPUTS
+ *    @p_linestring1 (geometry) - Linestring geometry possibly with elevation (Z) and measures (M).
+ *    @p_linestring2 (geometry) - Linestring geometry possibly with elevation (Z) and measures (M).
+ *    @p_round_xy         (int) - Decimal degrees of precision to which calculated XY ordinates are rounded.
+ *    @p_round_zm         (int) - Decimal degrees of precision to which calculated ZM ordinates are rounded.
+ *  RESULT
+ *    appended line  (geometry) - New line with second appended to first
+ *  AUTHOR
+ *    Simon Greener
+ *  HISTORY
+ *    Simon Greener - January 2018 - Original Coding.
+ *  COPYRIGHT
+ *    (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
+******/
   * @version    : 1.0
   * @usage      : Function check_radii(p_geom       geometry,
   *                                     p_min_radius Float,

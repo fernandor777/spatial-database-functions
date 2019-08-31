@@ -44,10 +44,14 @@ As
  *    If @p_geometry is already a MULTI*, it is returned unchanged.
  *    For example: MULTIPOINT -> MULTIPOINT
  *    MULTI returned only contains 1 geometry so STNumGeometries will return 1.
+ *  NOTES
+ *    CircularString input geometry is returned as a GEOMETRYCOLLECTION as it 
+ *    cannot be returned as a MUTLICURVE as it is not instantiable. Additionally,
+ *    one cannot construct a MULTILINESTRING containing it MUTLILINESTRING(CIRCULARSTRING(....)).
  *  INPUTS
- *    @p_geometry      (geometry) - supplied geometry of any type.
+ *    @p_geometry (geometry) - supplied geometry of any type.
  *  RESULT
- *    geometry         (geometry) - Input geometry converted to MULTI geometry.
+ *    geometry    (geometry) - Input geometry converted to MULTI geometry.
  *  EXAMPLE
  *    USE GISDB
  *    GO
@@ -63,11 +67,11 @@ As
  *    	 ) as f;
  *    GO
  *
- *    mGeom                                                 numGeometries
- *    MULTIPOINT ((0 0))                                    1
- *    MULTIPOLYGON (((0 0, 10 0, 10 10, 0 10, 0 0)))        1
- *    MULTILINESTRING ((0 0, 10 10, 20 20))                 1
- *    MULTILINESTRING ((9.962 -0.872, 10.1 0, 9.962 0.872)) 1
+ *    mGeom                                                                  numGeometries
+ *    MULTIPOINT ((0 0))                                                                 1
+ *    MULTIPOLYGON (((0 0, 10 0, 10 10, 0 10, 0 0)))                                     1
+ *    MULTILINESTRING ((0 0, 10 10, 20 20))                                              1
+ *    GEOMETRYCOLLECTION (CIRCULARSTRING (9.962 -0.872, 10.1 0, 9.962 0.872))            1
  *  AUTHOR
  *    Simon Greener
  *  HISTORY
@@ -88,11 +92,13 @@ Begin
       RETURN @p_geometry;
     END;
     SET @v_wkt = @p_geometry.AsTextZM();
-    SET @v_wkt = REPLACE(@v_wkt,UPPER(@v_geometryType),'');
+    SET @v_wkt = case when @v_geometryType = 'CircularString' then @v_wkt 
+                      else REPLACE(@v_wkt,UPPER(@v_geometryType),'')
+                  end;
     SET @v_wkt = case when @v_geometryType = 'Point'          then 'MULTIPOINT'
                       when @v_geometryType = 'Polygon'        then 'MULTIPOLYGON'
                       when @v_geometryType = 'LineString'     then 'MULTILINESTRING'
-                      when @v_geometryType = 'CircularString' then 'MULTILINESTRING'
+                      when @v_geometryType = 'CircularString' then 'GEOMETRYCOLLECTION' -- MULTICURVE not instantiable
                   end + '(' + @v_wkt + ')';
     RETURN geometry::STGeomFromText(@v_wkt,@p_geometry.STSrid);
 End;
