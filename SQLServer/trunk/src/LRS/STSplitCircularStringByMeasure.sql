@@ -141,7 +141,7 @@ Begin
 
     -- If start=end we have a single point
     --
-    IF ( @v_start_measure = @v_end_measure ) 
+    IF ( ROUND(@v_start_measure,@v_round_zm) = ROUND(@v_end_measure,@v_round_zm) ) 
       Return @v_start_point;
 
     -- Compute Mid Point ...

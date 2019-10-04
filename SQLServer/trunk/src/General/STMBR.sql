@@ -34,7 +34,7 @@ IF EXISTS (
     AND xtype IN (N'FN', N'IF', N'TF')
 )
 BEGIN
-  DROP FUNCTION [$(owner)].[STMBR2Geometry];
+  DROP FUNCTION  [$(owner)].[STMBR2Geometry];
   PRINT 'Dropped [$(owner)].[STMBR2Geometry] ...';
 END;
 GO
@@ -44,10 +44,36 @@ IF EXISTS (
     AND xtype IN (N'FN', N'IF', N'TF')
 )
 BEGIN
-  DROP FUNCTION [$(owner)].[STMBR2Geography];
+  DROP FUNCTION  [$(owner)].[STMBR2Geography];
   PRINT 'Dropped [$(owner)].[STMBR2Geography] ...';
 END;
 GO
+
+IF EXISTS (
+  SELECT * 
+    FROM sysobjects 
+   WHERE id = object_id(N'[$(owner)].[STMBRLongestSide]') 
+     AND xtype IN (N'FN', N'IF', N'TF')
+)
+BEGIN
+  DROP FUNCTION  [$(owner)].[STMBRLongestSide];
+  PRINT 'Dropped [$(owner)].[STMBRLongestSide] ...';
+END;
+GO
+
+IF EXISTS (
+  SELECT * 
+    FROM sysobjects 
+   WHERE id = object_id(N'[$(owner)].[STMBRShortestSide]') 
+     AND xtype IN (N'FN', N'IF', N'TF')
+)
+BEGIN
+  DROP FUNCTION  [$(owner)].[STMBRShortestSide];
+  PRINT 'Dropped [$(owner)].[STMBRShortestSide] ...';
+END;
+GO
+
+/* ****************************************************************************** */
 
 Print 'Creating [$(owner)].[STGeometry2MBR] ....';
 GO
@@ -324,6 +350,137 @@ Begin
 End;
 Go
 
+/* ********************************************************** */
+
+use DEVDB
+go
+
+CREATE FUNCTION [$(owner)].[STMBRShortestSide]
+(
+  @p_geometry geometry
+)
+returns float
+as
+/****f* MBR/STMBRShortestSide (2008)
+ *  NAME
+ *    STMBRShortestSide - Returns length of shortest side of Envelope/MBR of supplied geometry.
+ *  SYNOPSIS
+ *    Function [$(owner)].[STMBRShortestSide] (
+ *       @p_geometry geometry
+ *     )
+ *     Returns Float
+ *  EXAMPLE
+ *    with data as (
+ *      select geometry::STGeomFromText('POLYGON ((0 0,100 0,100 10,0 10,0 0))',0) as geom
+ *    )
+ *    SELECT [$(owner)].[STMBRShortestSide] (a.geom) as length
+ *      FROM data as a;
+ *    GO
+  *
+ *    length 
+ *    ------
+ *     100.0
+ *
+ *  DESCRIPTION
+ *    Supplied with a non-NULL geometry, this function returns the length of the shortest side of its Envelope.
+ *  INPUTS
+ *    @p_geometry (geometry) - Any geometry object type.
+ *  RESULT
+ *    length (float) - length of shortest side of envelope
+ *  AUTHOR
+ *    Simon Greener
+ *  HISTORY
+ *    Simon Greener - Oct 2019 - Original coding.
+ *  COPYRIGHT
+ *    (c) 2008-2019 by TheSpatialDBAdvisor/Simon Greener
+******/
+begin
+  Declare
+   @v_mbr        geometry,
+   @v_length        float,
+   @v_length_side_1 float,
+   @v_length_side_2 float;
+  Begin
+    If ( @p_geometry is null )
+      Return NULL;
+    If ( @p_geometry.STGeometryType() = 'Point' )
+      Return 0.0;
+    set @v_mbr = @p_geometry.STEnvelope();
+    set @v_length_side_1 = @v_mbr.STPointN(1).STDistance(@v_mbr.STPointN(2));
+    set @v_length_side_2 = @v_mbr.STPointN(2).STDistance(@v_mbr.STPointN(3));
+    set @v_length        = case when @v_length_side_1 < @v_length_side_2
+                                then @v_length_side_1
+                                else @v_length_side_2
+                            end;
+    Return @v_length;
+  End;
+End;
+Go
+
+/* ******************************************************** */
+
+CREATE FUNCTION [$(owner)].[STMBRLongestSide]
+(
+  @p_geometry geometry
+)
+returns float
+as
+/****f* MBR/STMBRLongestSide (2008)
+ *  NAME
+ *    STMBRLongestSide - Returns length of shortest side of Envelope/MBR of supplied geometry.
+ *  SYNOPSIS
+ *    Function [$(owner)].[STMBRLongestSide] (
+ *       @p_geometry geometry
+ *     )
+ *     Returns Float
+ *  EXAMPLE
+ *    with data as (
+ *      select geometry::STGeomFromText('POLYGON ((0 0,100 0,100 10,0 10,0 0))',0) as geom
+ *    )
+ *    SELECT [$(owner)].[STMBRLongestSide] (a.geom) as length
+ *      FROM data as a;
+ *    GO
+  *
+ *    length 
+ *    ------
+ *      10.0
+ *
+ *  DESCRIPTION
+ *    Supplied with a non-NULL geometry, this function returns the length of the longest side of its Envelope.
+ *  INPUTS
+ *    @p_geometry (geometry) - Any geometry object type.
+ *  RESULT
+ *    length (float) - length of shortest side of envelope
+ *  AUTHOR
+ *    Simon Greener
+ *  HISTORY
+ *    Simon Greener - Oct 2019 - Original coding.
+ *  COPYRIGHT
+ *    (c) 2008-2019 by TheSpatialDBAdvisor/Simon Greener
+******/
+begin
+  Declare
+   @v_mbr        geometry,
+   @v_length        float,
+   @v_length_side_1 float,
+   @v_length_side_2 float;
+  Begin
+    If ( @p_geometry is null )
+      Return NULL;
+    If ( @p_geometry.STGeometryType() = 'Point' )
+      Return 0.0;
+    set @v_mbr = @p_geometry.STEnvelope();
+    set @v_length_side_1 = @v_mbr.STPointN(1).STDistance(@v_mbr.STPointN(2));
+    set @v_length_side_2 = @v_mbr.STPointN(2).STDistance(@v_mbr.STPointN(3));
+    set @v_length        = case when @v_length_side_1 > @v_length_side_2
+                                then @v_length_side_1
+                                else @v_length_side_2
+                           end;
+   Return @v_length;
+  End;
+End;
+Go
+
 /* **************************** TESTING *********************/
 
 select f.*
@@ -358,6 +515,20 @@ GO
 select [$(owner)].[STMBR2Geography] (147,-44,148,-43,4326,0)
                  .STDifference([$(owner)].[STMBR2Geography] (147.4,-43.6,147.6,-43.2,4326,2))
                  .STAsText() as geogWKT
+GO
+
+with data as (
+  select geometry::STGeomFromText('POLYGON ((0 0,100 0,100 10,0 10,0 0))',0) as geom
+)
+SELECT [$(owner)].[STMBRLongestSide] (a.geom) as length
+  FROM data as a
+GO
+
+with data as (
+  select geometry::STGeomFromText('POLYGON ((0 0,100 0,100 10,0 10,0 0))',0) as geom
+)
+SELECT [$(owner)].[STMBRShortestSide] (a.geom) as length
+  FROM data as a
 GO
 
 QUIT

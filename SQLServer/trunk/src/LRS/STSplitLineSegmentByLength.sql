@@ -103,14 +103,16 @@ Begin
     -- *********************************
     -- Normalise start/end lengths to @p_linestring lengths
     --
-    SET @v_start_length = ISNULL(@p_start_length,0.0);
-    SET @v_end_length   = case when @p_end_length is null 
-                               then @p_linestring.STLength()
-                               else case when @p_end_length > @p_linestring.STLength()
-                                         then @p_linestring.STLength()
-                                         else @p_end_length
-                                     end
-                           end;
+    SET @v_start_length = ROUND(ISNULL(@p_start_length,0.0),@v_round_xy);
+    SET @v_end_length   = ROUND(case when @p_end_length is null 
+                                     then @p_linestring.STLength()
+                                     else case when @p_end_length > @p_linestring.STLength()
+                                               then @p_linestring.STLength()
+                                               else @p_end_length
+                                           end
+                                 end,
+                                @v_round_xy
+                          );
     -- Ensure distances increment...
     SET @v_temp         = case when @v_start_length < @v_end_length 
                                then @v_start_length

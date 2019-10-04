@@ -171,11 +171,19 @@ begin
     SET @v_round_xy     = ISNULL(@p_round_xy,3);
     SET @v_round_zm     = ISNULL(@p_round_zm,2);
     SET @v_offset       = 0.0; -- Offset done by STParallel at end of function if @p_offset <> 0.0
-    SET @v_start_length = case when ISNULL(@p_start_length,-1)<=-1 then 0.0                      else @p_start_length end;
-    SET @v_end_length   = case when ISNULL(@p_end_length  ,-1)<=-1 then @p_linestring.STLength() 
-                               when @p_end_length >= @p_linestring.STLength() then @p_linestring.STLength()
-                               else @p_end_length
-                           end;
+    SET @v_start_length = ROUND(
+                            case when ISNULL(@p_start_length,-1)<=-1 then 0.0
+                                 else @p_start_length 
+                             end,
+                            @v_round_xy
+                          );
+    SET @v_end_length   = ROUND(
+                            case when ISNULL(@p_end_length,-1)<=-1 then @p_linestring.STLength() 
+                                 when @p_end_length >= @p_linestring.STLength() then @p_linestring.STLength()
+                                 else @p_end_length
+                             end,
+                             @v_round_xy
+                          );
 
     -- Check if length range covers complete linestring 
     If (   @v_start_length = 0.0
