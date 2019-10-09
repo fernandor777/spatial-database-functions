@@ -116,7 +116,9 @@ ECHO ... MBR Functions
 find /I src/general/STMBR.sql "CREATE FUNCTION" | find /I "CREATE"
 sqlcmd -b -S %server_instance% -d %dbname% -v usedbname=%dbname% owner=%owner% -m-1 -E -i src/general/STMBR.sql                               -o log/STMBR.log
 sqlcmd -b -S %server_instance% -d %dbname% -v usedbname=%dbname% owner=%owner% -m-1 -E -i src/general/STMakeEnvelope.sql                      -o log/STMakeEnvelope.log
-sqlcmd -b -S %server_instance% -d %dbname% -v usedbname=%dbname% owner=%owner% -m-1 -E -i src/general/STMakeEnvelopeFromText.sql              -o logSTMakeEnvelopeFromText.log
+sqlcmd -b -S %server_instance% -d %dbname% -v usedbname=%dbname% owner=%owner% -m-1 -E -i src/general/STMakeEnvelopeFromText.sql              -o log/STMakeEnvelopeFromText.log
+sqlcmd -b -S %server_instance% -d %dbname% -v usedbname=%dbname% owner=%owner% -m-1 -E -i src/general/STBoundingDiagonal.sql                  -o log/STBoundingDiagonal.sql
+
 
 ECHO ... STMorton function
 sqlcmd -b -S %server_instance% -d %dbname% -v usedbname=%dbname% owner=%owner% -m-1 -E -i src/general/STMorton.sql                            -o log/STMorton.log 
@@ -145,7 +147,7 @@ sqlcmd -b -S %server_instance% -d %dbname% -v usedbname=%dbname% cogoowner=%cogo
 ECHO ...... STEndPoint function 
 sqlcmd -b -S %server_instance% -d %dbname% -v usedbname=%dbname% cogoowner=%cogoowner% owner=%owner% -m-1 -E -i src/general/STEndPoint.sql    -o log/STEndPoint.log 
 ECHO ...... STIsPseudoMultiCurve function 
-sqlcmd -b -S %server_instance% -d %dbname% -v usedbname=%dbname% cogoowner=%cogoowner% owner=%owner% -m-1 -E -i src/general/STIsPseudoMultiCurve.sql   -o log/STIsPseudoMultiCurve.log 
+sqlcmd -b -S %server_instance% -d %dbname% -v usedbname=%dbname% cogoowner=%cogoowner% owner=%owner% -m-1 -E -i src/general/STIsPseudoMultiCurve.sql -o log/STIsPseudoMultiCurve.log 
 
 ECHO ... STPointAsText and STPointGeomAsText Functions ...
 sqlcmd -b -S %server_instance% -d %dbname% -v usedbname=%dbname% owner=%owner% -m-1 -E -i src/general/STPointAsText.sql                       -o log/STPointAsText.log
@@ -160,7 +162,7 @@ ECHO ... COGO Functions ...
 find /I src/general/DD2DMS.sql "CREATE FUNCTION" | find /I "CREATE"
 sqlcmd -b -S %server_instance% -d %dbname% -v usedbname=%dbname% cogoowner=%cogoowner% owner=%owner% -m-1 -E -i src/general/DD2DMS.sql        -o log/COGO_DD2DMS.log
 find /I src/general/STBearingAndDistance.sql "CREATE FUNCTION" | find /I "CREATE"
-sqlcmd -b -S %server_instance% -d %dbname% -v usedbname=%dbname% cogoowner=%cogoowner% owner=%owner% -m-1 -E -i src/general/STBearingAndDistance.sql   -o log/COGO_STBearingAndDistance.log
+sqlcmd -b -S %server_instance% -d %dbname% -v usedbname=%dbname% cogoowner=%cogoowner% owner=%owner% -m-1 -E -i src/general/STBearingAndDistance.sql -o log/COGO_STBearingAndDistance.log
 find /I src/general/STGeographic.sql "CREATE FUNCTION" | find /I "CREATE"
 sqlcmd -b -S %server_instance% -d %dbname% -v usedbname=%dbname% cogoowner=%cogoowner% owner=%owner% -m-1 -E -i src/general/STGeographic.sql    -o log/COGO_STGeographic.log
 find /I src/general/STCogoFunctions.sql "CREATE FUNCTION" | find /I "CREATE"
@@ -200,7 +202,7 @@ sqlcmd -b -S %server_instance% -d %dbname% -v usedbname=%dbname% cogoowner=%cogo
 ECHO ...... STSetZ function ...
 sqlcmd -b -S %server_instance% -d %dbname% -v usedbname=%dbname% cogoowner=%cogoowner% owner=%owner% -m-1 -E -i src/general/STSetZ.sql        -o log/STSetZ.log 
 ECHO ...... STInsertN function for database version %dbversion%
-sqlcmd -b -S %server_instance% -d %dbname% -v usedbname=%dbname% cogoowner=%cogoowner% owner=%owner% -m-1 -E -i src/general/STInsertN%dbversion%.sql   -o log/STInsertN.log 
+sqlcmd -b -S %server_instance% -d %dbname% -v usedbname=%dbname% cogoowner=%cogoowner% owner=%owner% -m-1 -E -i src/general/STInsertN%dbversion%.sql -o log/STInsertN.log 
 ECHO ...... STUpdate function
 sqlcmd -b -S %server_instance% -d %dbname% -v usedbname=%dbname% cogoowner=%cogoowner% owner=%owner% -m-1 -E -i src/general/STUpdate.sql      -o log/STUpdate.log 
 ECHO ...... STUpdateN function
@@ -212,13 +214,13 @@ sqlcmd -b -S %server_instance% -d %dbname% -v usedbname=%dbname% cogoowner=%cogo
 ECHO ...... STExtend and STReduce (depends on STInsert and STUpdate) functions
 sqlcmd -b -S %server_instance% -d %dbname% -v usedbname=%dbname% cogoowner=%cogoowner% owner=%owner% -m-1 -E -i src/general/STExtend.sql      -o log/STExtend.log 
 ECHO ...... STAddSegmentByCOGO (uses STExtract) Function ...
-sqlcmd -b -S %server_instance% -d %dbname% -v usedbname=%dbname% cogoowner=%cogoowner% owner=%owner% -m-1 -E -i src/general/STAddSegmentByCOGO.sql     -o log/COGO_STAddSegmentByCOGO.log
+sqlcmd -b -S %server_instance% -d %dbname% -v usedbname=%dbname% cogoowner=%cogoowner% owner=%owner% -m-1 -E -i src/general/STAddSegmentByCOGO.sql -o log/COGO_STAddSegmentByCOGO.log
 ECHO ...... STDensify Function ...
-sqlcmd -b -S %server_instance% -d %dbname% -v usedbname=%dbname% cogoowner=%cogoowner% owner=%owner% -m-1 -E -i src/general/STDensify.sql              -o log/COGO_STDensify.log
+sqlcmd -b -S %server_instance% -d %dbname% -v usedbname=%dbname% cogoowner=%cogoowner% owner=%owner% -m-1 -E -i src/general/STDensify.sql          -o log/COGO_STDensify.log
 
 ECHO ... Data Quality Functions ...
 ECHO ......  STRemoveSpikes Functions
-sqlcmd -b -S %server_instance% -d %dbname% -v usedbname=%dbname% cogoowner=%cogoowner% owner=%owner% -m-1 -E -i src/general/STRemoveSpikes.sql          -o log/STRemoveSpikes.log 
+sqlcmd -b -S %server_instance% -d %dbname% -v usedbname=%dbname% cogoowner=%cogoowner% owner=%owner% -m-1 -E -i src/general/STRemoveSpikes.sql     -o log/STRemoveSpikes.log 
 ECHO ......  STRemoveCollinearPoints Function
 sqlcmd -b -S %server_instance% -d %dbname% -v usedbname=%dbname% cogoowner=%cogoowner% owner=%owner% -m-1 -E -i src/general/STRemoveCollinearPoints.sql -o log/STRemoveCollinearPoints.log 
 ECHO ......  STRemoveDuplicatePoints Function
