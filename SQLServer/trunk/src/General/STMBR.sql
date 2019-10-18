@@ -204,7 +204,9 @@ Begin
      @v_geometry geometry;
    If ( @p_geography is null )
      Return;
-   SET @v_geometry = [$(owner)].[STToGeometry](@p_geography,0);
+   SET @v_geometry = [$(owner)].[STToGeometry](@p_geography,@p_geography.STSrid);
+   IF ( @v_geometry.STIsValid() = 0 ) 
+     SET @v_geometry = @v_geometry.MakeValid();
    INSERT INTO @table ( minx, miny, maxx, maxy ) 
    VALUES(@v_geometry.STEnvelope().STPointN(1).STX,
           @v_geometry.STEnvelope().STPointN(1).STY,

@@ -25,6 +25,18 @@ Print 'Creating [$(owner)].[STAppend] ...';
 GO
 
 CREATE FUNCTION [$(owner)].[STAppend]
+USE [TESTDB]
+GO
+/****** Object:  UserDefinedFunction [$(owner)].[STAppend]    Script Date: 17-Oct-19 10:11:16 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+DROP FUNCTION [$(owner)].[STAppend]
+GO
+
+CREATE FUNCTION [$(owner)].[STAppend]
 (
   @p_linestring1 geometry,
   @p_linestring2 geometry,
@@ -37,7 +49,7 @@ as
  *  NAME
  *    STAppend -- Appends second linestring to end of first linestring.
  *  SYNOPSIS 
- *    Function [$(lrsowner)].[STAppend] (
+ *    Function [$(owner)].[STAppend] (
  *               @p_linestring1 geometry,
  *               @p_linestring2 geometry,
  *               @p_round_xy    int   = 3,
@@ -68,12 +80,31 @@ as
  *    @p_round_zm         (int) - Decimal degrees of precision to which calculated ZM ordinates are rounded.
  *  RESULT
  *    appended line  (geometry) - New line with second appended to first
+ *  EXAMPLE
+ *    select [$(owner)].[STAppend] (
+ *             geometry::STGeomFromText('LINESTRING(0 0,1 1)',0),
+ *             geometry::STGeomFromText('CIRCULARSTRING(10 10,15 15,20 10)',0),
+ *             3,2
+ *           ).STAsText() as geom;
+ *
+ *    geom
+ *    GEOMETRYCOLLECTION (CIRCULARSTRING (10 10, 15 15, 20 10), LINESTRING (0 0, 1 1))
+ *
+ *    select [$(owner)].[STAppend] (
+ *             geometry::STGeomFromText('LINESTRING(0 0,10 10)',0),
+ *             geometry::STGeomFromText('CIRCULARSTRING(10 10,15 15,20 10)',0),
+ *             3,2
+ *           ).STAsText() as geom;
+ * 
+ *    geom
+ *    COMPOUNDCURVE (CIRCULARSTRING (20 10, 15 15, 10 10), (10 10, 0 0))
  *  AUTHOR
  *    Simon Greener
  *  HISTORY
  *    Simon Greener - January 2018 - Original Coding.
+ *    Simon Greener - October 2019 - Circular String fixes.
  *  COPYRIGHT
- *    (c) 2008-2018 by TheSpatialDBAdvisor/Simon Greener
+ *    (c) 2008-2019 by TheSpatialDBAdvisor/Simon Greener
 ******/
 begin
   DECLARE
@@ -116,7 +147,7 @@ begin
     IF (@v_GeometryType2 NOT IN ('LineString',
                                  'CircularString') )  -- second cannot be a MultiLineString or CompoundCurve
       Return @p_linestring1;
-    IF ( @v_GeometryType1 = 'MultiLineString' and @v_GeometryType2 <> 'LineString' )
+    IF ( @v_GeometryType1 = 'MultiLineString' and @v_GeometryType2 NOT IN ('LineString','CircularString') )
       Return @p_linestring1;
 
     -- Check dimensions
@@ -361,16 +392,12 @@ begin
       Return geometry::STGeomFromText(@v_wkt,@v_linestring1.STSrid);
     END;
 
-    -- CircularString combinations result in a GeometryCollection (why not MultiCurve?)
     SET @v_wkt = 'GEOMETRYCOLLECTION ('
-                 +
-                 @v_linestring1.AsTextZM()
-                 +
-                 ','
-                 +
-                 @v_linestring2.AsTextZM()
-                 +
-                 ')';
+	                 + @v_linestring1.AsTextZM()
+	                 + ','
+	                 + @v_linestring2.AsTextZM()
+	                 + ')';
+
     -- Return geometry
     Return geometry::STGeomFromText(@v_wkt,@v_linestring1.STSrid);
   End;

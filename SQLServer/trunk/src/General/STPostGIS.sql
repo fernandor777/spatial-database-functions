@@ -467,7 +467,7 @@ select d.id,d.geom.STAsText() as geom
   from [$(owner)].[STDumpRings](geometry::STGeomFromText('MULTILINESTRING((0 0,20 0,20 20,0 20,0 0),(10 10,10 11,11 11,11 10,10 10),(5 5,5 7,7 7,7 5,5 5))',0)) as d 
 GO
 
-id geom -- ie no rows
+-- id geom -- ie no rows
 
 -- Polygon
 select d.id,d.geom.STAsText() as geom 
@@ -495,7 +495,6 @@ select d.id,d.geom.STAsText() as geom
                                                      CURVEPOLYGON(COMPOUNDCURVE((0 -23.43778, 0 23.43778),CIRCULARSTRING(0 23.43778, -45 23.43778, -90 23.43778),(-90 23.43778, -90 -23.43778),CIRCULARSTRING(-90 -23.43778, -45 -23.43778, 0 -23.43778))), 
                                                      COMPOUNDCURVE(CIRCULARSTRING(-90 -23.43778, -45 -23.43778, 0 -23.43778), (0 -23.43778, 0 23.43778)))',0)) as d
 GO
-
 
 QUIT
 GO

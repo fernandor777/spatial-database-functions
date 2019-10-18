@@ -92,22 +92,21 @@ BEGIN
     SET @v_round_zm = ISNULL(@p_round_zm,2);
 
     SET @v_side_buffer = [$(owner)].[STOneSidedBuffer] ( 
-                            /* @p_linestring        */ @p_linestring, 
-                            /* @p_buffer)distance   */ @p_distance, 
-                            /* @p_square            */ 1, 
-                            /* @p_round    */ @v_round_xy, 
-                            /* @p_round_zm */ @v_round_zm 
+                            /* @p_linestring      */ @p_linestring, 
+                            /* @p_buffer)distance */ @p_distance, 
+                            /* @p_square          */ 1, 
+                            /* @p_round           */ @v_round_xy, 
+                            /* @p_round_zm        */ @v_round_zm 
                          );
-
-    SET @v_parallel_line = @v_side_buffer.STExteriorRing().STDifference(@p_linestring);
-
-    -- Remove start and end segments
-    SET @v_parallel_line = [$(owner)].[STDelete] ( 
-                              /* @p_geometry          */ @v_parallel_line,
-                              /* @p_point_list        */ '1,-1',
-                              /* @p_round    */ @v_round_xy, 
-                              /* @p_round_zm */ @v_round_zm 
-                           );
+	-- cookie cut out segment of input linestring on boundary of side buffered polygon
+	SET @v_side_buffer_ring = [$(owner)].[STForceCollection](@v_side_buffer,1,0);
+    SET @v_parallel_line    = [$(owner)].[STRound] (
+                               @p_linestring.STIntersection(
+                                  @v_side_buffer_ring.STBuffer(1.0/POWER(10,@v_round_xy-1))
+                               ),
+							   @p_round_xy,
+							   @p_round_zm
+							);
 
     Return @v_parallel_line;
   END;
