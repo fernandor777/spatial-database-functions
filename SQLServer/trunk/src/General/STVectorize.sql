@@ -122,13 +122,15 @@ Begin
         SET @end_geom   = @p_geometry.STPointN(@second);
         SET @second     = @second + 1;
         SET @vector     = @vector + 1;
-        SET @line       = [$(owner)].[STMakeLine](@start_geom, @end_geom,15,15);
-        INSERT INTO @Vectors ( 
+        IF ( @start_geom.STEquals(@end_geom) = 0 ) 
+		BEGIN
+          SET @line = [$(owner)].[STMakeLine](@start_geom, @end_geom,15,15);
+          INSERT INTO @Vectors ( 
                    [id],[element_id],[subelement_id],[vector_id],
                    [sx],[sy],[sz],[sm],
                    [ex],[ey],[ez],[em],
                    [length],[geom]
-        ) VALUES ( @id,
+          ) VALUES ( @id,
                    1,
                    0,
                    @vector,
@@ -139,7 +141,8 @@ Begin
                         else @line.STLength()
                     end,
                    @line
-        );
+          );
+		END;
         SET @id = @id + 1;
       END;
       RETURN;
@@ -198,7 +201,7 @@ Begin
                    [sx],[sy],[sz],[sm],
                    [mx],[my],[mz],[mm],
                    [ex],[ey],[ez],[em],
-                   [length],[geom]
+                   [length],[geom].MakeValid()
               FROM [$(owner)].[_STVectorize](@geom,@id);
         SET @id = @id + @@ROWCOUNT;  -- ROWCOUNT is surrogate for last [ID]
         SET @geomn  = @geomn + 1;
@@ -224,8 +227,10 @@ Begin
           SET @second     = @second + 1;
           SET @vector     = @vector + 1;
           SET @subVector  = @subVector + 1;
-          SET @line       = [$(owner)].[STMakeLine](@start_geom,@end_geom,15,15);
-          INSERT INTO @Vectors (
+          IF ( @start_geom.STEquals(@end_geom) = 0 )
+		  BEGIN
+            SET @line = [$(owner)].[STMakeLine](@start_geom,@end_geom,15,15);
+            INSERT INTO @Vectors (
                      [id],
                      [element_id],
                      [subelement_id],
@@ -233,7 +238,7 @@ Begin
                      [sx],[sy],[sz],[sm],
                      [ex],[ey],[ez],[em],
                      [length],[geom]
-          ) VALUES ( @id,
+            ) VALUES ( @id,
                      @geomn,
                      @ringn,
                      @subVector,
@@ -244,7 +249,8 @@ Begin
                           else @line.STLength()
                       end,
                      @line
-          );
+            );
+          END;
           SET @id    = @id    + 1;
         END;
         SET @geomn = @geomn + 1;
@@ -278,8 +284,10 @@ Begin
           SET @end_geom   = @geom.STPointN(@second);
           SET @vector     = @vector + 1;
           SET @subVector  = @subVector + 1;
-          SET @line       = [$(owner)].[STMakeLine](@start_geom, @end_geom,15,15);
-          INSERT INTO @Vectors (
+          IF ( @start_geom.STEquals(@end_geom) = 0 ) 
+          BEGIN
+            SET @line = [$(owner)].[STMakeLine](@start_geom, @end_geom,15,15);
+            INSERT INTO @Vectors (
                      [id],
                      [element_id],
                      [subelement_id],
@@ -287,7 +295,7 @@ Begin
                      [sx],[sy],[sz],[sm],
                      [ex],[ey],[ez],[em],
                      [length],[geom]
-          ) VALUES ( @id,
+            ) VALUES ( @id,
                      1,
                      @ringn,
                      @subVector,
@@ -298,7 +306,8 @@ Begin
                           else @line.STLength()
                       end,
                      @line
-          );
+            );
+          END;
           SET @first  = @first  + 1;
           SET @second = @second + 1;
           SET @id     = @id     + 1;

@@ -50,14 +50,15 @@ CREATE FUNCTION [$(owner)].[STDumpPoints]
 )
 Returns @Points TABLE
 (
-  uid int,   /* Unique Point Id For Whole Geometry */
-  pid int,   /* Point Id within Part */
-  mid int,   /* Part Id */
-  rid int,   /* Ring Id - Polygon Only */
-  x   float,
-  y   float,
-  z   float,
-  m   float 
+  uid   int,   /* Unique Point Id For Whole Geometry */
+  pid   int,   /* Point Id within Part */
+  mid   int,   /* Part Id */
+  rid   int,   /* Ring Id - Polygon Only */
+  x     float,
+  y     float,
+  z     float,
+  m     float,
+  point geometry
 )
 AS
 /****f* GEOPROCESSING/STDumpPoints (2008)
@@ -68,14 +69,15 @@ AS
  *       @p_geometry  geometry 
  *    )
  *    Returns @Points Table (
- *      uid  int,
- *      pid  int,
- *      mid  int,
- *      rid  int,
- *      x    float,  
- *      y    float,
- *      z    float,
- *      m    float
+ *      uid   int,
+ *      pid   int,
+ *      mid   int,
+ *      rid   int,
+ *      x     float,  
+ *      y     float,
+ *      z     float,
+ *      m     float,
+ *      point geometry
  *    )  
  *  EXAMPLE
  *    -- Points from multipolygon
@@ -118,6 +120,7 @@ AS
  *     y   (float) - Start Point Y Ordinate 
  *     z   (float) - Start Point Z Ordinate 
  *     m   (float) - Start Point M Ordinate
+ *     point (geometry) - x,y,z,m as geometry
  *  AUTHOR
  *    Simon Greener
  *  HISTORY
@@ -127,9 +130,9 @@ AS
 ******/
 Begin
    INSERT INTO @Points ( 
-          [uid],[pid],[mid],[rid],[x],[y],[z],[m] 
+          [uid],[pid],[mid],[rid],[x],[y],[z],[m],[point]
    )
-   SELECT [uid],[pid],[mid],[rid],[x],[y],[z],[m]
+   SELECT [uid],[pid],[mid],[rid],[x],[y],[z],[m],[point]
      FROM [$(owner)].[STVertices](@p_geometry);
    RETURN;
 End
@@ -268,7 +271,8 @@ CREATE FUNCTION [$(owner)].[STDumpRings]
 )
 Returns @rings TABLE
 (
-  id   integer,
+  gid  integer,
+  rid  integer,
   geom geometry
 )  
 AS
@@ -276,35 +280,68 @@ AS
  *  NAME
  *    STDumpRings -- Dumps the rings of a CurvePolygon, Polygon or MultiPolygon
  *  SYNOPSIS
- *    Function [$(owner)].[STDumpRings] (
+ *    Function [dbo].[STDumpRings] (
  *               @p_geometry geometry
  *             )
  *     Returns @rings TABLE
  *     (
- *       id   integer,
+ *       gid  integer,
+ *       sid  integer,
  *       geom geometry
  *     )  
  *  DESCRIPTION
- *    This function allows a user to extract the subelements of the supplied polygon including all compound element descriptions.
+ *    This function allows a user to extract all the rings of the supplied (multi)polygon.
  *    This function is a wrapper over STExtract.
  *  INPUTS
  *    @p_geometry (geometry) - CurvePolygon, Polygon or MultiPolygon geometry object.
+ *  RESULT
+ *    Array of subelements:
+ *    gid  - Unique ring identifier starting at first and ending at last in order exist within (multi)polygon
+ *    rid  - Ring id within polygon element (id)
+ *    geom - Geometry representation of subelement.
  *  NOTES
  *    Depends on STExtract.
  *  EXAMPLE
- *    SELECT t.*
- *     FROM [$(owner)].[STDumpRings](geometry::STGeomFromText('POLYGON((0 0,20 0,20 20,0 20,0 0),(10 10,10 11,11 11,11 10,10 10),(5 5,5 7,7 7,7 5,5 5))',0)) as t
+ *    -- Polygon with one exterior ring and two interior rings
+ *    SELECT t.gid, t.rid, t.geom.STAsText() as geom
+ *      FROM [dbo].[STDumpRings](geometry::STGeomFromText('POLYGON((0 0,20 0,20 20,0 20,0 0),(10 10,10 11,11 11,11 10,10 10),(5 5,5 7,7 7,7 5,5 5))',0)) as t
  *    GO
- *  RESULT
- *    Array of subelements:
- *    id   - Unique ring identifier starting at first and ending at last in order exist within (multi)polygon
- *    geom - Geometry representation of subelement.
+ *    
+ *    gid rid geom
+ *    1   1   POLYGON ((0 0, 20 0, 20 20, 0 20, 0 0))
+ *    1   2   POLYGON ((10 10, 10 11, 11 11, 11 10, 10 10))
+ *    1   3   POLYGON ((5 5, 5 7, 7 7, 7 5, 5 5))
+ *
+ *    -- Multi Polygon with 3 exterior rings, with one with 2 interior rings 
+ *    select d.gid,d.rid,d.geom.STAsText() as geom 
+ *      from [dbo].[STDumpRings](geometry::STGeomFromText(
+ *                'MULTIPOLYGON (((0 0,20 0,20 20,0 20,0 0),(10 10,10 11,11 11,11 10,10 10),(5 5,5 7,7 7,7 5,5 5)), 
+ *                               ((80 80, 100 80, 100 100, 80 100, 80 80)), 
+ *                               ((110 110, 150 110, 150 150, 110 150, 110 110)))',0)) as d
+ *
+ *    GO
+ *    gid rid geom
+ *    1   1   POLYGON ((0 0, 20 0, 20 20, 0 20, 0 0))
+ *    1   2   POLYGON ((10 10, 10 11, 11 11, 11 10, 10 10))
+ *    1   3   POLYGON ((5 5, 5 7, 7 7, 7 5, 5 5))
+ *    2   1   POLYGON ((80 80, 100 80, 100 100, 80 100, 80 80))
+ *    3   1   POLYGON ((110 110, 150 110, 150 150, 110 150, 110 110))
+ *
+ *    -- Single Polygon with exterior ring only
+ *    select d.gid,d.rid,d.geom.STAsText() as geom 
+ *      from [dbo].[STDumpRings](geometry::STGeomFromText(
+ *               'CURVEPOLYGON(COMPOUNDCURVE((0 -23.43778, 0 23.43778),CIRCULARSTRING(0 23.43778, -45 23.43778, -90 23.43778),(-90 23.43778, -90 -23.43778),CIRCULARSTRING(-90 -23.43778, -45 -23.43778, 0 -23.43778)))',0)) as d
+ *    GO
+ *
+ *    gid rid geom
+ *    1   1   CURVEPOLYGON (COMPOUNDCURVE ((0 -23.43778, 0 23.43778), CIRCULARSTRING (0 23.43778, -45 23.43778, -90 23.43778), (-90 23.43778, -90 -23.43778), CIRCULARSTRING (-90 -23.43778, -45 -23.43778, 0 -23.43778)))
  *  AUTHOR
  *    Simon Greener
  *  HISTORY
  *    Simon Greener - Jan  2013 - Original coding.
  *    Simon Greener - Jan  2015 - Port to TSQL SQL Server
  *    Simon Greener - July 2019 - Modfied to return only id and geom and no subelements.
+ *    Simon Greener - October 2019 - Modfied to use STExplode; return more geom/ring identifiers.
  *  COPYRIGHT
  *    (c) 2008-2019 by TheSpatialDBAdvisor/Simon Greener
 ******/
@@ -317,13 +354,14 @@ Begin
     IF ( @p_geometry.STGeometryType() NOT IN ('GeometryCollection','CurvePolygon','Polygon','MultiPolygon') )
       return;
     IF ( @p_geometry.STGeometryType() = 'GeometryCollection' )
-      set @v_geom = [$(owner)].[STExtractPolygon](@p_geometry)
+      SET @v_geom = [$(owner)].[STExtractPolygon](@p_geometry)
     ELSE
-      set @v_geom = @p_geometry;
-    INSERT INTO @rings ( [id],[geom] )
-    SELECT row_number() over (order by e.[gid],e.[sid]) as id,
+      SET @v_geom = @p_geometry;
+    INSERT INTO @rings ( [gid],[rid],[geom] )
+    SELECT e.[gid],
+           e.[sid] as rid,
            e.[geom]
-      FROM [$(owner)].[STExtract](@v_geom,0) as e;
+      FROM [$(owner)].[STExtract](@v_geom,1/*Rings*/) as e;
     RETURN;
   End;
 End
