@@ -225,7 +225,7 @@ Begin
     IF ( @v_offset = 0.0 )
       SET @v_return_geom = geometry::STGeomFromText(@v_wkt,@p_circular_arc.STSrid)
     ELSE
-      SET @v_return_geom = [$(lrsowner)].[STParallelSegment] (
+      SET @v_return_geom = [$(lrsowner)].[STOffsetSegment] (
                               /* @p_linestring */ geometry::STGeomFromText(@v_wkt,@p_circular_arc.STSrid),
                               /* @p_offset     */ @v_offset,
                               /* @p_round_xy   */ @v_round_xy,

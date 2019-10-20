@@ -268,7 +268,7 @@ Begin
     -- 
     RETURN CASE WHEN @v_offset = 0.0
                 THEN geometry::STGeomFromText(@v_wkt,@p_circular_arc.STSrid)
-                ELSE [$(owner)].[STParallelSegment] (
+                ELSE [$(owner)].[STOffsetSegment] (
                         /* @p_linestring */ geometry::STGeomFromText(@v_wkt,@p_circular_arc.STSrid),
                         /* @p_offset     */ @v_offset,
                         /* @p_round_xy   */ @v_round_xy,

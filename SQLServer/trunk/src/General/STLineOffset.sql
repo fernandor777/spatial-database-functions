@@ -10,19 +10,19 @@ PRINT 'Database Schema Variables are: COGO=$(cogoowner) owner=$(owner)';
 GO
 
 IF EXISTS (
-    SELECT * FROM sysobjects WHERE id = object_id(N'[$(owner)].[STParallel]') 
+    SELECT * FROM sysobjects WHERE id = object_id(N'[$(owner)].[STLineOffset]') 
     AND xtype IN (N'FN', N'IF', N'TF')
 )
 BEGIN
-  DROP FUNCTION [$(owner)].[STParallel];
-  PRINT 'Dropped [$(owner)].[STParallel] ...';
+  DROP FUNCTION [$(owner)].[STLineOffset];
+  PRINT 'Dropped [$(owner)].[STLineOffset] ...';
 END;
 GO
 
-PRINT 'Creating STParallel'
+PRINT 'Creating STLineOffset'
 GO
 
-CREATE FUNCTION [$(owner)].[STParallel]
+CREATE FUNCTION [$(owner)].[STLineOffset]
 (
   @p_linestring geometry,
   @p_distance   Float, /* -ve is left and +ve is right */
@@ -31,11 +31,11 @@ CREATE FUNCTION [$(owner)].[STParallel]
 )
 Returns geometry 
 AS
-/****m* GEOPROCESSING/STParallel (2012)
+/****m* GEOPROCESSING/STLineOffset (2012)
  *  NAME
- *    STParallel -- Creates a line at a fixed offset from the input line.
+ *    STLineOffset -- Creates a line at a fixed offset from the input line.
  *  SYNOPSIS
- *    Function STParallel (
+ *    Function [$(owner)].[STLineOffset] (
  *               @p_linestring geometry,
  *               @p_distance   float, 
  *               @p_round_xy   int = 3,
@@ -63,6 +63,7 @@ AS
  *  HISTORY
  *    Simon Greener - Jan 2013 - Original coding (Oracle).
  *    Simon Greener - Nov 2017 - Original coding for SQL Server.
+ *    Simon Greener - Oct 2019 - Large scale rewrite. Rename from STParallel to STLineOffset.
  *  COPYRIGHT
  *    (c) 2012-2017 by TheSpatialDBAdvisor/Simon Greener
  *  LICENSE
@@ -103,7 +104,7 @@ BEGIN
                         );
 
     IF ( @v_linestring.STNumPoints() = 2 ) 
-      RETURN [$(owner)].[STParallelSegment] ( 
+      RETURN [$(owner)].[STLineOffsetSegment] ( 
                @v_linestring,
                 @p_distance,
                 @v_round_xy,
@@ -168,9 +169,9 @@ select 'Ordinary 2 Point Linestring'  as test,  geometry::STGeomFromText('LINEST
 Select f.pGeom.AsTextZM()/*.STBuffer(0.01)*/ as pGeom from (
 select d.linestring as pGeom from data as d
 union all
-select [$(owner)].[STParallel](d.linestring, 0.5,2,1) as pGeom from data as d
+select [$(owner)].[STLineOffset](d.linestring, 0.5,2,1) as pGeom from data as d
 union all
-select [$(owner)].[STParallel](d.linestring,-0.5,2,1) as pGeom from data as d
+select [$(owner)].[STLineOffset](d.linestring,-0.5,2,1) as pGeom from data as d
 ) as f;
 GO
 
@@ -180,9 +181,9 @@ select 'More complex Linestring'  as test,  geometry::STGeomFromText('LINESTRING
 Select f.pGeom.STBuffer(0.01) as pGeom from (
 select d.linestring as pGeom from data as d
 union all
-select [$(owner)].[STParallel](d.linestring, 0.5,2,1) as pGeom from data as d
+select [$(owner)].[STLineOffset](d.linestring, 0.5,2,1) as pGeom from data as d
 union all
-select [$(owner)].[STParallel](d.linestring,-0.5,2,1) as pGeom from data as d
+select [$(owner)].[STLineOffset](d.linestring,-0.5,2,1) as pGeom from data as d
 ) as f;
 GO
 
@@ -192,9 +193,9 @@ select 'Nearly Closed Loop Linestring'  as test,  geometry::STGeomFromText('LINE
 Select f.pGeom.STBuffer(0.01) as pGeom from (
 select d.linestring as pGeom from data as d
 union all
-select [$(owner)].[STParallel](d.linestring, 0.5,2,1) as pGeom from data as d
+select [$(owner)].[STLineOffset](d.linestring, 0.5,2,1) as pGeom from data as d
 union all
-select [$(owner)].[STParallel](d.linestring,-0.5,2,1) as pGeom from data as d
+select [$(owner)].[STLineOffset](d.linestring,-0.5,2,1) as pGeom from data as d
 ) as f;
 GO
 
@@ -206,9 +207,9 @@ select d.linestring.STBuffer(0.01) as pGeom from data as d
 union all
 select d.linestring.STBuffer(0.5) as pGeom from data as d
 union all
---select [$(owner)].[STParallel](d.linestring, 0.5,2,1) as pGeom from data as d
+--select [$(owner)].[STLineOffset](d.linestring, 0.5,2,1) as pGeom from data as d
 --union all
-select [$(owner)].[STParallel](d.linestring,-0.5,2,1).STBuffer(0.01) as pGeom from data as d
+select [$(owner)].[STLineOffset](d.linestring,-0.5,2,1).STBuffer(0.01) as pGeom from data as d
 ) as f;
 GO
 
@@ -216,7 +217,7 @@ SELECT geometry::STGeomFromText('LINESTRING (63.29 914.361, 73.036 899.855, 80.0
          .STBuffer(0.2)
           as geom
 UNION ALL
-SELECT [$(owner)].[STParallel] (
+SELECT [$(owner)].[STLineOffset] (
          geometry::STGeomFromText('LINESTRING (63.29 914.361, 73.036 899.855, 80.023 897.179, 79.425 902.707, 91.228 903.305, 79.735 888.304, 98.4 883.584, 115.73 903.305, 102.284 923.026, 99.147 899.271, 110.8 902.707, 90.78 887.02, 96.607 926.911, 95.71 926.313, 95.412 928.554, 101.238 929.002, 119.017 922.279)',0),
          -2.0,
          3,

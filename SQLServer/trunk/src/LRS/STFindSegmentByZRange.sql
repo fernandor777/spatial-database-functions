@@ -107,7 +107,7 @@ begin
 
     SET @v_round_xy = ISNULL(@p_round_xy,3);
     SET @v_round_zm = ISNULL(@p_round_zm,2);
-    SET @v_offset   = 0.0; -- Offset done by STParallel at end of function if @p_offset <> 0.0
+    SET @v_offset   = 0.0; -- Offset done by STLineOffset at end of function if @p_offset <> 0.0
     SET @v_start_Z  = case when @p_start_Z is null then @p_linestring.STStartPoint().Z else @p_start_Z end;
     SET @v_end_Z    = case when @p_end_Z   is null then @p_linestring.STEndPoint().Z   else @p_end_Z   end;
 
@@ -304,18 +304,18 @@ begin
    DEALLOCATE cFilteredSegments;
 
    SET @v_offset = ISNULL(@p_offset,0.0); 
-   -- Implement shortcut for parallel if single CircularString or LineString
+   -- Implement shortcut for offset if single CircularString or LineString
    Return case when @v_offset = 0.0 
                then @v_return_geom 
                else case when ( ( @v_return_geom.STGeometryType() = 'CircularString' and @v_return_geom.STNumCurves() = 1 )
                              OR ( @v_return_geom.STGeometryType() = 'LineString'     and @v_return_geom.STNumPoints() = 2 ) )
-                         then [$(owner)].[STParallelSegment] (
+                         then [$(owner)].[STOffsetlSegment] (
                                 /* @p_linestring */ @v_return_geom,
                                 /* @p_offset     */ @v_offset,
                                 /* @p_round_xy   */ @v_round_xy,
                                 /* @p_round_zm   */ @v_round_zm
                               )
-                         else [$(owner)].[STParallel] (
+                         else [$(owner)].[STLineOffset] (
                                 /* @p_linestring */ @v_return_geom,
                                 /* @p_offset     */ @v_offset,
                                 /* @p_round_xy   */ @v_round_xy,

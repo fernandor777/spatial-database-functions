@@ -402,8 +402,8 @@ Returns varchar(max)
  *           [$(owner)].[STRound]([$(cogoowner)].[STFindLineIntersectionBySegment] (first_segment,second_segment),3,1).STAsText() as geom,
  *           [$(cogoowner)].[STFindLineIntersectionDetails](first_segment,second_segment) as reason
  *      from (select b.offset,
- *                   [$(owner)].[STParallelSegment](                                                   a.geom,b.offset,8,8) as first_segment,
- *                   [$(owner)].[STParallelSegment](lead(a.geom,1) over (partition by b.offset order by a.id),b.offset,8,8) as second_segment 
+ *                   [$(owner)].[STOffsetSegment](                                                   a.geom,b.offset,8,8) as first_segment,
+ *                   [$(owner)].[STOffsetSegment](lead(a.geom,1) over (partition by b.offset order by a.id),b.offset,8,8) as second_segment 
  *              from data as b
  *                   cross apply 
  *                   [$(owner)].[STSegmentLine] (b.line) as a

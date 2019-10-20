@@ -275,7 +275,7 @@ Begin
                         @v_round_xy,
                         @v_round_zm 
                      )
-                else [$(owner)].[STParallelSegment] (
+                else [$(owner)].[STOffsetSegment] (
                         /* @p_linestring */ [$(owner)].[STMakeLine] (
                                                @v_start_point, 
                                                @v_end_point,

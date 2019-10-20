@@ -1,10 +1,10 @@
-use DEVDB
+use $(usedbname)
 go
 
-drop function [dbo].[STRemoveOffsetSegments] 
+drop function if exists [$(owner)].[STRemoveOffsetSegments] 
 go
 
-create function [dbo].[STRemoveOffsetSegments] (
+CREATE FUNCTION [$(owner)].[STRemoveOffsetSegments] (
   @p_linestring      geometry,
   @p_offset_distance float,
   @p_round_xy        int,
@@ -29,12 +29,12 @@ Begin
     WITH segments as (
       SELECT s.id, s.geom as segment,
              s.geom.STNumPoints() as numPoints
-        FROM [dbo].[STSegmentLine](@p_linestring) as s
+        FROM [$(owner)].[STSegmentLine](@p_linestring) as s
     ), ids as (
      SELECT MIN(id) as minId, MAX(id) as maxId
        FROM (SELECT /* original Line as offset segments */
                     s.[id],
-                   ROUND([dbo].[STParallelSegment] (
+                   ROUND([$(owner)].[STOffsetSegment] (
                                    s.segment,
                                    @p_offset_distance,
                                    @p_round_xy,
@@ -47,7 +47,7 @@ Begin
            ) as f
        WHERE f.Dist2Boundary = 0.0
     )
-    SELECT @v_linestring = [dbo].[STMakeLineFromGeometryCollection] ( 
+    SELECT @v_linestring = [$(owner)].[STMakeLineFromGeometryCollection] ( 
                                     geometry::CollectionAggregate ( f.line ),
                                     @p_round_xy,
                                     @p_round_zm 
@@ -63,3 +63,7 @@ Begin
    return @v_linestring;
 End
 go
+
+QUIT
+GO
+

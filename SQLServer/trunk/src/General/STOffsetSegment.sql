@@ -12,19 +12,19 @@ GO
 IF EXISTS (
     SELECT * 
       FROM sysobjects 
-     WHERE id = object_id(N'[$(owner)].[STParallelSegment]') 
+     WHERE id = object_id(N'[$(owner)].[STOffsetSegment]') 
     AND xtype IN (N'FN', N'IF', N'TF')
 )
 BEGIN
-  DROP FUNCTION [$(owner)].[STParallelSegment];
-  Print 'Dropped [$(owner)].[STParallelSegment]...';
+  DROP FUNCTION [$(owner)].[STOffsetSegment];
+  Print 'Dropped [$(owner)].[STOffsetSegment]...';
 END;
 GO
 
-Print 'Creating [$(owner)].[STParallelSegment]...';
+Print 'Creating [$(owner)].[STOffsetSegment]...';
 GO
 
-CREATE FUNCTION [$(owner)].[STParallelSegment]
+CREATE FUNCTION [$(owner)].[STOffsetSegment]
 (
   @p_linestring geometry,
   @p_offset     Float,
@@ -33,11 +33,11 @@ CREATE FUNCTION [$(owner)].[STParallelSegment]
 )
 Returns geometry 
 AS
-/****f* GEOPROCESSING/STParallelSegment (2012)
+/****f* GEOPROCESSING/STOffsetSegment (2012)
  *  NAME
- *    STParallelSegment -- Creates a line at a fixed offset from the input 2 point LineString or 3 point CircularString.
+ *    STOffsetSegment -- Creates a line at a fixed offset from the input 2 point LineString or 3 point CircularString.
  *  SYNOPSIS
- *    Function STParallelSegment (
+ *    Function STOffsetSegment (
  *               @p_linestring geometry,
  *               @p_offset     float, 
  *               @p_round_xy   int = 3,
@@ -52,7 +52,7 @@ AS
  *  )
  *  SELECT 'Before' as text, d.segment.AsTextZM() as rGeom from data as d
  *  UNION ALL
- *  SELECT 'After' as text, [$(owner)].STParallelSegment(d.segment,1,3,2).AsTextZM() as rGeom from data as d;
+ *  SELECT 'After' as text, [$(owner)].STOffsetSegment(d.segment,1,3,2).AsTextZM() as rGeom from data as d;
  *  GO
  *  DESCRIPTION
  *    This function creates a parallel line at a fixed offset to the supplied 2 point LineString or 3 point CircularString.
@@ -338,7 +338,7 @@ End
 GO
 
 Print '******************************************************';
-Print 'Testing STParallelSegment....';
+Print 'Testing STOffsetSegment....';
 GO
 
 -- LineString
@@ -351,9 +351,9 @@ select 'StartPoint' as test, d.segment.STStartPoint() as pSegment from data as d
 union all
 select 'Before' as test, d.segment as pSegment from data as d
 union all
-select 'Right' as test, [$(owner)].[STParallelSegment](d.segment,  1.0, 3, 1) as pSegment from data as d
+select 'Right' as test, [$(owner)].[STOffsetSegment](d.segment,  1.0, 3, 1) as pSegment from data as d
 union all
-select 'Left'  as test, [$(owner)].[STParallelSegment](d.segment, -1.0, 3, 1) as pSegment from data as d
+select 'Left'  as test, [$(owner)].[STOffsetSegment](d.segment, -1.0, 3, 1) as pSegment from data as d
 ) as g;
 
 With data as (
@@ -364,9 +364,9 @@ select 'StartPoint' as test, d.segment.STStartPoint() as pSegment from data as d
 union all
 select 'Before' as test, d.segment as pSegment from data as d
 union all
-select 'Right' as test, [$(owner)].[STParallelSegment](d.segment,  1.0, 3, 1) as pSegment from data as d
+select 'Right' as test, [$(owner)].[STOffsetSegment](d.segment,  1.0, 3, 1) as pSegment from data as d
 union all
-select 'Left'  as test, [$(owner)].[STParallelSegment](d.segment, -1.0, 3, 1) as pSegment from data as d
+select 'Left'  as test, [$(owner)].[STOffsetSegment](d.segment, -1.0, 3, 1) as pSegment from data as d
 ) as g;
 
 -- Circular String
@@ -382,9 +382,9 @@ select 'StartPoint' as test, d.segment.STStartPoint() as pSegment from data as d
 union all
 select 'Before' as test, d.segment as pSegment from data as d
 union all
-select 'Right' as test, [$(owner)].[STParallelSegment](d.segment,  1.0, 3, 1) as pSegment from data as d
+select 'Right' as test, [$(owner)].[STOffsetSegment](d.segment,  1.0, 3, 1) as pSegment from data as d
 union all
-select 'Left'  as test, [$(owner)].[STParallelSegment](d.segment, -1.0, 3, 1) as pSegment from data as d
+select 'Left'  as test, [$(owner)].[STOffsetSegment](d.segment, -1.0, 3, 1) as pSegment from data as d
 ) as g;
 
 With data as (
@@ -399,9 +399,9 @@ select 'StartPoint' as test, d.segment.STStartPoint() as pSegment from data as d
 union all
 select 'Before' as test, d.segment as pSegment from data as d
 union all
-select 'Right' as test, [$(owner)].[STParallelSegment](d.segment, 1.0, 3, 1) as pSegment from data as d
+select 'Right' as test, [$(owner)].[STOffsetSegment](d.segment, 1.0, 3, 1) as pSegment from data as d
 union all
-select 'Left'  as test, [$(owner)].[STParallelSegment](d.segment, -1.0, 3, 1) as pSegment from data as d
+select 'Left'  as test, [$(owner)].[STOffsetSegment](d.segment, -1.0, 3, 1) as pSegment from data as d
 ) as g;
 
 -- *******************************************
@@ -412,9 +412,9 @@ With data as (
 select test, pSegment.STBuffer(0.1) as geom from (
 select 'Before' as test, d.segment as pSegment from data as d
 union all
-select 'Right' as test, [$(owner)].[STParallelSegment](d.segment,  1.0, 3, 1) as pSegment from data as d
+select 'Right' as test, [$(owner)].[STOffsetSegment](d.segment,  1.0, 3, 1) as pSegment from data as d
 union all
-select 'Left'  as test, [$(owner)].[STParallelSegment](d.segment, -1.0, 3, 1) as pSegment from data as d
+select 'Left'  as test, [$(owner)].[STOffsetSegment](d.segment, -1.0, 3, 1) as pSegment from data as d
 ) as g;
 
 With data as (
@@ -431,9 +431,9 @@ select 'Before' as test, [$(cogoowner)].[STFindCircleFromArc](d.segment).STBuffe
 union all
 select 'Before' as test, d.segment as pSegment from data as d
 union all
-select 'Right' as test, [$(owner)].[STParallelSegment](d.segment,  1.0, 3, 1) as pSegment from data as d
+select 'Right' as test, [$(owner)].[STOffsetSegment](d.segment,  1.0, 3, 1) as pSegment from data as d
 union all
-select 'Left'  as test, [$(owner)].[STParallelSegment](d.segment, -1.0, 3, 1) as pSegment from data as d
+select 'Left'  as test, [$(owner)].[STOffsetSegment](d.segment, -1.0, 3, 1) as pSegment from data as d
 ) as g;
 
 -- Point difference calculations....
@@ -441,15 +441,15 @@ With data as (
   select geometry::STGeomFromText('CIRCULARSTRING (-3 6.3,0 5.6,3 6.3)',0) as segment
 )
 select 'Right' as test, 
-       [$(owner)].[STParallelSegment](d.segment, 1.0, 3, 1).STStartPoint().STDistance(d.segment.STStartPoint()) as startPointDist,
-       [$(owner)].[STParallelSegment](d.segment, 1.0, 3, 1).STPointN(2).STDistance(d.segment.STPointN(2)) as midPointDist,
-       [$(owner)].[STParallelSegment](d.segment, 1.0, 3, 1).STEndPoint().STDistance(d.segment.STEndPoint()) as endPointDist
+       [$(owner)].[STOffsetSegment](d.segment, 1.0, 3, 1).STStartPoint().STDistance(d.segment.STStartPoint()) as startPointDist,
+       [$(owner)].[STOffsetSegment](d.segment, 1.0, 3, 1).STPointN(2).STDistance(d.segment.STPointN(2)) as midPointDist,
+       [$(owner)].[STOffsetSegment](d.segment, 1.0, 3, 1).STEndPoint().STDistance(d.segment.STEndPoint()) as endPointDist
 from data as d
 union all
 select 'Left'  as test, 
-       [$(owner)].[STParallelSegment](d.segment,-1.0, 3, 1).STStartPoint().STDistance(d.segment.STStartPoint()) as startPointDist,
-       [$(owner)].[STParallelSegment](d.segment,-1.0, 3, 1).STPointN(2).STDistance(d.segment.STPointN(2)) as midPointDist,
-       [$(owner)].[STParallelSegment](d.segment,-1.0, 3, 1).STEndPoint().STDistance(d.segment.STEndPoint()) as endPointDist
+       [$(owner)].[STOffsetSegment](d.segment,-1.0, 3, 1).STStartPoint().STDistance(d.segment.STStartPoint()) as startPointDist,
+       [$(owner)].[STOffsetSegment](d.segment,-1.0, 3, 1).STPointN(2).STDistance(d.segment.STPointN(2)) as midPointDist,
+       [$(owner)].[STOffsetSegment](d.segment,-1.0, 3, 1).STEndPoint().STDistance(d.segment.STEndPoint()) as endPointDist
 from data as d;
 go
 
@@ -460,9 +460,9 @@ WITH data AS (
 )
 SELECT 'Before'      as text, d.segment.AsTextZM() as rGeom from data as d
 UNION ALL
-SELECT 'After Right' as text, [$(owner)].[STParallelSegment] (d.segment,1,3,2).AsTextZM() as rGeom from data as d
+SELECT 'After Right' as text, [$(owner)].[STOffsetSegment] (d.segment,1,3,2).AsTextZM() as rGeom from data as d
 UNION ALL
-SELECT 'After Left'  as text, [$(owner)].[STParallelSegment] (d.segment,-1,3,2).AsTextZM() as rGeom from data as d;
+SELECT 'After Left'  as text, [$(owner)].[STOffsetSegment] (d.segment,-1,3,2).AsTextZM() as rGeom from data as d;
 go
 
 WITH data AS (
@@ -472,7 +472,7 @@ WITH data AS (
 )
 SELECT 'Before' as text, d.segment.AsTextZM() as rGeom from data as d
 UNION ALL
-SELECT 'After' as text, [$(owner)].[STParallelSegment] (d.segment,1,3,2).AsTextZM() as rGeom from data as d;
+SELECT 'After' as text, [$(owner)].[STOffsetSegment] (d.segment,1,3,2).AsTextZM() as rGeom from data as d;
 go
 
 QUIT
